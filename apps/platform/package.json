@@ -6,7 +6,7 @@
   "scripts": {
     "build": "next build",
     "clean": "rm -rf .next && rm -rf .turbo",
-    "dev": "next dev -p 3001 --turbo",
+    "dev": "next dev -p 3001 --turbopack",
     "lint": "next lint",
     "start": "next start -p 3001",
     "type-check": "tsc --noEmit"
@@ -16,13 +16,13 @@
     "@dallah/design-system": "workspace:*",
     "@dallah/utils": "workspace:*",
     "@vercel/examples-ui": "^1.0.4",
-    "next": "^14.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "next": "15.0.3",
+    "react": "19.0.0-rc-66855b96-20241106",
+    "react-dom": "19.0.0-rc-66855b96-20241106"
   },
   "devDependencies": {
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "autoprefixer": "^10.4.12",
     "eslint": "^8.11.0",
     "eslint-config-dallah": "workspace:*",
@@ -32,5 +32,11 @@
   },
   "engines": {
     "node": "20.x"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@19.0.0-rc.1",
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    }
   }
 }
