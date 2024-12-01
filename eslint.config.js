@@ -1,6 +1,6 @@
-const dallahConfig = require('./packages/eslint-config-dallah/index.js')
+import dallahConfig from './packages/eslint-config-dallah/index.js'
 
-module.exports = [
+export default [
   dallahConfig,
   {
     files: ['**/*.js', '**/*.ts', '**/*.tsx'],

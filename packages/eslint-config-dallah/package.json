@@ -4,6 +4,7 @@
   "repository": "https://github.com/mahmoudgalalz/dallah.git",
   "license": "MIT",
   "main": "index.js",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },
