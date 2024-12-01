@@ -1,2 +1,2 @@
-// const storybook = require('eslint-plugin-storybook')
-// module.exports = [...storybook.configs['flat/recommended']]
+import eslintConfigDallah from '../../packages/eslint-config-dallah/index.js'
+export default [...eslintConfigDallah]

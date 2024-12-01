@@ -26,6 +26,8 @@ export default [
   // Tailwind CSS
   ...fixupConfigRules(compat.extends('plugin:tailwindcss/recommended')),
 
+  ...fixupConfigRules(compat.extends('plugin:storybook/recommended')),
+
   eslintConfigPrettier,
 
   {
@@ -46,6 +48,8 @@ export default [
         callees: ['classnames', 'clsx', 'ctl', 'cn', 'cva'],
       },
     },
-    rules: {},
+    rules: {
+      'no-html-link-for-pages': 'off',
+    },
   },
 ]
