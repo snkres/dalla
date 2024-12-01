@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
 import { PrefetchCrossZoneLinks } from '@dallah/components/prefetch'
-import { Layout } from '@vercel/examples-ui'
-import '@vercel/examples-ui/globals.css'
 
 export const metadata: Metadata = {
   title: 'Microfrontends - Main',
@@ -16,10 +14,8 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        <Layout title="Microfrontends" path="solutions/microfrontends">
-          {children}
-        </Layout>
-        <PrefetchCrossZoneLinks hrefs={['/docs', '/docs/about']} />
+        {children}
+        {/* <PrefetchCrossZoneLinks hrefs={['/docs', '/docs/about']} /> */}
       </body>
     </html>
   )
