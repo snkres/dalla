@@ -1,1 +1,1 @@
-#TODO: add 'npm run lint' after fixing eslint configs
+pnpm run lint
