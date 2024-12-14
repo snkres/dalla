@@ -1,5 +1,6 @@
-const path = require('path')
-module.exports = {
+import path from 'path'
+
+export default {
   stories: [
     {
       directory: '../../dallah-design-system/src/**',
@@ -8,18 +9,24 @@ module.exports = {
     },
   ],
   addons: [
-    // https://storybook.js.org/addons/@storybook/addon-links
     '@storybook/addon-links',
-    // https://storybook.js.org/docs/react/essentials/introduction
     '@storybook/addon-essentials',
-    '@storybook/addon-styling',
+    {
+      name: '@storybook/addon-styling',
+      options: {
+        postCss: true,
+      },
+    },
   ],
   framework: {
     name: '@storybook/react-vite',
     options: {},
   },
-  async viteFinal(config, { configType }) {
-    // customize the Vite config here
+  viteFinal: async (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, '../../dallah-design-system/src'),
+    }
     return config
   },
   docs: {
