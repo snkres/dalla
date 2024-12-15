@@ -17,7 +17,14 @@ export const Primary = {
 
 export const Secondary = {
   args: {
-    secondary: true,
     children: 'This is a button!',
+    variant: 'secondary',
+  },
+}
+
+export const Destructive = {
+  args: {
+    children: 'This is a button!',
+    variant: 'destructive',
   },
 }
