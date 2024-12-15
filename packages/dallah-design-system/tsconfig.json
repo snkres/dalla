@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "rootDir": "src",
+    "rootDir": "../.",
     "outDir": "dist",
     "lib": ["dom", "dom.iterable", "esnext"],
     "declaration": true,
@@ -15,7 +15,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx",
+    "paths": {
+      "@dallah/utils": ["../dallah-utils/src/"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/*.stories.tsx"]
