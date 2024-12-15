@@ -3,7 +3,6 @@
   "repository": "https://github.com/mahmoudgalalz/dallah.git",
   "license": "MIT",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "next build",
     "clean": "rm -rf .next && rm -rf .turbo",
