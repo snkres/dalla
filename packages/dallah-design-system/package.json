@@ -7,7 +7,7 @@
     "dev": "pnpm build:swc -w",
     "build": "rm -rf dist && pnpm build:swc && pnpm types",
     "build:swc": "pnpm copy-tailwind && swc src -d dist",
-    "copy-tailwind": "mkdir -p dist && cp src/tailwind.cjs dist/tailwind.cjs",
+    "copy-tailwind": "mkdir -p dist && cp src/tokens.js dist/tokens.js",
     "types": "tsc --emitDeclarationOnly",
     "lint": "TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf ./dist && rm -rf .turbo"
@@ -57,13 +57,16 @@
     "react-dom": "^18.0.0-0"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.1",
+    "@radix-ui/react-radio-group": "^1.2.2",
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-switch": "^1.1.2",
     "@swc/helpers": "^0.5.15",
     "@use-gesture/react": "^10.3.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^1.2.1",
-    "framer-motion": "^11.15.0"
+    "framer-motion": "^11.15.0",
+    "lucide-react": "^0.468.0"
   },
   "devDependencies": {
     "@storybook/react": "^7.6.20",
