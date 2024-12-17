@@ -24,7 +24,7 @@ export default [
   ...fixupConfigRules(compat.extends('plugin:jsx-a11y/strict')),
 
   // Tailwind CSS
-  ...fixupConfigRules(compat.extends('plugin:tailwindcss/recommended')),
+  // ...fixupConfigRules(compat.extends('plugin:tailwindcss/recommended')),
 
   ...fixupConfigRules(compat.extends('plugin:storybook/recommended')),
 
