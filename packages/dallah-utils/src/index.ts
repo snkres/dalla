@@ -20,3 +20,7 @@ export function matchingTextColor(color: string) {
 
   return yiq >= 128 ? '#000' : '#fff'
 }
+
+export function cn(...classes: (string | undefined)[]) {
+  return classes.filter(Boolean).join(' ')
+}
