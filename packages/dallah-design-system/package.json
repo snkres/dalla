@@ -5,12 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "pnpm build:swc -w",
-    "build": "rm -rf dist && pnpm build:swc && pnpm types",
+    "build": "rimraf dist && pnpm build:swc && pnpm types",
     "build:swc": "pnpm copy-tailwind && swc src -d dist",
-    "copy-tailwind": "mkdir -p dist && cp src/tokens.js dist/tokens.js",
+    "copy-tailwind": "mkdir -p dist && copyfiles src/tokens.js dist/tokens.js",
     "types": "tsc --emitDeclarationOnly",
     "lint": "TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
-    "clean": "rm -rf ./dist && rm -rf .turbo"
+    "clean": "rimraf ./dist && rimraf .turbo"
   },
   "sideEffects": false,
   "type": "module",
@@ -57,6 +57,7 @@
     "react-dom": "^18.0.0-0"
   },
   "dependencies": {
+    "@dallah/utils": "workspace:*",
     "@radix-ui/react-label": "^2.1.1",
     "@radix-ui/react-radio-group": "^1.2.2",
     "@radix-ui/react-slot": "^1.1.1",
@@ -66,8 +67,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^1.2.1",
     "framer-motion": "^11.15.0",
-    "lucide-react": "^0.468.0",
-    "@dallah/utils": "workspace:*"
+    "lucide-react": "^0.468.0"
   },
   "devDependencies": {
     "@storybook/react": "^7.6.20",
@@ -75,8 +75,10 @@
     "@swc/core": "^1.10.1",
     "@types/react": "^19.0.1",
     "chokidar": "^3.6.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^9.17.0",
     "eslint-config-dallah": "workspace:*",
+    "rimraf": "^6.0.1",
     "typescript": "5.0.4"
   }
 }
