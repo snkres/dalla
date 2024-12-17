@@ -16,10 +16,7 @@
     "isolatedModules": true,
     "incremental": true,
     "jsx": "react-jsx",
-    "paths": {
-      "@dallah/utils": ["../dallah-utils/src/"],
-      "@/*": ["./*"]
-    }
+    "baseUrl": "./"
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/*.stories.tsx"]

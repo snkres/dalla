@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, PanInfo } from 'framer-motion'
-import { cn } from '../../../lib/utils'
+import { cn } from '@dallah/utils'
 
 interface SwipeButtonProps {
   onSwipeComplete?: () => void
