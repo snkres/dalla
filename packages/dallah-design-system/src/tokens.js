@@ -1,6 +1,7 @@
 export default {
   colors: {
     background: '#F8F8F8',
+    foreground: '#FFFFFF',
     'slate-blue': {
       10: '#F1F5F9',
       20: '#E2E8F0',
@@ -12,6 +13,7 @@ export default {
       80: '#1E293B',
       90: '#0F172A',
       100: '#020617',
+      DEFAULT: '#234D64',
     },
     'sunshine-yellow': {
       10: '#CCFBF1',
@@ -24,6 +26,7 @@ export default {
       80: '#115E59',
       90: '#134E4A',
       100: '#042F2E',
+      DEFAULT: '#F7CA71',
     },
     'coral-red': {
       10: '#FFE4E6',
@@ -60,6 +63,11 @@ export default {
       80: '#115E59',
       90: '#134E4A',
       100: '#042F2E',
+    },
+    destructive: {
+      DEFAULT: '#F43F5E',
+      disabled: '#FFE4E6',
+      disabledText: '#FDA4AF',
     },
   },
   fontSize: {
