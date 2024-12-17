@@ -7,7 +7,7 @@
     "dev": "pnpm build:swc -w",
     "build": "rimraf dist && pnpm build:swc && pnpm types",
     "build:swc": "pnpm copy-tailwind && swc src -d dist",
-    "copy-tailwind": "mkdir -p dist && copyfiles src/tokens.js dist/tokens.js",
+    "copy-tailwind": "mkdir -p dist && (rm -rf dist/tokens.js || true) && cp src/tokens.js dist/tokens.js",
     "types": "tsc --emitDeclarationOnly",
     "lint": "TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rimraf ./dist && rimraf .turbo"
