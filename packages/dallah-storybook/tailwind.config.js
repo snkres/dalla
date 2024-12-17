@@ -1,4 +1,4 @@
-import designSystem from '../dallah-design-system/tailwind.js'
+import { designTokens } from '../dallah-design-system/src'
 
 export default {
   content: [
@@ -6,6 +6,6 @@ export default {
     './node_modules/@dallah/design-system/src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
-    ...designSystem,
+    ...designTokens,
   },
 }

@@ -1,4 +1,5 @@
-import '../tailwind.css' // Create this file if it doesn't exist
+import '../tailwind.css'
+import '@fontsource-variable/sora'
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
