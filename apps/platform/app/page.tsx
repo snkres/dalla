@@ -1,3 +1,4 @@
+import { Button } from '@dallah/design-system'
 export default function Home(): React.ReactNode {
   return (
     <main className="bg-background min-h-screen">
