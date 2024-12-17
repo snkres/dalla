@@ -1,4 +1,4 @@
-import { designTokens } from '@dallah/design-system'
+import { designTokens } from '../dallah-design-system/src'
 
 export default {
   content: [
