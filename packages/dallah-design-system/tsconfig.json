@@ -17,7 +17,8 @@
     "incremental": true,
     "jsx": "react-jsx",
     "paths": {
-      "@dallah/utils": ["../dallah-utils/src/"]
+      "@dallah/utils": ["../dallah-utils/src/"],
+      "@/*": ["./*"]
     }
   },
   "include": ["src"],
