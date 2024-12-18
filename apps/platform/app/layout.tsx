@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '../globals.css'
+import '@fontsource-variable/sora'
 
 export const metadata: Metadata = {
   title: 'Microfrontends - Docs',
