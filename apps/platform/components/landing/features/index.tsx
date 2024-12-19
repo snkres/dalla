@@ -1,9 +1,9 @@
 'use client'
-
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { ModeToggle } from './mode-toggle'
 import { FeatureCard } from './feature-card'
 import { SearchForm } from './search-form'
+import { motion, useTransform, useScroll } from 'motion/react'
 
 const companyFeatures = [
   {
@@ -320,33 +320,35 @@ const professionalFeatures = [
 
 export function Features() {
   const [mode, setMode] = useState<'companies' | 'professional'>('companies')
-  const [isCard, setIsCard] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsCard(true)
-        } else {
-          setIsCard(false)
-        }
-      },
-      {
-        threshold: 0.1,
-      },
-    )
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  })
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current)
-    }
+  const width = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.3],
+    ['100%', '100%', '80%'],
+  )
 
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current)
-      }
-    }
-  }, [])
+  const scale = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0.98])
+
+  const borderRadius = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.3],
+    ['0px', '0px', '24px'],
+  )
+
+  const y = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 0, -20])
+
+  const padding = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.3],
+    ['0px', '0px', '32px'],
+  )
 
   const features = mode === 'companies' ? companyFeatures : professionalFeatures
   const title =
@@ -359,45 +361,100 @@ export function Features() {
       : 'Join our platform to connect with businesses looking for your expertise'
 
   return (
-    <div className="relative">
-      <div className="absolute left-1/2 top-0 z-10 -mt-9 -translate-x-1/2 -translate-y-1/2">
-        <ModeToggle mode={mode} onModeChange={setMode} />
-      </div>
-      <div
-        ref={sectionRef}
-        className={`transition-all duration-1000 ease-in-out ${
-          isCard
-            ? 'bg-sunshine-yellow mx-auto max-w-7xl translate-y-0 transform rounded-3xl shadow-xl'
-            : 'bg-sunshine-yellow -translate-y-8 transform'
-        }`}
+    <div ref={containerRef} className="relative min-h-[150vh]">
+      <motion.div
+        style={{
+          opacity: useTransform(scrollYProgress, [0, 0.2], [0, 1]),
+          y: useTransform(scrollYProgress, [0, 0.2], [-50, 0]),
+        }}
+        className="sticky top-10 z-10 flex justify-center"
       >
-        <div className={`p-6 ${isCard ? 'p-8' : 'py-16'} pt-12`}>
-          <div className="mx-auto max-w-full space-y-8 px-20">
+        <ModeToggle mode={mode} onModeChange={setMode} />
+      </motion.div>
+
+      <motion.div
+        ref={sectionRef}
+        style={{
+          width,
+          scale,
+          y,
+          borderRadius,
+          margin: '0 auto',
+          position: 'sticky',
+          top: '100px',
+        }}
+        className="bg-sunshine-yellow overflow-hidden shadow-2xl"
+      >
+        <motion.div
+          style={{
+            padding,
+          }}
+        >
+          <motion.div className="mx-auto max-w-full space-y-8 px-4 md:px-20">
             <div className="space-y-4 pt-4 text-center">
-              <span className="text-slate-blue inline-block rounded-full border border-[#EEB238] bg-[#FFD37B] px-4 py-1">
+              <motion.span
+                style={{
+                  scale: useTransform(scrollYProgress, [0, 0.3], [0.95, 1]),
+                }}
+                className="text-slate-blue inline-block rounded-full border border-[#EEB238] bg-[#FFD37B] px-4 py-1"
+              >
                 Features For
-              </span>
-              <h1 className="sm:text-heading-2xl text-slate-blue font-bold tracking-tight">
+              </motion.span>
+              <motion.h1
+                style={{
+                  opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
+                }}
+                className="sm:text-heading-2xl text-slate-blue mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight"
+              >
                 {title}
-              </h1>
-              <p className="text-text-lg mx-auto max-w-2xl text-[#00000066]">
+              </motion.h1>
+              <motion.p
+                style={{
+                  opacity: useTransform(scrollYProgress, [0.15, 0.3], [0, 1]),
+                }}
+                className="text-text-lg mx-auto max-w-2xl text-[#00000066]"
+              >
                 {subtitle}
-              </p>
+              </motion.p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature) => (
-                <FeatureCard
+
+            <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {features.map((feature, index) => (
+                <motion.div
                   key={feature.title}
-                  icon={feature.icon}
-                  title={feature.title}
-                  description={feature.description}
-                />
+                  style={{
+                    opacity: useTransform(
+                      scrollYProgress,
+                      [0.2 + index * 0.02, 0.3 + index * 0.02],
+                      [0, 1],
+                    ),
+                    y: useTransform(
+                      scrollYProgress,
+                      [0.2 + index * 0.02, 0.3 + index * 0.02],
+                      [20, 0],
+                    ),
+                  }}
+                >
+                  <FeatureCard
+                    icon={feature.icon}
+                    title={feature.title}
+                    description={feature.description}
+                  />
+                </motion.div>
               ))}
-            </div>
-            <SearchForm />
-          </div>
-        </div>
-      </div>
+            </motion.div>
+
+            <motion.div
+              style={{
+                opacity: useTransform(scrollYProgress, [0.3, 0.4], [0, 1]),
+                y: useTransform(scrollYProgress, [0.3, 0.4], [20, 0]),
+              }}
+            >
+              <SearchForm />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

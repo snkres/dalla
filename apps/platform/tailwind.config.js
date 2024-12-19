@@ -1,4 +1,6 @@
 import { designTokens } from '@dallah/design-system'
+import { plugin } from 'postcss'
+import rombo from 'tailwindcss-motion'
 export default {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
@@ -11,4 +13,5 @@ export default {
       ...designTokens,
     },
   },
+  plugins: [rombo],
 }
