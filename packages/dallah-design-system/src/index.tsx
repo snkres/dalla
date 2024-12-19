@@ -1,1 +1,3 @@
-// export { Button } from './ui/button'
+import tokens from './tokens'
+
+export { tokens as designTokens }
