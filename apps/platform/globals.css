@@ -91,3 +91,15 @@ html {
 .text-balance {
   text-wrap: balance;
 }
+
+.at-least-2-lines {
+  line-height: 1.5; /* Sets the height of each line */
+  min-height: calc(1.5em * 2); /* 3 is the minimum number of lines */
+  overflow: hidden; /* Prevents content overflow */
+}
+
+.at-least-3-lines {
+  line-height: 1.5; /* Sets the height of each line */
+  min-height: calc(1.5em * 3); /* 3 is the minimum number of lines */
+  overflow: hidden; /* Prevents content overflow */
+}

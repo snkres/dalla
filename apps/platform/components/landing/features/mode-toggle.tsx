@@ -10,19 +10,27 @@ interface ModeToggleProps {
 
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
-    <div className="bg-slate-blue z-20 flex items-center gap-2 rounded-full p-4">
+    <div
+      className={`bg-slate-blue z-20 flex items-center gap-2 rounded-full border-2 p-4 ${
+        mode === 'professional' ? 'border-sunshine-yellow' : ''
+      }`}
+    >
       <span
-        className={`text-text-xl font-medium ${mode === 'companies' ? 'text-sunshine-yellow' : 'text-[#418FB9]'}`}
+        className={`text-text-xl font-medium ${mode === 'companies' ? 'text-sunshine-yellow' : 'text-foreground'}`}
       >
         Companies
       </span>
+
       <Switch
         checked={mode === 'professional'}
         onCheckedChange={(checked) =>
           onModeChange(checked ? 'professional' : 'companies')
         }
-        className="[&_button]:data-[state=checked]:!bg-[#357293]"
+        className={
+          'data-[state=checked]:bg-sunshine-yellow [&_*]:!rounded-full [&_button]:p-4'
+        }
       />
+
       <span
         className={`text-text-xl font-medium ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-[#418FB9]'}`}
       >
