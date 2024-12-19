@@ -29,6 +29,7 @@
     "@eslint/compat": "^1.2.3",
     "@eslint/js": "^9.16.0",
     "@types/node": "20.11.30",
+    "cross-env": "^7.0.3",
     "eslint": "9.16.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "husky": "^9.1.7",
