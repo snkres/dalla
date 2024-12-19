@@ -46,7 +46,12 @@ const companyFeatures = [
         />
       </svg>
     ),
-    title: 'Save Time and Resources',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description:
       "Find qualified consultants faster with Dalla's AI-powered matching system.",
   },
@@ -76,7 +81,12 @@ const companyFeatures = [
         />
       </svg>
     ),
-    title: 'Work With Confidence',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description:
       'All consultants are verified and backed by a transparent feedback system.',
   },
@@ -113,7 +123,12 @@ const companyFeatures = [
         />
       </svg>
     ),
-    title: 'Streamline Operations',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description:
       'Simplify project management with built-in collaboration tools.',
   },
@@ -150,7 +165,12 @@ const companyFeatures = [
         />
       </svg>
     ),
-    title: 'Secure Payments',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description: "Work worry-free with Dalla's escrow-based payment system.",
   },
 ]
@@ -196,7 +216,12 @@ const professionalFeatures = [
         />
       </svg>
     ),
-    title: 'Find Your Ideal Clients',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description:
       'Connect with businesses that match your expertise and preferences.',
   },
@@ -233,7 +258,12 @@ const professionalFeatures = [
         />
       </svg>
     ),
-    title: 'Guaranteed Payments',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description: 'Get paid on time, every time with our secure payment system.',
   },
   {
@@ -269,7 +299,12 @@ const professionalFeatures = [
         />
       </svg>
     ),
-    title: 'Efficient Workflow',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description: 'Manage your projects and communications in one place.',
   },
   {
@@ -312,7 +347,12 @@ const professionalFeatures = [
         />
       </svg>
     ),
-    title: 'Save Time',
+    title: (
+      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+        <span>Save</span>
+        <span className="font-bold">Time and Resources</span>
+      </p>
+    ),
     description:
       'Focus on what matters - delivering great results to your clients.',
   },
@@ -331,7 +371,7 @@ export function Features() {
   const width = useTransform(
     scrollYProgress,
     [0, 0.2, 0.3],
-    ['100%', '100%', '80%'],
+    ['100%', '100%', '90%'],
   )
 
   const scale = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0.98])
@@ -383,14 +423,14 @@ export function Features() {
           position: 'sticky',
           top: '100px',
         }}
-        className="bg-sunshine-yellow overflow-hidden shadow-2xl"
+        className={`overflow-hidden shadow-2xl ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
       >
         <motion.div
           style={{
             padding,
           }}
         >
-          <motion.div className="mx-auto max-w-full space-y-8 px-4 md:px-20">
+          <motion.div className="mx-auto max-w-full space-y-8 px-4 md:px-14">
             <div className="space-y-4 pt-4 text-center">
               <motion.span
                 style={{
@@ -404,7 +444,7 @@ export function Features() {
                 style={{
                   opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
                 }}
-                className="sm:text-heading-2xl text-slate-blue mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight"
+                className={`sm:text-heading-2xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight`}
               >
                 {title}
               </motion.h1>
@@ -412,7 +452,7 @@ export function Features() {
                 style={{
                   opacity: useTransform(scrollYProgress, [0.15, 0.3], [0, 1]),
                 }}
-                className="text-text-lg mx-auto max-w-2xl text-[#00000066]"
+                className={`text-text-lg mx-auto max-w-2xl ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
               >
                 {subtitle}
               </motion.p>
@@ -421,7 +461,7 @@ export function Features() {
             <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {features.map((feature, index) => (
                 <motion.div
-                  key={feature.title}
+                  key={feature.description}
                   style={{
                     opacity: useTransform(
                       scrollYProgress,
@@ -450,7 +490,7 @@ export function Features() {
                 y: useTransform(scrollYProgress, [0.3, 0.4], [20, 0]),
               }}
             >
-              <SearchForm />
+              <SearchForm mode={mode} />
             </motion.div>
           </motion.div>
         </motion.div>
