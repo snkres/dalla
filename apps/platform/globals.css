@@ -2,66 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-
-*, *::before, *::after{
-    box-sizing: border-box; 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-*{
-    margin: 0; 
-    padding: 0; 
+* {
+  margin: 0;
+  padding: 0;
 }
 
-ul[role='list'], ol[role='list']{
-    list-style: none; 
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
 }
 
-html:focus-within{
-    scroll-behavior: smooth; 
+html:focus-within {
+  scroll-behavior: smooth;
 }
 
-a:not([class]){
-    text-decoration-skip-ink: auto; 
+a:not([class]) {
+  text-decoration-skip-ink: auto;
 }
 
-img, picture, svg, video, canvas{
+img,
+picture,
+svg,
+video,
+canvas {
   max-width: 100%;
   height: auto;
 }
 
-img, picture, svg, video, canvas{
-  vertical-align: middle; 
+img,
+picture,
+svg,
+video,
+canvas {
+  vertical-align: middle;
 }
 
-img, picture, svg, video, canvas{
-  font-style: italic; 
+img,
+picture,
+svg,
+video,
+canvas {
+  font-style: italic;
 }
 
-img, picture, svg, video, canvas{
-  background-repeat: no-repeat; 
+img,
+picture,
+svg,
+video,
+canvas {
+  background-repeat: no-repeat;
   background-size: cover;
 }
 
-input, button, textarea, select{
-  font: inherit; 
+input,
+button,
+textarea,
+select {
+  font: inherit;
 }
 
-@media (prefers-reduced-motion: reduce){
-    html:focus-within {
-        scroll-behavior: auto;
-    }
-    *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-        transition: none;
-    }
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transition: none;
+  }
 }
 
-body, html{
-    height: 100%; 
-    scroll-behavior: smooth; 
+body,
+html {
+  height: 100%;
+  scroll-behavior: smooth;
 }
 
- /* For More Info: https://github.com/Lazzzer00/Best-CSS-Reset-2024 */
+.text-balance {
+  text-wrap: balance;
+}
