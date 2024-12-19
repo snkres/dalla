@@ -71,7 +71,7 @@ export function Features() {
           position: 'sticky',
           top: '100px',
         }}
-        className={`overflow-hidden shadow-2xl ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
+        className={`overflow-hidden ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
       >
         <motion.div
           style={{
