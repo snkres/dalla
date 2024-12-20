@@ -12,7 +12,7 @@ export function FeatureCard({
   description,
 }: FeatureCardProps) {
   return (
-    <div className="radius-[24px] rounded-lg border border-[#EEB238] bg-[#FFD37B] p-6 backdrop-blur-sm">
+    <div className="rounded-[24px] border border-[#EEB238] bg-[#FFD37B] p-6 backdrop-blur-sm">
       <div className="flex items-start">
         <div className="mb-4 inline-flex rounded-full [&_svg]:h-16 [&_svg]:w-16">
           {Icon}
