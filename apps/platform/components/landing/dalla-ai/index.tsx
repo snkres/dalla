@@ -5,6 +5,8 @@ import { CandidateCard } from './candidate-card'
 import { Timeline, TimelineItem } from './timeline'
 import { Button, Logomark } from '@dallah/design-system'
 import { Search, ThumbsUp } from 'lucide-react'
+import { motion, useInView } from 'motion/react'
+import { useRef } from 'react'
 
 export function DallaAi() {
   const [candidates] = useState([
@@ -24,10 +26,26 @@ export function DallaAi() {
     },
   ])
 
+  const ref1 = useRef(null)
+  const ref2 = useRef(null)
+  const ref3 = useRef(null)
+  const ref4 = useRef(null)
+
+  const inView1 = useInView(ref1, { once: false, amount: 0.25 })
+  const inView2 = useInView(ref2, { once: false, amount: 0.25 })
+  const inView3 = useInView(ref3, { once: false, amount: 0.25 })
+  const inView4 = useInView(ref4, { once: false, amount: 0.25 })
+
   return (
     <div className="bg-slate-blue mx-auto max-w-7xl rounded-[48px]">
       <div className="grid items-center gap-12 pl-16 lg:grid-cols-2">
-        <div className="py-24 text-white">
+        <motion.div
+          className="py-24 text-white"
+          ref={ref1}
+          initial={{ opacity: 0, x: -50 }}
+          animate={inView1 ? { opacity: 1, x: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 50 }}
+        >
           <Logomark className="[&_path]:fill-foreground !h-16 !w-16" />
           <h1 className="mb-6 mt-5 text-5xl font-bold leading-tight">
             Meet with <span className="text-sunshine-yellow">Dalla Ai </span>
@@ -45,33 +63,56 @@ export function DallaAi() {
           >
             Discover More
           </Button>
-        </div>
+        </motion.div>
 
-        <div className="pr-[40px] pt-10">
+        <motion.div
+          className="pr-[40px] pt-10"
+          ref={ref2}
+          initial={{ opacity: 0, x: 50 }}
+          animate={inView2 ? { opacity: 1, x: 0 } : {}}
+          transition={{ type: 'spring', stiffness: 50 }}
+        >
           <Timeline>
             <TimelineItem isPhoto>
-              <div className="flex flex-col gap-1">
+              <motion.div
+                className="flex flex-col gap-1"
+                ref={ref3}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView3 ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5 }}
+              >
                 <span className="text-white">Recruiter</span>
                 <div className="max-w-xl rounded-3xl rounded-tl-none bg-white p-4">
                   Send me candidate who are expert in{' '}
                   <span className="font-medium">Figma</span> and understand{' '}
                   <span className="font-medium">HTML</span>
                 </div>
-              </div>
+              </motion.div>
             </TimelineItem>
 
             <TimelineItem isIcon Icon={<Search className="h-6 w-6" />}>
-              <div className="flex flex-col gap-2">
+              <motion.div
+                className="flex flex-col gap-2"
+                ref={ref4}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView4 ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
                 <span className="self-end text-white">Dalla Recruiter</span>
                 <div className="bg-sunshine-yellow text-slate-blue max-w-xl self-end rounded-3xl rounded-tr-none p-4">
                   Sending you a list of relevant candidates now
                 </div>
                 <img src="/searching.png" alt="searching" className="mt-4" />
-              </div>
+              </motion.div>
             </TimelineItem>
 
             <TimelineItem isLast isIcon Icon={<ThumbsUp className="h-6 w-6" />}>
-              <div className="bg-sunshine-yellow max-w-xl rounded-3xl rounded-se-none p-6">
+              <motion.div
+                className="bg-sunshine-yellow max-w-xl rounded-3xl rounded-se-none p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView4 ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.4, duration: 0.5 }}
+              >
                 <h2 className="text-slate-blue mb-4 text-xl font-semibold">
                   Your Qualified Candidates Review List
                 </h2>
@@ -80,10 +121,10 @@ export function DallaAi() {
                     <CandidateCard key={candidate.id} {...candidate} />
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </TimelineItem>
           </Timeline>
-        </div>
+        </motion.div>
       </div>
     </div>
   )
