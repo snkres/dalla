@@ -109,6 +109,9 @@ importers:
       '@dallah/utils':
         specifier: workspace:*
         version: link:../../packages/dallah-utils
+      lucide-react:
+        specifier: ^0.468.0
+        version: 0.468.0(react@19.0.0)
       motion:
         specifier: ^11.15.0
         version: 11.15.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -12589,6 +12592,10 @@ snapshots:
   lucide-react@0.468.0(react@18.3.1):
     dependencies:
       react: 18.3.1
+
+  lucide-react@0.468.0(react@19.0.0):
+    dependencies:
+      react: 19.0.0
 
   magic-string@0.27.0:
     dependencies:
