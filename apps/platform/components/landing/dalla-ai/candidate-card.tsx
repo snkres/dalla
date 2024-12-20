@@ -7,21 +7,23 @@ import { Button } from '@dallah/design-system'
 export function CandidateCard() {
   return (
     <div className="bg-foreground mb-3 rounded-2xl p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between max-sm:flex-col">
         <div className="flex items-center gap-4">
           <img
             src="/avatar.png"
             alt=""
-            className="h-12 w-12 rounded-full object-cover"
+            className="h-10 w-10 rounded-full object-cover lg:h-12 lg:w-12"
           />
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-text-lg font-semibold">John Brooklyn</h3>
-              <div className="text-text-2xs rounded-full bg-[#D9F7E5] px-[8px] py-[4px] text-green-700">
+            <div className="flex gap-2 max-sm:flex-col lg:items-center">
+              <h3 className="lg:text-text-lg font-semibold">John Brooklyn</h3>
+              <div className="text-text-2xs rounded-full bg-[#D9F7E5] px-[8px] py-[4px] text-green-700 max-sm:w-fit">
                 Interested
               </div>
             </div>
-            <p className="text-muted-foreground text-md">Experience in Figma</p>
+            <p className="text-muted-foreground lg:text-text-md text-text-sm">
+              Experience in Figma
+            </p>
           </div>
         </div>
         <div className="flex gap-2">
