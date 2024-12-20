@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { ModeToggle } from './mode-toggle'
 import { FeatureCard } from './feature-card'
 import { SearchForm } from './search-form'
-import { motion, useTransform, useScroll } from 'motion/react'
+import { motion, useTransform, useScroll, AnimatePresence } from 'motion/react'
 import { companyFeatures, professionalFeatures } from './content'
 
 export function Features() {
@@ -88,49 +88,72 @@ export function Features() {
               >
                 Features For
               </motion.span>
-              <motion.h1
-                style={{
-                  opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
-                }}
-                className={`sm:text-heading-2xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight`}
-              >
-                {title}
-              </motion.h1>
-              <motion.p
-                style={{
-                  opacity: useTransform(scrollYProgress, [0.15, 0.3], [0, 1]),
-                }}
-                className={`text-text-lg mx-auto max-w-2xl ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
-              >
-                {subtitle}
-              </motion.p>
+              <AnimatePresence mode="wait">
+                <motion.h1
+                  key={title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
+                  }}
+                  className={`sm:text-heading-2xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight`}
+                >
+                  {title}
+                </motion.h1>
+              </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={subtitle}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    opacity: useTransform(scrollYProgress, [0.15, 0.3], [0, 1]),
+                  }}
+                  className={`text-text-lg at-least-2-lines mx-auto max-w-2xl ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
+                >
+                  {subtitle}
+                </motion.p>
+              </AnimatePresence>
             </div>
 
-            <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature.description}
-                  style={{
-                    opacity: useTransform(
-                      scrollYProgress,
-                      [0.2 + index * 0.02, 0.3 + index * 0.02],
-                      [0, 1],
-                    ),
-                    y: useTransform(
-                      scrollYProgress,
-                      [0.2 + index * 0.02, 0.3 + index * 0.02],
-                      [20, 0],
-                    ),
-                  }}
-                >
-                  <FeatureCard
-                    icon={feature.icon}
-                    title={feature.title}
-                    description={feature.description}
-                  />
-                </motion.div>
-              ))}
-            </motion.div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={mode}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+              >
+                {features.map((feature, index) => (
+                  <motion.div
+                    key={feature.description}
+                    style={{
+                      opacity: useTransform(
+                        scrollYProgress,
+                        [0.2 + index * 0.02, 0.3 + index * 0.02],
+                        [0, 1],
+                      ),
+                      y: useTransform(
+                        scrollYProgress,
+                        [0.2 + index * 0.02, 0.3 + index * 0.02],
+                        [20, 0],
+                      ),
+                    }}
+                  >
+                    <FeatureCard
+                      icon={feature.icon}
+                      title={feature.title}
+                      description={feature.description}
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
 
             <motion.div
               style={{
