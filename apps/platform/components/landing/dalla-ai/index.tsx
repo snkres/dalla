@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { CandidateCard } from './candidate-card'
-import { RecruiterMessage } from './recuriter-message'
 import { Timeline, TimelineItem } from './timeline'
 import { Button, Logomark } from '@dallah/design-system'
 import { Search, ThumbsUp } from 'lucide-react'
@@ -26,12 +25,11 @@ export function DallaAi() {
   ])
 
   return (
-    <div className="bg-slate-blue mx-auto max-w-7xl rounded-[48px] lg:px-8">
+    <div className="bg-slate-blue mx-auto max-w-7xl rounded-[48px]">
       <div className="grid items-center gap-12 pl-16 lg:grid-cols-2">
-        {/* Left Column */}
         <div className="py-24 text-white">
           <Logomark className="[&_path]:fill-foreground !h-16 !w-16" />
-          <h1 className="mb-6 text-5xl font-bold leading-tight">
+          <h1 className="mb-6 mt-5 text-5xl font-bold leading-tight">
             Meet with <span className="text-sunshine-yellow">Dalla Ai </span>
             Recruiter Now
           </h1>
@@ -42,14 +40,14 @@ export function DallaAi() {
           </p>
           <Button
             variant="outline"
-            className="hover:text-slate-blue border-2 border-white bg-transparent px-8 py-3 text-lg font-medium text-white hover:bg-white"
+            className="hover:text-slate-blue text-text-lg !rounded-xl border-2 border-white bg-transparent px-8 py-3 font-medium text-white hover:bg-white"
+            size="lg"
           >
             Discover More
           </Button>
         </div>
 
-        {/* Right Column - Timeline */}
-        <div className="pt-10">
+        <div className="pr-[40px] pt-10">
           <Timeline>
             <TimelineItem isPhoto>
               <div className="flex flex-col gap-1">
@@ -68,11 +66,7 @@ export function DallaAi() {
                 <div className="bg-sunshine-yellow text-slate-blue max-w-xl self-end rounded-3xl rounded-tr-none p-4">
                   Sending you a list of relevant candidates now
                 </div>
-                <img
-                  src="/searching.png"
-                  alt="searching"
-                  className="motion-preset-oscillate motion-duration-2000"
-                />
+                <img src="/searching.png" alt="searching" className="mt-4" />
               </div>
             </TimelineItem>
 
