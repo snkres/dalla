@@ -6,7 +6,7 @@ import { Button } from '@dallah/design-system'
 
 export function CandidateCard() {
   return (
-    <div className="mb-3 p-4">
+    <div className="bg-foreground mb-3 rounded-2xl p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <img
@@ -16,10 +16,12 @@ export function CandidateCard() {
           />
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold">John Brooklyn</h3>
-              <div className="bg-green-50 text-green-700">Interested</div>
+              <h3 className="text-text-lg font-semibold">John Brooklyn</h3>
+              <div className="text-text-2xs rounded-full bg-[#D9F7E5] px-[8px] py-[4px] text-green-700">
+                Interested
+              </div>
             </div>
-            <p className="text-muted-foreground text-sm">Experience in Figma</p>
+            <p className="text-muted-foreground text-md">Experience in Figma</p>
           </div>
         </div>
         <div className="flex gap-2">
