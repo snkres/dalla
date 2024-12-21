@@ -5,12 +5,12 @@
   "license": "MIT",
   "scripts": {
     "dev": "pnpm build:swc -w",
-    "build": "rimraf dist && pnpm build:swc && pnpm types",
+    "build": "pnpm build:swc && pnpm types",
     "build:swc": "pnpm copy-tailwind && swc src -d dist",
-    "copy-tailwind": "mkdir -p dist && (rm -rf dist/tokens.js || true) && cp src/tokens.js dist/tokens.js",
+    "copy-tailwind": "shx mkdir -p dist && shx cp src/tokens.js dist/tokens.js",
     "types": "tsc --emitDeclarationOnly",
-    "lint": "TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
-    "clean": "rimraf ./dist && rimraf .turbo"
+    "lint": "cross-env TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
+    "clean": "shx rm -rf ./dist && shx rm -rf .turbo"
   },
   "sideEffects": false,
   "type": "module",
@@ -79,7 +79,7 @@
     "copyfiles": "^2.4.1",
     "eslint": "^9.17.0",
     "eslint-config-dallah": "workspace:*",
-    "rimraf": "^6.0.1",
+    "shx": "^0.3.4",
     "typescript": "5.0.4"
   }
 }
