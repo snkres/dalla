@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm build --watch",
     "build": "tsup src/* --format esm,cjs --dts --external react",
-    "lint": "TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
+    "lint": "cross-env TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf dist && rm -rf .turbo"
   },
   "sideEffects": false,
