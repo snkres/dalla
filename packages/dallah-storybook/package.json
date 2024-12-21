@@ -8,7 +8,7 @@
     "dev": "storybook dev -p 6006 --no-open",
     "build": "storybook build",
     "preview-storybook": "serve storybook-static",
-    "lint": "TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
+    "lint": "cross-env TIMING=1 eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
     "clean": "rm -rf .turbo"
   },
   "dependencies": {
