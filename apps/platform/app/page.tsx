@@ -6,6 +6,9 @@ import { DallaAi } from '@components/landing/dalla-ai'
 import { Features } from '@components/landing/features'
 import Hero from '@components/landing/hero'
 import { Navbar } from '@components/landing/layout/navbar'
+import { UnlockingSuccess } from '@components/landing/unlocking-success'
+import { InsightsToEmpower } from '@components/landing/empower'
+import { Footer } from '@components/landing/layout/footer'
 
 export default function Home(): React.ReactNode {
   return (
