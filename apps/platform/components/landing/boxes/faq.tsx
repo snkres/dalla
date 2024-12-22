@@ -27,10 +27,10 @@ const data = [
 export function FAQ() {
   return (
     <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
-      <div className="mb-3 text-center text-xl text-[#234D64] md:text-left">
+      <div className="text-center text-[24px] text-[#234D64] md:text-left">
         Frequently
       </div>
-      <div className="text-center text-2xl font-semibold text-[#234D64] md:text-left">
+      <div className="text-center text-[32px] font-semibold text-[#234D64] md:text-left">
         asked questions.
       </div>
       <Accordion type="single" collapsible className="w-full pt-[34px]">
