@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import { Underline } from '../shared/underline'
 
-export default function Hero() {
+export function Hero() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="bg-background relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 pb-24 pt-16 lg:grid-cols-2">
           <div className="max-w-2xl">
