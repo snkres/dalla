@@ -6,7 +6,6 @@ export default function Hero() {
     <div className="relative overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-12 pb-24 pt-16 lg:grid-cols-2">
-          {/* Left Column */}
           <div className="max-w-2xl">
             <h1 className="text-heading-2xl text-slate-blue mb-6 font-bold leading-tight">
               Find the right{' '}
@@ -28,7 +27,6 @@ export default function Hero() {
               seamless collaboration.
             </p>
 
-            {/* Stats Section */}
             <div className="flex items-center gap-4">
               <Stars />
               <div>
@@ -40,9 +38,7 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Column */}
           <div className="relative">
-            {/* Main Image with Wave Border */}
             <div className="relative">
               <div className="absolute inset-0 rotate-6 scale-105 transform rounded-[50px] bg-[#E6F4FF]" />
               <div className="relative overflow-hidden rounded-[40px]">
@@ -56,7 +52,6 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* Floating Elements */}
             <div className="absolute left-0 top-0 -translate-x-1/4 -translate-y-1/4 transform rounded-full bg-[#FFB155] px-4 py-2 text-white">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">💫</span>
@@ -102,7 +97,6 @@ export default function Hero() {
   )
 }
 
-import { Button } from '@dallah/design-system'
 function Stars() {
   return (
     <div className="flex -space-x-3">

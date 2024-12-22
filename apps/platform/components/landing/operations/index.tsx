@@ -8,6 +8,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/grid'
 import { operations } from './content'
+import { Underline } from '../shared/underline'
 
 export function Operations() {
   return (
@@ -15,7 +16,11 @@ export function Operations() {
       <div className="container mx-auto space-y-14 px-8">
         <div className="text-center">
           <h2 className="text-slate-blue mb-7 text-xl font-bold md:text-7xl">
-            Streamline Operations
+            Streamline{' '}
+            <span className="relative inline-block">
+              Operations{' '}
+              <Underline className="absolute -bottom-6 left-0 z-0 w-full" />
+            </span>
           </h2>
           <p className="text-sm text-gray-500 md:text-lg">
             Tailored Solutions for Startups, SMEs, and Enterprises
