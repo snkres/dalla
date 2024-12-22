@@ -26,7 +26,7 @@ const data = [
 
 export function FAQ() {
   return (
-    <div className="mx-auto w-full max-w-2xl">
+    <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
       <div className="mb-3 text-center text-xl text-[#234D64] md:text-left">
         Frequently
       </div>
