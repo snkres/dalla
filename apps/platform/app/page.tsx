@@ -7,22 +7,26 @@ import { Features } from '@components/landing/features'
 import { Navbar } from '@components/landing/layout/navbar'
 import { UnlockingSuccess } from '@components/landing/unlocking-success'
 import { InsightsToEmpower } from '@components/landing/empower'
+import { Footer } from '@components/landing/layout/footer'
 
 export default function Home(): React.ReactNode {
   return (
-    <main className="bg-background min-h-screen pb-10">
+    <>
       <Navbar />
-      <Operations />
-      <CTA />
-      <div className="h-[50dvh]"></div>
-      <Features />
-      <div className="h-[50dvh]"></div>
+      <main className="bg-background min-h-screen pb-10">
+        <Operations />
+        <CTA />
+        <div className="h-[50dvh]"></div>
+        <Features />
+        <div className="h-[50dvh]"></div>
 
-      <DallaAi />
-      <div className="h-[50dvh]"></div>
-      <Boxes />
-      <UnlockingSuccess />
-      <InsightsToEmpower />
-    </main>
+        <DallaAi />
+        <div className="h-[50dvh]"></div>
+        <Boxes />
+        <UnlockingSuccess />
+        <InsightsToEmpower />
+      </main>
+      <Footer />
+    </>
   )
 }
