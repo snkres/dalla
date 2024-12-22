@@ -1,3 +1,4 @@
+import { Button } from '@dallah/design-system'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -16,7 +17,7 @@ const insights: InsightCard[] = [
       'Discover how cultural consulting can help you develop compelling strategies, build meaningful connections, and achieve your organizational goals.',
   },
   {
-    img: '/Insights1.jpg',
+    img: '/Insights2.jpg',
     title: 'Unlocking Growth with Franchising Expertise',
     description:
       'Explore how franchising consultants can provide tailored strategies for expansion, ensuring your business thrives in competitive markets.',
@@ -29,26 +30,26 @@ const insights: InsightCard[] = [
   },
 ]
 
-const Insights_to_empower: React.FC = () => {
+export function InsightsToEmpower() {
   return (
     <section className="Insights_to_empower bg-background py-24">
       <div className="container mx-auto px-4 md:px-32">
         <div className="mx-auto mb-20 md:w-[800px]">
-          <h1 className="text-slate-blue mb-12 text-center text-xl font-bold md:text-5xl">
+          <h2 className="text-slate-blue md:text-heading-lg text-heading-sm mb-12 text-center font-bold leading-[56px]">
             Insights to Empower Your Business Growth
-          </h1>
-          <p className="text-center text-[#00000066]">
+          </h2>
+          <p className="text-text-lg mx-auto max-w-xl text-center text-[#00000066]">
             Stay informed with the latest trends, strategies, and expert advice
             tailored for businesses in culture, sports, arts, franchising, and
             corporate management.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-14 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-10 md:grid-cols-3">
           {insights.map((insight, index) => (
             <div
               key={index}
-              className="card max-w-[345px] overflow-hidden rounded-2xl shadow-md transition-all duration-300 hover:shadow-lg"
+              className="card bg-foreground max-w-sm overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg lg:max-w-2xl"
             >
               <Image
                 src={insight.img}
@@ -66,12 +67,14 @@ const Insights_to_empower: React.FC = () => {
                 </p>
               </div>
               <div className="my-4 py-6 text-center">
-                <Link
-                  href="#"
-                  className="border-slate-blue text-slate-blue rounded-full border-2 px-20 py-3 font-bold"
+                <Button
+                  asChild
+                  className="text-text-md border-slate-blue text-slate-blue hover:bg-slate-blue !rounded-full border-2 bg-transparent hover:text-white"
+                  variant="outline"
+                  size="lg"
                 >
-                  Learn More
-                </Link>
+                  <Link href="#">Learn More</Link>
+                </Button>
               </div>
             </div>
           ))}
@@ -80,5 +83,3 @@ const Insights_to_empower: React.FC = () => {
     </section>
   )
 }
-
-export default Insights_to_empower
