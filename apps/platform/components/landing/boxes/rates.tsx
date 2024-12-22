@@ -40,7 +40,7 @@ const usersRate = [
 
 export function Rates() {
   return (
-    <div className="mx-auto w-full max-w-2xl">
+    <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
       <div className="mb-3 text-center text-xl text-[#234D64] md:text-left">
         We love our users
       </div>
@@ -108,7 +108,7 @@ export function Rates() {
       >
         {usersRate.map((user, index) => (
           <SwiperSlide key={index}>
-            <div className="max-h-[440px] space-y-12 rounded-[40px] bg-[#DBEFFA] p-14">
+            <div className="max-h-[440px] space-y-12 rounded-[40px] bg-[#DBEFFA] px-4 py-8 lg:p-14">
               <div>
                 <svg
                   width="188"
@@ -149,12 +149,12 @@ export function Rates() {
                   />
                 </svg>
               </div>
-              <p className="text-text-2xl">
+              <p className="text-text-lg lg:text-text-2xl text-slate-blue">
                 “Dalla The most under-rated tools! Easy to setup, interactive
                 analytics, great visualizations, and generous free tier. What
                 more can you ask for!”
               </p>
-              <div className="flex items-center justify-between rounded-full bg-white px-8 py-5">
+              <div className="flex items-center justify-between rounded-full bg-white px-5 py-5 lg:px-8">
                 <div className="flex items-center gap-4">
                   <Image
                     src={user.image}
@@ -163,10 +163,12 @@ export function Rates() {
                     alt="user-image"
                   />
                   <div className="flex flex-col text-sm">
-                    <span className="text-[ #000000] text-lg font-bold">
+                    <span className="text-[ #000000] text-text-md lg:text-text-lg font-bold">
                       {user.name}
                     </span>
-                    <span className="text-[#787878]">{user.jobTitle}</span>
+                    <span className="text-text-xs lg:text-text-sm text-[#787878]">
+                      {user.jobTitle}
+                    </span>
                   </div>
                 </div>
 
