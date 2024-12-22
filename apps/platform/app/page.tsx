@@ -1,4 +1,5 @@
 import { CTA } from '@components/landing/cta'
+import { Boxes } from '@components/landing/boxes'
 import { DallaAi } from '@components/landing/dalla-ai'
 import { Features } from '@components/landing/features'
 import { Navbar } from '@components/landing/layout/navbar'
@@ -14,6 +15,7 @@ export default function Home(): React.ReactNode {
 
       <DallaAi />
       <div className="h-[50dvh]"></div>
+      <Boxes />
     </main>
   )
 }
