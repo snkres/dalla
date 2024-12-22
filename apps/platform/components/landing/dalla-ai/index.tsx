@@ -36,8 +36,8 @@ export function DallaAi() {
   const inView4 = useInView(ref4, { once: false, amount: 0.25 })
 
   return (
-    <div className="bg-slate-blue mx-2 max-w-sm rounded-[48px] max-sm:px-4 lg:mx-auto lg:max-w-[80%]">
-      <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 lg:pl-16">
+    <div className="bg-slate-blue mx-2 max-w-sm rounded-[48px] max-sm:px-4 lg:mx-auto lg:max-w-[95%] xl:max-w-[80%]">
+      <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-0 lg:pl-16 xl:gap-12">
         <motion.div
           className="pt-12 text-white lg:py-24"
           ref={ref1}
@@ -46,18 +46,18 @@ export function DallaAi() {
           transition={{ type: 'spring', stiffness: 50 }}
         >
           <Logomark className="[&_path]:fill-foreground !h-12 !w-12 lg:!h-16 lg:!w-16" />
-          <h1 className="mb-4 mt-5 text-4xl font-bold leading-tight lg:text-5xl">
+          <h1 className="text-heading-sm lg:text-heading-lg xl:text-heading-xl mb-4 mt-5 font-bold leading-tight">
             Meet with <span className="text-sunshine-yellow">Dalla Ai </span>
             Recruiter Now
           </h1>
-          <p className="mb-6 text-base text-white/80 lg:text-lg">
+          <p className="text-paragraph-md lg:text-paragraph-lg xl:text-paragraph-xl mb-6 text-white/80">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry&apos;s standard dummy
             text ever since the 1500s,
           </p>
           <Button
             variant="outline"
-            className="hover:text-slate-blue !rounded-xl border-2 border-white bg-transparent px-6 py-2 text-base font-medium text-white hover:bg-white lg:px-8 lg:py-3 lg:text-lg"
+            className="hover:text-slate-blue text-text-md lg:text-text-lg xl:text-text-xl !rounded-xl border-2 border-white bg-transparent px-6 py-2 font-medium text-white hover:bg-white lg:px-8 lg:py-3"
             size="lg"
           >
             Discover More

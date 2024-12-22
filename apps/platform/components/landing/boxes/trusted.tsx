@@ -19,7 +19,7 @@ export function TrustedBox() {
       ref={containerRef}
       className="relative mx-auto w-full max-w-2xl overflow-hidden rounded-[48px] bg-[#FFEECA]"
     >
-      <h2 className="text-heading-sm px-2 pt-8 text-center font-semibold leading-tight text-[#1a365d] lg:px-[108px] lg:pt-[58px] lg:text-[42px]">
+      <h2 className="text-heading-sm lg:text-heading-md xl:text-heading-lg px-2 pt-8 text-center font-semibold leading-tight text-[#1a365d] lg:px-[108px] lg:pt-[58px]">
         Trusted by many people
       </h2>
 

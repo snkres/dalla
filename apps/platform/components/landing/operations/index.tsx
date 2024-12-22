@@ -15,14 +15,14 @@ export function Operations() {
     <section className="relative pt-16">
       <div className="container mx-auto space-y-14 px-8">
         <div className="text-center">
-          <h2 className="text-slate-blue mb-7 text-xl font-bold md:text-7xl">
+          <h2 className="text-slate-blue xl:text-heading-2xl lg:text-heading-xl mb-7 font-bold">
             Streamline{' '}
             <span className="relative inline-block">
               Operations{' '}
-              <Underline className="absolute -bottom-6 left-0 z-0 w-full" />
+              <Underline className="absolute left-0 z-0 w-full xl:-bottom-6" />
             </span>
           </h2>
-          <p className="text-sm text-gray-500 md:text-lg">
+          <p className="xl:text-paragraph-2xl text-paragraph-sm lg:text-paragraph-xl text-gray-500">
             Tailored Solutions for Startups, SMEs, and Enterprises
           </p>
         </div>
@@ -93,10 +93,10 @@ export function Operations() {
                 <span>{oper.icon}</span>
 
                 <div className="mt-4">
-                  <h2 className="mb-2 text-2xl font-semibold uppercase">
+                  <h2 className="text-paragraph-md lg:text-paragraph-xl xl:text-paragraph-2xl mb-2 font-semibold uppercase">
                     {oper.title}
                   </h2>
-                  <p className="font-semibold text-[#2FC57A]">
+                  <p className="text-paragraph-sm lg:text-paragraph-md xl:text-paragraph-xl font-semibold text-[#2FC57A]">
                     {oper.description}
                   </p>
                 </div>

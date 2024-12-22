@@ -36,8 +36,7 @@ export function TimelineItem({
   style,
 }: TimelineItemProps) {
   return (
-    <div className={`relative flex gap-6 ${className}`} style={style}>
-      {/* Timeline dot and line */}
+    <div className={`relative flex gap-2 ${className}`} style={style}>
       <div className="flex flex-col items-center">
         <div className="relative flex h-12 w-12 items-center justify-center">
           {isPhoto && (
@@ -61,7 +60,6 @@ export function TimelineItem({
         )}
       </div>
 
-      {/* Content */}
       <div className="flex-1 pb-8">{children}</div>
     </div>
   )
