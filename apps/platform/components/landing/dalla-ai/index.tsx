@@ -36,7 +36,7 @@ export function DallaAi() {
   const inView4 = useInView(ref4, { once: false, amount: 0.25 })
 
   return (
-    <div className="bg-slate-blue mx-2 max-w-sm rounded-[48px] max-sm:px-4 lg:mx-auto lg:max-w-[75%]">
+    <div className="bg-slate-blue mx-2 max-w-sm rounded-[48px] max-sm:px-4 lg:mx-auto lg:max-w-[80%]">
       <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12 lg:pl-16">
         <motion.div
           className="pt-12 text-white lg:py-24"
