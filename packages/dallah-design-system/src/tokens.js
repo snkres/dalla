@@ -70,66 +70,78 @@ export default {
       disabledText: '#FDA4AF',
     },
   },
+
   fontSize: {
-    'display-lg': '180px',
-    'display-md': '128px',
-    'display-sm': '96px',
-    'heading-2xl': '72px',
-    'heading-xl': '60px',
-    'heading-lg': '48px',
-    'heading-md': '36px',
-    'heading-sm': '30px',
-    'heading-xs': '24px',
-    'text-2xl': '24px',
-    'text-xl': '20px',
-    'text-lg': '18px',
-    'text-md': '16px',
-    'text-sm': '14px',
-    'text-xs': '12px',
-    'text-2xs': '10px',
-    'paragraph-2xl': '24px',
-    'paragraph-xl': '20px',
-    'paragraph-lg': '18px',
-    'paragraph-md': '16px',
-    'paragraph-sm': '14px',
-    'paragraph-xs': '12px',
+    'display-lg': ['clamp(90px, 10vw, 180px)', { lineHeight: '1.1' }],
+    'display-md': ['clamp(64px, 8vw, 128px)', { lineHeight: '1.1' }],
+    'display-sm': ['clamp(48px, 6vw, 96px)', { lineHeight: '1.1' }],
+
+    'heading-2xl': ['clamp(36px, 5vw, 72px)', { lineHeight: '1.2' }],
+    'heading-xl': ['clamp(30px, 4vw, 60px)', { lineHeight: '1.2' }],
+    'heading-lg': ['clamp(24px, 3.5vw, 48px)', { lineHeight: '1.2' }],
+    'heading-md': ['clamp(20px, 3vw, 36px)', { lineHeight: '1.2' }],
+    'heading-sm': ['clamp(18px, 2.5vw, 30px)', { lineHeight: '1.2' }],
+    'heading-xs': ['clamp(16px, 2vw, 24px)', { lineHeight: '1.2' }],
+
+    'text-2xl': ['clamp(20px, 1.8vw, 24px)', { lineHeight: '1.5' }],
+    'text-xl': ['clamp(18px, 1.6vw, 20px)', { lineHeight: '1.5' }],
+    'text-lg': ['clamp(16px, 1.4vw, 18px)', { lineHeight: '1.5' }],
+    'text-md': ['clamp(14px, 1.2vw, 16px)', { lineHeight: '1.5' }],
+    'text-sm': ['clamp(12px, 1.1vw, 14px)', { lineHeight: '1.5' }],
+    'text-xs': ['clamp(10px, 1vw, 12px)', { lineHeight: '1.5' }],
+    'text-2xs': ['clamp(8px, 0.9vw, 10px)', { lineHeight: '1.5' }],
+
+    'paragraph-2xl': ['clamp(20px, 1.8vw, 24px)', { lineHeight: '1.6' }],
+    'paragraph-xl': ['clamp(18px, 1.6vw, 20px)', { lineHeight: '1.6' }],
+    'paragraph-lg': ['clamp(16px, 1.4vw, 18px)', { lineHeight: '1.6' }],
+    'paragraph-md': ['clamp(14px, 1.2vw, 16px)', { lineHeight: '1.6' }],
+    'paragraph-sm': ['clamp(12px, 1.1vw, 14px)', { lineHeight: '1.6' }],
+    'paragraph-xs': ['clamp(10px, 1vw, 12px)', { lineHeight: '1.6' }],
+
     'label-2xl': [
-      '20px',
+      'clamp(18px, 1.6vw, 20px)',
       {
         fontWeight: '800',
+        lineHeight: '1.4',
       },
     ],
     'label-xl': [
-      '18px',
+      'clamp(16px, 1.4vw, 18px)',
       {
         fontWeight: '800',
+        lineHeight: '1.4',
       },
     ],
     'label-lg': [
-      '16px',
+      'clamp(14px, 1.2vw, 16px)',
       {
         fontWeight: '800',
+        lineHeight: '1.4',
       },
     ],
     'label-md': [
-      '14px',
+      'clamp(12px, 1.1vw, 14px)',
       {
         fontWeight: '800',
+        lineHeight: '1.4',
       },
     ],
     'label-sm': [
-      '12px',
+      'clamp(10px, 1vw, 12px)',
       {
         fontWeight: '800',
+        lineHeight: '1.4',
       },
     ],
     'label-xs': [
-      '10px',
+      'clamp(8px, 0.9vw, 10px)',
       {
         fontWeight: '800',
+        lineHeight: '1.4',
       },
     ],
   },
+
   fontWeight: {
     normal: '400',
     medium: '500',
@@ -137,7 +149,26 @@ export default {
     bold: '700',
     'extra-bold': '800',
   },
+
   fontFamily: {
-    sans: ['Sora Variable', 'sans-serif'],
+    sans: [
+      'Sora Variable',
+      'system-ui',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      'Segoe UI',
+      'Roboto',
+      'Arial',
+      'sans-serif',
+    ],
+  },
+
+  screens: {
+    xs: '320px',
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px',
   },
 }
