@@ -41,11 +41,11 @@ const usersRate = [
 export function Rates() {
   return (
     <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
-      <div className="mb-3 text-center text-xl text-[#234D64] md:text-left">
+      <div className="text-center text-[24px] text-[#234D64] md:text-left">
         We love our users
       </div>
-      <div className="-mt-4 mb-5 flex flex-col items-center justify-between space-y-3 font-semibold md:flex-row">
-        <p className="text-center text-2xl text-[#234D64] md:text-left">
+      <div className="-mt-1 mb-5 flex flex-col items-center justify-between space-y-3 font-semibold md:flex-row">
+        <p className="text-center text-[32px] text-[#234D64] md:text-left">
           because they love us.
         </p>
         <div className="btns flex items-center gap-x-4">
