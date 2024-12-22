@@ -15,7 +15,10 @@ export function Boxes() {
   })
 
   return (
-    <div ref={containerRef} className="mx-auto max-w-[80%] py-[77px]">
+    <div
+      ref={containerRef}
+      className="mx-auto max-w-[90%] py-[77px] xl:max-w-[80%]"
+    >
       <div className="grid gap-x-[32px] gap-y-[32px] md:grid-cols-2">
         <TrustedBox />
         <CertifiedBox />
