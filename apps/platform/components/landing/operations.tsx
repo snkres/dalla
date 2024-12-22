@@ -337,7 +337,7 @@ const operations: Operation[] = [
   },
 ]
 
-const Operations: React.FC = () => {
+export function Operations() {
   return (
     <section className="relative bg-gray-100 py-16">
       <div className="container mx-auto space-y-14 px-8">
