@@ -1,3 +1,5 @@
+import { Operations } from '@components/landing/operations'
+
 import { CTA } from '@components/landing/cta'
 import { Boxes } from '@components/landing/boxes'
 import { DallaAi } from '@components/landing/dalla-ai'
@@ -9,9 +11,11 @@ export default function Home(): React.ReactNode {
   return (
     <>
       <Navbar />
+
       <main className="bg-background min-h-screen py-10">
         <Hero />
         <Features />
+        <Operations />
         <CTA />
         <DallaAi />
         <Boxes />
