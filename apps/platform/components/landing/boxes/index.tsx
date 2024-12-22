@@ -4,6 +4,8 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import CertifiedBox from './certified'
 import { TrustedBox } from './trusted'
+import { Rates } from './rates'
+import { FAQ } from './faq'
 
 export function Boxes() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -19,10 +21,12 @@ export function Boxes() {
 
   return (
     <div ref={containerRef} className="mx-auto max-w-[80%]">
-      <div className="grid md:grid-cols-2">
+      <div className="grid gap-y-[32px] md:grid-cols-2">
         <TrustedBox />
 
         <CertifiedBox />
+        <FAQ />
+        <Rates />
       </div>
     </div>
   )
