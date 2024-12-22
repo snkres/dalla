@@ -6,6 +6,7 @@ import { DallaAi } from '@components/landing/dalla-ai'
 import { Features } from '@components/landing/features'
 import { Navbar } from '@components/landing/layout/navbar'
 import { UnlockingSuccess } from '@components/landing/unlocking-success'
+import { InsightsToEmpower } from '@components/landing/empower'
 
 export default function Home(): React.ReactNode {
   return (
@@ -21,6 +22,7 @@ export default function Home(): React.ReactNode {
       <div className="h-[50dvh]"></div>
       <Boxes />
       <UnlockingSuccess />
+      <InsightsToEmpower />
     </main>
   )
 }
