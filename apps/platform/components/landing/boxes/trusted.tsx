@@ -50,7 +50,7 @@ export function TrustedBox() {
         </motion.div>
         <motion.div
           style={{ y: leftY }}
-          className="absolute left-28 top-72 h-32 w-32"
+          className="absolute left-28 top-80 h-32 w-32"
         >
           <div className="h-full w-full overflow-hidden rounded-2xl bg-[#F5C157]">
             <img
@@ -86,7 +86,7 @@ export function TrustedBox() {
         </motion.div>
         <motion.div
           style={{ y: leftY }}
-          className="absolute top-[17rem] h-32 w-32 max-sm:hidden lg:right-24"
+          className="absolute top-[18rem] h-32 w-32 max-sm:hidden lg:right-24"
         >
           <div className="h-full w-full overflow-hidden rounded-2xl bg-[#369FA4]">
             <img
