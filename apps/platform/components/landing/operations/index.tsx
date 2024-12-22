@@ -11,7 +11,7 @@ import { operations } from './content'
 
 export function Operations() {
   return (
-    <section className="relative bg-gray-100 py-16">
+    <section className="relative py-16">
       <div className="container mx-auto space-y-14 px-8">
         <div className="text-center">
           <h2 className="text-slate-blue mb-7 text-xl font-bold md:text-7xl">
