@@ -2,63 +2,62 @@ import Link from 'next/link'
 
 import footerlogo from '../../../../public/footerlogo.png'
 import Image from 'next/image'
-import { Footer_list } from './footer_list'
+import { FooterList } from './footer-list'
+import { Button, LogoHorizontal } from '@dallah/design-system'
 
 export function Footer() {
   return (
-    <footer className="mt-16 text-sm">
-      <div className="mx-auto max-w-[1700px] px-5">
-        <div className="flex flex-col justify-center gap-2 pb-8 pt-16 md:flex-row">
-          <Footer_list>
+    <footer className="bg-foreground mt-16 text-sm">
+      <div className="mx-auto px-5">
+        <div className="flex flex-col justify-center gap-28 pb-8 pt-16 md:flex-row">
+          <FooterList className="max-w-sm">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex-shrink-0">
                 <Link href="/" className="text-[#FFFFFF]">
-                  <Image src={footerlogo} alt="logo-navbar" />
+                  <LogoHorizontal className="[&_path]:fill-slate-blue w-60" />
                 </Link>
-              </div>
-              <div className="flex flex-col uppercase">
-                <span className="text-3xl tracking-[.2em]">dalla</span>
-                <span className="tracking-[.30em]">solution</span>
               </div>
             </div>
             <p className="max-w-64 text-xl text-[#94959B]">
               Connect with expert consultants to transform your business.
             </p>
-          </Footer_list>
-          <Footer_list>
-            <h3 className="mb-2 text-lg font-bold text-[#12022F]">Sitemap</h3>
-            <Link href="#" className="text-[#594D6D]">
+          </FooterList>
+          <FooterList>
+            <h3 className="text-text-md mb-2 font-bold text-[#12022F]">
+              Sitemap
+            </h3>
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Product
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Company
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Pricing
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Jobs
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Community
             </Link>
-          </Footer_list>
-          <Footer_list>
+          </FooterList>
+          <FooterList>
             <h3 className="mb-2 text-lg font-bold text-[#12022F]">Utility</h3>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               FAQ
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Support
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Licensing & Terms
             </Link>
-            <Link href="#" className="text-[#594D6D]">
+            <Link href="#" className="text-text-sm text-[#594D6D]">
               Technology
             </Link>
-          </Footer_list>
-          <Footer_list>
+          </FooterList>
+          <FooterList>
             <h3 className="mb-2 text-lg font-bold">Subscribe our Newsletter</h3>
             <div className="flex flex-col items-center justify-between gap-3 md:flex-row">
               <div className="relative">
@@ -91,12 +90,12 @@ export function Footer() {
                   className="rounded-full border-none bg-[#E7E5EA] py-5 pl-14 pr-5 shadow-sm outline-none"
                 />
               </div>
-              <button className="rounded-full bg-[#234D64] px-10 py-5 text-[#FFFFFF]">
+              <Button className="!rounded-full !px-10 !py-7" size="lg">
                 Subscribe
-              </button>
+              </Button>
             </div>
             <div className="icons mt-10 flex items-center gap-4">
-              <span className="font-bold">follow us</span>
+              <span className="text-text-sm font-bold">follow us</span>
               <Link href="#">
                 <svg
                   width="24"
@@ -168,14 +167,18 @@ export function Footer() {
                 </svg>
               </Link>
             </div>
-          </Footer_list>
+          </FooterList>
         </div>
       </div>
       <div className="border-t- mx-auto flex w-3/4 flex-col items-center justify-between gap-3 border-t py-10 md:flex-row">
-        <p className="md:text-lg">© 2024 Dalla. All rights reserved.</p>
+        <p className="md:text-text-sm">© 2024 Dalla. All rights reserved.</p>
         <div className="flex items-center gap-2 md:gap-5 md:text-lg">
-          <Link href="#">Privacy Policy</Link>
-          <Link href="#">Terms & Conditions</Link>
+          <Link href="#" className="md:text-text-sm text-slate-blue font-bold">
+            Privacy Policy
+          </Link>
+          <Link href="#" className="md:text-text-sm text-slate-blue font-bold">
+            Terms & Conditions
+          </Link>
         </div>
       </div>
     </footer>
