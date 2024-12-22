@@ -27,10 +27,10 @@ const data = [
 export function FAQ() {
   return (
     <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
-      <div className="text-center text-[24px] text-[#234D64] md:text-left">
+      <h2 className="text-heading-xs lg:text-heading-sm xl:text-heading-md text-center text-[#234D64] md:text-left">
         Frequently
-      </div>
-      <div className="text-center text-[32px] font-semibold text-[#234D64] md:text-left">
+      </h2>
+      <div className="text-heading-sm lg:text-heading-md xl:text-heading-lg text-center font-semibold text-[#234D64] md:text-left">
         asked questions.
       </div>
       <Accordion type="single" collapsible className="w-full pt-[34px]">

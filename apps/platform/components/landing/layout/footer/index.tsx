@@ -10,15 +10,15 @@ export function Footer() {
     <footer className="bg-foreground mt-16 text-sm">
       <div className="mx-auto px-5">
         <div className="flex flex-col justify-center gap-28 pb-8 pt-16 md:flex-row">
-          <FooterList className="max-w-sm">
+          <FooterList className="xl:max-w-sm">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex-shrink-0">
                 <Link href="/" className="text-[#FFFFFF]">
-                  <LogoHorizontal className="[&_path]:fill-slate-blue w-60" />
+                  <LogoHorizontal className="[&_path]:fill-slate-blue w-36 xl:w-60" />
                 </Link>
               </div>
             </div>
-            <p className="max-w-64 text-xl text-[#94959B]">
+            <p className="text-text-md xl:text-text-xl w-full text-[#94959B] xl:max-w-64">
               Connect with expert consultants to transform your business.
             </p>
           </FooterList>
