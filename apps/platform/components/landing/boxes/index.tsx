@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
 import CertifiedBox from './certified'
 import { TrustedBox } from './trusted'
+import { Rates } from './rates'
 
 export function Boxes() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -23,6 +24,7 @@ export function Boxes() {
         <TrustedBox />
 
         <CertifiedBox />
+        <Rates />
       </div>
     </div>
   )
