@@ -98,7 +98,7 @@ export function Features() {
                   style={{
                     opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
                   }}
-                  className={`sm:text-heading-xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight`}
+                  className={`text-heading-xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto text-balance font-bold tracking-tight lg:line-clamp-2 lg:!w-[80%]`}
                 >
                   {title}
                 </motion.h1>
