@@ -38,13 +38,16 @@ export function Navbar() {
 
           <div className="hidden md:block">
             <div className="ml-4 flex items-center space-x-[24px]">
-              <Link href="/" className="font-semibold text-[#FFFFFF]">
+              <Link
+                href="/"
+                className="text-text-lg font-semibold text-[#FFFFFF]"
+              >
                 Home
               </Link>
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="text-foreground text-text-md bg-transparent !px-0">
+                    <NavigationMenuTrigger className="text-foreground text-text-lg bg-transparent !px-0">
                       Services
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="bg-foreground !w-[20rem] px-4 font-semibold">
@@ -55,26 +58,26 @@ export function Navbar() {
               </NavigationMenu>
               <Link
                 href="/"
-                className="font-semibold capitalize text-[#FFFFFF]"
+                className="text-text-lg font-semibold capitalize text-[#FFFFFF]"
               >
                 How it works
               </Link>
               <Link
                 href="/"
-                className="font-semibold capitalize text-[#FFFFFF]"
+                className="text-text-lg font-semibold capitalize text-[#FFFFFF]"
               >
                 About
               </Link>
               <Link
                 href="/"
-                className="font-semibold capitalize text-[#FFFFFF]"
+                className="text-text-lg font-semibold capitalize text-[#FFFFFF]"
               >
                 Contact
               </Link>
               <Button
                 asChild
                 variant="secondary"
-                className="text-text-md !rounded-full !px-4 !py-7 !font-bold"
+                className="text-text-lg !rounded-full !px-4 !py-7 !font-bold"
               >
                 <Link href="/">Get Started</Link>
               </Button>
