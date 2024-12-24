@@ -4,8 +4,8 @@ export function LoginRightSide({ proMode }: { proMode?: boolean }) {
   return (
     <section
       className={cn(
-        'relative flex flex-1 items-center justify-center',
-        proMode ? 'bg-slate-blue' : '',
+        'motion-ease-spring-smooth relative flex flex-1 items-center justify-center transition-all duration-200',
+        proMode ? 'bg-slate-blue' : 'bg-white',
       )}
     >
       <img
@@ -17,7 +17,7 @@ export function LoginRightSide({ proMode }: { proMode?: boolean }) {
         {proMode ? (
           <h1
             className={cn(
-              'text-heading-2xl text-slate-blue motion-preset-fade line-clamp-3 px-20 py-12 font-semibold transition-all duration-500',
+              'text-heading-2xl text-slate-blue motion-ease-spring-bounciest line-clamp-3 px-20 py-12 font-semibold transition-all duration-500',
             )}
           >
             Simplify Your Consulting Journey!

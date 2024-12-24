@@ -13,13 +13,15 @@ export function LoginLeftSide({
   return (
     <section
       className={cn(
-        'flex flex-1 flex-col items-center justify-center gap-6',
-        mode === 'professional' ? 'bg-slate-blue text-sunshine-yellow' : '',
+        'motion-ease-spring-snappy flex flex-1 flex-col items-center justify-center gap-6 transition-all duration-200',
+        mode === 'professional'
+          ? 'bg-slate-blue text-sunshine-yellow'
+          : 'text-slate-blue bg-white',
       )}
     >
       <LogoHorizontal
         className={cn(
-          'w-56',
+          'w-56 transition-colors duration-500',
           mode === 'professional'
             ? 'fill-foreground'
             : '[&_path]:fill-slate-blue',
@@ -28,7 +30,7 @@ export function LoginLeftSide({
       <div className="space-y-2">
         <h1
           className={cn(
-            'text-heading-md text-center font-semibold',
+            'text-heading-md text-center font-semibold transition-colors duration-500',
             mode === 'professional'
               ? 'text-sunshine-yellow'
               : 'text-slate-blue',

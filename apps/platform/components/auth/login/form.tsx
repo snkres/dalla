@@ -1,6 +1,6 @@
 import { Eye, EyeOff } from 'lucide-react'
 import Link from 'next/link'
-import { Button, Checkbox, Input, LogoHorizontal } from '@dallah/design-system'
+import { Button, Checkbox, Input } from '@dallah/design-system'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -40,7 +40,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
       <div className="group relative w-full">
         <label
           className={cn(
-            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] group-has-[:disabled]:opacity-50',
+            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
             mode === 'professional'
               ? 'bg-slate-blue text-sunshine-yellow'
               : 'bg-white',
@@ -50,7 +50,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         </label>
         <Input
           className={cn(
-            'text-text-sm h-12 rounded-xl pe-9 focus:outline-none',
+            'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
             mode === 'professional'
               ? 'bg-foreground text-zinc-900'
               : 'bg-transparent',
@@ -68,7 +68,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
           <div className="group relative w-full">
             <label
               className={cn(
-                'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] group-has-[:disabled]:opacity-50',
+                'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
                 mode === 'professional'
                   ? 'bg-slate-blue text-sunshine-yellow'
                   : 'bg-white',
@@ -80,7 +80,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
               placeholder="Password"
               type={isVisible ? 'text' : 'password'}
               className={cn(
-                'text-text-sm h-12 rounded-xl pe-9 focus:outline-none',
+                'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
                 mode === 'professional'
                   ? 'bg-foreground text-zinc-900'
                   : 'bg-transparent',
@@ -132,7 +132,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
         <Link
           className={cn(
-            'text-text-sm',
+            'text-text-sm transition-colors duration-500',
             mode === 'professional' ? 'text-foreground' : 'text-slate-blue',
           )}
           href="#"
@@ -151,9 +151,9 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
         <p
           className={cn(
-            'text-text-sm',
+            'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
             mode === 'professional'
-              ? 'text-slate-blue bg-sunshine-yellow rounded-md px-1 py-0.5'
+              ? 'text-slate-blue bg-sunshine-yellow'
               : 'text-[#9A9A9A]',
           )}
         >
@@ -198,7 +198,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         </Button>
         <Button variant="outline" className="bg-transparent">
           <svg
-            className={`h-5 w-5 ${mode === 'professional' ? 'fill-sunshine-yellow' : 'fill-slate-blue'}`}
+            className={`h-5 w-5 transition-colors duration-500 ${mode === 'professional' ? 'fill-sunshine-yellow' : 'fill-slate-blue'}`}
             viewBox="0 0 22 25"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -226,7 +226,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
           <Link
             href="/signup"
             className={cn(
-              'font-semibold',
+              'font-semibold transition-colors duration-500',
               mode === 'professional'
                 ? 'text-sunshine-yellow'
                 : 'text-slate-blue',
