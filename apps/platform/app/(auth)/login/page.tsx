@@ -1,4 +1,7 @@
 'use client'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 import { useQueryState } from 'nuqs'
 import { Button, Checkbox, Input, LogoHorizontal } from '@dallah/design-system'
 import { Eye, EyeOff } from 'lucide-react'
@@ -6,13 +9,34 @@ import { useState } from 'react'
 import { ModeToggle } from '@components/landing/features/mode-toggle'
 import Link from 'next/link'
 
+// Define the schema using zod
+const schema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
+})
+
+type FormData = z.infer<typeof schema>
+
 export default function Login(): React.ReactNode {
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'companies',
   })
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
+
+  const onSubmit = (data: FormData) => {
+    console.log(data)
+    // handle login logic here
+  }
 
   return (
     <main className="flex max-h-screen w-full justify-between">
@@ -31,7 +55,10 @@ export default function Login(): React.ReactNode {
           mode={mode as 'companies' | 'professional'}
           onModeChange={(mode) => setMode(mode as 'companies' | 'professional')}
         />
-        <div className="w-full max-w-md space-y-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full max-w-md space-y-6"
+        >
           <div className="group relative w-full">
             <label className="absolute start-1 top-0 z-10 block -translate-y-1/2 bg-white px-2 text-xs font-medium text-[#232323] group-has-[:disabled]:opacity-50">
               Email
@@ -40,7 +67,13 @@ export default function Login(): React.ReactNode {
               className="text-text-sm h-12 rounded-xl bg-transparent focus:outline-none"
               placeholder="Email"
               type="email"
+              {...register('email')}
             />
+            {errors.email && (
+              <p className="mt-2 text-xs text-red-500">
+                {errors.email.message}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <div className="relative">
@@ -52,10 +85,16 @@ export default function Login(): React.ReactNode {
                   placeholder="Password"
                   type={isVisible ? 'text' : 'password'}
                   className="text-text-sm h-12 rounded-xl bg-transparent pe-9 focus:outline-none"
+                  {...register('password')}
                 />
+                {errors.password && (
+                  <p className="mt-2 text-xs text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
               <button
-                className="text-muted-foreground/80 hover:text-foreground focus-visible:outline-ring/70 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg outline-offset-2 transition-colors focus:z-10 focus-visible:outline focus-visible:outline-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="focus-visible:outline-ring/70 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-zinc-900 outline-offset-2 transition-colors hover:text-zinc-700 focus:z-10 focus-visible:outline focus-visible:outline-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 onClick={toggleVisibility}
                 aria-label={isVisible ? 'Hide password' : 'Show password'}
@@ -86,7 +125,9 @@ export default function Login(): React.ReactNode {
               Forget Password?
             </Link>
           </div>
-          <Button className="w-full rounded-xl">Log In</Button>
+          <Button className="w-full rounded-xl" type="submit">
+            Log In
+          </Button>
           <div className="flex items-center gap-1">
             <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
             <p className="text-text-sm text-[#9A9A9A]">or sign in with</p>
@@ -101,26 +142,26 @@ export default function Login(): React.ReactNode {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M16.66 9.27013C16.66 8.6674 16.6059 8.08786 16.5055 7.53149H8.5V10.8195H13.0746C12.8775 11.882 12.2786 12.7822 11.3784 13.3849V15.5176H14.1255C15.7327 14.0379 16.66 11.8588 16.66 9.27013Z"
                   fill="#4285F4"
                 />
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M8.50022 17.5769C10.7952 17.5769 12.7193 16.8158 14.1257 15.5176L11.3786 13.3849C10.6175 13.8949 9.64386 14.1962 8.50022 14.1962C6.28635 14.1962 4.41248 12.701 3.74407 10.6919H0.904297V12.8942C2.30294 15.6721 5.17749 17.5769 8.50022 17.5769Z"
                   fill="#34A853"
                 />
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M3.74387 10.6919C3.57387 10.1819 3.47728 9.63715 3.47728 9.07692C3.47728 8.51669 3.57387 7.97192 3.74387 7.46192V5.25964H0.904092C0.32841 6.40715 0 7.70533 0 9.07692C0 10.4485 0.32841 11.7467 0.904092 12.8942L3.74387 10.6919Z"
                   fill="#FBBC05"
                 />
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M8.50022 3.95759C9.74817 3.95759 10.8686 4.38646 11.7495 5.22873L14.1875 2.79077C12.7155 1.41918 10.7914 0.576904 8.50022 0.576904C5.17749 0.576904 2.30294 2.48168 0.904297 5.25964L3.74407 7.46192C4.41248 5.45282 6.28635 3.95759 8.50022 3.95759Z"
                   fill="#EA4335"
                 />
@@ -162,7 +203,7 @@ export default function Login(): React.ReactNode {
               </Link>
             </p>
           </div>
-        </div>
+        </form>
       </section>
       <section className="relative hidden h-full w-1/2 flex-1 text-white lg:flex">
         <img
