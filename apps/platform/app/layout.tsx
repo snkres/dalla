@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '../globals.css'
 import '@fontsource-variable/sora'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html>
       <body>
-        {children}
+        <NuqsAdapter> {children}</NuqsAdapter>
 
         {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
       </body>
