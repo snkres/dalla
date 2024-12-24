@@ -13,7 +13,7 @@ export function LoginLeftSide({
   return (
     <section
       className={cn(
-        'motion-ease-spring-snappy flex flex-1 flex-col items-center justify-center gap-6 transition-all duration-200',
+        'motion-ease-spring-smooth flex flex-1 flex-col items-center justify-center gap-6 transition-all duration-200',
         mode === 'professional'
           ? 'bg-slate-blue text-sunshine-yellow'
           : 'text-slate-blue bg-white',
