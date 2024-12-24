@@ -1,14 +1,30 @@
 'use client'
 import { useQueryState } from 'nuqs'
 import { LogoHorizontal } from '@dallah/design-system'
+import { ModeToggle } from '@components/landing/features/mode-toggle'
 
 export default function Login(): React.ReactNode {
-  const [mode, setMode] = useQueryState('')
+  const [mode, setMode] = useQueryState('mode', {
+    defaultValue: 'companies',
+  })
 
   return (
     <main className="flex max-h-screen w-full justify-between">
-      <section className="flex flex-1 flex-col">
-        <LogoHorizontal className="[&_path]:fill-slate-blue w-44" />
+      <section className="flex flex-1 flex-col items-center justify-center gap-8">
+        <LogoHorizontal className="[&_path]:fill-slate-blue w-56" />
+        <div className="space-y-2">
+          <h1 className="text-heading-md text-slate-blue text-center font-semibold">
+            Log In to Your Dalla Account
+          </h1>
+          <p className="text-paragraph-md mx-auto max-w-md text-center text-[#9A9A9A]">
+            Access your dashboard to connect with experts or manage your
+            consulting projects.
+          </p>
+        </div>
+        <ModeToggle
+          mode={mode as 'companies' | 'professional'}
+          onModeChange={(mode) => setMode(mode as 'companies' | 'professional')}
+        />
       </section>
       <section className="relative hidden h-full w-1/2 flex-1 text-white lg:flex">
         <img
