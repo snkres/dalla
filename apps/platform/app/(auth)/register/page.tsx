@@ -8,11 +8,18 @@ import { useQueryState } from 'nuqs'
 import { ModeToggle } from '@components/landing/features/mode-toggle'
 import { CompanyRegisterForm } from '@components/auth/register/company-form'
 import { ProRegisterForm } from '@components/auth/register/pro-form'
+import { motion, AnimatePresence } from 'motion/react'
 
 export default function Register() {
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'companies',
   })
+
+  const formVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  }
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
@@ -33,7 +40,7 @@ export default function Register() {
         <div className="mb-8 flex justify-center">
           <LogoHorizontal
             className={cn(
-              'z-50 w-56 transition-colors duration-500',
+              'motion-ease-spring-bouncy z-50 w-56 transition-colors duration-500',
               mode === 'companies'
                 ? 'fill-foreground'
                 : '[&_path]:fill-slate-blue',
@@ -68,7 +75,7 @@ export default function Register() {
               </h1>
               <p
                 className={cn(
-                  'text-text-md mx-auto w-5/6',
+                  'text-text-md mx-auto w-5/6 py-1',
                   mode === 'companies' ? 'text-gray-500' : 'text-white',
                 )}
               >
@@ -76,11 +83,33 @@ export default function Register() {
                 to endless opportunities in consulting and collaboration.
               </p>
             </div>
-            {mode === 'companies' ? (
-              <CompanyRegisterForm />
-            ) : (
-              <ProRegisterForm />
-            )}
+            <AnimatePresence mode="wait">
+              {mode === 'companies' ? (
+                <motion.div
+                  key="company"
+                  variants={formVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3 }}
+                  className="h-[33rem]"
+                >
+                  <CompanyRegisterForm />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="professional"
+                  variants={formVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  transition={{ duration: 0.3 }}
+                  className="h-[33rem]"
+                >
+                  <ProRegisterForm />
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div className="text-center text-sm text-gray-500">
               Already have an account?{' '}
               <Link

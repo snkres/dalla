@@ -44,51 +44,9 @@ export function CompanyRegisterForm() {
   }
   return (
     <form
-      className="mx-auto max-w-lg space-y-6"
+      className="mx-auto max-h-min max-w-lg space-y-6"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="group relative w-full">
-        <label
-          className={cn(
-            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-          )}
-        >
-          Company Name
-        </label>
-        <Input
-          className={cn(
-            'text-text-sm h-12 rounded-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none',
-          )}
-          placeholder="name"
-          type="name"
-          {...register('name')}
-        />
-        {errors.name && (
-          <p className="mt-2 text-xs text-red-500">{errors.name.message}</p>
-        )}
-      </div>
-      <div className="group relative w-full">
-        <label
-          className={cn(
-            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-          )}
-        >
-          Company Website
-        </label>
-        <Input
-          className={cn(
-            'text-text-sm h-12 rounded-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none',
-          )}
-          placeholder="Website"
-          type="companyWebsite"
-          {...register('companyWebsite')}
-        />
-        {errors.companyWebsite && (
-          <p className="mt-2 text-xs text-red-500">
-            {errors.companyWebsite.message}
-          </p>
-        )}
-      </div>
       <div className="flex items-center justify-between gap-4">
         <div className="group relative w-full">
           <label
@@ -96,12 +54,51 @@ export function CompanyRegisterForm() {
               'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
             )}
           >
-            Industry
+            Company Name
           </label>
           <Input
             className={cn(
-              'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
+              'text-text-sm h-12 rounded-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none',
             )}
+            placeholder="name"
+            type="name"
+            {...register('name')}
+          />
+          {errors.name && (
+            <p className="mt-2 text-xs text-red-500">{errors.name.message}</p>
+          )}
+        </div>
+        <div className="group relative w-full">
+          <label
+            className={cn(
+              'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
+            )}
+          >
+            Company Website
+          </label>
+          <Input
+            className={cn(
+              'text-text-sm h-12 rounded-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none',
+            )}
+            placeholder="Website"
+            type="companyWebsite"
+            {...register('companyWebsite')}
+          />
+          {errors.companyWebsite && (
+            <p className="mt-2 text-xs text-red-500">
+              {errors.companyWebsite.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-4">
+        <div className="group relative w-full">
+          <label className="absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50">
+            Industry
+          </label>
+          <Input
+            className="text-text-sm h-12 rounded-xl bg-white pe-9 transition-colors duration-500 focus:outline-none"
             placeholder="Industry"
             type="industry"
             {...register('industry')}
@@ -113,16 +110,12 @@ export function CompanyRegisterForm() {
           )}
         </div>
         <div className="group relative w-full">
-          <label
-            className={cn(
-              'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-            )}
-          >
+          <label className="absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50">
             Business Type
           </label>
           <Input
             className={cn(
-              'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
+              'text-text-sm h-12 rounded-xl bg-white pe-9 transition-colors duration-500 focus:outline-none',
             )}
             placeholder="Business Type"
             type="businessType"
@@ -139,18 +132,14 @@ export function CompanyRegisterForm() {
       <div className="group relative">
         <label
           htmlFor="select-28"
-          className={cn(
-            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-          )}
+          className="absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50"
         >
           Company Size
         </label>
         <Select>
           <SelectTrigger
             id="select-28"
-            className={cn(
-              'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-            )}
+            className="text-text-sm h-12 rounded-xl bg-white pe-9 transition-colors duration-500 focus:outline-none"
           >
             <SelectValue placeholder="Select Size" />
           </SelectTrigger>

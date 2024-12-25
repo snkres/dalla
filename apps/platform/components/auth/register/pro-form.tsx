@@ -42,7 +42,7 @@ export function ProRegisterForm() {
 
   return (
     <form
-      className="mx-auto max-w-lg space-y-6"
+      className="mx-auto max-h-min max-w-lg space-y-6"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="group relative w-full">
@@ -96,76 +96,76 @@ export function ProRegisterForm() {
                 <path
                   d="M6 2.0769V4.3269"
                   stroke="#9A9A9A"
-                  stroke-width="1.5"
-                  stroke-miterlimit="10"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeMiterlimit="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M12 2.0769V4.3269"
                   stroke="#9A9A9A"
-                  stroke-width="1.5"
-                  stroke-miterlimit="10"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeMiterlimit="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M2.625 7.39441H15.375"
                   stroke="#9A9A9A"
-                  stroke-width="1.5"
-                  stroke-miterlimit="10"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeMiterlimit="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M15.75 6.9519V13.3269C15.75 15.5769 14.625 17.0769 12 17.0769H6C3.375 17.0769 2.25 15.5769 2.25 13.3269V6.9519C2.25 4.7019 3.375 3.2019 6 3.2019H12C14.625 3.2019 15.75 4.7019 15.75 6.9519Z"
                   stroke="#9A9A9A"
-                  stroke-width="1.5"
-                  stroke-miterlimit="10"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="1.5"
+                  strokeMiterlimit="10"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M11.7713 10.8519H11.778"
                   stroke="#9A9A9A"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M11.7713 13.1019H11.778"
                   stroke="#9A9A9A"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M8.99588 10.8519H9.00262"
                   stroke="#9A9A9A"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M8.99588 13.1019H9.00262"
                   stroke="#9A9A9A"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M6.22049 10.8519H6.22723"
                   stroke="#9A9A9A"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
                 <path
                   d="M6.22049 13.1019H6.22723"
                   stroke="#9A9A9A"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
             </div>
