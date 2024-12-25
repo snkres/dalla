@@ -48,7 +48,7 @@ export function CompanyRegisterForm({
   }
   return (
     <form
-      className="mx-auto max-w-lg space-y-4"
+      className="mx-auto max-w-lg space-y-6"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="group relative w-full">
