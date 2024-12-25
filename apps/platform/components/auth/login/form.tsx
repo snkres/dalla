@@ -224,7 +224,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         <p className="text-text-sm text-center text-[#9A9A9A]">
           Don't have an account?{' '}
           <Link
-            href="/signup"
+            href="/register"
             className={cn(
               'font-semibold transition-colors duration-500',
               mode === 'professional'
