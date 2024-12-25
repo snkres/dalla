@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { cn } from '@dallah/utils'
 import { useQueryState } from 'nuqs'
 import { ModeToggle } from '@components/landing/features/mode-toggle'
-import { CompanyRegisterForm } from '@components/auth/register/form'
+import { CompanyRegisterForm } from '@components/auth/register/company-form'
+import { ProRegisterForm } from '@components/auth/register/pro-form'
 
 export default function Register() {
   const [mode, setMode] = useQueryState('mode', {
@@ -17,7 +18,11 @@ export default function Register() {
     <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
       <div className="absolute inset-0 overflow-hidden bg-[#1a3244]">
         <Image
-          src="/RegisterCompany.webp"
+          src={
+            mode === 'companies'
+              ? '/RegisterCompany.webp'
+              : '/RegisterProfessional.webp'
+          }
           alt="Background"
           fill
           className="object-cover"
@@ -36,7 +41,12 @@ export default function Register() {
           />
         </div>
 
-        <div className="rounded-3xl bg-white p-6 shadow-lg">
+        <div
+          className={cn(
+            'rounded-3xl p-6 shadow-lg',
+            mode === 'companies' ? 'bg-white' : 'bg-slate-blue text-white',
+          )}
+        >
           <div className="space-y-6">
             <div className="mx-auto w-fit">
               <ModeToggle
@@ -46,20 +56,41 @@ export default function Register() {
             </div>
 
             <div className="space-y-1 text-center">
-              <h1 className="text-heading-lg text-slate-blue font-bold">
+              <h1
+                className={cn(
+                  'text-heading-lg font-bold',
+                  mode === 'companies'
+                    ? 'text-slate-blue'
+                    : 'text-sunshine-yellow',
+                )}
+              >
                 Join Dalla Today!
               </h1>
-              <p className="text-text-md mx-auto w-5/6 text-gray-500">
+              <p
+                className={cn(
+                  'text-text-md mx-auto w-5/6',
+                  mode === 'companies' ? 'text-gray-500' : 'text-white',
+                )}
+              >
                 Whether you're a professional or a company, Dalla connects you
                 to endless opportunities in consulting and collaboration.
               </p>
             </div>
-            <CompanyRegisterForm mode={mode as 'companies' | 'professional'} />
+            {mode === 'companies' ? (
+              <CompanyRegisterForm />
+            ) : (
+              <ProRegisterForm />
+            )}
             <div className="text-center text-sm text-gray-500">
               Already have an account?{' '}
               <Link
                 href="/login"
-                className="font-semibold text-[#1a3244] hover:underline"
+                className={cn(
+                  'font-semibold hover:underline',
+                  mode === 'companies'
+                    ? 'text-slate-blue'
+                    : 'text-sunshine-yellow',
+                )}
               >
                 Log In
               </Link>
