@@ -1,10 +1,11 @@
-import { Button, Input } from '@dallah/design-system'
 import {
+  Input,
   Select,
-  SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
+  SelectItem,
+  Button,
 } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,23 +16,15 @@ import { z } from 'zod'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
-  industry: z.string(),
-  businessType: z.string(),
-  companySize: z.string(),
-  companyWebsite: z.string().url('Invalid URL'),
+  yearsOfExperience: z.string(),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
 
 type FormData = z.infer<typeof schema>
 
-export function CompanyRegisterForm({
-  mode,
-}: {
-  mode: 'companies' | 'professional'
-}) {
+export function ProRegisterForm() {
   const [isVisible, setIsVisible] = useState<boolean>(false)
-
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
 
   const {
@@ -46,6 +39,7 @@ export function CompanyRegisterForm({
     console.log(data)
     // handle login logic here
   }
+
   return (
     <form
       className="mx-auto max-w-lg space-y-6"
@@ -55,21 +49,18 @@ export function CompanyRegisterForm({
         <label
           className={cn(
             'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-            mode === 'professional'
-              ? 'bg-slate-blue text-sunshine-yellow'
-              : 'bg-white',
+
+            'bg-slate-blue text-sunshine-yellow',
           )}
         >
-          Company Name
+          Full Name
         </label>
         <Input
           className={cn(
             'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-            mode === 'professional'
-              ? 'bg-foreground text-zinc-900'
-              : 'bg-transparent',
+            'bg-foreground text-zinc-900',
           )}
-          placeholder="name"
+          placeholder="Name"
           type="name"
           {...register('name')}
         />
@@ -77,124 +68,115 @@ export function CompanyRegisterForm({
           <p className="mt-2 text-xs text-red-500">{errors.name.message}</p>
         )}
       </div>
-      <div className="group relative w-full">
-        <label
-          className={cn(
-            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-            mode === 'professional'
-              ? 'bg-slate-blue text-sunshine-yellow'
-              : 'bg-white',
-          )}
-        >
-          Company Website
-        </label>
-        <Input
-          className={cn(
-            'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-            mode === 'professional'
-              ? 'bg-foreground text-zinc-900'
-              : 'bg-transparent',
-          )}
-          placeholder="Website"
-          type="companyWebsite"
-          {...register('companyWebsite')}
-        />
-        {errors.companyWebsite && (
-          <p className="mt-2 text-xs text-red-500">
-            {errors.companyWebsite.message}
-          </p>
-        )}
-      </div>
-      <div className="flex items-center justify-between gap-4">
-        <div className="group relative w-full">
-          <label
-            className={cn(
-              'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-              mode === 'professional'
-                ? 'bg-slate-blue text-sunshine-yellow'
-                : 'bg-white',
-            )}
-          >
-            Industry
-          </label>
-          <Input
-            className={cn(
-              'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-              mode === 'professional'
-                ? 'bg-foreground text-zinc-900'
-                : 'bg-transparent',
-            )}
-            placeholder="Industry"
-            type="industry"
-            {...register('industry')}
-          />
-          {errors.industry && (
-            <p className="mt-2 text-xs text-red-500">
-              {errors.industry.message}
-            </p>
-          )}
-        </div>
-        <div className="group relative w-full">
-          <label
-            className={cn(
-              'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-              mode === 'professional'
-                ? 'bg-slate-blue text-sunshine-yellow'
-                : 'bg-white',
-            )}
-          >
-            Business Type
-          </label>
-          <Input
-            className={cn(
-              'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-              mode === 'professional'
-                ? 'bg-foreground text-zinc-900'
-                : 'bg-transparent',
-            )}
-            placeholder="Business Type"
-            type="businessType"
-            {...register('businessType')}
-          />
-          {errors.businessType && (
-            <p className="mt-2 text-xs text-red-500">
-              {errors.businessType.message}
-            </p>
-          )}
-        </div>
-      </div>
 
       <div className="group relative">
         <label
           htmlFor="select-28"
           className={cn(
             'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-            mode === 'professional'
-              ? 'bg-slate-blue text-sunshine-yellow'
-              : 'bg-white',
+            'bg-slate-blue text-sunshine-yellow',
           )}
         >
-          Company Size
+          Years of Experience
         </label>
-        <Select>
+
+        <Select defaultValue="s1">
           <SelectTrigger
-            id="select-28"
-            className={cn(
-              'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-              mode === 'professional'
-                ? 'bg-foreground text-zinc-900'
-                : 'bg-transparent',
-            )}
+            id="select-17"
+            className="relative bg-white ps-9 text-zinc-900"
           >
-            <SelectValue placeholder="Select Size" />
+            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 group-has-[[disabled]]:opacity-50">
+              <svg
+                width="18"
+                height="19"
+                viewBox="0 0 18 19"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 2.0769V4.3269"
+                  stroke="#9A9A9A"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 2.0769V4.3269"
+                  stroke="#9A9A9A"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M2.625 7.39441H15.375"
+                  stroke="#9A9A9A"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M15.75 6.9519V13.3269C15.75 15.5769 14.625 17.0769 12 17.0769H6C3.375 17.0769 2.25 15.5769 2.25 13.3269V6.9519C2.25 4.7019 3.375 3.2019 6 3.2019H12C14.625 3.2019 15.75 4.7019 15.75 6.9519Z"
+                  stroke="#9A9A9A"
+                  stroke-width="1.5"
+                  stroke-miterlimit="10"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M11.7713 10.8519H11.778"
+                  stroke="#9A9A9A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M11.7713 13.1019H11.778"
+                  stroke="#9A9A9A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8.99588 10.8519H9.00262"
+                  stroke="#9A9A9A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8.99588 13.1019H9.00262"
+                  stroke="#9A9A9A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M6.22049 10.8519H6.22723"
+                  stroke="#9A9A9A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M6.22049 13.1019H6.22723"
+                  stroke="#9A9A9A"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </div>
+            <SelectValue placeholder="Select time" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="1-10">1-10</SelectItem>
-            <SelectItem value="11-50">11-50</SelectItem>
-            <SelectItem value="51-200">51-200</SelectItem>
-            <SelectItem value="201-500">201-500</SelectItem>
-            <SelectItem value="501-1000">501-1000</SelectItem>
-            <SelectItem value="1000+">1000+</SelectItem>
+            <SelectItem value="s1">1-2 years</SelectItem>
+            <SelectItem value="s2">3-5 years</SelectItem>
+            <SelectItem value="s3">6-8 years</SelectItem>
+            <SelectItem value="s4">9-11 years</SelectItem>
+            <SelectItem value="s5">12+ years</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -203,9 +185,7 @@ export function CompanyRegisterForm({
         <label
           className={cn(
             'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-            mode === 'professional'
-              ? 'bg-slate-blue text-sunshine-yellow'
-              : 'bg-white',
+            'bg-slate-blue text-sunshine-yellow',
           )}
         >
           Email Address
@@ -213,9 +193,7 @@ export function CompanyRegisterForm({
         <Input
           className={cn(
             'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-            mode === 'professional'
-              ? 'bg-foreground text-zinc-900'
-              : 'bg-transparent',
+            'bg-foreground text-zinc-900',
           )}
           placeholder="Email"
           type="email"
@@ -232,9 +210,7 @@ export function CompanyRegisterForm({
             <label
               className={cn(
                 'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-                mode === 'professional'
-                  ? 'bg-slate-blue text-sunshine-yellow'
-                  : 'bg-white',
+                'bg-slate-blue text-sunshine-yellow',
               )}
             >
               Password
@@ -244,9 +220,7 @@ export function CompanyRegisterForm({
               type={isVisible ? 'text' : 'password'}
               className={cn(
                 'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-                mode === 'professional'
-                  ? 'bg-foreground text-zinc-900'
-                  : 'bg-transparent',
+                'bg-foreground text-zinc-900',
               )}
               {...register('password')}
             />
@@ -276,7 +250,7 @@ export function CompanyRegisterForm({
       </div>
 
       <Button
-        className="text-text-md w-full rounded-xl bg-[#1a3244] hover:bg-[#264a63]"
+        className="text-text-md bg-sunshine-yellow hover:bg-sunshine-yellow/80 text-slate-blue w-full rounded-xl"
         size="lg"
       >
         Create Account
@@ -284,16 +258,17 @@ export function CompanyRegisterForm({
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
+          <span className="border-sunshine-yellow w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">Or sign up with</span>
+          <span className="bg-sunshine-yellow text-slate-blue px-2">
+            Or sign up with
+          </span>
         </div>
       </div>
 
       <Button
-        variant="outline"
-        className="text-text-md w-full rounded-xl bg-transparent"
+        className="text-text-md w-full rounded-xl bg-white text-zinc-900 hover:bg-white/80"
         size="lg"
       >
         <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
