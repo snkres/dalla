@@ -18,6 +18,7 @@ const schema = z.object({
   industry: z.string(),
   businessType: z.string(),
   companySize: z.string(),
+  companyWebsite: z.string().url('Invalid URL'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
@@ -47,7 +48,7 @@ export function CompanyRegisterForm({
   }
   return (
     <form
-      className="mx-auto max-w-lg space-y-6"
+      className="mx-auto max-w-lg space-y-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="group relative w-full">
@@ -74,6 +75,34 @@ export function CompanyRegisterForm({
         />
         {errors.name && (
           <p className="mt-2 text-xs text-red-500">{errors.name.message}</p>
+        )}
+      </div>
+      <div className="group relative w-full">
+        <label
+          className={cn(
+            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
+            mode === 'professional'
+              ? 'bg-slate-blue text-sunshine-yellow'
+              : 'bg-white',
+          )}
+        >
+          Company Website
+        </label>
+        <Input
+          className={cn(
+            'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
+            mode === 'professional'
+              ? 'bg-foreground text-zinc-900'
+              : 'bg-transparent',
+          )}
+          placeholder="Website"
+          type="companyWebsite"
+          {...register('companyWebsite')}
+        />
+        {errors.companyWebsite && (
+          <p className="mt-2 text-xs text-red-500">
+            {errors.companyWebsite.message}
+          </p>
         )}
       </div>
       <div className="flex items-center justify-between gap-4">
@@ -157,13 +186,15 @@ export function CompanyRegisterForm({
                 : 'bg-transparent',
             )}
           >
-            <SelectValue placeholder="Select framework" />
+            <SelectValue placeholder="Select Size" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="s1">React</SelectItem>
-            <SelectItem value="s2">Next.js</SelectItem>
-            <SelectItem value="s3">Astro</SelectItem>
-            <SelectItem value="s4">Gatsby</SelectItem>
+            <SelectItem value="1-10">1-10</SelectItem>
+            <SelectItem value="11-50">11-50</SelectItem>
+            <SelectItem value="51-200">51-200</SelectItem>
+            <SelectItem value="201-500">201-500</SelectItem>
+            <SelectItem value="501-1000">501-1000</SelectItem>
+            <SelectItem value="1000+">1000+</SelectItem>
           </SelectContent>
         </Select>
       </div>
