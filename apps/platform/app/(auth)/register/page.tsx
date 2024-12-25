@@ -45,7 +45,7 @@ export default function Register() {
               />
             </div>
 
-            <div className="space-y-2 text-center">
+            <div className="space-y-1 text-center">
               <h1 className="text-heading-lg text-slate-blue font-bold">
                 Join Dalla Today!
               </h1>
