@@ -6,9 +6,14 @@ import { Switch } from '@dallah/design-system'
 interface ModeToggleProps {
   mode: 'companies' | 'professional'
   onModeChange: (mode: 'companies' | 'professional') => void
+  plural?: boolean
 }
 
-export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
+export function ModeToggle({
+  mode,
+  onModeChange,
+  plural = false,
+}: ModeToggleProps) {
   return (
     <div
       className={`bg-slate-blue z-20 flex items-center gap-2 rounded-full border-2 p-4 ${
@@ -18,7 +23,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
       <span
         className={`text-text-xl font-medium ${mode === 'companies' ? 'text-sunshine-yellow' : 'text-foreground'}`}
       >
-        Companies
+        {plural ? 'Companies' : 'Company'}
       </span>
 
       <Switch
@@ -34,7 +39,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
       <span
         className={`text-text-xl font-medium ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-[#418FB9]'}`}
       >
-        Professional
+        {plural ? 'Professionals' : 'Professional'}
       </span>
     </div>
   )
