@@ -79,7 +79,7 @@ export function Navbar() {
                 variant="secondary"
                 className="text-text-lg !rounded-full !px-4 !py-7 !font-bold"
               >
-                <Link href="/">Get Started</Link>
+                <Link href="/login">Get Started</Link>
               </Button>
             </div>
           </div>
@@ -121,7 +121,7 @@ export function Navbar() {
             variant="secondary"
             className="text-text-md w-full !rounded-full !px-4 !py-7 !font-bold"
           >
-            <Link href="/">Get Started</Link>
+            <Link href="/login">Get Started</Link>
           </Button>
         </div>
       </div>

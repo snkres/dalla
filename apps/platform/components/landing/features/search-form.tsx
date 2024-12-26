@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@dallah/design-system'
+import { cn } from '@dallah/utils'
 
 export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
   return (
@@ -77,7 +78,14 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
               </SelectContent>
             </Select>
 
-            <span className="text-sm">To:</span>
+            <span
+              className={cn(
+                'text-text-sm',
+                mode === 'professional' ? 'text-sunshine-yellow' : '',
+              )}
+            >
+              To:
+            </span>
             <Select>
               <SelectTrigger className="!text-foreground !px-4 !py-6">
                 <SelectValue placeholder="$3200" />
