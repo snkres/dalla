@@ -16,7 +16,6 @@
     "@dallah/design-system": "workspace:*",
     "@dallah/utils": "workspace:*",
     "lucide-react": "^0.468.0",
-    "motion": "^11.15.0",
     "next": "15.0.3",
     "nuqs": "^2.2.3",
     "react": "19.0.0",
