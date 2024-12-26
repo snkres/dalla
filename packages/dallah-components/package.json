@@ -8,7 +8,8 @@
   "type": "module",
   "exports": {
     "./navbar": "./src/navbar.tsx",
-    "./prefetch": "./src/prefetch-cross-zone-links.tsx"
+    "./prefetch": "./src/prefetch-cross-zone-links.tsx",
+    "./multistep": "./src/multi-step-form.tsx"
   },
   "typesVersions": {
     "*": {
@@ -17,6 +18,9 @@
       ],
       "prefetch": [
         "./src/prefetch-cross-zone-links.tsx"
+      ],
+      "multistep": [
+        "./src/multi-step-form.tsx"
       ]
     }
   },
@@ -26,20 +30,22 @@
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "next": "^14.0.0",
-    "react": "^18.0.0-0",
-    "react-dom": "^18.0.0-0"
+    "next": "^15.1.2",
+    "react": "19",
+    "react-dom": "^19.0.0-0"
   },
   "dependencies": {
     "@dallah/design-system": "workspace:*",
     "@dallah/utils": "workspace:*",
     "@vercel/examples-ui": "^1.0.5",
-    "clsx": "^1.2.1"
+    "clsx": "^1.2.1",
+    "lucide-react": "^0.468.0"
   },
   "devDependencies": {
-    "@types/react": "^18.3.10",
-    "eslint": "^9.16.0",
+    "@types/react": "^19.0.1",
+    "eslint": "^9.17.0",
     "eslint-config-dallah": "workspace:*",
-    "typescript": "^5.0.4"
+    "react": "19",
+    "typescript": "^5.7.2"
   }
 }
