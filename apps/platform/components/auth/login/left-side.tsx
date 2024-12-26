@@ -1,4 +1,4 @@
-import { ModeToggle } from '@components/landing/features/mode-toggle'
+import { ModeToggle } from '@components/shared/mode-toggle'
 import { LogoHorizontal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { LoginForm } from './form'
