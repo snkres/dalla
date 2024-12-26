@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import '../globals.css'
 import '@fontsource-variable/sora'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import { ViewTransitions } from 'next-view-transitions'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -17,12 +18,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html>
-      <body>
-        <NuqsAdapter> {children}</NuqsAdapter>
+    <ViewTransitions>
+      <html>
+        <body>
+          <NuqsAdapter> {children}</NuqsAdapter>
 
-        {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
-      </body>
-    </html>
+          {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
+        </body>
+      </html>
+    </ViewTransitions>
   )
 }

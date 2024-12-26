@@ -1,5 +1,5 @@
 import { Button } from '@dallah/design-system'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 export function CTA() {
   return (

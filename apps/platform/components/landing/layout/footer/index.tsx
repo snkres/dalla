@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 import footerlogo from '../../../../public/footerlogo.png'
 import Image from 'next/image'

@@ -2,7 +2,7 @@
 
 import { LogoHorizontal } from '@dallah/design-system'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { cn } from '@dallah/utils'
 import { useQueryState } from 'nuqs'
 import { ModeToggle } from '@components/shared/mode-toggle'
