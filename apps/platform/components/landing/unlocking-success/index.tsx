@@ -6,7 +6,7 @@ export function UnlockingSuccess() {
       <div className="container mx-auto px-4">
         <div className="relative z-10 flex flex-col text-center text-lg text-white md:grid md:grid-cols-5 md:text-left">
           <div className="col-span-3 max-w-[640px] space-y-8 py-20">
-            <h3 className="text-slate-blue md:text-heading-lg text-heading-sm lg:text-heading-md xl:text-heading-lg font-semibold leading-tight">
+            <h3 className="text-slate-blue text-heading-lg font-semibold leading-tight">
               Unlocking Success with Specialized Consultants Across MENA
             </h3>
             <p className="text-text-lg leading-loose text-[#594D6D]">
