@@ -1,14 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Button, LogoHorizontal } from '@dallah/design-system'
 import { Menu, X } from 'lucide-react'
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
@@ -26,7 +24,7 @@ export function Navbar() {
 
   return (
     <nav className="bg-slate-blue">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 lg:px-8">
         <div className="flex h-24 items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0">
