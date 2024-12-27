@@ -19,7 +19,7 @@ export function FeatureCard({
         </div>
         {title}
       </div>
-      <p className="at-least-3-lines line-clamp-3 text-sm text-[#00000066]">
+      <p className="xl:at-least-3-lines line-clamp-4 text-sm text-[#00000066] xl:line-clamp-3">
         {description}
       </p>
     </div>

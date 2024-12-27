@@ -33,9 +33,9 @@ const insights: InsightCard[] = [
 export function InsightsToEmpower() {
   return (
     <section className="Insights_to_empower bg-background py-24">
-      <div className="container mx-auto px-4 md:px-32">
+      <div className="container mx-auto px-4 xl:px-32">
         <div className="mx-auto mb-20 md:w-[800px]">
-          <h2 className="text-slate-blue md:text-heading-lg text-heading-sm mb-12 text-center font-bold leading-[56px]">
+          <h2 className="text-slate-blue text-heading-lg mb-12 text-center font-bold">
             Insights to Empower Your Business Growth
           </h2>
           <p className="text-text-lg mx-auto max-w-xl text-center text-[#00000066]">
@@ -45,11 +45,11 @@ export function InsightsToEmpower() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-10 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
           {insights.map((insight, index) => (
             <div
               key={index}
-              className="card bg-foreground max-w-sm overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg lg:max-w-2xl"
+              className="card bg-foreground max-w-sm overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg lg:max-w-xl xl:max-w-2xl"
             >
               <Image
                 src={insight.img}
