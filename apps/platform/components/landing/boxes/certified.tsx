@@ -22,10 +22,10 @@ export default function CertifiedBox() {
   })
 
   return (
-    <div ref={containerRef} className="mx-auto w-full max-w-xs lg:max-w-2xl">
+    <div ref={containerRef} className="mx-auto w-full lg:max-w-2xl">
       <div className="overflow-hidden rounded-[48px] bg-[#E4EBFF] text-[42px]">
         <div className="relative">
-          <h2 className="text-heading-sm px-2 pt-8 text-center font-semibold text-[#1a365d] lg:pl-[28px] lg:pr-[62px] lg:pt-[58px] lg:text-[42px]">
+          <h2 className="text-heading-lg px-2 pt-8 text-center font-semibold text-[#1a365d] lg:pl-[28px] lg:pr-[62px] lg:pt-[58px]">
             Certified by <br />
             international courts
           </h2>

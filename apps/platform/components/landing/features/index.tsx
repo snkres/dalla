@@ -19,7 +19,7 @@ export function Features() {
   const width = useTransform(
     scrollYProgress,
     [0, 0.2, 0.3],
-    ['100%', '100%', '90%'],
+    ['100%', '100%', '91%'],
   )
 
   const scale = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0.98])
@@ -78,7 +78,7 @@ export function Features() {
             padding,
           }}
         >
-          <motion.div className="mx-auto max-w-full space-y-8 px-4 md:px-14">
+          <motion.div className="mx-auto max-w-full space-y-8 px-4 xl:px-14">
             <div className="space-y-4 pt-4 text-center">
               <motion.span
                 style={{
@@ -98,7 +98,7 @@ export function Features() {
                   style={{
                     opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
                   }}
-                  className={`sm:text-heading-2xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto line-clamp-2 !w-[80%] text-balance font-bold tracking-tight`}
+                  className={`text-heading-xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto text-balance font-bold tracking-tight lg:line-clamp-2 lg:!w-[80%]`}
                 >
                   {title}
                 </motion.h1>
