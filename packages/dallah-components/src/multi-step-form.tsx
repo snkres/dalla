@@ -397,52 +397,25 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
         className={cn('flex flex-col items-center', className)}
         {...props}
       >
-        <div className="w-full max-w-5xl p-2">
-          <div className="mx-auto h-full w-full p-2 p-6 md:p-6">
-            <div className="mb-8 p-4 md:p-0">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="w-20">
-                  {currentStep > 0 ? (
-                    <Button
-                      variant="link"
-                      onClick={handleBack}
-                      className="mr-4 p-0"
-                    >
-                      <ChevronLeftIcon className="h-5 w-5" />
-                      Back
-                    </Button>
-                  ) : (
-                    <div className="invisible">
-                      <Button variant="link" className="mr-4 p-0">
-                        <ChevronLeftIcon className="h-5 w-5" />
-                        Back
-                      </Button>
-                    </div>
-                  )}
-                </div>
-                {title && <div className="flex items-center">{title}</div>}
-                <div className="text-muted-foreground w-20 text-right text-sm font-medium">
-                  {isSuccessStep
-                    ? `${formSteps.length}/${formSteps.length}`
-                    : `${currentStep + 1}/${formSteps.length}`}
-                </div>
-              </div>
+        <div className="w-full max-w-5xl">
+          <div className="mx-auto h-full w-full">
+            <div className="mb-8 md:p-0">
               <Progress
                 value={
                   isSuccessStep
                     ? 100
                     : ((currentStep + 1) / formSteps.length) * 100
                 }
-                className="h-2"
+                className="w-full rounded-t-xl"
               />
-              <div className="mt-4 text-center">
+              <div className="mt-16 text-center">
                 {!isSuccessStep && stepOptions && (
-                  <h1 className="mb-2 text-2xl font-semibold">
+                  <h1 className="text-heading-sm text-slate-blue mb-2 font-semibold">
                     {stepOptions.title}
                   </h1>
                 )}
                 {formSteps[currentStep]?.description && (
-                  <p className="text-muted-foreground mx-auto max-w-md text-sm">
+                  <p className="text-text-sm mx-auto max-w-md text-zinc-500">
                     {formSteps[currentStep].description}
                   </p>
                 )}
@@ -457,6 +430,7 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.15 }}
                 // className="h-full"
+                className="p-4"
               >
                 {showSuccess ? (
                   finalStep
@@ -478,7 +452,7 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
 
             {/* Show Complete button when we have no form */}
             {shouldShowComplete && (
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex justify-end p-4">
                 <Button onClick={handleComplete} disabled={!canFinish}>
                   Complete
                 </Button>
