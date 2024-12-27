@@ -2,10 +2,10 @@ import Image from 'next/image'
 
 export function UnlockingSuccess() {
   return (
-    <section className="bg-white">
-      <div className="container mx-auto px-4">
-        <div className="relative z-10 flex flex-col text-center text-lg text-white md:grid md:grid-cols-5 md:text-left">
-          <div className="col-span-3 max-w-[640px] space-y-8 py-20">
+    <section className="bg-white py-10 md:py-20">
+      <div className="mx-auto px-4">
+        <div className="relative z-10 flex flex-col items-center text-center text-lg text-white md:grid md:grid-cols-5 md:items-start md:text-left">
+          <div className="col-span-3 max-w-2xl space-y-8 md:py-20 md:pl-16">
             <h3 className="text-slate-blue text-heading-lg font-semibold leading-tight">
               Unlocking Success with Specialized Consultants Across MENA
             </h3>
@@ -17,13 +17,14 @@ export function UnlockingSuccess() {
             </p>
 
             <div className="flex flex-col items-center gap-10 md:flex-row">
-              <div className="space-y-5">
+              <div className="space-y-5 text-center md:text-left">
                 <svg
                   width="48"
                   height="48"
                   viewBox="0 0 48 48"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="mx-auto md:mx-0"
                 >
                   <circle cx="24" cy="24" r="24" fill="#234D64" />
                   <path
@@ -39,13 +40,14 @@ export function UnlockingSuccess() {
                 </p>
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-5 text-center md:text-left">
                 <svg
                   width="48"
                   height="48"
                   viewBox="0 0 48 48"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
+                  className="mx-auto md:mx-0"
                 >
                   <circle cx="24" cy="24" r="24" fill="#234D64" />
                   <path
@@ -65,12 +67,13 @@ export function UnlockingSuccess() {
             </div>
           </div>
 
-          <div className="col-span-2">
+          <div className="col-span-2 mt-10 md:mt-0">
             <Image
               src="/unlocking.jpg"
               width="520"
               height="520"
               alt="Family sitting around a fire pit in front of cabin"
+              className="mx-auto"
             />
           </div>
         </div>

@@ -40,12 +40,12 @@ const usersRate = [
 
 export function Rates() {
   return (
-    <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
-      <div className="text-paragraph-lg lg:text-paragraph-xl xl:text-paragraph-2xl text-center text-[#234D64] md:text-left">
+    <div className="mx-auto w-full max-w-sm lg:max-w-2xl">
+      <div className="text-paragraph-2xl text-center text-[#234D64] md:text-left">
         We love our users
       </div>
       <div className="-mt-1 mb-5 flex flex-col items-center justify-between space-y-3 font-semibold md:flex-row">
-        <p className="text-heading-sm lg:text-heading-md xl:text-heading-md text-center text-[#234D64] md:text-left">
+        <p className="text-heading-md text-center text-[#234D64] md:text-left">
           because they love us.
         </p>
         <div className="btns flex items-center gap-x-4">
@@ -104,11 +104,11 @@ export function Rates() {
           nextEl: '.custom-next',
           prevEl: '.custom-prev',
         }}
-        className="max-h-[440px] rounded-[40px] p-8"
+        className="rounded-[40px] p-8"
       >
         {usersRate.map((user, index) => (
           <SwiperSlide key={index}>
-            <div className="max-h-[440px] space-y-12 rounded-[40px] bg-[#DBEFFA] px-4 py-8 lg:p-14">
+            <div className="space-y-12 rounded-[40px] bg-[#DBEFFA] px-4 py-8 lg:p-14">
               <div>
                 <svg
                   width="188"
