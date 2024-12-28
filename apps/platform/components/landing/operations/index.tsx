@@ -15,14 +15,14 @@ export function Operations() {
     <section className="relative pt-16">
       <div className="mx-auto space-y-14 px-8 lg:container">
         <div className="text-center">
-          <h2 className="text-slate-blue xl:text-heading-2xl lg:text-heading-xl text text-heading-xl mb-7 font-bold">
+          <h2 className="text-slate-blue text-heading-2xl mb-7 font-bold">
             Streamline{' '}
             <span className="relative inline-block">
               Operations{' '}
               <Underline className="absolute left-0 z-0 w-full xl:-bottom-6" />
             </span>
           </h2>
-          <p className="xl:text-paragraph-2xl text-paragraph-md lg:text-paragraph-xl text-gray-500">
+          <p className="text-paragraph-2xl text-gray-500">
             Tailored Solutions for Startups, SMEs, and Enterprises
           </p>
         </div>

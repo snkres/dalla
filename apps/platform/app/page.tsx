@@ -13,7 +13,7 @@ export default function Home(): React.ReactNode {
   return (
     <>
       <Navbar />
-      <main className="bg-background min-h-screen py-10">
+      <main className="bg-background min-h-screen w-full py-10">
         <Hero />
         <Features />
         <Operations />
