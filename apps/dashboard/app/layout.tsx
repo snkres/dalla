@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { PrefetchCrossZoneLinks } from '@dallah/components/prefetch'
+// import { PrefetchCrossZoneLinks } from '@dallah/components/prefetch'
 
 export const metadata: Metadata = {
   title: 'Microfrontends - Main',
