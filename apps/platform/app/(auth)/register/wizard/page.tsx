@@ -1,10 +1,57 @@
 'use client'
 import { LogoHorizontal } from '@dallah/design-system'
 import { MultiStepForm, type FormStep } from '@dallah/components/multistep'
+import { OnboardingWizard } from '@components/auth/register/onboarding-wizard'
 
 const formSteps: FormStep[] = [
   {
-    id: 'step-1',
+    id: 'step1',
+    title: 'What is your focus area?',
+    description: 'Make a selection below',
+    items: [
+      {
+        id: 'item-1',
+        title: 'Cultural Consulting',
+      },
+      {
+        id: 'item-2',
+        title: 'Corporate Strategy',
+      },
+      {
+        id: 'item-3',
+        title: 'Sports Management',
+      },
+      {
+        id: 'item-4',
+        title: 'Franchising',
+      },
+      {
+        id: 'item-5',
+        title: 'Arts & Creativity',
+      },
+      {
+        id: 'item-6',
+        title: 'Others',
+      },
+    ],
+    level: 1,
+  },
+  {
+    id: 'step-2',
+    title: 'Choose Type',
+    description: 'Optional step description',
+    items: [
+      {
+        id: 'item-7',
+        title: 'Option 1',
+        description: 'Description for option 1',
+      },
+      // More items...
+    ],
+    level: 2,
+  },
+  {
+    id: 'step-3',
     title: 'Choose Type',
     description: 'Optional step description',
     items: [
@@ -12,13 +59,11 @@ const formSteps: FormStep[] = [
         id: 'item-1',
         title: 'Option 1',
         description: 'Description for option 1',
-        validNextSteps: ['next-item-1'], // Optional: Filter next step options
       },
       // More items...
     ],
-    level: 0,
+    level: 3,
   },
-  // More steps...
 ]
 
 //TODO: Figure out how to handle the mode variable
@@ -35,25 +80,7 @@ export default function Wizard() {
             Hello, <span>Amr Tamer</span>
           </span>
         </div>
-        <div className="mx-auto flex w-fit flex-col items-center gap-2">
-          <h1 className="text-heading-md text-sunshine-yellow font-semibold">
-            Select Your Focus Area
-          </h1>
-          <p className="text-paragraph-md text-foreground">
-            Let us know your expertise to connect you with relevant projects.
-          </p>
-        </div>
-        <div>
-          <MultiStepForm
-            className="bg-foreground container mx-auto max-w-4xl rounded-xl"
-            formSteps={formSteps}
-            onComplete={function (
-              selections: Record<number | string, string>,
-            ): boolean {
-              throw new Error('Function not implemented.')
-            }}
-          />
-        </div>
+        <OnboardingWizard />
       </div>
     </main>
   )
