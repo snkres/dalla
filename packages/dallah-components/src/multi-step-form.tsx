@@ -1,6 +1,12 @@
 'use client'
 import { AnimatePresence, motion } from 'motion/react'
-import { ChevronLeftIcon, LucideIcon } from 'lucide-react'
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  SkipForwardIcon,
+  TypeIcon as type,
+  LucideIcon,
+} from 'lucide-react'
 import Image from 'next/image'
 import * as React from 'react'
 import { create } from 'zustand'
@@ -10,7 +16,7 @@ import { Progress } from '@dallah/design-system'
 
 interface FormStore {
   currentStep: number
-  selections: Record<number | string, string>
+  selections: Record<number | string, string[]>
   setStep: (step: number) => void
   setSelection: (step: number, selection: string, totalSteps: number) => void
   reset: () => void
@@ -23,13 +29,14 @@ const useFormStore = create<FormStore>((set) => ({
   setStep: (step) => set({ currentStep: step }),
   setSelection: (step, selection, totalSteps) =>
     set((state) => {
-      const newSelections = { ...state.selections, [step]: selection }
-      // Stay on last step unless we have a form
-      const nextStep =
-        step === totalSteps - 1 ? (state.hasForm ? totalSteps : step) : step + 1
+      const currentSelections = state.selections[step] || []
+      const newSelections = currentSelections.includes(selection)
+        ? currentSelections.filter((s) => s !== selection)
+        : [...currentSelections, selection]
+
       return {
-        selections: newSelections,
-        currentStep: nextStep,
+        selections: { ...state.selections, [step]: newSelections },
+        currentStep: step,
       }
     }),
   reset: () => set({ currentStep: 0, selections: {} }),
@@ -42,6 +49,7 @@ export type FormStep = {
   title: string
   description?: string
   items: FormItem[]
+  minChoices?: number
 }
 
 export type FormItem = {
@@ -86,8 +94,8 @@ const OptionCard = React.forwardRef<HTMLDivElement, OptionCardProps>(
       <div
         ref={ref}
         className={cn(
-          'hover:ring-primary relative h-full cursor-pointer overflow-hidden transition-all hover:ring-2',
-          selected ? 'ring-primary ring-2' : undefined,
+          'hover:ring-primary hover:ring-sunshine-yellow relative h-full cursor-pointer overflow-hidden rounded-full border transition-all hover:ring-2',
+          selected ? 'bg-slate-blue text-sunshine-yellow' : undefined,
           cardClassName,
         )}
         onClick={onClick}
@@ -182,6 +190,9 @@ interface FormCardProps {
   cardClassName?: string
   imageClassName?: string
   iconClassName?: string
+  minChoices?: number
+  onNextStep: () => void
+  onSkip: () => void
 }
 
 const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
@@ -193,6 +204,9 @@ const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
       imageClassName,
       iconClassName,
       totalSteps,
+      minChoices = 0,
+      onNextStep,
+      onSkip,
     },
     ref,
   ) => {
@@ -205,14 +219,12 @@ const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
     const textOptions = options.filter(
       (option) => !option.image && !option.icon,
     )
-    const [selectedId, setSelectedId] = React.useState<string | null>(null)
     const [isSelecting, setIsSelecting] = React.useState(false)
 
     const handleSelection = React.useCallback(
       (optionId: string) => {
         if (isSelecting) return
         setIsSelecting(true)
-        setSelectedId(optionId)
         setSelection(currentStep, optionId, totalSteps || 0)
         setTimeout(() => {
           setIsSelecting(false)
@@ -220,6 +232,9 @@ const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
       },
       [currentStep, isSelecting, setSelection, totalSteps],
     )
+
+    const currentSelections = selections[currentStep] || []
+    const canProceed = currentSelections.length >= minChoices
 
     return (
       <div ref={ref}>
@@ -232,10 +247,7 @@ const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
                   description={option.description}
                   icon={option.icon}
                   image={option.image}
-                  selected={
-                    selectedId === option.id ||
-                    selections[currentStep] === option.id
-                  }
+                  selected={currentSelections.includes(option.id)}
                   onClick={() => handleSelection(option.id)}
                   variant={variant}
                   cardClassName={cardClassName}
@@ -250,14 +262,11 @@ const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
         {textOptions.length > 0 && (
           <div className="flex flex-wrap justify-center">
             {textOptions.map((option) => (
-              <div className="w-full p-2" key={option.id}>
+              <div className="w-fit p-2" key={option.id}>
                 <OptionCard
                   title={option.title}
                   description={option.description}
-                  selected={
-                    selectedId === option.id ||
-                    selections[currentStep] === option.id
-                  }
+                  selected={currentSelections.includes(option.id)}
                   onClick={() => handleSelection(option.id)}
                   variant={variant}
                   cardClassName={cardClassName}
@@ -268,6 +277,15 @@ const FormCard = React.forwardRef<HTMLDivElement, FormCardProps>(
             ))}
           </div>
         )}
+
+        <div className="mt-8 flex justify-between">
+          <Button onClick={onSkip} variant="outline">
+            Skip <SkipForwardIcon className="ml-2 h-4 w-4" />
+          </Button>
+          <Button onClick={onNextStep} disabled={!canProceed}>
+            Next <ChevronRightIcon className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
       </div>
     )
   },
@@ -282,7 +300,7 @@ interface StepOptions {
 export interface MultiStepFormProps {
   title?: React.ReactNode
   formSteps: FormStep[]
-  onComplete: (selections: Record<number | string, string>) => boolean
+  onComplete: (selections: Record<number | string, string[]>) => boolean
   variant?: 'default' | 'compact'
   cardClassName?: string
   imageClassName?: string
@@ -328,9 +346,21 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
       }
     }
 
+    const handleNextStep = () => {
+      if (currentStep < formSteps.length - 1) {
+        setStep(currentStep + 1)
+      }
+    }
+
+    const handleSkip = () => {
+      if (currentStep < formSteps.length - 1) {
+        setStep(currentStep + 1)
+      }
+    }
+
     const getStepOptions = (
       currentStep: number,
-      selections: Record<number | string, string>,
+      selections: Record<number | string, string[]>,
     ): StepOptions | null => {
       const step = formSteps[currentStep]
       if (!step) return null
@@ -346,8 +376,8 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
       if (!previousSelection) return null
 
       const previousStep = formSteps[currentStep - 1]
-      const previousOption = previousStep.items.find(
-        (item) => item.id === previousSelection,
+      const previousOption = previousStep.items.find((item) =>
+        previousSelection.includes(item.id),
       )
       if (!previousOption) return null
 
@@ -365,7 +395,8 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
     const isLastStep = currentStep === formSteps.length - 1
     const isSuccessStep = currentStep === formSteps.length
     const stepOptions = getStepOptions(currentStep, selections)
-    const hasLastStepSelection = selections[formSteps.length - 1] !== undefined
+    const hasLastStepSelection =
+      (selections[formSteps.length - 1] || []).length > 0
 
     const handleComplete = () => {
       if (finalStep) {
@@ -386,7 +417,7 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
 
     React.useEffect(() => {
       if (isLastStep) {
-        const hasSelection = selections[currentStep] !== undefined
+        const hasSelection = (selections[currentStep] || []).length > 0
         setCanFinish(hasSelection)
       }
     }, [isLastStep, currentStep, selections])
@@ -429,7 +460,6 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.15 }}
-                // className="h-full"
                 className="p-4"
               >
                 {showSuccess ? (
@@ -444,6 +474,9 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
                     cardClassName={cardClassName}
                     imageClassName={imageClassName}
                     iconClassName={iconClassName}
+                    minChoices={formSteps[currentStep].minChoices}
+                    onNextStep={handleNextStep}
+                    onSkip={handleSkip}
                     key={`form-card-${currentStep}`}
                   />
                 ) : null}
