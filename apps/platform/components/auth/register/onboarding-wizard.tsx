@@ -48,12 +48,12 @@ export function OnboardingWizard() {
   return (
     <>
       <div className="mx-auto mb-12 max-w-2xl">
-        <h1 className="mb-4 text-4xl font-semibold text-[#F4B42A]">
+        <h1 className="text-sunshine-yellow mb-4 text-center text-4xl font-semibold">
           {step === 1 && 'Select Your Focus Area'}
           {step === 2 && 'Define Your Goals or Needs'}
           {step === 3 && 'Add Key Details'}
         </h1>
-        <p className="text-white/90">
+        <p className="text-center text-white/90">
           {step === 1 &&
             'Let us know your expertise to connect you with relevant projects.'}
           {step === 2 && 'Define how you want to work and your target clients.'}
@@ -116,12 +116,12 @@ export function OnboardingWizard() {
           {step === 2 && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="mb-2 text-2xl font-semibold text-[#1F4D5D]">
+                <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
                   What are your goals or needs?
                 </h2>
                 <p className="text-gray-500">Make a selection below</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-wrap gap-4">
                 {[
                   'Remote Projects',
                   'On-Site Work',
@@ -139,7 +139,12 @@ export function OnboardingWizard() {
                         : [...data.workPreference, pref]
                       updateData('workPreference', newPrefs)
                     }}
-                    className="h-auto justify-start px-6 py-4"
+                    className={cn(
+                      'h-auto justify-start !rounded-full px-6 py-4',
+                      !data.workPreference.includes(pref)
+                        ? 'bg-transparent'
+                        : 'text-sunshine-yellow',
+                    )}
                   >
                     {pref}
                   </Button>
@@ -151,7 +156,7 @@ export function OnboardingWizard() {
                   value={data.targetIndustry}
                   onValueChange={(value) => updateData('targetIndustry', value)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-transparent">
                     <SelectValue placeholder="Select an industry" />
                   </SelectTrigger>
                   <SelectContent>
@@ -171,7 +176,7 @@ export function OnboardingWizard() {
           {step === 3 && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="mb-2 text-2xl font-semibold text-[#1F4D5D]">
+                <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
                   Finalize Your Profile
                 </h2>
                 <div className="mb-8 mt-6">
