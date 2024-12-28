@@ -26,11 +26,11 @@ const data = [
 
 export function FAQ() {
   return (
-    <div className="mx-auto w-full max-w-xs lg:max-w-2xl">
-      <h2 className="text-paragraph-lg lg:text-paragraph-xl xl:text-paragraph-2xl text-center text-[#234D64] md:text-left">
+    <div className="mx-auto w-full lg:max-w-2xl">
+      <h2 className="text-paragraph-2xl text-center text-[#234D64] md:text-left">
         Frequently
       </h2>
-      <div className="text-heading-sm lg:text-heading-md xl:text-heading-md text-center font-semibold text-[#234D64] md:text-left">
+      <div className="text-heading-md text-center font-semibold text-[#234D64] md:text-left">
         asked questions.
       </div>
 
@@ -46,10 +46,10 @@ export function FAQ() {
             key={index}
             className="bg-background border px-4 py-1"
           >
-            <AccordionTrigger className="text-paragraph-md xl:text-paragraph-lg py-2 leading-6 hover:no-underline">
+            <AccordionTrigger className="text-paragraph-lg py-2 leading-6 hover:no-underline">
               {item.title}
             </AccordionTrigger>
-            <AccordionContent className="text-foreground xl:text-paragraph-md text-paragraph-sm pb-2 leading-loose">
+            <AccordionContent className="text-foreground text-paragraph-md pb-2 leading-loose">
               {item.text}
             </AccordionContent>
           </AccordionItem>
