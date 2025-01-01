@@ -1,7 +1,7 @@
 'use client'
 import { LogoHorizontal } from '@dallah/design-system'
 import { MultiStepForm, type FormStep } from '@dallah/components/multistep'
-import { OnboardingWizard } from '@components/auth/register/onboarding-wizard'
+import { OnboardingWizard } from '@components/auth/register/wizard'
 
 const formSteps: FormStep[] = [
   {
