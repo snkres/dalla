@@ -1,23 +1,39 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "rootDir": "src",
-    "outDir": "dist",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "declaration": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "incremental": true,
-    "jsx": "preserve",
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"],
+
+  // "compilerOptions": {
+  //   "target": "esnext",
+  //   "module": "esnext",
+  //   "rootDir": "src",
+  //   "outDir": "dist",
+  //   "lib": ["dom", "dom.iterable", "esnext"],
+  //   "declaration": true,
+  //   "allowJs": true,
+  //   "skipLibCheck": true,
+  //   "strict": true,
+  //   "forceConsistentCasingInFileNames": true,
+  //   "esModuleInterop": true,
+  //   "moduleResolution": "node",
+  //   "resolveJsonModule": true,
+  //   "isolatedModules": true,
+  //   "incremental": true,
+  //   "jsx": "react-jsx",
+  //   "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
+  // },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src"
+  ],
   "exclude": ["node_modules", "**/*.stories.tsx"]
 }
