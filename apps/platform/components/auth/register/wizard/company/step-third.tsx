@@ -1,6 +1,7 @@
 import { PictureUpload } from '@components/shared/picture-upload'
 import { Button, Input } from '@dallah/design-system'
-import { Upload } from 'lucide-react'
+import PhoneInput from '@dallah/components/phoneInput'
+import { CountryDropdown } from '@dallah/components/countrySelect'
 
 export function CompanyWizardStepThird({
   data,
@@ -32,19 +33,15 @@ export function CompanyWizardStepThird({
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <label className="text-sm font-medium">Country</label>
-          <Input
-            placeholder="Your country"
-            value={data.country}
-            onChange={(e) => updateData('country', e.target.value)}
+          <CountryDropdown
+            placeholder="Select country"
+            defaultValue="USA"
+            onChange={(country) => updateData('country', country.alpha3)}
           />
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Phone Number</label>
-          <Input
-            placeholder="Your phone number"
-            value={data.phoneNumber}
-            onChange={(e) => updateData('phoneNumber', e.target.value)}
-          />
+          <PhoneInput onChange={(e) => updateData('phoneNumber', e)} />
         </div>
         <div className="space-y-2 md:col-span-2">
           <label className="text-sm font-medium">Address</label>

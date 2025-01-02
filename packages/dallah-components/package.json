@@ -9,7 +9,9 @@
   "exports": {
     "./navbar": "./src/navbar.tsx",
     "./prefetch": "./src/prefetch-cross-zone-links.tsx",
-    "./multistep": "./src/multi-step-form.tsx"
+    "./multistep": "./src/multi-step-form.tsx",
+    "./phoneInput": "./src/phone-number.input.tsx",
+    "./countrySelect": "./src/country.select.tsx"
   },
   "typesVersions": {
     "*": {
@@ -21,6 +23,12 @@
       ],
       "multistep": [
         "./src/multi-step-form.tsx"
+      ],
+      "phoneInput": [
+        "./src/phone-number.input.tsx"
+      ],
+      "countrySelect": [
+        "./src/country.select.tsx"
       ]
     }
   },
@@ -39,7 +47,10 @@
     "@dallah/utils": "workspace:*",
     "@vercel/examples-ui": "^1.0.5",
     "clsx": "^1.2.1",
-    "lucide-react": "^0.468.0"
+    "country-data-list": "^1.3.4",
+    "lucide-react": "^0.468.0",
+    "react-circle-flags": "^0.0.23",
+    "react-phone-number-input": "^3.4.10"
   },
   "devDependencies": {
     "@types/react": "^19.0.1",
