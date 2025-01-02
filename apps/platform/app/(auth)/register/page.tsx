@@ -22,7 +22,7 @@ export default function Register() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center p-4">
+    <main className="relative flex min-h-screen flex-col items-center justify-center p-4">
       <div className="absolute inset-0 overflow-hidden bg-[#1a3244]">
         <Image
           src={
@@ -127,6 +127,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
