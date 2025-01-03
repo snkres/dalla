@@ -29,6 +29,7 @@
     "@eslint/compat": "^1.2.3",
     "@eslint/js": "^9.16.0",
     "@types/node": "20.11.30",
+    "cross-env": "^7.0.3",
     "eslint": "9.16.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "husky": "^9.1.7",
@@ -38,10 +39,11 @@
   },
   "packageManager": "pnpm@9.4.0",
   "engines": {
-    "node": "20.x",
-    "pnpm": "9.4.0"
+    "node": "22.x",
+    "pnpm": "^9.4.0"
   },
   "dependencies": {
+    "@fontsource-variable/sora": "^5.1.0",
     "@next/eslint-plugin-next": "^15.0.3"
   }
 }

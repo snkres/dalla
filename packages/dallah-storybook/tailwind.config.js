@@ -1,12 +1,11 @@
-module.exports = {
-  presets: [
-    require('@vercel/examples-ui/tailwind'),
-    require('@dallah/design-system/tailwind'),
-  ],
+import { designTokens } from '../dallah-design-system/src'
+
+export default {
   content: [
-    // All the packages that might include stories
-    './node_modules/@vercel/examples-ui/**/*.js',
-    './node_modules/@dallah/design-system/**/*.js',
-    './node_modules/@dallah/pages/**/*.js',
+    './src/**/*.{js,jsx,ts,tsx}',
+    './node_modules/@dallah/design-system/src/**/*.{js,jsx,ts,tsx}',
   ],
+  theme: {
+    ...designTokens,
+  },
 }
