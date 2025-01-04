@@ -109,24 +109,6 @@ export function CompanyRegisterForm() {
             </p>
           )}
         </div>
-        <div className="group relative w-full">
-          <label className="absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md bg-white px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50">
-            Business Type
-          </label>
-          <Input
-            className={cn(
-              'text-text-sm h-12 rounded-xl bg-white pe-9 transition-colors duration-500 focus:outline-none',
-            )}
-            placeholder="Business Type"
-            type="businessType"
-            {...register('businessType')}
-          />
-          {errors.businessType && (
-            <p className="mt-2 text-xs text-red-500">
-              {errors.businessType.message}
-            </p>
-          )}
-        </div>
       </div>
 
       <div className="group relative">
