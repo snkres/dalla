@@ -13,13 +13,13 @@ export function FeatureCard({
 }: FeatureCardProps) {
   return (
     <div className="rounded-[24px] border border-[#EEB238] bg-[#FFD37B] p-6 backdrop-blur-sm">
-      <div className="flex items-start">
+      <div className="text-text-md flex items-start">
         <div className="mb-4 inline-flex rounded-full [&_svg]:h-16 [&_svg]:w-16">
           {Icon}
         </div>
         {title}
       </div>
-      <p className="xl:at-least-3-lines line-clamp-4 text-sm text-[#00000066] xl:line-clamp-3">
+      <p className="at-least-3-lines text-text-sm text-[#00000066]">
         {description}
       </p>
     </div>

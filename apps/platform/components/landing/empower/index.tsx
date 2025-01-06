@@ -38,7 +38,7 @@ export function InsightsToEmpower() {
           <h2 className="text-slate-blue text-heading-lg mb-12 text-center font-bold">
             Insights to Empower Your Business Growth
           </h2>
-          <p className="text-text-lg mx-auto max-w-xl text-center text-[#00000066]">
+          <p className="text-text-lg container-fluid mx-auto text-center text-[#00000066]">
             Stay informed with the latest trends, strategies, and expert advice
             tailored for businesses in culture, sports, arts, franchising, and
             corporate management.
@@ -49,7 +49,7 @@ export function InsightsToEmpower() {
           {insights.map((insight, index) => (
             <div
               key={index}
-              className="card bg-foreground max-w-sm overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg lg:max-w-xl xl:max-w-2xl"
+              className="card bg-foreground container-fluid w-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg"
             >
               <Image
                 src={insight.img}

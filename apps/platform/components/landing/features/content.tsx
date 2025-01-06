@@ -81,7 +81,7 @@ export const companyFeatures = [
       </p>
     ),
     description:
-      'All consultants are verified and backed by a transparent feedback system.',
+      'All consultants are verified and backed by a transparent feedback.',
   },
   {
     icon: (

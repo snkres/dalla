@@ -83,7 +83,7 @@ export function DallaAi() {
                 <span className="text-sm text-white lg:text-base">
                   Recruiter
                 </span>
-                <div className="max-w-xl rounded-3xl rounded-tl-none bg-white p-3 lg:p-4">
+                <div className="container-fluid rounded-3xl rounded-tl-none bg-white p-3 lg:p-4">
                   Send me candidate who are expert in{' '}
                   <span className="font-medium">Figma</span> and understand{' '}
                   <span className="font-medium">HTML</span>
@@ -105,7 +105,7 @@ export function DallaAi() {
                 <span className="self-end text-sm text-white lg:text-base">
                   Dalla Recruiter
                 </span>
-                <div className="bg-sunshine-yellow text-slate-blue max-w-xl self-end rounded-3xl rounded-tr-none p-3 lg:p-4">
+                <div className="bg-sunshine-yellow text-slate-blue container-fluid self-end rounded-3xl rounded-tr-none p-3 lg:p-4">
                   Sending you a list of relevant candidates now
                 </div>
                 <img
@@ -122,7 +122,7 @@ export function DallaAi() {
               Icon={<ThumbsUp className="h-5 w-5 lg:h-6 lg:w-6" />}
             >
               <motion.div
-                className="bg-sunshine-yellow max-w-xl rounded-3xl rounded-se-none p-4 lg:p-6"
+                className="bg-sunshine-yellow container-fluid rounded-3xl rounded-se-none p-4 lg:p-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView4 ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.4, duration: 0.5 }}

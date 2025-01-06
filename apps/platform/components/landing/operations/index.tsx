@@ -105,7 +105,7 @@ export function Operations() {
           ))}
         </Swiper>
 
-        <div className="mx-auto mt-8 flex max-w-60 items-center justify-center">
+        <div className="container-fluid mx-auto mt-8 flex items-center justify-center">
           <button className="custom-prev mr-4 px-4 py-2 text-2xl text-[#234D64]">
             <svg
               width="24"

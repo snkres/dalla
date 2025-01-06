@@ -5,7 +5,7 @@ export function UnlockingSuccess() {
     <section className="bg-white py-10 md:py-20">
       <div className="mx-auto px-4">
         <div className="relative z-10 flex flex-col items-center text-center text-lg text-white md:grid md:grid-cols-5 md:items-start md:text-left">
-          <div className="col-span-3 max-w-2xl space-y-8 md:py-20 md:pl-16">
+          <div className="container-fluid col-span-3 space-y-8 md:py-20 md:pl-16">
             <h3 className="text-slate-blue text-heading-lg font-semibold leading-tight">
               Unlocking Success with Specialized Consultants Across MENA
             </h3>

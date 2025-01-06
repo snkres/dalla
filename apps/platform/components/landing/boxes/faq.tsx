@@ -26,7 +26,7 @@ const data = [
 
 export function FAQ() {
   return (
-    <div className="mx-auto w-full lg:max-w-2xl">
+    <div className="container-fluid mx-auto">
       <h2 className="text-paragraph-2xl text-center text-[#234D64] md:text-left">
         Frequently
       </h2>

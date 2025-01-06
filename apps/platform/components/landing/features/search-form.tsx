@@ -13,7 +13,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
   return (
     <div className="space-y-6">
       <h2
-        className={`text-center text-2xl font-semibold tracking-tight ${
+        className={`text-text-2xl text-center font-semibold tracking-tight ${
           mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'
         }`}
       >
@@ -24,7 +24,11 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <span
-            className={mode === 'professional' ? 'text-sunshine-yellow' : ''}
+            className={
+              'text-text-md' + mode === 'professional'
+                ? 'text-sunshine-yellow'
+                : ''
+            }
           >
             Experience
           </span>
@@ -77,7 +81,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
               </SelectContent>
             </Select>
 
-            <span className="text-sm">To:</span>
+            <span className="text-text-sm">To:</span>
             <Select>
               <SelectTrigger className="!text-foreground !px-4 !py-6">
                 <SelectValue placeholder="$3200" />

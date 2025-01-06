@@ -19,7 +19,7 @@ export function Features() {
   const width = useTransform(
     scrollYProgress,
     [0.1, 0.2, 0.3],
-    ['100%', '90%', '85%'],
+    ['100%', '95%', '90%'],
   )
 
   const scale = useTransform(scrollYProgress, [0.1, 0.2, 0.3], [1, 1, 0.97])
@@ -127,7 +127,7 @@ export function Features() {
                       [0, 1],
                     ),
                   }}
-                  className={`text-text-lg at-least-2-lines mx-auto max-w-2xl ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
+                  className={`text-text-lg at-least-2-lines container-fluid mx-auto ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
                 >
                   {subtitle}
                 </motion.p>

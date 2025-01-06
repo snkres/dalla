@@ -23,8 +23,8 @@ export function Navbar() {
   }
 
   return (
-    <nav className="bg-slate-blue">
-      <div className="mx-auto px-4 lg:px-8">
+    <nav className="bg-slate-blue w-full">
+      <div className="mx-auto px-4 lg:px-32">
         <div className="flex h-24 items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0">
@@ -34,7 +34,7 @@ export function Navbar() {
             </div>
           </div>
 
-          <div className="hidden md:block">
+          <div className="*:font-mont hidden md:block">
             <div className="ml-4 flex items-center space-x-[24px]">
               <Link
                 href="/"

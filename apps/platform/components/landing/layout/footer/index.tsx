@@ -10,7 +10,7 @@ export function Footer() {
     <footer className="bg-foreground mt-16 text-sm">
       <div className="mx-auto px-5">
         <div className="flex flex-col justify-center gap-28 pb-8 pt-16 md:flex-row">
-          <FooterList className="xl:max-w-sm">
+          <FooterList className="container-fluid">
             <div className="mb-4 flex items-center gap-3">
               <div className="flex-shrink-0">
                 <Link href="/" className="text-[#FFFFFF]">
@@ -18,7 +18,7 @@ export function Footer() {
                 </Link>
               </div>
             </div>
-            <p className="text-text-md xl:text-text-xl w-full text-[#94959B] xl:max-w-64">
+            <p className="text-text-md xl:text-text-xl container-fluid w-full text-[#94959B]">
               Connect with expert consultants to transform your business.
             </p>
           </FooterList>
