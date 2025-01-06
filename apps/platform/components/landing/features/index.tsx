@@ -18,25 +18,30 @@ export function Features() {
 
   const width = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.3],
-    ['100%', '100%', '91%'],
+    [0.1, 0.2, 0.3],
+    ['100%', '90%', '85%'],
   )
 
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.3], [1, 1, 0.98])
+  const scale = useTransform(scrollYProgress, [0.1, 0.2, 0.3], [1, 1, 0.97])
 
   const borderRadius = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.3],
+    [0, 0.15, 0.3],
     ['0px', '0px', '24px'],
   )
 
-  const y = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 0, -20])
+  const y = useTransform(scrollYProgress, [0.1, 0.2, 0.3], [0, 0, -40])
 
   const padding = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.3],
+    [0, 0.15, 0.3],
     ['0px', '0px', '32px'],
   )
+
+  const transition = {
+    duration: 0.8,
+    ease: [0.5, 0.1, 0.2, 1],
+  }
 
   const features = mode === 'companies' ? companyFeatures : professionalFeatures
   const title =
@@ -52,10 +57,11 @@ export function Features() {
     <div ref={containerRef} className="relative">
       <motion.div
         style={{
-          opacity: useTransform(scrollYProgress, [0, 0.2], [0, 1]),
-          y: useTransform(scrollYProgress, [0, 0.2], [-50, 0]),
+          opacity: useTransform(scrollYProgress, [0, 0.25], [0, 1]),
+          y: useTransform(scrollYProgress, [0, 0.25], [-50, 0]),
         }}
-        className="sticky top-10 z-10 flex justify-center"
+        transition={transition}
+        className="top-10 z-10 flex justify-center"
       >
         <ModeToggle mode={mode} onModeChange={setMode} />
       </motion.div>
@@ -71,19 +77,17 @@ export function Features() {
           position: 'sticky',
           top: '100px',
         }}
+        transition={transition}
         className={`overflow-hidden ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
       >
-        <motion.div
-          style={{
-            padding,
-          }}
-        >
+        <motion.div style={{ padding }} transition={transition}>
           <motion.div className="mx-auto max-w-full space-y-8 px-4 xl:px-14">
             <div className="space-y-4 pt-4 text-center">
               <motion.span
                 style={{
                   scale: useTransform(scrollYProgress, [0, 0.3], [0.95, 1]),
                 }}
+                transition={transition}
                 className="text-slate-blue inline-block rounded-full border border-[#EEB238] bg-[#FFD37B] px-4 py-1"
               >
                 Features For
@@ -94,9 +98,12 @@ export function Features() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
                   style={{
-                    opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
+                    opacity: useTransform(scrollYProgress, [0.1, 0.35], [0, 1]),
                   }}
                   className={`text-heading-xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto text-balance font-bold tracking-tight lg:line-clamp-2 lg:!w-[80%]`}
                 >
@@ -109,9 +116,16 @@ export function Features() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{
+                    duration: 0.6,
+                    ease: [0.4, 0, 0.2, 1],
+                  }}
                   style={{
-                    opacity: useTransform(scrollYProgress, [0.15, 0.3], [0, 1]),
+                    opacity: useTransform(
+                      scrollYProgress,
+                      [0.15, 0.35],
+                      [0, 1],
+                    ),
                   }}
                   className={`text-text-lg at-least-2-lines mx-auto max-w-2xl ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
                 >
@@ -126,7 +140,10 @@ export function Features() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+                transition={{
+                  duration: 0.8,
+                  ease: [0.4, 0, 0.2, 1],
+                }}
                 className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
               >
                 {features.map((feature, index) => (
@@ -135,15 +152,16 @@ export function Features() {
                     style={{
                       opacity: useTransform(
                         scrollYProgress,
-                        [0.2 + index * 0.02, 0.3 + index * 0.02],
+                        [0.2 + index * 0.03, 0.35 + index * 0.03],
                         [0, 1],
                       ),
                       y: useTransform(
                         scrollYProgress,
-                        [0.2 + index * 0.02, 0.3 + index * 0.02],
+                        [0.2 + index * 0.03, 0.35 + index * 0.03],
                         [20, 0],
                       ),
                     }}
+                    transition={transition}
                   >
                     <FeatureCard
                       icon={feature.icon}
@@ -157,9 +175,10 @@ export function Features() {
 
             <motion.div
               style={{
-                opacity: useTransform(scrollYProgress, [0.3, 0.4], [0, 1]),
-                y: useTransform(scrollYProgress, [0.3, 0.4], [20, 0]),
+                opacity: useTransform(scrollYProgress, [0.3, 0.45], [0, 1]),
+                y: useTransform(scrollYProgress, [0.3, 0.45], [20, 0]),
               }}
+              transition={transition}
             >
               <SearchForm mode={mode} />
             </motion.div>

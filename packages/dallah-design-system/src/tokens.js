@@ -72,69 +72,181 @@ export default {
   },
 
   fontSize: {
-    'display-lg': ['clamp(90px, 10vw, 180px)', { lineHeight: '1.1' }],
-    'display-md': ['clamp(64px, 8vw, 128px)', { lineHeight: '1.1' }],
-    'display-sm': ['clamp(48px, 6vw, 96px)', { lineHeight: '1.1' }],
-
-    'heading-2xl': ['clamp(36px, 5vw, 72px)', { lineHeight: '1.2' }],
-    'heading-xl': ['clamp(30px, 4vw, 60px)', { lineHeight: '1.2' }],
-    'heading-lg': ['clamp(24px, 3.5vw, 48px)', { lineHeight: '1.2' }],
-    'heading-md': ['clamp(20px, 3vw, 36px)', { lineHeight: '1.2' }],
-    'heading-sm': ['clamp(18px, 2.5vw, 30px)', { lineHeight: '1.2' }],
-    'heading-xs': ['clamp(16px, 2vw, 24px)', { lineHeight: '1.2' }],
-
-    'text-2xl': ['clamp(20px, 1.8vw, 24px)', { lineHeight: '1.5' }],
-    'text-xl': ['clamp(18px, 1.6vw, 20px)', { lineHeight: '1.5' }],
-    'text-lg': ['clamp(16px, 1.4vw, 18px)', { lineHeight: '1.5' }],
-    'text-md': ['clamp(14px, 1.2vw, 16px)', { lineHeight: '1.5' }],
-    'text-sm': ['clamp(12px, 1.1vw, 14px)', { lineHeight: '1.5' }],
-    'text-xs': ['clamp(10px, 1vw, 12px)', { lineHeight: '1.5' }],
-    'text-2xs': ['clamp(8px, 0.9vw, 10px)', { lineHeight: '1.5' }],
-
-    'paragraph-2xl': ['clamp(20px, 1.8vw, 24px)', { lineHeight: '1.6' }],
-    'paragraph-xl': ['clamp(18px, 1.6vw, 20px)', { lineHeight: '1.6' }],
-    'paragraph-lg': ['clamp(16px, 1.4vw, 18px)', { lineHeight: '1.6' }],
-    'paragraph-md': ['clamp(14px, 1.2vw, 16px)', { lineHeight: '1.6' }],
-    'paragraph-sm': ['clamp(12px, 1.1vw, 14px)', { lineHeight: '1.6' }],
-    'paragraph-xs': ['clamp(10px, 1vw, 12px)', { lineHeight: '1.6' }],
-
+    'display-2xl': [
+      'clamp(120px, 12vw, 240px)',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'display-lg': [
+      'clamp(90px, 10vw, 200px)',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'display-md': [
+      'clamp(64px, 8vw, 160px)',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'display-sm': [
+      'clamp(48px, 6vw, 120px)',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'heading-2xl': [
+      'clamp(36px, 5vw, 96px)',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-xl': [
+      'clamp(30px, 4vw, 80px)',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-lg': [
+      'clamp(24px, 3.5vw, 64px)',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-md': [
+      'clamp(20px, 3vw, 48px)',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-sm': [
+      'clamp(18px, 2.5vw, 36px)',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-xs': [
+      'clamp(16px, 2vw, 30px)',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'text-2xl': [
+      'clamp(20px, 1.8vw, 28px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-xl': [
+      'clamp(18px, 1.6vw, 24px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-lg': [
+      'clamp(16px, 1.4vw, 22px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-md': [
+      'clamp(14px, 1.2vw, 20px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-sm': [
+      'clamp(12px, 1.1vw, 18px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-xs': [
+      'clamp(10px, 1vw, 16px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-2xs': [
+      'clamp(8px, 0.9vw, 14px)',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'paragraph-2xl': [
+      'clamp(20px, 1.8vw, 28px)',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-xl': [
+      'clamp(18px, 1.6vw, 24px)',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-lg': [
+      'clamp(16px, 1.4vw, 22px)',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-md': [
+      'clamp(14px, 1.2vw, 20px)',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-sm': [
+      'clamp(12px, 1.1vw, 18px)',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-xs': [
+      'clamp(10px, 1vw, 16px)',
+      {
+        lineHeight: '1.6',
+      },
+    ],
     'label-2xl': [
-      'clamp(18px, 1.6vw, 20px)',
+      'clamp(18px, 1.6vw, 24px)',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-xl': [
-      'clamp(16px, 1.4vw, 18px)',
+      'clamp(16px, 1.4vw, 22px)',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-lg': [
-      'clamp(14px, 1.2vw, 16px)',
+      'clamp(14px, 1.2vw, 20px)',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-md': [
-      'clamp(12px, 1.1vw, 14px)',
+      'clamp(12px, 1.1vw, 18px)',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-sm': [
-      'clamp(10px, 1vw, 12px)',
+      'clamp(10px, 1vw, 16px)',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-xs': [
-      'clamp(8px, 0.9vw, 10px)',
+      'clamp(8px, 0.9vw, 14px)',
       {
         fontWeight: '800',
         lineHeight: '1.4',
