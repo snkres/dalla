@@ -13,5 +13,36 @@ export default {
       ...designTokens,
     },
   },
-  plugins: [rombo],
+  plugins: [
+    rombo,
+    function ({ addComponents, theme }) {
+      addComponents({
+        '.container-fluid': {
+          width: '100%',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingLeft: theme('spacing.4'),
+          paddingRight: theme('spacing.4'),
+          maxWidth: '100%',
+          '@screen sm': {
+            paddingLeft: theme('spacing.6'),
+            paddingRight: theme('spacing.6'),
+          },
+          '@screen lg': {
+            paddingLeft: theme('spacing.8'),
+            paddingRight: theme('spacing.8'),
+          },
+          '@screen xl': {
+            maxWidth: theme('screens.2xl'),
+          },
+          '@screen 2k': {
+            maxWidth: theme('maxWidth.2k'),
+          },
+          '@screen 4k': {
+            maxWidth: theme('maxWidth.4k'),
+          },
+        },
+      })
+    },
+  ],
 }

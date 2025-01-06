@@ -49,7 +49,7 @@ export function Features() {
       : 'Join our platform to connect with businesses looking for your expertise'
 
   return (
-    <div ref={containerRef} className="relative min-h-[100vh]">
+    <div ref={containerRef} className="relative">
       <motion.div
         style={{
           opacity: useTransform(scrollYProgress, [0, 0.2], [0, 1]),

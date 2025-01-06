@@ -170,5 +170,11 @@ export default {
     lg: '1024px',
     xl: '1280px',
     '2xl': '1536px',
+    '2k': '2048px',
+    '4k': '3840px',
+  },
+  maxWidth: {
+    '2k': '2048px',
+    '4k': '3840px',
   },
 }

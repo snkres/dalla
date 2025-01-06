@@ -3,11 +3,11 @@ import { Underline } from '../shared/underline'
 
 export function Hero() {
   return (
-    <div className="bg-background relative overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid items-center gap-12 pb-24 pt-16 lg:grid-cols-2">
-          <div className="max-w-2xl">
-            <h1 className="text-heading-2xl text-slate-blue mb-6 font-bold leading-tight">
+    <div className="bg-background relative overflow-hidden pt-4">
+      <div className="container-fluid mx-auto">
+        <div className="grid items-center gap-12 py-16 lg:grid-cols-2">
+          <div className="">
+            <h1 className="text-heading-2xl text-slate-blue mb-6 font-semibold leading-tight">
               Find the right{' '}
               <span className="relative inline-block">
                 Consultant
@@ -40,7 +40,7 @@ export function Hero() {
 
           <div className="relative">
             <div className="relative">
-              <div className="absolute inset-0 rotate-6 scale-105 transform rounded-[50px] bg-[#E6F4FF]" />
+              <div className="absolute inset-0 rounded-[50px] bg-[#272727]" />
               <div className="relative overflow-hidden rounded-[40px]">
                 <Image
                   src="/placeholder.svg?height=600&width=800"
