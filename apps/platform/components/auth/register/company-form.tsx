@@ -12,13 +12,14 @@ import { EyeOff, Eye } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { register as registerCall } from 'api/auth/register'
+import { useRouter } from 'next/navigation'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
   industry: z.string(),
-  businessType: z.string(),
-  companySize: z.string(),
-  companyWebsite: z.string().url('Invalid URL'),
+  size: z.string(),
+  domain: z.string().url('Invalid URL'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
@@ -27,6 +28,8 @@ type FormData = z.infer<typeof schema>
 
 export function CompanyRegisterForm() {
   const [isVisible, setIsVisible] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const router = useRouter()
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
 
@@ -38,9 +41,13 @@ export function CompanyRegisterForm() {
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = (data: FormData) => {
-    console.log(data)
-    // handle login logic here
+  const onSubmit = async (data: FormData) => {
+    setIsLoading(true)
+    const isRegistered = await registerCall(data)
+    if (isRegistered) {
+      setIsLoading(false)
+      router.push('/register/otp')
+    }
   }
   return (
     <form
@@ -81,13 +88,11 @@ export function CompanyRegisterForm() {
               'text-text-sm h-12 rounded-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none',
             )}
             placeholder="Website"
-            type="companyWebsite"
-            {...register('companyWebsite')}
+            type="text"
+            {...register('domain')}
           />
-          {errors.companyWebsite && (
-            <p className="mt-2 text-xs text-red-500">
-              {errors.companyWebsite.message}
-            </p>
+          {errors.domain && (
+            <p className="mt-2 text-xs text-red-500">{errors.domain.message}</p>
           )}
         </div>
       </div>
@@ -122,6 +127,7 @@ export function CompanyRegisterForm() {
           <SelectTrigger
             id="select-28"
             className="text-text-sm h-12 rounded-xl bg-white pe-9 transition-colors duration-500 focus:outline-none"
+            {...register('size')}
           >
             <SelectValue placeholder="Select Size" />
           </SelectTrigger>
@@ -200,7 +206,25 @@ export function CompanyRegisterForm() {
         className="text-text-md w-full rounded-xl bg-[#1a3244] hover:bg-[#264a63]"
         size="lg"
       >
-        Create Account
+        {isLoading ? (
+          <svg className="mr-3 h-5 w-5 animate-spin" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A8.009 8.009 0 014 12H0c0 3.042 1.357 5.798 3.5 7.709l2.5-2.418z"
+            />
+          </svg>
+        ) : (
+          'Create Account'
+        )}
       </Button>
 
       <div className="relative">
