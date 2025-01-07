@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Accordion,
   AccordionContent,
@@ -26,35 +28,65 @@ const data = [
 
 export function FAQ() {
   return (
-    <div className="container-fluid mx-auto">
-      <h2 className="text-paragraph-2xl text-center text-[#234D64] md:text-left">
+    <div className="container mx-auto px-4 py-12">
+      <h2 className="mb-2 text-center text-3xl font-semibold text-[#234D64] md:text-left">
         Frequently
       </h2>
-      <div className="text-heading-md text-center font-semibold text-[#234D64] md:text-left">
+      <div className="mb-8 text-center text-4xl font-bold text-[#234D64] md:text-left">
         asked questions.
       </div>
 
       <Accordion
         type="single"
         collapsible
-        className="w-full -space-y-px pt-[34px]"
-        defaultValue={`item-${data[1].title}`}
+        className="w-full space-y-4"
+        defaultValue={`item-${data[0].title}`}
       >
         {data.map((item, index) => (
           <AccordionItem
             value={`item-${item.title}`}
             key={index}
-            className="bg-background border px-4 py-1"
+            className="overflow-hidden rounded-lg border border-gray-200"
           >
-            <AccordionTrigger className="text-paragraph-lg py-2 leading-6 hover:no-underline">
+            <AccordionTrigger className="px-6 py-4 text-lg font-medium hover:no-underline focus:outline-none">
               {item.title}
             </AccordionTrigger>
-            <AccordionContent className="text-foreground text-paragraph-md pb-2 leading-loose">
+            <AccordionContent className="px-6 pb-4 text-gray-600">
               {item.text}
             </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>
+
+      <style jsx global>{`
+        .AccordionContent {
+          overflow: hidden;
+        }
+        .AccordionContent[data-state='open'] {
+          animation: slideDown 300ms ease-out;
+        }
+        .AccordionContent[data-state='closed'] {
+          animation: slideUp 300ms ease-out;
+        }
+
+        @keyframes slideDown {
+          from {
+            height: 0;
+          }
+          to {
+            height: var(--radix-accordion-content-height);
+          }
+        }
+
+        @keyframes slideUp {
+          from {
+            height: var(--radix-accordion-content-height);
+          }
+          to {
+            height: 0;
+          }
+        }
+      `}</style>
     </div>
   )
 }

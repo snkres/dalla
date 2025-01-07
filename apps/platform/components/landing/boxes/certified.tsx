@@ -10,7 +10,6 @@ export default function CertifiedBox() {
     offset: ['start end', 'end start'],
   })
 
-  // Using easeInOut from framer-motion for smooth animation
   const y = useTransform(scrollYProgress, [0, 1], [0, -150], {
     ease: easeInOut,
   })

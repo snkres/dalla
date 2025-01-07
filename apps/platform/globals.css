@@ -83,12 +83,13 @@ select {
 }
 
 body,
-html{
+html {
   height: 100%;
 }
 
 body,
-html, * {
+html,
+* {
   /* height: 100%; */
   scroll-behavior: smooth;
 }
@@ -99,12 +100,40 @@ html, * {
 
 .at-least-2-lines {
   line-height: 1.5;
-  min-height: calc(1.5em * 2); 
-  overflow: hidden; 
+  min-height: calc(1.5em * 2);
+  overflow: hidden;
 }
 
 .at-least-3-lines {
   line-height: 1.5;
-  min-height: calc(1.5em * 3); 
-  overflow: hidden; 
+  min-height: calc(1.5em * 3);
+  overflow: hidden;
+}
+
+.AccordionContent {
+  overflow: hidden;
+}
+.AccordionContent[data-state='open'] {
+  animation: slideDown 300ms ease-out;
+}
+.AccordionContent[data-state='closed'] {
+  animation: slideUp 300ms ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
