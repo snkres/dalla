@@ -12,7 +12,7 @@ import { Underline } from '../shared/underline'
 
 export function Operations() {
   return (
-    <section className="relative pt-16">
+    <section className="relative px-[7.5rem] pt-16">
       <div className="lg:container-fluid mx-auto space-y-14 px-8">
         <div className="text-center">
           <h2 className="text-slate-blue text-heading-2xl mb-7 font-bold">

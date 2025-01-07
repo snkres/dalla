@@ -3,7 +3,7 @@ import { Underline } from '../shared/underline'
 
 export function Hero() {
   return (
-    <div className="bg-background relative flex min-h-[80dvh] flex-col items-center justify-center overflow-hidden pt-4">
+    <div className="bg-background relative flex min-h-[80dvh] flex-col items-center justify-center overflow-hidden px-[7.5rem] pt-4">
       <div className="container-fluid mx-auto">
         <div className="grid items-center gap-12 py-16 lg:grid-cols-2">
           <div className="">

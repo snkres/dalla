@@ -17,7 +17,7 @@ export function Boxes() {
   return (
     <div ref={containerRef} className="container-fluid mx-auto py-[77px]">
       <div className="flex flex-col gap-12">
-        <div className="flex !h-1/2 w-full gap-8 *:flex-1">
+        <div className="flex !h-1/2 w-full gap-8 *:w-1/2 *:flex-1">
           <TrustedBox />
           <CertifiedBox />
         </div>

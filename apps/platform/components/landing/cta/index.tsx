@@ -2,7 +2,7 @@ import { Button } from '@dallah/design-system'
 
 export function CTA() {
   return (
-    <div className="bg-sunshine-yellow my-20 flex w-full flex-col items-center justify-around gap-4 px-14 py-14 md:flex-row xl:px-64">
+    <div className="bg-sunshine-yellow my-20 flex w-full flex-col items-center justify-around gap-4 px-[7.5rem] py-14 md:flex-row">
       <h3 className="text-slate-blue text-heading-lg text-center font-semibold md:text-left">
         A High-Quality Solution Tailored for Businesses Across MENA
       </h3>

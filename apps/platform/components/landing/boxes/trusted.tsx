@@ -17,7 +17,7 @@ export function TrustedBox() {
   return (
     <div
       ref={containerRef}
-      className="container-fluid mx-auto flex aspect-square flex-col overflow-hidden rounded-[48px] bg-[#FFEECA]"
+      className="container-fluid mx-auto flex aspect-square w-full flex-col overflow-hidden rounded-[48px] bg-[#FFEECA]"
     >
       <h2 className="text-heading-lg px-2 pt-8 text-center font-semibold leading-tight text-[#1a365d] lg:px-[108px] lg:pt-[58px]">
         Trusted by many people

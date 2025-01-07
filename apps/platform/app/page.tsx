@@ -25,13 +25,15 @@ export default function Home(): React.ReactNode {
   return (
     <>
       <Navbar />
-      <main className="bg-background min-h-screen w-full px-[7.5rem]">
+      <main className="bg-background min-h-screen w-full">
         <Hero />
         <Features />
         <Operations />
         <CTA />
-        <DallaAi />
-        <Boxes />
+        <div className="px-[7.5rem]">
+          <DallaAi />
+          <Boxes />
+        </div>
         <UnlockingSuccess />
         <InsightsToEmpower />
       </main>
