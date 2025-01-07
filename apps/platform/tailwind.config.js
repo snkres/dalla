@@ -21,17 +21,10 @@ export default {
           width: '100%',
           marginLeft: 'auto',
           marginRight: 'auto',
-          paddingLeft: theme('spacing.4'),
-          paddingRight: theme('spacing.4'),
+
           maxWidth: '100%',
-          '@screen sm': {
-            paddingLeft: theme('spacing.6'),
-            paddingRight: theme('spacing.6'),
-          },
-          '@screen lg': {
-            paddingLeft: theme('spacing.8'),
-            paddingRight: theme('spacing.8'),
-          },
+          '@screen sm': {},
+          '@screen lg': {},
           '@screen xl': {
             maxWidth: theme('screens.2xl'),
           },

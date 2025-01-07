@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import '../globals.css'
 import '@fontsource-variable/sora'
-
 const isProd = process.env.NODE_ENV === 'production'
 
 export const metadata: Metadata = {
