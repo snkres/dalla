@@ -35,19 +35,25 @@ export function Features() {
   const padding = useTransform(
     scrollYProgress,
     [0, 0.15, 0.3],
-    ['0px', '0px', '32px'],
+    ['0px', '0px', '24px'],
   )
 
   const transition = {
     duration: 0.8,
-    ease: [0.5, 0.1, 0.2, 1],
+    ease: [0.3, 0.1, 0.2, 1],
   }
 
   const features = mode === 'companies' ? companyFeatures : professionalFeatures
   const title =
-    mode === 'companies'
-      ? 'Empower Your Business with the Best Consultants'
-      : 'Grow Your Consulting Business'
+    mode === 'companies' ? (
+      <p>
+        Empower Your Business with <br /> the Best Consultants
+      </p>
+    ) : (
+      <p>
+        Grow <br /> Your Consulting Business
+      </p>
+    )
   const subtitle =
     mode === 'companies'
       ? 'Our all-in-one solutions streamline your workflow by integrating essential tools into a single, cohesive package'
@@ -81,7 +87,7 @@ export function Features() {
         className={`overflow-hidden ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
       >
         <motion.div style={{ padding }} transition={transition}>
-          <motion.div className="mx-auto max-w-full space-y-8 px-4 xl:px-14">
+          <motion.div className="mx-auto max-w-full space-y-8">
             <div className="space-y-4 pt-4 text-center">
               <motion.span
                 style={{
@@ -105,7 +111,7 @@ export function Features() {
                   style={{
                     opacity: useTransform(scrollYProgress, [0.1, 0.35], [0, 1]),
                   }}
-                  className={`text-heading-xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto text-balance font-bold tracking-tight lg:line-clamp-2 lg:!w-[80%]`}
+                  className={`text-[4.5rem] ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} mx-auto font-bold tracking-tight`}
                 >
                   {title}
                 </motion.h1>
@@ -127,7 +133,7 @@ export function Features() {
                       [0, 1],
                     ),
                   }}
-                  className={`text-text-lg at-least-2-lines container-fluid mx-auto ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
+                  className={`text-text-xl at-least-2-lines container-fluid mx-auto ${mode === 'companies' ? 'text-[#00000066]' : 'text-foreground/80'}`}
                 >
                   {subtitle}
                 </motion.p>

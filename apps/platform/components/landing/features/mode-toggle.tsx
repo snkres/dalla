@@ -16,7 +16,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
       }`}
     >
       <span
-        className={`text-text-xl font-medium ${mode === 'companies' ? 'text-sunshine-yellow' : 'text-foreground'}`}
+        className={`text-[1.75rem] font-medium ${mode === 'companies' ? 'text-sunshine-yellow' : 'text-foreground'}`}
       >
         Companies
       </span>
@@ -32,7 +32,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
       />
 
       <span
-        className={`text-text-xl font-medium ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-[#418FB9]'}`}
+        className={`text-[1.75rem] font-medium ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-[#418FB9]'}`}
       >
         Professional
       </span>

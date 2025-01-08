@@ -70,190 +70,188 @@ export default {
       disabledText: '#FDA4AF',
     },
   },
-
   fontSize: {
     'display-2xl': [
-      'clamp(120px, 12vw, 240px)',
+      '7.5rem',
       {
         lineHeight: '1.1',
       },
     ],
     'display-lg': [
-      'clamp(90px, 10vw, 200px)',
+      '5.625rem',
       {
         lineHeight: '1.1',
       },
     ],
     'display-md': [
-      'clamp(64px, 8vw, 160px)',
+      '4rem',
       {
         lineHeight: '1.1',
       },
     ],
     'display-sm': [
-      'clamp(48px, 6vw, 120px)',
+      '3rem',
       {
         lineHeight: '1.1',
       },
     ],
     'heading-2xl': [
-      'clamp(36px, 5vw, 96px)',
+      '2.25rem',
       {
         lineHeight: '1.2',
       },
     ],
     'heading-xl': [
-      'clamp(30px, 4vw, 80px)',
+      '1.875rem',
       {
         lineHeight: '1.2',
       },
     ],
     'heading-lg': [
-      'clamp(24px, 3.5vw, 64px)',
+      '1.5rem',
       {
         lineHeight: '1.2',
       },
     ],
     'heading-md': [
-      'clamp(20px, 3vw, 48px)',
+      '1.25rem',
       {
         lineHeight: '1.2',
       },
     ],
     'heading-sm': [
-      'clamp(18px, 2.5vw, 36px)',
+      '1.125rem',
       {
         lineHeight: '1.2',
       },
     ],
     'heading-xs': [
-      'clamp(16px, 2vw, 30px)',
+      '1rem',
       {
         lineHeight: '1.2',
       },
     ],
     'text-2xl': [
-      'clamp(20px, 1.8vw, 28px)',
+      '1.25rem',
       {
         lineHeight: '1.5',
       },
     ],
     'text-xl': [
-      'clamp(18px, 1.6vw, 24px)',
+      '1.125rem',
       {
         lineHeight: '1.5',
       },
     ],
     'text-lg': [
-      'clamp(16px, 1.4vw, 22px)',
+      '1rem',
       {
         lineHeight: '1.5',
       },
     ],
     'text-md': [
-      'clamp(14px, 1.2vw, 20px)',
+      '0.875rem',
       {
         lineHeight: '1.5',
       },
     ],
     'text-sm': [
-      'clamp(12px, 1.1vw, 18px)',
+      '0.75rem',
       {
         lineHeight: '1.5',
       },
     ],
     'text-xs': [
-      'clamp(10px, 1vw, 16px)',
+      '0.625rem',
       {
         lineHeight: '1.5',
       },
     ],
     'text-2xs': [
-      'clamp(8px, 0.9vw, 14px)',
+      '0.5rem',
       {
         lineHeight: '1.5',
       },
     ],
     'paragraph-2xl': [
-      'clamp(20px, 1.8vw, 28px)',
+      '1.25rem',
       {
         lineHeight: '1.6',
       },
     ],
     'paragraph-xl': [
-      'clamp(18px, 1.6vw, 24px)',
+      '1.125rem',
       {
         lineHeight: '1.6',
       },
     ],
     'paragraph-lg': [
-      'clamp(16px, 1.4vw, 22px)',
+      '1rem',
       {
         lineHeight: '1.6',
       },
     ],
     'paragraph-md': [
-      'clamp(14px, 1.2vw, 20px)',
+      '0.875rem',
       {
         lineHeight: '1.6',
       },
     ],
     'paragraph-sm': [
-      'clamp(12px, 1.1vw, 18px)',
+      '0.75rem',
       {
         lineHeight: '1.6',
       },
     ],
     'paragraph-xs': [
-      'clamp(10px, 1vw, 16px)',
+      '0.625rem',
       {
         lineHeight: '1.6',
       },
     ],
     'label-2xl': [
-      'clamp(18px, 1.6vw, 24px)',
+      '1.125rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-xl': [
-      'clamp(16px, 1.4vw, 22px)',
+      '1rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-lg': [
-      'clamp(14px, 1.2vw, 20px)',
+      '0.875rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-md': [
-      'clamp(12px, 1.1vw, 18px)',
+      '0.75rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-sm': [
-      'clamp(10px, 1vw, 16px)',
+      '0.625rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-xs': [
-      'clamp(8px, 0.9vw, 14px)',
+      '0.5rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
   },
-
   fontWeight: {
     normal: '400',
     medium: '500',

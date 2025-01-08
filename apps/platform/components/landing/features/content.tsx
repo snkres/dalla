@@ -41,8 +41,8 @@ export const companyFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description:
@@ -76,8 +76,8 @@ export const companyFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description:
@@ -118,8 +118,8 @@ export const companyFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description:
@@ -160,8 +160,8 @@ export const companyFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description: "Work worry-free with Dalla's escrow-based payment system.",
@@ -211,8 +211,8 @@ export const professionalFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description:
@@ -253,8 +253,8 @@ export const professionalFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description: 'Get paid on time, every time with our secure payment system.',
@@ -294,8 +294,8 @@ export const professionalFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description: 'Manage your projects and communications in one place.',
@@ -342,8 +342,8 @@ export const professionalFeatures = [
     ),
     title: (
       <p className="text-slate-blue ml-2 mt-2 flex flex-col">
-        <span>Save</span>
-        <span className="font-bold">Time and Resources</span>
+        <span className="text-text-md">Save</span>
+        <span className="text-text-lg font-bold">Time and Resources</span>
       </p>
     ),
     description:

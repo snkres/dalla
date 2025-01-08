@@ -3,24 +3,24 @@ import { Underline } from '../shared/underline'
 
 export function Hero() {
   return (
-    <div className="bg-background relative flex min-h-[80dvh] flex-col items-center justify-center overflow-hidden px-[7.5rem] pt-4">
+    <div className="bg-background overflow-hidden pt-4 md:px-12 xl:px-[7.5rem]">
       <div className="container-fluid mx-auto">
         <div className="grid items-center gap-12 py-16 lg:grid-cols-2">
           <div className="">
-            <h1 className="text-heading-2xl text-slate-blue mb-6 font-semibold leading-tight">
+            <h1 className="text-slate-blue mb-6 text-[4.5rem] font-semibold leading-tight">
               Find the right{' '}
               <span className="relative inline-block">
                 Consultant
                 <Underline className="absolute -bottom-1 left-0 w-full" />
               </span>{' '}
-              for your project{' '}
+              for your project <br />
               <span className="relative inline-block">
                 needs
                 <Underline className="absolute bottom-0 left-0 w-full scale-105" />
               </span>
               .
             </h1>
-            <p className="text-text-md mb-8 text-gray-600">
+            <p className="text-paragraph-lg mb-8 text-base text-gray-600">
               Connecting companies across MENA with specialized consultants in
               culture, sports, arts, franchising, and corporate management.
               Dalla makes it easy to achieve success with verified experts and
