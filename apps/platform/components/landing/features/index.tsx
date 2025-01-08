@@ -27,7 +27,7 @@ export function Features() {
   const borderRadius = useTransform(
     scrollYProgress,
     [0, 0.15, 0.3],
-    ['0px', '0px', '24px'],
+    ['0px', '0px', '40px'],
   )
 
   const y = useTransform(scrollYProgress, [0.1, 0.2, 0.3], [0, 0, -40])
@@ -55,9 +55,14 @@ export function Features() {
       </p>
     )
   const subtitle =
-    mode === 'companies'
-      ? 'Our all-in-one solutions streamline your workflow by integrating essential tools into a single, cohesive package'
-      : 'Join our platform to connect with businesses looking for your expertise'
+    mode === 'companies' ? (
+      <p>
+        Our all-in-one solutions streamline your workflow by integrating
+        essential tools <br /> into a single, cohesive package
+      </p>
+    ) : (
+      'Join our platform to connect with businesses looking for your expertise'
+    )
 
   return (
     <div ref={containerRef} className="relative">
@@ -87,8 +92,8 @@ export function Features() {
         className={`overflow-hidden ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
       >
         <motion.div style={{ padding }} transition={transition}>
-          <motion.div className="mx-auto max-w-full space-y-8">
-            <div className="space-y-4 pt-4 text-center">
+          <motion.div className="mx-auto max-w-full pt-[1.6rem]">
+            <div className="pb-[3.125rem] text-center">
               <motion.span
                 style={{
                   scale: useTransform(scrollYProgress, [0, 0.3], [0.95, 1]),
@@ -100,7 +105,7 @@ export function Features() {
               </motion.span>
               <AnimatePresence mode="wait">
                 <motion.h1
-                  key={title}
+                  key={title.toString()}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -111,14 +116,14 @@ export function Features() {
                   style={{
                     opacity: useTransform(scrollYProgress, [0.1, 0.35], [0, 1]),
                   }}
-                  className={`text-[4.5rem] ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} mx-auto font-bold tracking-tight`}
+                  className={`text-[4.5rem] ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} mx-auto py-2 font-bold tracking-tight`}
                 >
                   {title}
                 </motion.h1>
               </AnimatePresence>
               <AnimatePresence mode="wait">
                 <motion.p
-                  key={subtitle}
+                  key={subtitle.toString()}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -150,7 +155,7 @@ export function Features() {
                   duration: 0.8,
                   ease: [0.4, 0, 0.2, 1],
                 }}
-                className="grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+                className="grid gap-6 pb-[3.125rem] md:grid-cols-2 lg:grid-cols-4"
               >
                 {features.map((feature, index) => (
                   <motion.div
@@ -185,6 +190,7 @@ export function Features() {
                 y: useTransform(scrollYProgress, [0.3, 0.45], [20, 0]),
               }}
               transition={transition}
+              className="mb-[1.625rem]"
             >
               <SearchForm mode={mode} />
             </motion.div>

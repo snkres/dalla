@@ -8,32 +8,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@dallah/design-system'
+import { cn } from '@dallah/utils'
 
 export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
   return (
     <div className="space-y-6">
-      <h2
-        className={`text-text-2xl text-center font-semibold tracking-tight ${
+      <p
+        className={`text-text-xl text-center font-bold tracking-tight ${
           mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'
         }`}
       >
         {mode === 'companies'
           ? 'FIND YOUR PERFECT PROFESSIONAL.'
           : 'FIND YOUR PERFECT CONTRACT.'}
-      </h2>
-      <div className="grid gap-4 md:grid-cols-3">
+      </p>
+      <div className="grid gap-4 pb-6 md:grid-cols-3">
         <div className="space-y-2">
           <span
-            className={
-              'text-text-md' + mode === 'professional'
+            className={cn(
+              'text-text-md font-semibold',
+              mode === 'professional'
                 ? 'text-sunshine-yellow'
-                : ''
-            }
+                : 'text-[#353535]',
+            )}
           >
             Experience
           </span>
           <Select>
-            <SelectTrigger className="!text-foreground !px-4 !py-6">
+            <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
               <SelectValue placeholder="+1 year" />
             </SelectTrigger>
             <SelectContent>
@@ -45,12 +47,17 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
         <div className="space-y-2">
           <span
-            className={mode === 'professional' ? 'text-sunshine-yellow' : ''}
+            className={cn(
+              'text-text-md font-semibold',
+              mode === 'professional'
+                ? 'text-sunshine-yellow'
+                : 'text-[#353535]',
+            )}
           >
             Industry
           </span>
           <Select>
-            <SelectTrigger className="!text-foreground !px-4 !py-6">
+            <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
               <SelectValue
                 placeholder="Cultural Consulting"
                 className="!text-foreground"
@@ -65,13 +72,18 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
         <div className="flex flex-col gap-2">
           <span
-            className={mode === 'professional' ? 'text-sunshine-yellow' : ''}
+            className={cn(
+              'text-text-md font-semibold',
+              mode === 'professional'
+                ? 'text-sunshine-yellow'
+                : 'text-[#353535]',
+            )}
           >
             Budget
           </span>
           <div className="flex items-center gap-2">
             <Select>
-              <SelectTrigger className="!text-foreground !px-4 !py-6">
+              <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
                 <SelectValue placeholder="$3200" />
               </SelectTrigger>
               <SelectContent>
@@ -83,7 +95,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
 
             <span className="text-text-sm">To:</span>
             <Select>
-              <SelectTrigger className="!text-foreground !px-4 !py-6">
+              <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
                 <SelectValue placeholder="$3200" />
               </SelectTrigger>
               <SelectContent>
@@ -96,7 +108,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
       </div>
       <Button
-        className={`text-text-sm w-full !rounded-full bg-transparent ${
+        className={`text-text-md w-full !rounded-full bg-transparent !py-[15px] !font-bold ${
           mode === 'companies'
             ? 'border-slate-blue text-slate-blue'
             : 'border-sunshine-yellow text-sunshine-yellow'

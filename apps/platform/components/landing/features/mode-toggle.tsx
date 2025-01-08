@@ -11,7 +11,7 @@ interface ModeToggleProps {
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
     <div
-      className={`bg-slate-blue z-20 flex items-center gap-2 rounded-full border-2 p-4 ${
+      className={`bg-slate-blue z-20 flex items-center gap-2 rounded-full border-2 px-8 py-5 ${
         mode === 'professional' ? 'border-sunshine-yellow' : ''
       }`}
     >

@@ -2,8 +2,7 @@ export const companyFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -40,9 +39,9 @@ export const companyFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description:
@@ -51,8 +50,7 @@ export const companyFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -75,9 +73,9 @@ export const companyFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description:
@@ -86,8 +84,7 @@ export const companyFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -117,9 +114,9 @@ export const companyFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description:
@@ -128,8 +125,7 @@ export const companyFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -159,9 +155,9 @@ export const companyFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description: "Work worry-free with Dalla's escrow-based payment system.",
@@ -172,8 +168,7 @@ export const professionalFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -210,9 +205,9 @@ export const professionalFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description:
@@ -221,8 +216,7 @@ export const professionalFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -252,9 +246,9 @@ export const professionalFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description: 'Get paid on time, every time with our secure payment system.',
@@ -262,8 +256,7 @@ export const professionalFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -293,9 +286,9 @@ export const professionalFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description: 'Manage your projects and communications in one place.',
@@ -303,8 +296,7 @@ export const professionalFeatures = [
   {
     icon: (
       <svg
-        width="48"
-        height="48"
+        className="h-12 w-12"
         viewBox="0 0 48 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -341,9 +333,9 @@ export const professionalFeatures = [
       </svg>
     ),
     title: (
-      <p className="text-slate-blue ml-2 mt-2 flex flex-col">
+      <p className="text-slate-blue flex flex-col">
         <span className="text-text-md">Save</span>
-        <span className="text-text-lg font-bold">Time and Resources</span>
+        <span className="text-text-lg font-semibold">Time and Resources</span>
       </p>
     ),
     description:
