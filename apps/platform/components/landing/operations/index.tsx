@@ -1,52 +1,64 @@
 'use client'
 
-import React from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination, Grid } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/grid'
+import React, { useState } from 'react'
 import { operations } from './content'
 import { Underline } from '../shared/underline'
+import { Button } from '@dallah/design-system'
+import { motion, AnimatePresence } from 'motion/react'
+
+const ITEMS_PER_PAGE = 6
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 },
+}
 
 export function Operations() {
+  const [currentPage, setCurrentPage] = useState(0)
+
+  const totalPages = Math.ceil(operations.length / ITEMS_PER_PAGE)
+  const paginatedOperations = operations.slice(
+    currentPage * ITEMS_PER_PAGE,
+    (currentPage + 1) * ITEMS_PER_PAGE,
+  )
+
+  const nextPage = () => {
+    setCurrentPage((prev) => (prev + 1) % totalPages)
+  }
+
+  const prevPage = () => {
+    setCurrentPage((prev) => (prev - 1 + totalPages) % totalPages)
+  }
+
   return (
-    <section className="relative px-[7.5rem] pt-16">
-      <div className="lg:container-fluid mx-auto space-y-14 px-8">
-        <div className="text-center">
-          <h2 className="text-slate-blue text-heading-2xl mb-7 font-bold">
+    <section className="relative px-4 pt-[2.438] sm:px-6 lg:mx-[11.625rem]">
+      <div className="container-fluid flex flex-col gap-[3.125rem]">
+        <div className="flex flex-col gap-4 text-center">
+          <h2 className="text-slate-blue mb-7 text-4xl font-bold sm:text-5xl lg:text-[4.5rem]">
             Streamline{' '}
             <span className="relative inline-block">
               Operations{' '}
               <Underline className="absolute left-0 z-0 w-full xl:-bottom-6" />
             </span>
           </h2>
-          <p className="text-paragraph-2xl text-gray-500">
+          <p className="text-lg text-[#00000066] sm:text-xl lg:text-2xl">
             Tailored Solutions for Startups, SMEs, and Enterprises
           </p>
         </div>
 
-        <Swiper
-          modules={[Navigation, Pagination, Grid]}
-          spaceBetween={30}
-          slidesPerView={1}
-          grid={{ rows: 2, fill: 'row' }}
-          breakpoints={{
-            640: { slidesPerView: 1 },
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-          navigation={{
-            nextEl: '.custom-next',
-            prevEl: '.custom-prev',
-          }}
-          pagination={{ clickable: true, el: '.custom-pagination' }}
-          className="mySwiper"
-        >
-          {operations.map((oper, index) => (
-            <SwiperSlide key={index}>
-              <div className="box relative overflow-hidden rounded-xl border border-gray-300 bg-white p-4">
+        <div className="grid min-h-[40dvh] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <AnimatePresence mode="wait">
+            {paginatedOperations.map((oper, index) => (
+              <motion.div
+                key={oper.title + index}
+                className="relative h-fit cursor-pointer overflow-hidden rounded-2xl border border-[#234D6466] bg-white p-5 transition-transform duration-300 hover:scale-105"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={pageVariants}
+                transition={{ duration: 0.3 }}
+              >
                 <span className="absolute right-0 top-0 opacity-45">
                   <svg
                     width="80"
@@ -93,20 +105,24 @@ export function Operations() {
                 <span>{oper.icon}</span>
 
                 <div className="mt-4">
-                  <h2 className="text-paragraph-md lg:text-paragraph-xl xl:text-paragraph-2xl mb-2 font-semibold uppercase">
+                  <h2 className="text-slate-blue mb-2 text-xl font-bold uppercase">
                     {oper.title}
                   </h2>
-                  <p className="text-paragraph-sm lg:text-paragraph-md xl:text-paragraph-xl font-semibold text-[#2FC57A]">
+                  <p className="text-sm font-semibold text-[#2FC57A] sm:text-base lg:text-lg">
                     {oper.description}
                   </p>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
 
-        <div className="container-fluid mx-auto mt-8 flex items-center justify-center">
-          <button className="custom-prev mr-4 px-4 py-2 text-2xl text-[#234D64]">
+        <div className="flex items-center justify-center space-x-4">
+          <Button
+            onClick={prevPage}
+            className="py-2 text-2xl text-[#234D64] transition-colors duration-300 hover:bg-[#234D6410]"
+            variant="ghost"
+          >
             <svg
               width="24"
               height="24"
@@ -131,11 +147,26 @@ export function Operations() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </Button>
 
-          <div className="custom-pagination flex items-center justify-center space-x-1"></div>
+          <div className="flex items-center space-x-2">
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={`h-2 w-2 rounded-full ${
+                  i === currentPage ? 'bg-[#234D64]' : 'bg-[#234D6440]'
+                }`}
+                aria-label={`Go to page ${i + 1}`}
+              />
+            ))}
+          </div>
 
-          <button className="custom-next ml-4 px-4 py-2 text-2xl text-[#234D64]">
+          <Button
+            onClick={nextPage}
+            className="py-2 text-2xl text-[#234D64] transition-colors duration-300 hover:bg-[#234D6410]"
+            variant="ghost"
+          >
             <svg
               width="24"
               height="24"
@@ -158,7 +189,7 @@ export function Operations() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
     </section>

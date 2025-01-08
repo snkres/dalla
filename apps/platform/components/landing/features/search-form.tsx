@@ -22,8 +22,8 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
           ? 'FIND YOUR PERFECT PROFESSIONAL.'
           : 'FIND YOUR PERFECT CONTRACT.'}
       </p>
-      <div className="grid gap-4 pb-6 md:grid-cols-3">
-        <div className="space-y-2">
+      <div className="flex items-center gap-4 *:flex-1">
+        <div className="w-full space-y-2">
           <span
             className={cn(
               'text-text-md font-semibold',
@@ -35,7 +35,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
             Experience
           </span>
           <Select>
-            <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
+            <SelectTrigger className="!text-foreground !h-14 !rounded-[16px] !px-4 !py-6">
               <SelectValue placeholder="+1 year" />
             </SelectTrigger>
             <SelectContent>
@@ -45,7 +45,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-2">
+        <div className="w-full space-y-2">
           <span
             className={cn(
               'text-text-md font-semibold',
@@ -57,7 +57,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
             Industry
           </span>
           <Select>
-            <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
+            <SelectTrigger className="!text-foreground !h-14 !rounded-[16px] !px-4 !py-6">
               <SelectValue
                 placeholder="Cultural Consulting"
                 className="!text-foreground"
@@ -70,7 +70,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="w-full space-y-2">
           <span
             className={cn(
               'text-text-md font-semibold',
@@ -81,9 +81,9 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
           >
             Budget
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-1 items-center gap-2">
             <Select>
-              <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
+              <SelectTrigger className="!text-foreground !h-14 !rounded-[16px] !px-4 !py-6">
                 <SelectValue placeholder="$3200" />
               </SelectTrigger>
               <SelectContent>
@@ -95,7 +95,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
 
             <span className="text-text-sm">To:</span>
             <Select>
-              <SelectTrigger className="!text-foreground !rounded-[16px] !px-4 !py-6">
+              <SelectTrigger className="!text-foreground !h-14 !rounded-[16px] !px-4 !py-6">
                 <SelectValue placeholder="$3200" />
               </SelectTrigger>
               <SelectContent>

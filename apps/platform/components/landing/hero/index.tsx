@@ -20,7 +20,7 @@ export function Hero() {
               </span>
               .
             </h1>
-            <p className="text-paragraph-lg mb-8 text-base text-gray-600">
+            <p className="text-paragraph-lg mb-8 text-gray-600">
               Connecting companies across MENA with specialized consultants in
               culture, sports, arts, franchising, and corporate management.
               Dalla makes it easy to achieve success with verified experts and

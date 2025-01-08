@@ -46,20 +46,20 @@ export function Features() {
   const features = mode === 'companies' ? companyFeatures : professionalFeatures
   const title =
     mode === 'companies' ? (
-      <p>
-        Empower Your Business with <br /> the Best Consultants
-      </p>
+      <span>
+        Emspanower Your Business with <br /> the Best Consultants
+      </span>
     ) : (
-      <p>
+      <span>
         Grow <br /> Your Consulting Business
-      </p>
+      </span>
     )
   const subtitle =
     mode === 'companies' ? (
-      <p>
+      <span>
         Our all-in-one solutions streamline your workflow by integrating
         essential tools <br /> into a single, cohesive package
-      </p>
+      </span>
     ) : (
       'Join our platform to connect with businesses looking for your expertise'
     )
