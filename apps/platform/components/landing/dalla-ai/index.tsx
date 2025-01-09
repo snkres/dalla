@@ -46,18 +46,20 @@ export function DallaAi() {
           transition={{ type: 'spring', stiffness: 50 }}
         >
           <Logomark className="[&_path]:fill-foreground !h-12 !w-12 lg:!h-16 lg:!w-16" />
-          <h1 className="text-heading-xl mb-4 mt-5 font-bold leading-tight">
-            Meet with <span className="text-sunshine-yellow">Dalla Ai </span>
+          <h1 className="font-mont mb-4 mt-5 text-[2.625rem] font-semibold leading-tight">
+            Meet with{' '}
+            <span className="text-sunshine-yellow font-bold">Dalla Ai </span>{' '}
+            <br />
             Recruiter Now
           </h1>
-          <p className="text-paragraph-xl mb-6 text-white/80">
+          <p className="text-paragraph-xl font-mont mb-6 text-balance text-white">
             Lorem Ipsum is simply dummy text of the printing and typesetting
             industry. Lorem Ipsum has been the industry&apos;s standard dummy
             text ever since the 1500s,
           </p>
           <Button
             variant="outline"
-            className="hover:text-slate-blue text-text-md lg:text-text-lg xl:text-text-xl !rounded-xl border-2 border-white bg-transparent px-6 py-2 font-medium text-white hover:bg-white lg:px-8 lg:py-3"
+            className="hover:text-slate-blue text-text-md lg:text-text-lg xl:text-text-xl h-[59px] !rounded-xl border-2 border-white bg-transparent px-6 py-2 font-medium text-white hover:bg-white lg:px-8 lg:py-3"
             size="lg"
           >
             Discover More

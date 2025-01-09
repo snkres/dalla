@@ -261,7 +261,7 @@ export default {
   },
 
   fontFamily: {
-    sans: [
+    sora: [
       'Sora Variable',
       'system-ui',
       '-apple-system',
@@ -271,6 +271,7 @@ export default {
       'Arial',
       'sans-serif',
     ],
+    mont: ['Montserrat Variable', 'system-ui', 'sans-serif'],
   },
 
   screens: {
