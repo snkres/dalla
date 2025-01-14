@@ -290,7 +290,7 @@ export default {
       'Arial',
       'sans-serif',
     ],
-    mont: ['Montserrat Variable', 'system-ui', 'sans-serif'],
+    inter: ['Inter Variable', 'system-ui', 'sans-serif'],
   },
 
   screens: {
