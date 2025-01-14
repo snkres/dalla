@@ -1,3 +1,4 @@
+'use client'
 import { Operations } from '@components/landing/operations'
 import { CTA } from '@components/landing/cta'
 import { Boxes } from '@components/landing/boxes'
@@ -8,8 +9,10 @@ import { Navbar } from '@components/landing/layout/navbar'
 import { UnlockingSuccess } from '@components/landing/unlocking-success'
 import { InsightsToEmpower } from '@components/landing/empower'
 import { Footer } from '@components/landing/layout/footer'
+import { useRouter } from 'next/navigation'
 
 export default function Home(): React.ReactNode {
+  window.location.href = '/login'
   return (
     <>
       <Navbar />

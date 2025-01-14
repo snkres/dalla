@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import '../globals.css'
 import '@fontsource-variable/sora'
+import '@fontsource-variable/inter'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { ViewTransitions } from 'next-view-transitions'
 
