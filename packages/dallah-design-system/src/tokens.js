@@ -3,145 +3,274 @@ export default {
     background: '#F8F8F8',
     foreground: '#FFFFFF',
     'slate-blue': {
-      10: '#F1F5F9',
-      20: '#E2E8F0',
-      30: '#CBD5E1',
-      40: '#94A3B8',
-      50: '#64748B',
-      60: '#475569',
-      70: '#334155',
-      80: '#1E293B',
-      90: '#0F172A',
-      100: '#020617',
-      DEFAULT: '#234D64',
+      10: '#E8F2F8',
+      20: '#D0E4F0',
+      30: '#B3D2E0',
+      40: '#9DC0D0',
+      50: '#7FADBE',
+      60: '#6E9AAA',
+      70: '#5E8697',
+      80: '#4E7384',
+      90: '#3D5F70',
+      100: '#2D4C5C',
     },
     'sunshine-yellow': {
-      10: '#CCFBF1',
-      20: '#99F6E4',
-      30: '#5EEAD4',
-      40: '#2DD4BF',
-      50: '#14B8A6',
-      60: '#0D9488',
-      70: '#0F766E',
-      80: '#115E59',
-      90: '#134E4A',
-      100: '#042F2E',
+      10: '#FFFDF9',
+      20: '#FEFDFC',
+      30: '#FCF9F4',
+      40: '#FBF5F0',
+      50: '#F9F0E2',
+      60: '#F8EACF',
+      70: '#F7E4BD',
+      80: '#F6DEA9',
+      90: '#F5D896',
+      100: '#F4D283',
       DEFAULT: '#F7CA71',
     },
     'coral-red': {
-      10: '#FFE4E6',
-      20: '#FECDD3',
-      30: '#FDA4AF',
-      40: '#FB7185',
-      50: '#F43F5E',
-      60: '#E11D48',
-      70: '#BE123C',
-      80: '#9F1239',
-      90: '#881337',
-      100: '#4C0519',
-    },
-    'navy-black': {
-      10: '#FEF3C7',
-      20: '#FDE68A',
-      30: '#FCD34D',
-      40: '#FBBF24',
-      50: '#F59E0B',
-      60: '#D97706',
-      70: '#B45309',
-      80: '#92400E',
-      90: '#78350F',
-      100: '#451A03',
+      10: '#FEF5F5',
+      20: '#FDEBEC',
+      30: '#FBDADB',
+      40: '#FAC8C9',
+      50: '#F5B7B9',
+      60: '#ECA5A7',
+      70: '#E39397',
+      80: '#DA8284',
+      90: '#D07072',
+      100: '#C75F60',
     },
     'snow-white': {
-      10: '#CCFBF1',
-      20: '#99F6E4',
-      30: '#5EEAD4',
-      40: '#2DD4BF',
-      50: '#14B8A6',
-      60: '#0D9488',
-      70: '#0F766E',
-      80: '#115E59',
-      90: '#134E4A',
-      100: '#042F2E',
+      10: '#FFF',
+      20: '#FFF',
+      30: '#FFF',
+      40: '#FFF',
+      50: '#FEFEFE',
+      60: '#FCFCFC',
+      70: '#FAFAFA',
+      80: '#F7F7F7',
+      90: '#F5F5F5',
+      100: '#F2F2F2',
     },
     destructive: {
       DEFAULT: '#F43F5E',
       disabled: '#FFE4E6',
       disabledText: '#FDA4AF',
     },
+    'text-primary': {
+      DEFAULT: '#101828',
+      'on-brand': '#FFF',
+    },
+    'text-secondary': {
+      DEFAULT: '#344054',
+      hover: '#182230',
+      'on-brand': '#9DC0D0',
+    },
+    'text-tertiary': {
+      DEFAULT: '#475467',
+      hover: '#344054',
+      'on-brand': '#9DC0D0',
+    },
+    'text-disabled': {
+      DEFAULT: '#667084',
+    },
+    'text-placeholder': {
+      DEFAULT: '#667084',
+      subtle: '#D0D5DD',
+    },
+    'text-brand': {
+      primary: '#2D4C5C',
+      secondry: '#4E7384',
+      tertiary: {
+        DEFAULT: '#5E8697',
+        alt: '#6E9AAA',
+      },
+    },
+    'text-error-primary': '#D92D20',
+    'text-warning-primary': '#DC6804',
+    'text-success-primary': '#2F9454',
   },
-
   fontSize: {
-    'display-lg': ['clamp(90px, 10vw, 180px)', { lineHeight: '1.1' }],
-    'display-md': ['clamp(64px, 8vw, 128px)', { lineHeight: '1.1' }],
-    'display-sm': ['clamp(48px, 6vw, 96px)', { lineHeight: '1.1' }],
-
-    'heading-2xl': ['clamp(36px, 5vw, 72px)', { lineHeight: '1.2' }],
-    'heading-xl': ['clamp(30px, 4vw, 60px)', { lineHeight: '1.2' }],
-    'heading-lg': ['clamp(24px, 3.5vw, 48px)', { lineHeight: '1.2' }],
-    'heading-md': ['clamp(20px, 3vw, 36px)', { lineHeight: '1.2' }],
-    'heading-sm': ['clamp(18px, 2.5vw, 30px)', { lineHeight: '1.2' }],
-    'heading-xs': ['clamp(16px, 2vw, 24px)', { lineHeight: '1.2' }],
-
-    'text-2xl': ['clamp(20px, 1.8vw, 24px)', { lineHeight: '1.5' }],
-    'text-xl': ['clamp(18px, 1.6vw, 20px)', { lineHeight: '1.5' }],
-    'text-lg': ['clamp(16px, 1.4vw, 18px)', { lineHeight: '1.5' }],
-    'text-md': ['clamp(14px, 1.2vw, 16px)', { lineHeight: '1.5' }],
-    'text-sm': ['clamp(12px, 1.1vw, 14px)', { lineHeight: '1.5' }],
-    'text-xs': ['clamp(10px, 1vw, 12px)', { lineHeight: '1.5' }],
-    'text-2xs': ['clamp(8px, 0.9vw, 10px)', { lineHeight: '1.5' }],
-
-    'paragraph-2xl': ['clamp(20px, 1.8vw, 24px)', { lineHeight: '1.6' }],
-    'paragraph-xl': ['clamp(18px, 1.6vw, 20px)', { lineHeight: '1.6' }],
-    'paragraph-lg': ['clamp(16px, 1.4vw, 18px)', { lineHeight: '1.6' }],
-    'paragraph-md': ['clamp(14px, 1.2vw, 16px)', { lineHeight: '1.6' }],
-    'paragraph-sm': ['clamp(12px, 1.1vw, 14px)', { lineHeight: '1.6' }],
-    'paragraph-xs': ['clamp(10px, 1vw, 12px)', { lineHeight: '1.6' }],
-
+    'display-2xl': [
+      '7.5rem',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'display-lg': [
+      '5.625rem',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'display-md': [
+      '4rem',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'display-sm': [
+      '3rem',
+      {
+        lineHeight: '1.1',
+      },
+    ],
+    'heading-2xl': [
+      '2.25rem',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-xl': [
+      '1.875rem',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-lg': [
+      '1.5rem',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-md': [
+      '1.25rem',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-sm': [
+      '1.125rem',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'heading-xs': [
+      '1rem',
+      {
+        lineHeight: '1.2',
+      },
+    ],
+    'text-2xl': [
+      '1.25rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-xl': [
+      '1.125rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-lg': [
+      '1rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-md': [
+      '0.875rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-sm': [
+      '0.75rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-xs': [
+      '0.625rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'text-2xs': [
+      '0.5rem',
+      {
+        lineHeight: '1.5',
+      },
+    ],
+    'paragraph-2xl': [
+      '1.25rem',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-xl': [
+      '1.125rem',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-lg': [
+      '1rem',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-md': [
+      '0.875rem',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-sm': [
+      '0.75rem',
+      {
+        lineHeight: '1.6',
+      },
+    ],
+    'paragraph-xs': [
+      '0.625rem',
+      {
+        lineHeight: '1.6',
+      },
+    ],
     'label-2xl': [
-      'clamp(18px, 1.6vw, 20px)',
+      '1.125rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-xl': [
-      'clamp(16px, 1.4vw, 18px)',
+      '1rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-lg': [
-      'clamp(14px, 1.2vw, 16px)',
+      '0.875rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-md': [
-      'clamp(12px, 1.1vw, 14px)',
+      '0.75rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-sm': [
-      'clamp(10px, 1vw, 12px)',
+      '0.625rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
     'label-xs': [
-      'clamp(8px, 0.9vw, 10px)',
+      '0.5rem',
       {
         fontWeight: '800',
         lineHeight: '1.4',
       },
     ],
   },
-
   fontWeight: {
     normal: '400',
     medium: '500',
@@ -151,7 +280,7 @@ export default {
   },
 
   fontFamily: {
-    sans: [
+    sora: [
       'Sora Variable',
       'system-ui',
       '-apple-system',
@@ -161,6 +290,7 @@ export default {
       'Arial',
       'sans-serif',
     ],
+    mont: ['Montserrat Variable', 'system-ui', 'sans-serif'],
   },
 
   screens: {
@@ -170,5 +300,11 @@ export default {
     lg: '1024px',
     xl: '1280px',
     '2xl': '1536px',
+    '2k': '2048px',
+    '4k': '3840px',
+  },
+  maxWidth: {
+    '2k': '2048px',
+    '4k': '3840px',
   },
 }
