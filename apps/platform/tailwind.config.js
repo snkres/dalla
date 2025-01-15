@@ -11,9 +11,7 @@ export default {
     // Add the external packages that are using Tailwind CSS
   ],
   theme: {
-    extend: {
-      ...designTokens,
-    },
+    ...designTokens,
   },
   plugins: [rombo],
 }
