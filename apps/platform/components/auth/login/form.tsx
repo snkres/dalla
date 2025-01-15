@@ -135,7 +135,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
                 : 'text-[#9A9A9A]',
             )}
           >
-            or sign in with
+            or
           </p>
           <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
         </div>
@@ -197,12 +197,12 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
       </div>
 
       <div className="mt-8">
-        <p className="text-text-sm text-center text-[#9A9A9A]">
+        <p className="font-inter text-center text-[0.875rem] leading-[1.25rem] text-[#475467]">
           Don't have an account?{' '}
           <Link
             href="/register"
             className={cn(
-              'font-semibold transition-colors duration-500',
+              'text-[0.875rem] font-semibold leading-[1.25rem] text-[#2D4C5C] transition-colors duration-500',
               mode === 'professional'
                 ? 'text-sunshine-yellow'
                 : 'text-slate-blue',
