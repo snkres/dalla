@@ -13,33 +13,25 @@ export function LoginLeftSide({
   return (
     <section
       className={cn(
-        'motion-ease-spring-smooth flex flex-1 flex-col items-center justify-center gap-6 transition-all duration-200',
+        'motion-ease-spring-smooth flex flex-1 flex-col items-center justify-center gap-8 transition-all duration-200',
         mode === 'professional'
           ? 'bg-slate-blue text-sunshine-yellow'
           : 'text-slate-blue bg-white',
       )}
     >
-      <LogoHorizontal
-        className={cn(
-          'w-56 transition-colors duration-500',
-          mode === 'professional'
-            ? 'fill-foreground'
-            : '[&_path]:fill-slate-blue',
-        )}
-      />
-      <div className="space-y-2">
+      <div className="flex flex-col items-center justify-center gap-3">
         <h1
           className={cn(
-            'text-heading-md text-center font-semibold transition-colors duration-500',
+            'font-sora text-center text-[2.0625rem] font-semibold leading-[130%] text-[#2D4C5C]',
             mode === 'professional'
               ? 'text-sunshine-yellow'
-              : 'text-slate-blue',
+              : 'text-slate-blue-100',
           )}
         >
           Log In to Your Dalla Account
         </h1>
-        <p className="text-paragraph-md mx-auto max-w-md text-center text-[#9A9A9A]">
-          Access your dashboard to connect with experts or manage your
+        <p className="font-inter mx-auto self-stretch text-center text-[1rem] leading-[150%] tracking-[-0.48px] text-[#7FADBE]">
+          Access your dashboard to connect with experts or manage your <br />
           consulting projects.
         </p>
       </div>

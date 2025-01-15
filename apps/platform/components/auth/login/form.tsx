@@ -31,44 +31,43 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
     console.log(data)
     // handle login logic here
   }
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-md space-y-6"
-    >
-      <div className="group relative w-full">
-        <label
-          className={cn(
-            'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
-            mode === 'professional'
-              ? 'bg-slate-blue text-sunshine-yellow'
-              : 'bg-white',
-          )}
-        >
-          Email
-        </label>
-        <Input
-          className={cn(
-            'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-            mode === 'professional'
-              ? 'bg-foreground text-zinc-900'
-              : 'bg-transparent',
-          )}
-          placeholder="Email"
-          type="email"
-          {...register('email')}
-        />
-        {errors.email && (
-          <p className="mt-2 text-xs text-red-500">{errors.email.message}</p>
-        )}
-      </div>
-      <div className="space-y-2">
-        <div className="relative">
-          <div className="group relative w-full">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-[29.625rem]">
+      <div className="flex flex-col gap-[0.375rem]">
+        <div className="flex flex-col gap-5">
+          <div className="flex w-full flex-col gap-[0.375rem]">
             <label
               className={cn(
-                'absolute start-1 top-0 z-10 block -translate-y-1/2 rounded-md px-2 text-xs font-medium text-[#232323] transition-colors duration-500 group-has-[:disabled]:opacity-50',
+                'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+                mode === 'professional'
+                  ? 'bg-slate-blue text-sunshine-yellow'
+                  : 'bg-white',
+              )}
+            >
+              Email
+            </label>
+            <Input
+              className={cn(
+                'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
+                mode === 'professional'
+                  ? 'bg-foreground text-zinc-900'
+                  : 'bg-transparent',
+              )}
+              placeholder="Email"
+              type="email"
+              {...register('email')}
+            />
+            {errors.email && (
+              <p className="mt-2 text-xs text-red-500">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="pass"
+              className={cn(
+                'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
                 mode === 'professional'
                   ? 'bg-slate-blue text-sunshine-yellow'
                   : 'bg-white',
@@ -76,95 +75,77 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
             >
               Password
             </label>
-            <Input
-              placeholder="Password"
-              type={isVisible ? 'text' : 'password'}
-              className={cn(
-                'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
-                mode === 'professional'
-                  ? 'bg-foreground text-zinc-900'
-                  : 'bg-transparent',
-              )}
-              {...register('password')}
-            />
-            {errors.password && (
-              <p className="mt-2 text-xs text-red-500">
-                {errors.password.message}
-              </p>
-            )}
+            <div className="relative">
+              <Input
+                id={'pass'}
+                className="text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none"
+                placeholder="Password"
+                type={isVisible ? 'text' : 'password'}
+                {...register('password')}
+              />
+              <button
+                className="text-muted-foreground/80 hover:text-foreground focus-visible:outline-ring/70 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg outline-offset-2 transition-colors focus:z-10 focus-visible:outline focus-visible:outline-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                type="button"
+                onClick={toggleVisibility}
+                aria-label={isVisible ? 'Hide password' : 'Show password'}
+                aria-pressed={isVisible}
+                aria-controls="password"
+              >
+                {isVisible ? (
+                  <EyeOff size={16} strokeWidth={2} aria-hidden="true" />
+                ) : (
+                  <Eye size={16} strokeWidth={2} aria-hidden="true" />
+                )}
+              </button>
+            </div>
           </div>
-          <button
+        </div>
+        <div className="flex items-center justify-end">
+          <Link
             className={cn(
-              'focus-visible:outline-ring/70 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-zinc-900 outline-offset-2 transition-colors hover:text-zinc-700 focus:z-10 focus-visible:outline focus-visible:outline-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+              'text-text-sm font-inter self-stretch text-right text-[0.875rem] leading-[1.25rem] text-[#475467] transition-colors duration-500',
+              mode === 'professional' ? 'text-foreground' : 'text-slate-blue',
             )}
-            type="button"
-            onClick={toggleVisibility}
-            aria-label={isVisible ? 'Hide password' : 'Show password'}
-            aria-pressed={isVisible}
-            aria-controls="password"
+            href="#"
           >
-            {isVisible ? (
-              <EyeOff size={16} strokeWidth={2} aria-hidden="true" />
-            ) : (
-              <Eye size={16} strokeWidth={2} aria-hidden="true" />
-            )}
-          </button>
+            Forget Password?
+          </Link>
         </div>
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-end space-x-2">
-          <Checkbox
-            id="rem"
-            className={cn(
-              mode === 'professional'
-                ? 'data-[state=checked]:bg-foreground !bg-foreground data-[state=checked]:text-slate-blue rounded-2xl'
-                : '',
-            )}
-          />
-          <div className="grid gap-1.5 leading-none">
-            <label
-              htmlFor="rem"
-              className="text-text-sm select-none font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Remember me
-            </label>
-          </div>
-        </div>
-        <Link
-          className={cn(
-            'text-text-sm transition-colors duration-500',
-            mode === 'professional' ? 'text-foreground' : 'text-slate-blue',
-          )}
-          href="#"
-        >
-          Forget Password?
-        </Link>
       </div>
       <Button
-        className="w-full rounded-xl"
+        className="mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid border-[rgba(255,255,255,0.12)] bg-[#F4D283] px-[1rem] py-[10px] shadow-inner"
         type="submit"
+        // style={{
+        //   boxShadow:
+        //     '0px 0px 0px 1px  rgba(16, 24, 40, 0.18) inset, 0px -2px 0px 0px  rgba(16, 24, 40, 0.05) inset, 0px 1px 2px 0px  rgba(16, 24, 40, 0.05)',
+        // }}
+        //TODO: Follow the exact shdow styles
         variant={mode === 'professional' ? 'secondary' : 'default'}
       >
         Log In
       </Button>
-      <div className="flex items-center gap-1">
-        <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
-        <p
-          className={cn(
-            'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
-            mode === 'professional'
-              ? 'text-slate-blue bg-sunshine-yellow'
-              : 'text-[#9A9A9A]',
-          )}
+      <div className="mt-4 flex flex-col gap-4">
+        <div className="flex items-center gap-1">
+          <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
+          <p
+            className={cn(
+              'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
+              mode === 'professional'
+                ? 'text-slate-blue bg-sunshine-yellow'
+                : 'text-[#9A9A9A]',
+            )}
+          >
+            or sign in with
+          </p>
+          <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
+        </div>
+
+        <Button
+          variant="outline"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
         >
-          or sign in with
-        </p>
-        <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Button variant="outline" className="bg-transparent">
           <svg
-            className="h-5 w-5"
+            className="h-6 w-6"
             viewBox="0 0 17 18"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -194,33 +175,28 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
               fill="#EA4335"
             />
           </svg>
-          Login with Google
+          <span>Login with Google</span>
         </Button>
-        <Button variant="outline" className="bg-transparent">
+        <Button
+          variant="outline"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
+        >
           <svg
-            className={`h-5 w-5 transition-colors duration-500 ${mode === 'professional' ? 'fill-sunshine-yellow' : 'fill-slate-blue'}`}
-            viewBox="0 0 22 25"
+            className="h-6 w-6"
+            viewBox="0 0 25 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <g clipPath="url(#clip0_194_2241)">
-              <path d="M5.20156 21.0769H0.846875V7.05659H5.20156V21.0769ZM3.02187 5.14409C1.62969 5.14409 0.5 3.99097 0.5 2.59878C0.5 1.92994 0.765697 1.28849 1.23864 0.815544C1.71158 0.342601 2.35303 0.0769043 3.02187 0.0769043C3.69072 0.0769043 4.33217 0.342601 4.80511 0.815544C5.27805 1.28849 5.54375 1.92994 5.54375 2.59878C5.54375 3.99097 4.41406 5.14409 3.02187 5.14409ZM21.4953 21.0769H17.15V14.2519C17.15 12.6253 17.1172 10.5394 14.8859 10.5394C12.6219 10.5394 12.275 12.3066 12.275 14.1347V21.0769H7.925V7.05659H12.1016V8.96909H12.1625C12.7438 7.86753 14.1641 6.70503 16.2828 6.70503C20.6891 6.70503 21.5 9.60659 21.5 13.3753V21.0769H21.4953Z" />
-            </g>
-            <defs>
-              <clipPath id="clip0_194_2241">
-                <rect
-                  width="21"
-                  height="24"
-                  fill="white"
-                  transform="translate(0.5 0.0769043)"
-                />
-              </clipPath>
-            </defs>
+            <path
+              d="M22.7283 0H2.27167C1.80179 0 1.35116 0.186657 1.01891 0.518909C0.686657 0.851161 0.5 1.30179 0.5 1.77167V22.2283C0.5 22.6982 0.686657 23.1488 1.01891 23.4811C1.35116 23.8133 1.80179 24 2.27167 24H22.7283C23.1982 24 23.6488 23.8133 23.9811 23.4811C24.3133 23.1488 24.5 22.6982 24.5 22.2283V1.77167C24.5 1.30179 24.3133 0.851161 23.9811 0.518909C23.6488 0.186657 23.1982 0 22.7283 0ZM7.65333 20.445H4.045V8.98333H7.65333V20.445ZM5.84667 7.395C5.43736 7.3927 5.03792 7.2692 4.69873 7.04009C4.35955 6.81098 4.09584 6.48653 3.94088 6.10769C3.78591 5.72885 3.74665 5.31259 3.82803 4.91145C3.90941 4.51032 4.1078 4.14228 4.39816 3.85378C4.68851 3.56529 5.05782 3.36927 5.45947 3.29046C5.86112 3.21165 6.27711 3.25359 6.65495 3.41099C7.03279 3.56838 7.35554 3.83417 7.58247 4.17481C7.80939 4.51546 7.93032 4.91569 7.93 5.325C7.93386 5.59903 7.88251 5.87104 7.77901 6.1248C7.67551 6.37857 7.52198 6.6089 7.32757 6.80207C7.13316 6.99523 6.90185 7.14728 6.64742 7.24915C6.393 7.35102 6.12067 7.40062 5.84667 7.395ZM20.9533 20.455H17.3467V14.1933C17.3467 12.3467 16.5617 11.7767 15.5483 11.7767C14.4783 11.7767 13.4283 12.5833 13.4283 14.24V20.455H9.82V8.99167H13.29V10.58H13.3367C13.685 9.875 14.905 8.67 16.7667 8.67C18.78 8.67 20.955 9.865 20.955 13.365L20.9533 20.455Z"
+              fill="#0A66C2"
+            />
           </svg>
-          Login with LinkedIn
+          <span>Login with LinkedIn</span>
         </Button>
       </div>
-      <div>
+
+      <div className="mt-8">
         <p className="text-text-sm text-center text-[#9A9A9A]">
           Don't have an account?{' '}
           <Link

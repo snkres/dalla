@@ -9,38 +9,48 @@ interface ModeToggleProps {
   plural?: boolean
 }
 
+const selectedClassName =
+  'text-[#FFFDF9] text-[0.875rem] font-semibold leading-[1.25rem] shadow-sm'
+
+const unselectedClassName =
+  'text-[#5E8697] text-[0.875rem] font-semibold leading-[1.25rem]'
+
 export function ModeToggle({
   mode,
   onModeChange,
   plural = false,
 }: ModeToggleProps) {
+  const handleToggle = () => {
+    onModeChange(mode === 'professional' ? 'companies' : 'professional')
+  }
+
   return (
-    <div
-      className={`bg-slate-blue z-20 flex items-center gap-2 rounded-full border-2 p-4 ${
-        mode === 'professional' ? 'border-sunshine-yellow' : ''
-      }`}
-    >
-      <span
-        className={`text-text-xl font-medium ${mode === 'companies' ? 'text-sunshine-yellow' : 'text-foreground'}`}
+    <div className="mx-auto flex w-[29.625rem] items-center justify-center gap-[0.25rem] self-stretch rounded-[0.625rem] border-[0.0625rem] border-solid border-[#E4E7EC] bg-[#FFFDF9] p-[0.25rem]">
+      <div
+        className={`font-inter flex h-[2.25rem] flex-[1_0_0] cursor-pointer items-center justify-center gap-[0.5rem] rounded-[0.375rem] px-[12px] py-2 transition-colors duration-200 ${
+          mode === 'professional'
+            ? 'bg-[#F4D283] ' + selectedClassName
+            : unselectedClassName
+        }`}
+        onClick={() => onModeChange('professional')}
       >
-        {plural ? 'Companies' : 'Company'}
-      </span>
-
+        Professional{plural && 's'}
+      </div>
+      <div
+        className={`flex h-[2.25rem] flex-[1_0_0] cursor-pointer items-center justify-center gap-[0.5rem] rounded-[0.375rem] px-[12px] py-2 transition-colors duration-200 ${
+          mode === 'companies'
+            ? 'bg-[#F4D283] ' + selectedClassName
+            : unselectedClassName
+        }`}
+        onClick={() => onModeChange('companies')}
+      >
+        Compan{plural ? 'ies' : 'y'}
+      </div>
       <Switch
-        checked={mode === 'professional'}
-        onCheckedChange={(checked) =>
-          onModeChange(checked ? 'professional' : 'companies')
-        }
-        className={
-          'data-[state=checked]:bg-sunshine-yellow [&_*]:!rounded-full [&_button]:p-4'
-        }
+        checked={mode === 'companies'}
+        onCheckedChange={handleToggle}
+        className="sr-only"
       />
-
-      <span
-        className={`text-text-xl font-medium ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-[#418FB9]'}`}
-      >
-        {plural ? 'Professionals' : 'Professional'}
-      </span>
     </div>
   )
 }
