@@ -101,3 +101,97 @@ export const EmailOTPIcon = () => (
     </defs>
   </svg>
 )
+
+export const EmailOTPDoneIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-14 w-14"
+    fill="none"
+    viewBox="0 0 60 60"
+  >
+    <g filter="url(#filter0_dii_4070_5395)">
+      <path
+        fill="#FFFDF9"
+        d="M2 13C2 6.373 7.373 1 14 1h32c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12H14C7.373 57 2 51.627 2 45z"
+      ></path>
+      <path
+        stroke="#E4E7EC"
+        d="M2.5 13C2.5 6.649 7.649 1.5 14 1.5h32c6.351 0 11.5 5.149 11.5 11.5v32c0 6.351-5.149 11.5-11.5 11.5H14C7.649 56.5 2.5 51.351 2.5 45z"
+      ></path>
+      <path
+        stroke="#5E8697"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="m24.75 29 3.5 3.5 7-7m6.416 3.5c0 6.443-5.223 11.666-11.666 11.666S18.333 35.443 18.333 29 23.556 17.333 30 17.333c6.443 0 11.666 5.223 11.666 11.667"
+      ></path>
+    </g>
+    <defs>
+      <filter
+        id="filter0_dii_4070_5395"
+        width="60"
+        height="60"
+        x="0"
+        y="0"
+        colorInterpolationFilters="sRGB"
+        filterUnits="userSpaceOnUse"
+      >
+        <feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood>
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        ></feColorMatrix>
+        <feOffset dy="1"></feOffset>
+        <feGaussianBlur stdDeviation="1"></feGaussianBlur>
+        <feComposite in2="hardAlpha" operator="out"></feComposite>
+        <feColorMatrix values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.05 0"></feColorMatrix>
+        <feBlend
+          in2="BackgroundImageFix"
+          result="effect1_dropShadow_4070_5395"
+        ></feBlend>
+        <feBlend
+          in="SourceGraphic"
+          in2="effect1_dropShadow_4070_5395"
+          result="shape"
+        ></feBlend>
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        ></feColorMatrix>
+        <feOffset dy="-2"></feOffset>
+        <feComposite
+          in2="hardAlpha"
+          k2="-1"
+          k3="1"
+          operator="arithmetic"
+        ></feComposite>
+        <feColorMatrix values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.05 0"></feColorMatrix>
+        <feBlend in2="shape" result="effect2_innerShadow_4070_5395"></feBlend>
+        <feColorMatrix
+          in="SourceAlpha"
+          result="hardAlpha"
+          values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        ></feColorMatrix>
+        <feMorphology
+          in="SourceAlpha"
+          radius="1"
+          result="effect3_innerShadow_4070_5395"
+        ></feMorphology>
+        <feOffset></feOffset>
+        <feComposite
+          in2="hardAlpha"
+          k2="-1"
+          k3="1"
+          operator="arithmetic"
+        ></feComposite>
+        <feColorMatrix values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.18 0"></feColorMatrix>
+        <feBlend
+          in2="effect2_innerShadow_4070_5395"
+          result="effect3_innerShadow_4070_5395"
+        ></feBlend>
+      </filter>
+    </defs>
+  </svg>
+)
