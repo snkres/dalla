@@ -4,7 +4,15 @@
 import { cn } from '@dallah/utils'
 import { OTPInput, SlotProps } from 'input-otp'
 
-export default function OTPInputComponent() {
+export default function OTPInputComponent({
+  onChange,
+  onComplete,
+  value,
+}: {
+  onChange: (value: string) => void
+  onComplete?: (value: string) => void
+  value: string
+}) {
   return (
     <div className="space-y-2">
       <OTPInput
@@ -18,6 +26,9 @@ export default function OTPInputComponent() {
             ))}
           </div>
         )}
+        onChange={onChange}
+        onComplete={onComplete}
+        value={value}
       />
     </div>
   )
@@ -27,7 +38,7 @@ function Slot(props: SlotProps) {
   return (
     <div
       className={cn(
-        'border-input bg-background text-heading-lg mx-1 flex h-20 w-24 items-center justify-center rounded-3xl border font-semibold text-[#D0D5DD] shadow-sm shadow-black/5 transition-shadow',
+        'border-input text-display-sm text-sunshine-yellow-100 ring-sunshine-yellow-100 mx-1 flex h-20 w-24 items-center justify-center rounded-xl border-2 font-semibold shadow-sm shadow-black/5 transition-shadow',
         props.isActive ? 'border-ring ring-ring/20 z-10 border ring-[3px]' : '',
       )}
     >
