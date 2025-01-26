@@ -19,6 +19,9 @@ export function LoginLeftSide({
           : 'text-slate-blue bg-white',
       )}
     >
+      <LogoHorizontal
+        className='[&_path]:fill-sunshine-yellow-100'
+      />
       <div className="flex flex-col items-center justify-center gap-3">
         <h1
           className={cn(
