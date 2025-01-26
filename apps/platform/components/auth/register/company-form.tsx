@@ -161,7 +161,7 @@ export function CompanyRegisterForm() {
             {...register('email')} />
           <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
             <svg className='w-5 h-5' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1.66699 5.83301L8.47109 10.5959C9.02207 10.9816 9.29756 11.1744 9.59721 11.2491C9.8619 11.3151 10.1387 11.3151 10.4034 11.2491C10.7031 11.1744 10.9786 10.9816 11.5296 10.5959L18.3337 5.83301M5.66699 16.6663H14.3337C15.7338 16.6663 16.4339 16.6663 16.9686 16.3939C17.439 16.1542 17.8215 15.7717 18.0612 15.3013C18.3337 14.7665 18.3337 14.0665 18.3337 12.6663V7.33301C18.3337 5.93288 18.3337 5.23281 18.0612 4.69803C17.8215 4.22763 17.439 3.84517 16.9686 3.60549C16.4339 3.33301 15.7338 3.33301 14.3337 3.33301H5.66699C4.26686 3.33301 3.5668 3.33301 3.03202 3.60549C2.56161 3.84517 2.17916 4.22763 1.93948 4.69803C1.66699 5.23281 1.66699 5.93288 1.66699 7.33301V12.6663C1.66699 14.0665 1.66699 14.7665 1.93948 15.3013C2.17916 15.7717 2.56161 16.1542 3.03202 16.3939C3.5668 16.6663 4.26686 16.6663 5.66699 16.6663Z" stroke="#667085" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M1.66699 5.83301L8.47109 10.5959C9.02207 10.9816 9.29756 11.1744 9.59721 11.2491C9.8619 11.3151 10.1387 11.3151 10.4034 11.2491C10.7031 11.1744 10.9786 10.9816 11.5296 10.5959L18.3337 5.83301M5.66699 16.6663H14.3337C15.7338 16.6663 16.4339 16.6663 16.9686 16.3939C17.439 16.1542 17.8215 15.7717 18.0612 15.3013C18.3337 14.7665 18.3337 14.0665 18.3337 12.6663V7.33301C18.3337 5.93288 18.3337 5.23281 18.0612 4.69803C17.8215 4.22763 17.439 3.84517 16.9686 3.60549C16.4339 3.33301 15.7338 3.33301 14.3337 3.33301H5.66699C4.26686 3.33301 3.5668 3.33301 3.03202 3.60549C2.56161 3.84517 2.17916 4.22763 1.93948 4.69803C1.66699 5.23281 1.66699 5.93288 1.66699 7.33301V12.6663C1.66699 14.0665 1.66699 14.7665 1.93948 15.3013C2.17916 15.7717 2.56161 16.1542 3.03202 16.3939C3.5668 16.6663 4.26686 16.6663 5.66699 16.6663Z" stroke="#667085" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
 
           </div>
@@ -227,9 +227,11 @@ export function CompanyRegisterForm() {
         <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
       </div>
       <Button
-
+        style={{
+          boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
+        }}
         variant="outline"
-        className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
+        className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] !shadow-[rgba(16, 24, 40, 0.18)]"
       >
         <svg
           className="h-6 w-6"
@@ -265,6 +267,9 @@ export function CompanyRegisterForm() {
         <span>Sign up with Google</span>
       </Button>
       <Button
+        style={{
+          boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
+        }}
         variant="outline"
         className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
       >
