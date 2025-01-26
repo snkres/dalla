@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html>
-        <body>
+        <body className='font-inter'>
           <NuqsAdapter> {children}</NuqsAdapter>
 
           {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import {
   Button,
   Select,
@@ -19,14 +20,24 @@ export function CompanyWizardStepTwo({
   ) => void
 }) {
   return (
-    <div className="space-y-8">
-      <div className="text-center">
+    <div className="flex flex-col">
+      <Image
+        src='/goals.svg'
+        alt='Goals and Needs'
+        width={800}
+        height={800}
+        className='w-12 h-12 mx-auto'
+      />
+      <div className="text-center flex flex-col items-center gap-1 px-6 mt-4">
         <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
           What are your goals or needs?
         </h2>
-        <p className="text-gray-500">Make a selection below</p>
+        <p className="text-paragraph-md text-slate-blue-90">
+          Make a selection below</p>
       </div>
-      <div className="flex flex-wrap gap-4">
+      <div className='h-0.5 w-full bg-[#E3E7EB] mt-5'>
+      </div>
+      <div className="flex flex-wrap gap-4 px-6 mt-5">
         {[
           'Remote Projects',
           'On-Site Work',
@@ -43,23 +54,23 @@ export function CompanyWizardStepTwo({
               updateData('workPreference', newPrefs)
             }}
             className={cn(
-              'h-auto justify-start !rounded-full px-6 py-4',
+              'h-auto justify-start !rounded-md px-5  py-[14px] !border-[1.5px] text-text-lg',
               !data.workPreference.includes(pref)
-                ? 'bg-transparent'
-                : 'text-sunshine-yellow',
+                ? '!bg-[#FFFDF9] text-slate-blue-100 border-sunshine-yellow-80'
+                : 'text-sunshine-yellow-10 bg-sunshine-yellow-100',
             )}
           >
             {pref}
           </Button>
         ))}
       </div>
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Target Industries</label>
+      <div className="space-y-2 px-6 mt-5">
+        <label className="text-text-md font-medium font-inter">Target Industries</label>
         <Select
           value={data.targetIndustry}
           onValueChange={(value) => updateData('targetIndustry', value)}
         >
-          <SelectTrigger className="w-full bg-transparent">
+          <SelectTrigger className="w-full  !text-text-lg !bg-[#FFFDF9] border-slate-blue-20 !font-normal shadow-sm">
             <SelectValue placeholder="Select an industry" />
           </SelectTrigger>
           <SelectContent>
@@ -68,6 +79,8 @@ export function CompanyWizardStepTwo({
             <SelectItem value="sports">Sports Management</SelectItem>
           </SelectContent>
         </Select>
+      </div>
+      <div className='h-0.5 w-full bg-[#E3E7EB] mt-8 mb-6'>
       </div>
     </div>
   )
