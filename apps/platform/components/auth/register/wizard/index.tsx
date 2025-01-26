@@ -60,29 +60,14 @@ export function OnboardingWizard() {
         </motion.div>
       ) : (
         <>
-          <div className="mx-auto mb-12 max-w-2xl">
-            <h1 className="text-sunshine-yellow mb-4 text-center text-4xl font-semibold">
-              {step === 1 && 'Select Your Focus Area'}
-              {step === 2 && 'Define Your Goals or Needs'}
-              {step === 3 && 'Add Key Details'}
-            </h1>
-            <p className="text-center text-white/90">
-              {step === 1 &&
-                'Let us know your expertise to connect you with relevant projects.'}
-              {step === 2 &&
-                'Define how you want to work and your target clients.'}
-              {step === 3 &&
-                'Add the finishing touches to showcase your profile to potential clients'}
-            </p>
-          </div>
-          <div className="mx-auto max-w-3xl rounded-xl border bg-white">
-            <div className="h-2 overflow-hidden rounded-t-xl bg-gray-200">
+          <div className="mx-auto max-w-[43rem] rounded-xl  bg-[#FFFDF9] shadow-lg">
+            <div className="h-2 overflow-hidden rounded-t-xl bg-[#F9E9CF]/50">
               <div
                 className="bg-sunshine-yellow h-full transition-all duration-300 ease-in-out"
                 style={{ width: `${((step as 1 | 2 | 3) / 3) * 100}%` }}
               />
             </div>
-            <div className="p-16">
+            <div className="py-6">
               <AnimatePresence mode="wait">
                 {step === 1 && (
                   <motion.div
@@ -124,12 +109,12 @@ export function OnboardingWizard() {
                 )}
               </AnimatePresence>
 
-              <div className="mt-8 flex items-center justify-center gap-4">
+              <div className=" flex items-center justify-center gap-4 px-6">
                 <Button
                   variant="ghost"
                   onClick={handleSkip}
                   size="lg"
-                  className="text-text-md"
+                  className="text-text-lg w-full "
                 >
                   Skip
                 </Button>
@@ -137,8 +122,14 @@ export function OnboardingWizard() {
                   onClick={handleNext}
                   variant="default"
                   size="lg"
-                  className="text-text-md rounded-xl"
+
+                  className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)]  flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[2px] px-[1rem] py-[10px] shadow-sm"
+                  type="submit"
+                  style={{
+                    boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
+                  }}
                 >
+
                   {step === 3 ? 'Complete Setup' : 'Continue'}
                 </Button>
               </div>
