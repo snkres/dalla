@@ -60,7 +60,7 @@ export function OnboardingWizard() {
         </motion.div>
       ) : (
         <>
-          <div className="mx-auto max-w-[43rem] rounded-xl  bg-[#FFFDF9] shadow-lg">
+          <div className="mx-auto max-w-[43rem] rounded-xl  bg-[#FFFDF9] shadow-lg ">
             <div className="h-2 overflow-hidden rounded-t-xl bg-[#F9E9CF]/50">
               <div
                 className="bg-sunshine-yellow h-full transition-all duration-300 ease-in-out"
