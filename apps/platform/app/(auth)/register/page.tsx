@@ -1,7 +1,6 @@
 'use client'
 import { useQueryState } from 'nuqs'
 import { LoginRightSide } from '@components/auth/login/right-side'
-import { LoginLeftSide } from '@components/auth/login/left-side'
 import { RegisterLeftSide } from '@components/auth/register/left-side'
 
 export default function RegisterPage(): React.ReactNode {
@@ -10,7 +9,7 @@ export default function RegisterPage(): React.ReactNode {
   })
 
   return (
-    <main className="bg-sunshine-yellow-10 flex max-h-screen w-full justify-between">
+    <main className="bg-sunshine-yellow-10  flex max-h-screen w-full justify-between">
       <RegisterLeftSide
         mode={mode as 'companies' | 'professional'}
         setMode={(mode) => setMode(mode as 'companies' | 'professional')}
