@@ -103,7 +103,7 @@ export function OnboardingWizard() {
                   >
                     <CompanyWizardStepThird
                       data={data}
-                      updateData={updateData}
+                      updateData={updateData as any}
                     />
                   </motion.div>
                 )}
@@ -123,10 +123,10 @@ export function OnboardingWizard() {
                   variant="default"
                   size="lg"
 
-                  className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)]  flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[2px] px-[1rem] py-[10px] shadow-sm"
+                  className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
                   type="submit"
                   style={{
-                    boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
+                    boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
                   }}
                 >
 
