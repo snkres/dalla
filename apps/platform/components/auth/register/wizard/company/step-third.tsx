@@ -1,13 +1,12 @@
 import Image from 'next/image'
-import { PictureUpload } from '@components/shared/picture-upload'
 import { Input } from '@dallah/design-system'
 import PhoneInput from '@dallah/components/phoneInput'
-import { CountryDropdown } from '@dallah/components/countrySelect'
 import { useState } from 'react'
 import { cn } from '@dallah/utils'
 import { number, z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Textarea } from '@dallah/design-system'
 
 const schema = z.object({
   industry: z.string(),
@@ -30,7 +29,7 @@ export function CompanyWizardStepThird({
   updateData: (
     field: keyof {
       country: string
-      phoneNumber: string
+      number: string
       address: string
       image: string | null
     },
@@ -150,33 +149,126 @@ export function CompanyWizardStepThird({
         </div>
         <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
         </div>
-        <div className="flex w-full flex-col gap-[0.375rem]">
-          <label
-            className={cn(
-              'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+        <div className='flex flex-col gap-4'>
+          <div className="flex w-full flex-col gap-[0.375rem]">
+            <label
+              className={cn(
+                'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+              )}
+            >
+              Website <span className="text-sunshine-yellow-100">*</span>
+            </label>
+            <div className="flex rounded-lg shadow-sm shadow-black/5">
+              <span className="bg-[#FFFDFA] inline-flex items-center rounded-s-lg border-e-0 px-3 text-text-lg text-[#475467] !border-[#D0D5DD] border">
+                https://
+              </span>
+              <Input
+                className={cn(
+                  ' h-12 bg-[#FFFDFA]  rounded-e-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none ',
+                )}
+                placeholder="www.Dalla.com"
+                type="companyWebsite"
+                {...register('website')}
+              />
+            </div>
+            {errors.website && (
+              <p className="mt-2 text-xs text-red-500">
+                {errors.website.message}
+              </p>
             )}
-          >
-            Website <span className="text-sunshine-yellow-100">*</span>
-          </label>
-          <div className="flex rounded-lg shadow-sm shadow-black/5">
-            <span className="inline-flex items-center rounded-s-lg  bg-background px-3 text-sm text-[#475467] border-[#D0D5DD] border-r-2">
-              https://
-            </span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex w-full flex-col gap-[0.375rem]">
+              <label
+                className={cn(
+                  'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+                )}
+              >
+                Industry
+              </label>
+              <Input
+                className="rounded-md"
+                placeholder="Industry"
+                type="industry"
+                {...register('industry')}
+              />
+              {errors.industry && (
+                <p className="mt-2 text-xs text-red-500">
+                  {errors.industry.message}
+                </p>
+              )}
+            </div>
+            <div className="flex w-full flex-col gap-[0.375rem]">
+              <label className="text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]">
+                Business Type
+              </label>
+              <Input
+                className="rounded-md"
+                placeholder="e.g. startup"
+                type="businessType"
+                {...register('type')}
+              />
+              {errors.type && (
+                <p className="mt-2 text-xs text-red-500">
+                  {errors.type.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="flex w-full flex-col gap-[0.375rem]">
+            <label
+              className={cn(
+                'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+              )}
+            >
+              Company Size
+            </label>
             <Input
               className={cn(
-                'text-text-sm h-12 rounded-xl bg-transparent pe-9 transition-colors duration-500 focus:outline-none bord',
+                'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
               )}
-              placeholder="Website"
-              type="companyWebsite"
-              {...register('website')}
+              placeholder="Enter your company size"
+              type="name"
+              {...register('size')}
             />
+            {errors.size && (
+              <p className="mt-2 text-xs text-red-500">{errors.size.message}</p>
+            )}
           </div>
-          {errors.website && (
-            <p className="mt-2 text-xs text-red-500">
-              {errors.website.message}
-            </p>
-          )}
+          <div className="flex flex-col gap-[0.375rem]">
+            <label
+              className={cn(
+                'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+              )}
+            >
+              Phone Number
+            </label>
+            <PhoneInput onChange={(e) => updateData('number', e)}
+            />
+            {errors.number && (
+              <p className="mt-2 text-xs text-red-500">{errors.number.message}</p>
+            )}
+          </div>
         </div>
+      </div>
+      <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
+      </div>
+      <div className="flex flex-col gap-[0.375rem] px-6">
+        <label
+          className={cn(
+            'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+          )}
+        >
+          Address
+        </label>
+        <Textarea placeholder='Write the company address' className='text-[#475467] shadow-sm h-20'
+          {...register('address')}
+        />
+        {errors.address && (
+          <p className="mt-2 text-xs text-red-500">{errors.address.message}</p>
+        )}
+      </div>
+      <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
       </div>
     </div>
   )
