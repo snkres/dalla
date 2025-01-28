@@ -41,7 +41,7 @@ const PhoneInput = forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
     return (
       <Input
         className={cn(
-          '-ms-px rounded-s-none shadow-none focus-visible:z-10',
+          '-ms-px rounded-s-none shadow-none focus-visible:z-10 rounded-e-lg',
           className,
         )}
         ref={ref}
@@ -71,11 +71,11 @@ const CountrySelect = ({
   }
 
   return (
-    <div className="border-input bg-background text-muted-foreground focus-within:border-ring focus-within:ring-ring/20 hover:bg-accent hover:text-foreground relative inline-flex items-center self-stretch rounded-s-lg border py-2 pe-2 ps-3 transition-shadow focus-within:z-10 focus-within:outline-none focus-within:ring-[3px] has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
+    <div className="border-[#D0D5DD] bg-background text-muted-foreground focus-within:border-ring focus-within:ring-ring/20 hover:bg-accent hover:text-foreground relative inline-flex items-center self-stretch rounded-s-lg border border-e-0 !bg-[#FFFDF9] py-2 ps-3 transition-shadow focus-within:z-10 focus-within:outline-none focus-within:ring-[3px] has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
       <div className="inline-flex items-center gap-1" aria-hidden="true">
         <FlagComponent country={value} countryName={value} aria-hidden="true" />
-        <span className="text-muted-foreground/80">
-          <ChevronDown size={16} strokeWidth={2} aria-hidden="true" />
+        <span className="text-slate-blue-100">
+          <ChevronDown size={20} strokeWidth={2} aria-hidden="true" />
         </span>
       </div>
       <select
