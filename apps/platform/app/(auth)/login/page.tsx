@@ -9,7 +9,7 @@ export default function Login(): React.ReactNode {
   })
 
   return (
-    <main className="flex max-h-screen w-full justify-between">
+    <main className="flex max-h-screen w-full justify-between bg-sunshine-yellow-10">
       <LoginLeftSide
         mode={mode as 'companies' | 'professional'}
         setMode={(mode) => setMode(mode as 'companies' | 'professional')}
