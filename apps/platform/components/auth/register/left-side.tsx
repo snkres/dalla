@@ -1,8 +1,8 @@
 import { ModeToggle } from '@components/shared/mode-toggle'
 import { LogoHorizontal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import { CompanyRegisterForm } from './company-form'
-import { ProRegisterForm } from './pro-form'
+import { RegisterForm } from './form'
+
 
 export function RegisterLeftSide({
   mode,
@@ -21,15 +21,19 @@ export function RegisterLeftSide({
       )}
     >
       <LogoHorizontal
-        className='[&_path]:fill-sunshine-yellow-100'
+        className={
+          cn(
+            mode === 'companies' ? '[&_path]:fill-sunshine-yellow-100' : '[&_path]:fill-coral-red-100',
+          )
+        }
       />
       <div className="flex max-w-[30.125rem] flex-col items-center justify-center gap-3">
         <h1
           className={cn(
             'font-sora text-center text-[2.0625rem] font-semibold leading-[130%] text-[#2D4C5C]',
-            mode === 'professional'
-              ? 'text-sunshine-yellow'
-              : 'text-slate-blue-100',
+            // mode === 'professional'
+            // ? 'text-sunshine-yellow'
+            'text-slate-blue-100',
           )}
         >
           Join Dalla Today!
@@ -43,7 +47,7 @@ export function RegisterLeftSide({
         mode={mode as 'companies' | 'professional'}
         onModeChange={(mode) => setMode(mode as 'companies' | 'professional')}
       />
-      {mode === 'companies' ? <CompanyRegisterForm /> : <ProRegisterForm />}
+      <RegisterForm mode={mode} />
     </section>
   )
 }

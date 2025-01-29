@@ -19,7 +19,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export function CompanyRegisterForm() {
+export function RegisterForm({
+  mode,
+}: {
+  mode: 'companies' | 'professional'
+}) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
@@ -33,8 +37,12 @@ export function CompanyRegisterForm() {
   })
 
   const onSubmit = (data: FormData) => {
-    console.log(data)
-    // handle login logic here
+    if (mode === 'companies') {
+      console.log('company data', data)
+    } else {
+      console.log('professional data', data)
+      // handle login logic here
+    }
   }
   return (
     <form
@@ -47,7 +55,11 @@ export function CompanyRegisterForm() {
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
           )}
         >
-          Company Name <span className="text-sunshine-yellow-100">*</span>
+          Company Name <span className={
+            cn(
+              mode === 'professional' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
+            )
+          }>*</span>
         </label>
         <Input
           className={cn(
@@ -67,7 +79,11 @@ export function CompanyRegisterForm() {
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
           )}
         >
-          Email <span className="text-sunshine-yellow-100">*</span>
+          Email <span className={
+            cn(
+              mode === 'professional' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
+            )
+          }>*</span>
         </label>
         <div className="relative">
           <Input className={cn('rounded-md peer ps-10')}
@@ -92,7 +108,11 @@ export function CompanyRegisterForm() {
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
           )}
         >
-          Password <span className="text-sunshine-yellow-100">*</span>
+          Password <span className={
+            cn(
+              mode === 'professional' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
+            )
+          }>*</span>
         </label>
         <div className="relative">
           <Input
@@ -119,7 +139,14 @@ export function CompanyRegisterForm() {
       </div>
 
       <Button
-        className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
+        className={
+          cn(
+            "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+            mode === 'professional'
+              ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
+
+          )
+        }
         type="submit"
         style={{
           boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
@@ -208,8 +235,10 @@ export function CompanyRegisterForm() {
           <Link
             href="/login"
             className={cn(
-              'text-[0.875rem] font-semibold leading-[1.25rem] transition-colors duration-500 text-sunshine-yellow-100',
-
+              'text-[0.875rem] font-semibold leading-[1.25rem] text-[#2D4C5C] transition-colors duration-500',
+              mode === 'companies'
+                ? 'text-sunshine-yellow'
+                : 'text-coral-red-100',
             )}
           >
             Log in
