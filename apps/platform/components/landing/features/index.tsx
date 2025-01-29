@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
-import { ModeToggle } from './mode-toggle'
+import { ModeToggle } from '../../shared/mode-toggle'
 import { FeatureCard } from './feature-card'
 import { SearchForm } from './search-form'
 import { motion, useTransform, useScroll, AnimatePresence } from 'motion/react'
@@ -57,7 +57,7 @@ export function Features() {
         }}
         className="sticky top-10 z-10 flex justify-center"
       >
-        <ModeToggle mode={mode} onModeChange={setMode} />
+        <ModeToggle mode={mode} onModeChange={setMode} plural />
       </motion.div>
 
       <motion.div
