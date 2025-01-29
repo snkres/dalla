@@ -47,6 +47,7 @@
     "@fontsource-variable/sora": "^5.1.0",
     "@hookform/resolvers": "^3.9.1",
     "@next/eslint-plugin-next": "^15.0.3",
+    "axios": "^1.7.9",
     "motion": "^11.15.0",
     "next-view-transitions": "^0.3.4",
     "react-hook-form": "^7.54.2",
