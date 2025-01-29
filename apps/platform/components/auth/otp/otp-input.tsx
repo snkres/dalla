@@ -8,10 +8,12 @@ export default function OTPInputComponent({
   onChange,
   onComplete,
   value,
+  mode
 }: {
   onChange: (value: string) => void
   onComplete?: (value: string) => void
   value: string
+  mode: 'companies' | 'professional'
 }) {
   return (
     <div className="space-y-2">
@@ -20,7 +22,14 @@ export default function OTPInputComponent({
         containerClassName="flex items-center gap-3 has-[:disabled]:opacity-50"
         maxLength={4}
         render={({ slots }) => (
-          <div className="flex gap-2">
+          <div className={
+            cn(
+              "flex gap-2 ",
+              mode === 'professional'
+                ? '[&_*]:text-coral-red-100 [&_*]:ring-coral-red-100'
+                : ''
+            )
+          }>
             {slots.map((slot, idx) => (
               <Slot key={idx} {...slot} />
             ))}

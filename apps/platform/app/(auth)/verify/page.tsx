@@ -4,9 +4,12 @@ import { EmailOTPDoneIcon, EmailOTPIcon } from '@components/shared/icons'
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import OTPInputComponent from '@components/auth/otp/otp-input'
+import { cn } from '@dallah/utils'
+
+const mode = 'professional' as 'companies' | 'professional'
 
 export default function page() {
-  const [manually, setManually] = useState(true)
+  const [manually, setManually] = useState(false)
   const [otp, setOtp] = useState('')
   const [done, setDone] = useState(false)
   const onChangeOTP = (value: string) => {
@@ -33,7 +36,14 @@ export default function page() {
           </div>
           {!manually ? (
             <Button
-              className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg mx-auto mt-2 flex w-[22.5rem] items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[2px] px-[1rem] py-[10px] shadow-sm"
+              className={
+                cn(
+                  "!w-[22.5rem] mx-auto text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+                  mode === 'professional'
+                    ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
+
+                )
+              }
               style={{
                 boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
               }}
@@ -43,9 +53,16 @@ export default function page() {
             </Button>
           ) : (
             <div className="flex flex-col items-center justify-center gap-8">
-              <OTPInputComponent onChange={onChangeOTP} value={otp} />
+              <OTPInputComponent onChange={onChangeOTP} value={otp} mode={mode} />
               <Button
-                className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg bg-sunshine-yellow-100 mx-auto mt-2 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-2 border-solid border-[#D0B981] px-[1rem] py-[10px] shadow-sm"
+                className={
+                  cn(
+                    "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+                    mode === 'professional'
+                      ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
+
+                  )
+                }
                 style={{
                   boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
                 }}
@@ -57,7 +74,11 @@ export default function page() {
                 <span className="text-slate-blue-50">
                   Didn’t receive the email?
                 </span>
-                <span className="text-sunshine-yellow-100 cursor-pointer font-semibold">
+                <span className={
+                  cn(" cursor-pointer font-semibold",
+                    mode === 'professional' ? 'text-coral-red-100' : 'text-sunshine-yellow-100'
+                  )
+                }>
                   Click to resend
                 </span>
               </p>
@@ -77,7 +98,14 @@ export default function page() {
             </p>
           </div>
           <Button
-            className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg mx-auto mt-2 flex w-[22.5rem] items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[2px] px-[1rem] py-[10px] shadow-sm"
+            className={
+              cn(
+                "!w-[22.5rem] mx-auto text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+                mode === 'professional'
+                  ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
+
+              )
+            }
             style={{
               boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
             }}
