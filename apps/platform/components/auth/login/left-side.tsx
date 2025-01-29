@@ -20,20 +20,25 @@ export function LoginLeftSide({
       )}
     >
       <LogoHorizontal
-        className='[&_path]:fill-sunshine-yellow-100'
+        className={
+          cn(
+            mode === 'companies' ? '[&_path]:fill-sunshine-yellow-100' : '[&_path]:fill-coral-red-100',
+          )
+        }
       />
       <div className="flex flex-col items-center justify-center gap-3">
         <h1
           className={cn(
             'font-sora text-center text-[2.0625rem] font-semibold leading-[130%] text-[#2D4C5C]',
-            mode === 'professional'
-              ? 'text-sunshine-yellow'
-              : 'text-slate-blue-100',
+            // mode === 'professional'
+            // ? 'text-sunshine-yellow'
+            // :
+            'text-slate-blue-100',
           )}
         >
           Log In to Your Dalla Account
         </h1>
-        <p className="font-inter mx-auto self-stretch text-center text-[1rem] leading-[150%] tracking-[-0.48px] text-[#7FADBE]">
+        <p className="font-inter mx-auto self-stretch text-center text-[1rem] leading-[150%] tracking-[-0.48px] text-slate-blue-50">
           Access your dashboard to connect with experts or manage your <br />
           consulting projects.
         </p>
