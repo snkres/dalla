@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 import { Button, LogoHorizontal } from '@dallah/design-system'
 import { Menu, X } from 'lucide-react'
 import {
@@ -77,7 +77,7 @@ export function Navbar() {
                 variant="secondary"
                 className="text-text-lg !rounded-full !px-4 !py-7 !font-bold"
               >
-                <Link href="/">Get Started</Link>
+                <Link href="/login">Get Started</Link>
               </Button>
             </div>
           </div>
@@ -119,7 +119,7 @@ export function Navbar() {
             variant="secondary"
             className="text-text-md w-full !rounded-full !px-4 !py-7 !font-bold"
           >
-            <Link href="/">Get Started</Link>
+            <Link href="/login">Get Started</Link>
           </Button>
         </div>
       </div>
