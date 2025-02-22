@@ -117,9 +117,9 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
       <Button
         className={
           cn(
-            "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+            "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
             mode === 'professional'
-              ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
+              ? '!bg-coral-red-100 !border-[#9F5055] hover:!bg-coral-red-80' : 'border-[#CEB67B] bg-[#F4D283]'
 
           )
         }
