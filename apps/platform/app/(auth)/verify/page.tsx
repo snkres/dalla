@@ -5,8 +5,9 @@ import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import OTPInputComponent from '@components/auth/otp/otp-input'
 import { cn } from '@dallah/utils'
+import { Link } from 'next-view-transitions'
 
-const mode = 'professional' as 'companies' | 'professional'
+const mode = 'companies' as 'companies' | 'professional'
 
 export default function page() {
   const [manually, setManually] = useState(false)
@@ -115,13 +116,17 @@ export default function page() {
           </Button>
         </>
       )}
+
       <Button
         className="text-slate-blue-90 text-text-md flex items-center gap-[0.375rem] font-semibold"
         variant="ghost"
-      >
-        <ArrowLeft className="h-5 w-5" />
-        <span>Back to log in</span>
+        asChild
+      ><Link href='/login'>
+          <ArrowLeft className="h-5 w-5" />
+          <span>Back to log in</span>
+        </Link>
       </Button>
+
     </main>
   )
 }
