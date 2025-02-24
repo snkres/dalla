@@ -55,7 +55,7 @@ export function Hero() {
             <div className="absolute left-0 top-0 -translate-x-1/4 -translate-y-1/4 transform rounded-full bg-[#FFB155] px-4 py-2 text-white">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">💫</span>
-                <span>Build a professional brand image</span>
+                <span>Build a pro brand image</span>
               </div>
             </div>
 
@@ -86,7 +86,7 @@ export function Hero() {
 
             <div className="absolute right-0 top-1/4 translate-x-1/4 transform rounded-lg bg-[#FFB155] px-4 py-2 text-[#0B2A3D]">
               <div className="flex items-center gap-2">
-                <span>24,000+ Verified Professionals</span>
+                <span>24,000+ Verified pros</span>
                 <div className="h-6 w-6 rounded-full bg-purple-500" />
               </div>
             </div>

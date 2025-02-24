@@ -7,7 +7,7 @@ import OTPInputComponent from '@components/auth/otp/otp-input'
 import { cn } from '@dallah/utils'
 import { Link } from 'next-view-transitions'
 
-const mode = 'companies' as 'companies' | 'professional'
+const mode = 'companies' as 'companies' | 'pro'
 
 export default function page() {
   const [manually, setManually] = useState(false)
@@ -40,7 +40,7 @@ export default function page() {
               className={
                 cn(
                   "!w-[22.5rem] mx-auto text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
-                  mode === 'professional'
+                  mode === 'pro'
                     ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
 
                 )
@@ -59,7 +59,7 @@ export default function page() {
                 className={
                   cn(
                     "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
-                    mode === 'professional'
+                    mode === 'pro'
                       ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
 
                   )
@@ -77,7 +77,7 @@ export default function page() {
                 </span>
                 <span className={
                   cn(" cursor-pointer font-semibold",
-                    mode === 'professional' ? 'text-coral-red-100' : 'text-sunshine-yellow-100'
+                    mode === 'pro' ? 'text-coral-red-100' : 'text-sunshine-yellow-100'
                   )
                 }>
                   Click to resend
@@ -102,7 +102,7 @@ export default function page() {
             className={
               cn(
                 "!w-[22.5rem] mx-auto text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
-                mode === 'professional'
+                mode === 'pro'
                   ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
 
               )

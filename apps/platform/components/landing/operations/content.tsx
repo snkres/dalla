@@ -46,7 +46,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Cultural Strategies',
-    description: '45 Professional available',
+    description: '45 pro available',
   },
   {
     icon: (
@@ -93,7 +93,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Sports Event Planning',
-    description: '43 Professional available',
+    description: '43 pro available',
   },
   {
     icon: (
@@ -136,7 +136,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Arts & Creative Identity',
-    description: '14 Professional available',
+    description: '14 pro available',
   },
   {
     icon: (
@@ -172,7 +172,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Development',
-    description: '66 Professional available',
+    description: '66 pro available',
   },
   {
     icon: (
@@ -208,7 +208,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Development',
-    description: '66 Professional available',
+    description: '66 pro available',
   },
   {
     icon: (
@@ -237,7 +237,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Franchise Expansion',
-    description: '43 Professional available',
+    description: '43 pro available',
   },
   {
     icon: (
@@ -280,7 +280,7 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Corporate Feasibility',
-    description: '18 Professional available',
+    description: '18 pro available',
   },
   {
     icon: (
@@ -323,6 +323,6 @@ export const operations: Operation[] = [
       </svg>
     ),
     title: 'Development',
-    description: '66 Professional available',
+    description: '66 pro available',
   },
 ]

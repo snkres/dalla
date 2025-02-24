@@ -13,7 +13,7 @@ export default function OTPInputComponent({
   onChange: (value: string) => void
   onComplete?: (value: string) => void
   value: string
-  mode: 'companies' | 'professional'
+  mode: 'companies' | 'pro'
 }) {
   return (
     <div className="space-y-2">
@@ -25,7 +25,7 @@ export default function OTPInputComponent({
           <div className={
             cn(
               "flex gap-2 ",
-              mode === 'professional'
+              mode === 'pro'
                 ? '[&_*]:text-coral-red-100 [&_*]:ring-coral-red-100'
                 : ''
             )

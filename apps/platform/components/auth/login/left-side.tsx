@@ -7,14 +7,14 @@ export function LoginLeftSide({
   mode,
   setMode,
 }: {
-  mode: 'companies' | 'professional'
-  setMode: (mode: 'companies' | 'professional') => void
+  mode: 'company' | 'pro'
+  setMode: (mode: 'company' | 'pro') => void
 }) {
   return (
     <section
       className={cn(
         'motion-ease-spring-smooth flex flex-1 flex-col items-center justify-center gap-8 transition-all duration-200',
-        mode === 'professional'
+        mode === 'pro'
           ? 'bg-slate-blue text-sunshine-yellow'
           : 'text-slate-blue bg-white',
       )}
@@ -22,7 +22,7 @@ export function LoginLeftSide({
       <LogoHorizontal
         className={
           cn(
-            mode === 'companies' ? '[&_path]:fill-sunshine-yellow-100' : '[&_path]:fill-coral-red-100',
+            mode === 'company' ? '[&_path]:fill-sunshine-yellow-100' : '[&_path]:fill-coral-red-100',
           )
         }
       />
@@ -30,7 +30,7 @@ export function LoginLeftSide({
         <h1
           className={cn(
             'font-sora text-center text-[2.0625rem] font-semibold leading-[130%] text-[#2D4C5C]',
-            // mode === 'professional'
+            // mode === 'pro'
             // ? 'text-sunshine-yellow'
             // :
             'text-slate-blue-100',
@@ -44,8 +44,8 @@ export function LoginLeftSide({
         </p>
       </div>
       <ModeToggle
-        mode={mode as 'companies' | 'professional'}
-        onModeChange={(mode) => setMode(mode as 'companies' | 'professional')}
+        mode={mode as 'company' | 'pro'}
+        onModeChange={(mode) => setMode(mode as 'company' | 'pro')}
       />
       <LoginForm mode={mode} />
     </section>

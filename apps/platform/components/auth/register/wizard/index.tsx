@@ -7,6 +7,7 @@ import { CompanyWizardStepThird } from './company/step-third'
 import { useState } from 'react'
 import { SuccessfulPopUp } from './company/successful-popup'
 import { motion, AnimatePresence } from 'motion/react'
+import { ProWizardStepOne } from './pro/step-one'
 
 interface OnboardingData {
   focusArea: string[]
@@ -18,7 +19,11 @@ interface OnboardingData {
   image: string | null
 }
 
-export function OnboardingWizard() {
+export function OnboardingWizard({
+  mode
+}: {
+  mode: 'pro' | 'company'
+}) {
   const [step, setStep] = useState<1 | 2 | 3 | true>(1)
   const [data, setData] = useState<OnboardingData>({
     focusArea: [],
@@ -59,7 +64,78 @@ export function OnboardingWizard() {
           <SuccessfulPopUp />
         </motion.div>
       ) : (
-        <>
+        mode === 'pro' ? (
+          <div className="mx-auto max-w-[43rem] rounded-xl  bg-[#FFFDF9] shadow-lg ">
+            <div className="h-2 overflow-hidden rounded-t-xl bg-coral-red-100/20">
+              <div
+                className="bg-coral-red-100 h-full transition-all duration-300 ease-in-out"
+                style={{ width: `${((step as 1 | 2 | 3) / 3) * 100}%` }}
+              />
+            </div>
+            <div className="py-6">
+              <AnimatePresence mode="wait">
+                {step === 1 && (
+                  <motion.div
+                    key="step1"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 50 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <ProWizardStepOne
+                      data={data}
+                      updateData={updateData as any}
+                    />
+                  </motion.div>
+                )}
+
+                {step === 2 && (
+                  <motion.div
+                    key="step2"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 50 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <CompanyWizardStepTwo data={data} updateData={updateData} />
+                  </motion.div>
+                )}
+
+                {step === 3 && (
+                  <motion.div
+                    key="step3"
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 50 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <CompanyWizardStepThird
+                      data={data}
+                      updateData={updateData as any}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div className=" flex items-center justify-center gap-4 px-6">
+                <Button
+                  onClick={handleNext}
+                  variant="default"
+                  size="lg"
+
+                  className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-coral-red-100 stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
+                  type="submit"
+                  style={{
+                    boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
+                  }}
+                >
+
+                  {step === 3 ? 'Complete Setup' : 'Continue'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="mx-auto max-w-[43rem] rounded-xl  bg-[#FFFDF9] shadow-lg ">
             <div className="h-2 overflow-hidden rounded-t-xl bg-[#F9E9CF]/50">
               <div
@@ -135,7 +211,7 @@ export function OnboardingWizard() {
               </div>
             </div>
           </div>
-        </>
+        )
       )}
     </AnimatePresence>
   )

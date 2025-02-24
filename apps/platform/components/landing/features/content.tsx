@@ -168,7 +168,7 @@ export const companyFeatures = [
   },
 ]
 
-export const professionalFeatures = [
+export const proFeatures = [
   {
     icon: (
       <svg

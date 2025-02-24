@@ -12,7 +12,7 @@ export function SuccessfulPopUp() {
         Profile Setup Complete!
       </h2>
       <p className="text-paragraph-md text-center text-slate-blue-100">
-        Your profile is ready! Start exploring professionals now.
+        Your profile is ready! Start exploring pros now.
       </p>
       <Button
         asChild

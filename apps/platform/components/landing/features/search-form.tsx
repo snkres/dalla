@@ -10,22 +10,21 @@ import {
 } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 
-export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
+export function SearchForm({ mode }: { mode: 'companies' | 'pro' }) {
   return (
     <div className="space-y-6">
       <h2
-        className={`text-center text-2xl font-semibold tracking-tight ${
-          mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'
-        }`}
+        className={`text-center text-2xl font-semibold tracking-tight ${mode === 'pro' ? 'text-sunshine-yellow' : 'text-slate-blue'
+          }`}
       >
         {mode === 'companies'
-          ? 'FIND YOUR PERFECT PROFESSIONAL.'
+          ? 'FIND YOUR PERFECT pro.'
           : 'FIND YOUR PERFECT CONTRACT.'}
       </h2>
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
           <span
-            className={mode === 'professional' ? 'text-sunshine-yellow' : ''}
+            className={mode === 'pro' ? 'text-sunshine-yellow' : ''}
           >
             Experience
           </span>
@@ -42,7 +41,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
         <div className="space-y-2">
           <span
-            className={mode === 'professional' ? 'text-sunshine-yellow' : ''}
+            className={mode === 'pro' ? 'text-sunshine-yellow' : ''}
           >
             Industry
           </span>
@@ -62,7 +61,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
         <div className="flex flex-col gap-2">
           <span
-            className={mode === 'professional' ? 'text-sunshine-yellow' : ''}
+            className={mode === 'pro' ? 'text-sunshine-yellow' : ''}
           >
             Budget
           </span>
@@ -81,7 +80,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
             <span
               className={cn(
                 'text-text-sm',
-                mode === 'professional' ? 'text-sunshine-yellow' : '',
+                mode === 'pro' ? 'text-sunshine-yellow' : '',
               )}
             >
               To:
@@ -100,11 +99,10 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
       </div>
       <Button
-        className={`text-text-sm w-full !rounded-full bg-transparent ${
-          mode === 'companies'
+        className={`text-text-sm w-full !rounded-full bg-transparent ${mode === 'companies'
             ? 'border-slate-blue text-slate-blue'
             : 'border-sunshine-yellow text-sunshine-yellow'
-        }`}
+          }`}
         variant={'outline'}
       >
         <svg
@@ -121,7 +119,7 @@ export function SearchForm({ mode }: { mode: 'companies' | 'professional' }) {
             strokeWidth="0.3"
           />
         </svg>
-        Find a Professional
+        Find a pro
       </Button>
     </div>
   )

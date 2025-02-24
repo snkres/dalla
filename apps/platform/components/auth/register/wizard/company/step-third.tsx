@@ -77,7 +77,7 @@ export function CompanyWizardStepThird({
           Finalize Your Profile
         </h2>
         <p className="text-paragraph-md text-slate-blue-90">
-          Whether you’re a professional or a company, Dalla connects you to endless opportunities in consulting and collaboration.
+          Whether you’re a pro or a company, Dalla connects you to endless opportunities in consulting and collaboration.
         </p>
       </div>
       <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>

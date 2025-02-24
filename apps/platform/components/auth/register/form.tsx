@@ -22,7 +22,7 @@ type FormData = z.infer<typeof schema>
 export function RegisterForm({
   mode,
 }: {
-  mode: 'companies' | 'professional'
+  mode: 'companies' | 'pro'
 }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
@@ -40,7 +40,7 @@ export function RegisterForm({
     if (mode === 'companies') {
       console.log('company data', data)
     } else {
-      console.log('professional data', data)
+      console.log('pro data', data)
       // handle login logic here
     }
   }
@@ -57,7 +57,7 @@ export function RegisterForm({
         >
           Company Name <span className={
             cn(
-              mode === 'professional' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
+              mode === 'pro' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
             )
           }>*</span>
         </label>
@@ -81,7 +81,7 @@ export function RegisterForm({
         >
           Email <span className={
             cn(
-              mode === 'professional' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
+              mode === 'pro' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
             )
           }>*</span>
         </label>
@@ -110,7 +110,7 @@ export function RegisterForm({
         >
           Password <span className={
             cn(
-              mode === 'professional' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
+              mode === 'pro' ? 'text-coral-red-100' : "text-sunshine-yellow-100"
             )
           }>*</span>
         </label>
@@ -142,7 +142,7 @@ export function RegisterForm({
         className={
           cn(
             "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
-            mode === 'professional'
+            mode === 'pro'
               ? 'bg-coral-red-100 border-[#9F5055] hover:bg-coral-red-80' : ''
 
           )
@@ -151,7 +151,7 @@ export function RegisterForm({
         style={{
           boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
         }}
-      // variant={mode === 'professional' ? 'secondary' : 'default'}
+      // variant={mode === 'pro' ? 'secondary' : 'default'}
       >
         Create Account
       </Button>

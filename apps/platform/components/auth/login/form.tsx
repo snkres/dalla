@@ -14,7 +14,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
+export function LoginForm({ mode }: { mode: 'company' | 'pro' }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
   const {
@@ -39,7 +39,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
             <label
               className={cn(
                 'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-                // mode === 'professional'
+                // mode === 'pro'
                 // ? 'bg-slate-blue text-sunshine-yellow'
                 // : 
                 'bg-white',
@@ -50,7 +50,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
             <Input
               className={cn(
                 'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
-                mode === 'professional'
+                mode === 'pro'
                   ? 'bg-foreground text-zinc-900'
                   : 'bg-transparent',
               )}
@@ -69,7 +69,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
               htmlFor="pass"
               className={cn(
                 'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-                // mode === 'professional'
+                // mode === 'pro'
                 // ? 'bg-slate-blue text-sunshine-yellow'
                 // : 
                 'bg-white',
@@ -118,7 +118,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         className={
           cn(
             "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
-            mode === 'professional'
+            mode === 'pro'
               ? '!bg-coral-red-100 !border-[#9F5055] hover:!bg-coral-red-80' : 'border-[#CEB67B] bg-[#F4D283]'
 
           )
@@ -127,7 +127,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         style={{
           boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
         }}
-        variant={mode === 'professional' ? 'secondary' : 'default'}
+        variant={mode === 'pro' ? 'secondary' : 'default'}
       >
         Log In
       </Button>
@@ -137,7 +137,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
           <p
             className={cn(
               'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
-              // mode === 'professional'
+              // mode === 'pro'
               // ? 'text-slate-blue bg-sunshine-yellow'
               'text-[#9A9A9A]',
             )}
@@ -210,7 +210,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
             href="/register"
             className={cn(
               'text-[0.875rem] font-semibold leading-[1.25rem] text-[#2D4C5C] transition-colors duration-500',
-              mode === 'companies'
+              mode === 'company'
                 ? 'text-sunshine-yellow'
                 : 'text-coral-red-100',
             )}

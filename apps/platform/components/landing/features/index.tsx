@@ -4,10 +4,10 @@ import { ModeToggle } from '../../shared/mode-toggle'
 import { FeatureCard } from './feature-card'
 import { SearchForm } from './search-form'
 import { motion, useTransform, useScroll, AnimatePresence } from 'motion/react'
-import { companyFeatures, professionalFeatures } from './content'
+import { companyFeatures, proFeatures } from './content'
 
 export function Features() {
-  const [mode, setMode] = useState<'companies' | 'professional'>('companies')
+  const [mode, setMode] = useState<'companies' | 'pro'>('companies')
   const sectionRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -38,7 +38,7 @@ export function Features() {
     ['0px', '0px', '32px'],
   )
 
-  const features = mode === 'companies' ? companyFeatures : professionalFeatures
+  const features = mode === 'companies' ? companyFeatures : proFeatures
   const title =
     mode === 'companies'
       ? 'Empower Your Business with the Best Consultants'
@@ -71,7 +71,7 @@ export function Features() {
           position: 'sticky',
           top: '100px',
         }}
-        className={`overflow-hidden ${mode === 'professional' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
+        className={`overflow-hidden ${mode === 'pro' ? 'bg-slate-blue' : 'bg-sunshine-yellow'}`}
       >
         <motion.div
           style={{
@@ -98,7 +98,7 @@ export function Features() {
                   style={{
                     opacity: useTransform(scrollYProgress, [0.1, 0.3], [0, 1]),
                   }}
-                  className={`text-heading-xl ${mode === 'professional' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto text-balance font-bold tracking-tight lg:line-clamp-2 lg:!w-[80%]`}
+                  className={`text-heading-xl ${mode === 'pro' ? 'text-sunshine-yellow' : 'text-slate-blue'} at-least-2-lines mx-auto text-balance font-bold tracking-tight lg:line-clamp-2 lg:!w-[80%]`}
                 >
                   {title}
                 </motion.h1>
