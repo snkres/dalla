@@ -48,7 +48,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         if (e instanceof Error && 'status' in e && e.status === 422) {
           if (e.status === 422) {
             if (typeof window !== undefined) {
-              localStorage.setItem('mode_otp', mode === 'companies' ? 'company' : 'user')
+              localStorage.setItem('mode', mode === 'companies' ? 'company' : 'user')
             }
             if (typeof window !== 'undefined') {
               localStorage.setItem('email', data.email)

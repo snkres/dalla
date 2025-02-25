@@ -9,17 +9,25 @@ export interface Payload {
   logo?: string
   targetIndustries?: string[]
   website?: string
-  [property: string]: any
+  meta: {
+    phone: string
+    size: string
+    type: string
+    industry: string
+    socialLinks: {
+      name: string
+      url: string
+    }
+  }
 }
 
 export async function companyOnboarding(payload: Payload) {
   const res = await axiosInstance
-    .post<{
+    .patch<{
       success: boolean
       message: string
     }>('/company/onboarding', payload)
     .then((res) => res.data)
-    .catch((err) => Promise.reject(err.response.data))
 
   return res.success
 }

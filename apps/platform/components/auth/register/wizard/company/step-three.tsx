@@ -1,70 +1,87 @@
 import Image from 'next/image'
-import { Input } from '@dallah/design-system'
+import { Button, Input } from '@dallah/design-system'
 import PhoneInput from '@dallah/components/phoneInput'
-import { useState } from 'react'
+import { Dispatch, useEffect, useState } from 'react'
 import { cn } from '@dallah/utils'
 import { number, z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Textarea } from '@dallah/design-system'
+import { CompanyOnboardingData } from '..'
+import { uploadImage } from '@lib/api/shared/upload'
 
-const schema = z.object({
-  industry: z.string(),
-  type: z.string(),
-  size: z.string(),
+interface StepThreeProps {
+  data: CompanyOnboardingData
+  updateData: (data: CompanyOnboardingData) => void
+  onSubmit: () => void
+}
+
+const formSchema = z.object({
   website: z.string().url('Invalid URL'),
-  address: z.string(),
-  number: z.string(),
-  logo: z.string().nullable(),
+  industry: z.string().min(1, 'Industry is required'),
+  businessType: z.string().min(1, 'Business type is required'),
+  companySize: z.string().min(1, 'Company size is required'),
+  phoneNumber: z.string().min(1, 'Phone number is required'),
+  address: z.string().min(1, 'Address is required'),
 })
 
+type FormData = z.infer<typeof formSchema>
 
-type FormData = z.infer<typeof schema>
-
-export function CompanyWizardStepThird({
-  data,
-  updateData,
-}: {
-  data: { country: string; phoneNumber: string; address: string }
-  updateData: (
-    field: keyof {
-      country: string
-      number: string
-      address: string
-      image: string | null
-    },
-    value: any,
-  ) => void
-}) {
+export function StepThree({ data, updateData, onSubmit }: StepThreeProps) {
+  const [dragActive, setDragActive] = useState(false)
+  const [uploadedImage, setUploadedImage] = useState<string | null>(data.logo)
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      website: data.website,
+      industry: data.industry,
+      businessType: data.businessType,
+      companySize: data.companySize,
+      phoneNumber: data.phoneNumber,
+      address: data.address,
+    },
   })
-
-  const onSubmit = (data: FormData) => {
-    console.log(data)
-    // handle login logic here
-  }
-
-  const [dragActive, setDragActive] = useState(false)
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
+    setDragActive(e.type === 'dragenter' || e.type === 'dragover')
+  }
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith('image/')) {
+      const imageUrl = URL.createObjectURL(file)
+      setUploadedImage(imageUrl)
+      updateData({ ...data, logo: imageUrl })
     }
   }
 
+  const onFormSubmit = (formData: FormData) => {
+
+    updateData({
+      ...data,
+      logo: uploadedImage,
+      ...formData,
+    })
+    console.log('Form data:', formData)
+    console.log('Updated data:', data)
+    onSubmit()
+
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col" >
       <Image
         src='/goals.svg'
         alt='Goals and Needs'
@@ -206,11 +223,11 @@ export function CompanyWizardStepThird({
                 className="rounded-md"
                 placeholder="e.g. startup"
                 type="businessType"
-                {...register('type')}
+                {...register('businessType')}
               />
-              {errors.type && (
+              {errors.businessType && (
                 <p className="mt-2 text-xs text-red-500">
-                  {errors.type.message}
+                  {errors.businessType.message}
                 </p>
               )}
             </div>
@@ -229,10 +246,10 @@ export function CompanyWizardStepThird({
               )}
               placeholder="Enter your company size"
               type="name"
-              {...register('size')}
+              {...register('companySize')}
             />
-            {errors.size && (
-              <p className="mt-2 text-xs text-red-500">{errors.size.message}</p>
+            {errors.companySize && (
+              <p className="mt-2 text-xs text-red-500">{errors.companySize.message}</p>
             )}
           </div>
           <div className="flex flex-col gap-[0.375rem]">
@@ -243,10 +260,17 @@ export function CompanyWizardStepThird({
             >
               Phone Number
             </label>
-            <PhoneInput onChange={(e) => updateData('number', e)}
+            <PhoneInput
+              onChange={
+                (value) => {
+                  setValue(
+                    'phoneNumber', value
+                  )
+                }
+              }
             />
-            {errors.number && (
-              <p className="mt-2 text-xs text-red-500">{errors.number.message}</p>
+            {errors.phoneNumber && (
+              <p className="mt-2 text-xs text-red-500">{errors.phoneNumber.message}</p>
             )}
           </div>
         </div>
@@ -269,6 +293,20 @@ export function CompanyWizardStepThird({
         )}
       </div>
       <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
+      </div>
+      {/* Submit Button */}
+      <div className="px-6">
+        <Button
+          onClick={handleSubmit(onFormSubmit)}
+          size="lg"
+          className="w-full bg-[#F4D283] text-sunshine-yellow-10 shadow-sm"
+
+          style={{
+            boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
+          }}
+        >
+          Complete Setup
+        </Button>
       </div>
     </div>
   )

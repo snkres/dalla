@@ -13,7 +13,8 @@ const getLocalStorageItem = (key: string): string | null => {
 
 const redirectToLogin = () => {
   if (typeof window !== 'undefined') {
-    window.location.href = '/'
+    // window.location.href = '/']
+    console.log('Redirect to login')
   }
 }
 
@@ -25,7 +26,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        window.localStorage.removeItem('token')
+        window.localStorage.removeItem('access_token')
       }
       redirectToLogin()
     }
@@ -36,7 +37,7 @@ axiosInstance.interceptors.response.use(
 axiosInstance.interceptors.request.use(
   (config) => {
     console.log('NODE_ENV:', process.env.NODE_ENV)
-    const currentToken = getLocalStorageItem('token')
+    const currentToken = getLocalStorageItem('access_token')
     if (currentToken) {
       config.headers.Authorization = `Bearer ${currentToken}`
     }
