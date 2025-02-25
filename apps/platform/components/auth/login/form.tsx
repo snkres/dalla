@@ -6,8 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { cn } from '@dallah/utils'
-import { companyLogin } from '@lib/api/auth/login'
+import { login } from '@lib/api/auth/login'
 import { useTransitionRouter } from 'next-view-transitions'
+import { resendOTP } from '@lib/api/auth/otp-verify'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -33,11 +34,35 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
   const onSubmit = async (data: FormData) => {
     console.log(data)
     if (mode === 'companies') {
-      const res = await companyLogin(data)
-      if (res) {
-        router.push('/')
-        console.log('logged in')
+      try {
+        const res = await login({
+          email: data.email,
+          password: data.password,
+          userType: mode === 'companies' ? 'company' : 'user',
+        })
+        if (res) {
+          router.push('/')
+          console.log('logged in')
+        }
+      } catch (e) {
+        if (e instanceof Error && 'status' in e && e.status === 422) {
+          if (e.status === 422) {
+            if (typeof window !== undefined) {
+              localStorage.setItem('mode_otp', mode === 'companies' ? 'company' : 'user')
+            }
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('email', data.email)
+            }
+            const res = await resendOTP({
+              email: data.email,
+              userType: mode === 'companies' ? 'company' : 'user',
+            })
+            router.push('/verify')
+          }
+
+        }
       }
+
     }
   }
   return (
