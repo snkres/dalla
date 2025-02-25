@@ -83,7 +83,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
               className={cn(
                 'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
                 mode === 'professional'
-                  ? 'bg-foreground text-zinc-900'
+                  ? 'bg-foreground text-slate-blue-100'
                   : 'bg-transparent',
               )}
               placeholder="Email"
@@ -112,7 +112,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
             <div className="relative">
               <Input
                 id={'pass'}
-                className="text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none"
+                className="text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none text-slate-blue-100"
                 placeholder="Password"
                 type={isVisible ? 'text' : 'password'}
                 {...register('password')}
