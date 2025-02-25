@@ -24,7 +24,7 @@ export interface CompanyPayload {
 
 export async function companyOnboarding(payload: CompanyPayload) {
   const res = await axiosInstance
-    .patch<{
+    .post<{
       success: boolean
       message: string
     }>('/company/onboarding', payload)
