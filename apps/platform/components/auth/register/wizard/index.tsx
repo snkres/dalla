@@ -65,7 +65,33 @@ export interface ProOnboardingData {
 
 export function OnboardingWizard() {
   const [step, setStep] = useState<1 | 2 | 3 | 'success'>(1)
-  const [data, setData] = useState<CompanyOnboardingData | ProOnboardingData>()
+  const [data, setData] = useState<CompanyOnboardingData>({
+    focusArea: [],
+    workPreference: [],
+    targetIndustry: '',
+    website: '',
+    industry: '',
+    businessType: '',
+    companySize: '',
+    phoneNumber: '',
+    address: '',
+    logo: null,
+  })
+  const [proData, setProData] = useState<ProOnboardingData>({
+    headline: '',
+    resume: '',
+    bio: '',
+    education: [],
+    experience: [],
+    gender: "",
+    meta: {
+      location: '',
+      phone: '',
+      skills: [],
+      socialLinks: [],
+      yearsOfExperience: 0
+    }
+  })
   const [mode, setMode] = useState('')
 
   useEffect(() => {
@@ -214,9 +240,9 @@ export function OnboardingWizard() {
                     transition={{ duration: 0.3 }}
                   >
                     <ProWizardStepOne
-                      data={data as ProOnboardingData}
+                      data={proData}
                       updateData={
-                        setData as any
+                        setProData
                       }
                       handleNext={
                         handleNext
@@ -235,10 +261,10 @@ export function OnboardingWizard() {
                   >
                     <ProWizardStepTwo
                       data={
-                        data as ProOnboardingData
+                        proData
                       }
                       updateData={
-                        setData as any
+                        setProData
                       }
                       handleNext={
                         handleNext

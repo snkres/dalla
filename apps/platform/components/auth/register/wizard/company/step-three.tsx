@@ -17,7 +17,7 @@ interface StepThreeProps {
 }
 
 const formSchema = z.object({
-  website: z.string().url('Invalid URL'),
+  website: z.string(),
   industry: z.string().min(1, 'Industry is required'),
   businessType: z.string().min(1, 'Business type is required'),
   companySize: z.string().min(1, 'Company size is required'),
@@ -72,7 +72,9 @@ export function StepThree({ data, updateData, onSubmit }: StepThreeProps) {
     updateData({
       ...data,
       logo: uploadedImage,
+
       ...formData,
+      website: 'https://' + formData.website,
     })
     console.log('Form data:', formData)
     console.log('Updated data:', data)
