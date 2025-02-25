@@ -1,7 +1,7 @@
 import { Button, Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { companyRegister } from '@lib/api/auth/register'
+import { register } from '@lib/api/auth/register'
 import { EyeOff, Eye } from 'lucide-react'
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
@@ -13,11 +13,16 @@ const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
+  username: z.string().min(2, 'Username must be at least 2 characters long'),
 })
 
 type FormData = z.infer<typeof schema>
 
-export function CompanyRegisterForm() {
+export function RegisterForm({
+  mode
+}: {
+  mode: 'companies' | 'professional'
+}) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
@@ -25,7 +30,7 @@ export function CompanyRegisterForm() {
   const router = useTransitionRouter()
 
   const {
-    register,
+    register: registerField,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
@@ -34,7 +39,10 @@ export function CompanyRegisterForm() {
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
-    const res = await companyRegister(data)
+    const res = await register({
+      ...data,
+      userType: mode === 'companies' ? 'company' : 'user',
+    })
     if (res.success) {
       if (typeof window !== 'undefined') {
         localStorage.setItem('email', data.email)
@@ -47,26 +55,49 @@ export function CompanyRegisterForm() {
       className="max-h-m mx-auto flex w-full max-w-[30.125rem] flex-col gap-2"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="flex w-full flex-col gap-[0.375rem]">
-        <label
-          className={cn(
-            'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+      <div className='flex gap-2'>
+        <div className="flex w-full flex-col gap-[0.375rem]">
+          <label
+            className={cn(
+              'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+            )}
+          >
+            Company Name <span className="text-sunshine-yellow-100">*</span>
+          </label>
+          <Input
+            className={cn(
+              'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
+            )}
+            placeholder="Name"
+            type="name"
+            {...registerField('name')}
+          />
+          {errors.name && (
+            <p className="text-text-xs text-coral-red-70">{errors.name.message}</p>
           )}
-        >
-          Company Name <span className="text-sunshine-yellow-100">*</span>
-        </label>
-        <Input
-          className={cn(
-            'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
+        </div>
+        <div className="flex w-full flex-col gap-[0.375rem]">
+          <label
+            className={cn(
+              'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+            )}
+          >
+            Username <span className="text-sunshine-yellow-100">*</span>
+          </label>
+          <Input
+            className={cn(
+              'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
+            )}
+            placeholder="username"
+            type="name"
+            {...registerField('username')}
+          />
+          {errors.username && (
+            <p className="text-text-xs text-coral-red-70">{errors.username.message}</p>
           )}
-          placeholder="Enter your company name"
-          type="name"
-          {...register('name')}
-        />
-        {errors.name && (
-          <p className="mt-2 text-xs text-red-500">{errors.name.message}</p>
-        )}
+        </div>
       </div>
+
       <div className="flex w-full flex-col gap-[0.375rem]">
         <label
           className={cn(
@@ -79,7 +110,7 @@ export function CompanyRegisterForm() {
           <Input className={cn('rounded-md peer ps-10')}
             placeholder="Email"
             type="email"
-            {...register('email')} />
+            {...registerField('email')} />
           <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
             <svg className='w-5 h-5' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M1.66699 5.83301L8.47109 10.5959C9.02207 10.9816 9.29756 11.1744 9.59721 11.2491C9.8619 11.3151 10.1387 11.3151 10.4034 11.2491C10.7031 11.1744 10.9786 10.9816 11.5296 10.5959L18.3337 5.83301M5.66699 16.6663H14.3337C15.7338 16.6663 16.4339 16.6663 16.9686 16.3939C17.439 16.1542 17.8215 15.7717 18.0612 15.3013C18.3337 14.7665 18.3337 14.0665 18.3337 12.6663V7.33301C18.3337 5.93288 18.3337 5.23281 18.0612 4.69803C17.8215 4.22763 17.439 3.84517 16.9686 3.60549C16.4339 3.33301 15.7338 3.33301 14.3337 3.33301H5.66699C4.26686 3.33301 3.5668 3.33301 3.03202 3.60549C2.56161 3.84517 2.17916 4.22763 1.93948 4.69803C1.66699 5.23281 1.66699 5.93288 1.66699 7.33301V12.6663C1.66699 14.0665 1.66699 14.7665 1.93948 15.3013C2.17916 15.7717 2.56161 16.1542 3.03202 16.3939C3.5668 16.6663 4.26686 16.6663 5.66699 16.6663Z" stroke="#667085" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
@@ -88,7 +119,7 @@ export function CompanyRegisterForm() {
           </div>
         </div>
         {errors.email && (
-          <p className="mt-2 text-xs text-red-500">{errors.email.message}</p>
+          <p className="text-text-xs text-coral-red-70">{errors.email.message}</p>
         )}
       </div>
 
@@ -102,7 +133,7 @@ export function CompanyRegisterForm() {
         </label>
         <div className="relative">
           <Input
-            {...register('password')}
+            {...registerField('password')}
             className="rounded-md pe-9"
             placeholder="Create a password"
             type={isVisible ? 'text' : 'password'}

@@ -4,17 +4,16 @@ interface Payload {
   email: string
   name: string
   password: string
+  username: string
+  userType: 'company' | 'user'
 }
 
-export async function companyRegister(payload: Payload) {
+export async function register(payload: Payload) {
   const res = await axiosInstance
     .post<{
       success: boolean
       message: string
-    }>('/auth/company/register', {
-      ...payload,
-      domain: 'lll.com',
-    })
+    }>('/auth/register', payload)
     .then((res) => res.data)
 
   return res
