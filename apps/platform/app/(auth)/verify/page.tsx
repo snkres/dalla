@@ -4,7 +4,7 @@ import { EmailOTPDoneIcon, EmailOTPIcon } from '@components/shared/icons'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import OTPInputComponent from '@components/auth/otp/otp-input'
-import { companyVerify } from '@lib/api/auth/otp-verify'
+import { verify } from '@lib/api/auth/otp-verify'
 import { Link } from 'next-view-transitions'
 
 export default function page() {
@@ -12,10 +12,12 @@ export default function page() {
   const [otp, setOtp] = useState('')
   const [email, setEmail] = useState('')
   const [done, setDone] = useState(false)
+  const [mode, setMode] = useState('')
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setEmail(localStorage.getItem('email') || '')
+      setMode(localStorage.getItem('mode_otp') || '')
     }
   }, [])
 
@@ -24,9 +26,10 @@ export default function page() {
   }
   const onCompleteOTP = async (value: string) => {
     if (value.length === 4) {
-      const res = await companyVerify({
+      const res = await verify({
         email: email,
         otp: value,
+        userType: mode as 'company' | 'user',
       })
       if (res) {
         setDone(true)
@@ -44,7 +47,11 @@ export default function page() {
             </h1>
             <p className="text-slate-blue-50 text-text-lg flex flex-col items-center justify-center">
               <span> We sent a verification link to</span>
-              <span className="font-medium"> salmamahdy234@gmail.com</span>
+              <span className="font-medium">
+                {
+                  email
+                }
+              </span>
             </p>
           </div>
           {!manually ? (
