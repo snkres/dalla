@@ -38,7 +38,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
         const res = await login({
           email: data.email,
           password: data.password,
-          userType: mode === 'company' ? 'company' : 'user',
+          userType: mode === 'company' ? 'company' : 'professional',
         })
         if (res) {
           router.push('/')
@@ -48,14 +48,14 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
         if (e instanceof Error && 'status' in e && e.status === 422) {
           if (e.status === 422) {
             if (typeof window !== undefined) {
-              localStorage.setItem('mode', mode === 'company' ? 'company' : 'user')
+              localStorage.setItem('mode', mode === 'company' ? 'company' : 'professional')
             }
             if (typeof window !== 'undefined') {
               localStorage.setItem('email', data.email)
             }
             const res = await resendOTP({
               email: data.email,
-              userType: mode === 'company' ? 'company' : 'user',
+              userType: mode === 'company' ? 'company' : 'professional',
             })
             router.push('/verify')
           }
