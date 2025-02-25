@@ -1,8 +1,7 @@
 import { ModeToggle } from '@components/shared/mode-toggle'
 import { LogoHorizontal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import { CompanyRegisterForm } from './company-form'
-import { ProRegisterForm } from './pro-form'
+import { RegisterForm } from './form'
 
 export function RegisterLeftSide({
   mode,
@@ -43,7 +42,11 @@ export function RegisterLeftSide({
         mode={mode as 'companies' | 'professional'}
         onModeChange={(mode) => setMode(mode as 'companies' | 'professional')}
       />
-      {mode === 'companies' ? <CompanyRegisterForm /> : <ProRegisterForm />}
+      <RegisterForm
+        mode={
+          mode
+        }
+      />
     </section>
   )
 }

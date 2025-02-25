@@ -1,6 +1,6 @@
 import { Eye, EyeOff } from 'lucide-react'
 import { Link } from 'next-view-transitions'
-import { Button, Checkbox, Input } from '@dallah/design-system'
+import { Button, Input } from '@dallah/design-system'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
