@@ -4,8 +4,8 @@ import * as React from 'react'
 import { Switch } from '@dallah/design-system'
 
 interface ModeToggleProps {
-  mode: 'companies' | 'professional'
-  onModeChange: (mode: 'companies' | 'professional') => void
+  mode: 'company' | 'professional'
+  onModeChange: (mode: 'company' | 'professional') => void
   plural?: boolean
 }
 
@@ -21,33 +21,31 @@ export function ModeToggle({
   plural = false,
 }: ModeToggleProps) {
   const handleToggle = () => {
-    onModeChange(mode === 'professional' ? 'companies' : 'professional')
+    onModeChange(mode === 'professional' ? 'company' : 'professional')
   }
 
   return (
     <div className="mx-auto flex w-[29.625rem] items-center justify-center gap-[0.25rem] self-stretch rounded-[0.625rem] border-[0.0625rem] border-solid border-[#E4E7EC] bg-[#FFFDF9] p-[0.25rem]">
       <div
-        className={`font-inter flex h-[2.25rem] flex-[1_0_0] cursor-pointer items-center justify-center gap-[0.5rem] rounded-[0.375rem] px-[12px] py-2 transition-colors duration-200 ${
-          mode === 'professional'
-            ? 'bg-[#F4D283] ' + selectedClassName
-            : unselectedClassName
-        }`}
+        className={`font-inter flex h-[2.25rem] flex-[1_0_0] cursor-pointer items-center justify-center gap-[0.5rem] rounded-[0.375rem] px-[12px] py-2 transition-colors duration-200 ${mode === 'professional'
+          ? 'bg-coral-red-100 ' + selectedClassName
+          : unselectedClassName
+          }`}
         onClick={() => onModeChange('professional')}
       >
         Professional{plural && 's'}
       </div>
       <div
-        className={`flex h-[2.25rem] flex-[1_0_0] cursor-pointer items-center justify-center gap-[0.5rem] rounded-[0.375rem] px-[12px] py-2 transition-colors duration-200 ${
-          mode === 'companies'
-            ? 'bg-[#F4D283] ' + selectedClassName
-            : unselectedClassName
-        }`}
-        onClick={() => onModeChange('companies')}
+        className={`flex h-[2.25rem] flex-[1_0_0] cursor-pointer items-center justify-center gap-[0.5rem] rounded-[0.375rem] px-[12px] py-2 transition-colors duration-200 ${mode === 'company'
+          ? 'bg-[#F4D283] ' + selectedClassName
+          : unselectedClassName
+          }`}
+        onClick={() => onModeChange('company')}
       >
         Compan{plural ? 'ies' : 'y'}
       </div>
       <Switch
-        checked={mode === 'companies'}
+        checked={mode === 'company'}
         onCheckedChange={handleToggle}
         className="sr-only"
       />
