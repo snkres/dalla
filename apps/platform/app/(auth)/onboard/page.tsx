@@ -1,9 +1,6 @@
 'use client'
-import { LogoHorizontal } from '@dallah/design-system'
 import { OnboardingWizard } from '@components/auth/register/wizard'
 
-//TODO: Figure out how to handle the mode variable
-const mode = 'company'
 
 export default function Wizard() {
   return (

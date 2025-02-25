@@ -17,7 +17,7 @@ export default function page() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setEmail(localStorage.getItem('email') || '')
-      setMode(localStorage.getItem('mode_otp') || '')
+      setMode(localStorage.getItem('mode') || '')
     }
   }, [])
 

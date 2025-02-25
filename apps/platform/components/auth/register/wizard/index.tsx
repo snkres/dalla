@@ -1,54 +1,92 @@
 'use client'
 
-import { Button } from '@dallah/design-system'
-import { CompanyWizardStepOne } from './company/step-one'
-import { CompanyWizardStepTwo } from './company/step-two'
-import { CompanyWizardStepThird } from './company/step-third'
 import { useState } from 'react'
-import { SuccessfulPopUp } from './company/successful-popup'
 import { motion, AnimatePresence } from 'motion/react'
+import { StepOne } from './company/step-one'
+import { StepTwo } from './company/step-two'
+import { StepThree } from './company/step-three'
+import { SuccessfulPopUp } from './company/successful-popup'
+import { companyOnboarding } from '@lib/api/company/onboarding'
 
-interface OnboardingData {
+export interface CompanyOnboardingData {
+  // Step 1
   focusArea: string[]
+  // Step 2
   workPreference: string[]
   targetIndustry: string
-  country: string
+  // Step 3
+  website: string
+  industry: string
+  businessType: string
+  companySize: string
   phoneNumber: string
   address: string
-  image: string | null
+  logo: string | null
+}
+
+const initialData: CompanyOnboardingData = {
+  focusArea: [],
+  workPreference: [],
+  targetIndustry: '',
+  website: '',
+  industry: '',
+  businessType: '',
+  companySize: '',
+  phoneNumber: '',
+  address: '',
+  logo: null,
 }
 
 export function OnboardingWizard() {
-  const [step, setStep] = useState<1 | 2 | 3 | true>(1)
-  const [data, setData] = useState<OnboardingData>({
-    focusArea: [],
-    workPreference: [],
-    targetIndustry: '',
-    country: '',
-    phoneNumber: '',
-    address: '',
-    image: null,
-  })
-
-  const updateData = (field: keyof OnboardingData, value: any) => {
-    setData((prev) => ({ ...prev, [field]: value }))
-  }
+  const [step, setStep] = useState<1 | 2 | 3 | 'success'>(1)
+  const [data, setData] = useState<CompanyOnboardingData>(initialData)
 
   const handleNext = () => {
-    setStep((prev) =>
-      prev === 3 ? true : (Math.min((prev as 1 | 2 | 3) + 1, 3) as 1 | 2 | 3),
-    )
+    if (step === 3) {
+      setStep('success')
+    } else {
+      setStep((prev) => (prev === 'success' ? 1 : ((prev + 1) as 1 | 2 | 3)))
+    }
   }
 
   const handleSkip = () => {
-    setStep((prev) =>
-      prev === true ? 1 : (Math.min(prev + 1, 3) as 1 | 2 | 3),
-    )
+    handleNext()
+  }
+
+  const handleSubmit = async () => {
+    try {
+      // Here you would typically send the data to your API
+      console.log('Submitting data:', data)
+      const res = await companyOnboarding({
+        areas: data.focusArea,
+        goals: data.workPreference,
+        targetIndustries: [data.targetIndustry],
+        website: data.website,
+        location: data.address,
+        logo: data.logo ?? undefined,
+        meta: {
+          phone: data.phoneNumber,
+          size: data.companySize,
+          type: data.businessType,
+          industry: data.industry,
+          socialLinks: {
+            name: 'Facebook',
+            url: 'https://facebook.com',
+          },
+        }
+      })
+      // if (res) {
+      //   setStep('success')
+      // }
+      console.log('Response:', res)
+    } catch (error) {
+      console.error('Error submitting data:', error)
+    }
   }
 
   return (
     <AnimatePresence mode="wait">
-      {step === true ? (
+      {step === 'success' ? (
         <motion.div
           key="success"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -59,83 +97,67 @@ export function OnboardingWizard() {
           <SuccessfulPopUp />
         </motion.div>
       ) : (
-        <>
-          <div className="mx-auto max-w-[43rem] rounded-xl  bg-[#FFFDF9] shadow-lg ">
-            <div className="h-2 overflow-hidden rounded-t-xl bg-[#F9E9CF]/50">
-              <div
-                className="bg-sunshine-yellow h-full transition-all duration-300 ease-in-out"
-                style={{ width: `${((step as 1 | 2 | 3) / 3) * 100}%` }}
-              />
-            </div>
-            <div className="py-6">
-              <AnimatePresence mode="wait">
-                {step === 1 && (
-                  <motion.div
-                    key="step1"
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 50 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <CompanyWizardStepOne data={data} updateData={updateData} />
-                  </motion.div>
-                )}
-
-                {step === 2 && (
-                  <motion.div
-                    key="step2"
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 50 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <CompanyWizardStepTwo data={data} updateData={updateData} />
-                  </motion.div>
-                )}
-
-                {step === 3 && (
-                  <motion.div
-                    key="step3"
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 50 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <CompanyWizardStepThird
-                      data={data}
-                      updateData={updateData as any}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className=" flex items-center justify-center gap-4 px-6">
-                <Button
-                  variant="ghost"
-                  onClick={handleSkip}
-                  size="lg"
-                  className="text-text-lg w-full "
-                >
-                  Skip
-                </Button>
-                <Button
-                  onClick={handleNext}
-                  variant="default"
-                  size="lg"
-
-                  className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
-                  type="submit"
-                  style={{
-                    boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
-                  }}
-                >
-
-                  {step === 3 ? 'Complete Setup' : 'Continue'}
-                </Button>
-              </div>
-            </div>
+        <div className="mx-auto max-w-[43rem] rounded-xl bg-[#FFFDF9] shadow-lg">
+          <div className="h-2 overflow-hidden rounded-t-xl bg-[#F9E9CF]/50">
+            <div
+              className="h-full bg-sunshine-yellow transition-all duration-300 ease-in-out"
+              style={{ width: `${(Number(step) / 3) * 100}%` }}
+            />
           </div>
-        </>
+          <div className="py-6">
+            <AnimatePresence mode="wait">
+              {step === 1 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <StepOne
+                    data={data}
+                    updateData={setData}
+                    onNext={handleNext}
+                    onSkip={handleSkip}
+                  />
+                </motion.div>
+              )}
+
+              {step === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <StepTwo
+                    data={data}
+                    updateData={setData}
+                    onNext={handleNext}
+                    onSkip={handleSkip}
+                  />
+                </motion.div>
+              )}
+
+              {step === 3 && (
+                <motion.div
+                  key="step3"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <StepThree
+                    data={data}
+                    updateData={setData}
+                    onSubmit={handleSubmit}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       )}
     </AnimatePresence>
   )

@@ -44,6 +44,9 @@ export function RegisterForm({
       userType: mode === 'companies' ? 'company' : 'user',
     })
     if (res.success) {
+      if (typeof window !== undefined) {
+        localStorage.setItem('mode', mode === 'companies' ? 'company' : 'user')
+      }
       if (typeof window !== 'undefined') {
         localStorage.setItem('email', data.email)
       }
