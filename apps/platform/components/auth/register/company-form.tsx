@@ -1,18 +1,16 @@
 import { Button, Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { companyRegister } from '@lib/api/auth/register'
 import { EyeOff, Eye } from 'lucide-react'
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { useTransitionRouter } from 'next-view-transitions'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
-  // industry: z.string(),
-  // businessType: z.string(),
-  // companySize: z.string(),
-  // companyWebsite: z.string().url('Invalid URL'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
@@ -24,6 +22,8 @@ export function CompanyRegisterForm() {
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
 
+  const router = useTransitionRouter()
+
   const {
     register,
     handleSubmit,
@@ -32,9 +32,15 @@ export function CompanyRegisterForm() {
     resolver: zodResolver(schema),
   })
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data)
-    // handle login logic here
+    const res = await companyRegister(data)
+    if (res.success) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('email', data.email)
+      }
+      router.push('/verify')
+    }
   }
   return (
     <form
