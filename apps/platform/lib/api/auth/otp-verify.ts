@@ -5,14 +5,17 @@ interface Payload {
   otp: string
 }
 
-export async function verify(payload: Payload) {
+export async function companyVerify(payload: Payload) {
   const res = await axiosInstance
     .post<{
       success: boolean
       message: string
+      data: {
+        access_token: string
+        refresh_token: string
+      }
     }>('/auth/company/verify', payload)
     .then((res) => res.data)
-    .catch((err) => Promise.reject(err.response.data))
 
   return res.success
 }

@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { cn } from '@dallah/utils'
+import { companyLogin } from '@lib/api/auth/login'
+import { useTransitionRouter } from 'next-view-transitions'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -17,6 +19,7 @@ type FormData = z.infer<typeof schema>
 export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
+  const router = useTransitionRouter()
   const {
     register,
     handleSubmit,
@@ -27,9 +30,15 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log(data)
-    // handle login logic here
+    if (mode === 'companies') {
+      const res = await companyLogin(data)
+      if (res) {
+        router.push('/')
+        console.log('logged in')
+      }
+    }
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-[29.625rem]">

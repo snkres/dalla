@@ -2,19 +2,35 @@
 import { Button } from '@dallah/design-system'
 import { EmailOTPDoneIcon, EmailOTPIcon } from '@components/shared/icons'
 import { ArrowLeft } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import OTPInputComponent from '@components/auth/otp/otp-input'
+import { companyVerify } from '@lib/api/auth/otp-verify'
+import { Link } from 'next-view-transitions'
 
 export default function page() {
   const [manually, setManually] = useState(true)
   const [otp, setOtp] = useState('')
+  const [email, setEmail] = useState('')
   const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setEmail(localStorage.getItem('email') || '')
+    }
+  }, [])
+
   const onChangeOTP = (value: string) => {
     setOtp(value)
   }
-  const onCompleteOTP = (value: string) => {
+  const onCompleteOTP = async (value: string) => {
     if (value.length === 4) {
-      setDone(true)
+      const res = await companyVerify({
+        email: email,
+        otp: value,
+      })
+      if (res) {
+        setDone(true)
+      }
     }
   }
   return (
@@ -82,17 +98,23 @@ export default function page() {
               boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
             }}
             onClick={() => setManually(true)}
+            asChild
           >
-            Continue
+            <Link href='/profile'>
+              Continue
+            </Link>
           </Button>
         </>
       )}
       <Button
         className="text-slate-blue-90 text-text-md flex items-center gap-[0.375rem] font-semibold"
         variant="ghost"
+        asChild
       >
-        <ArrowLeft className="h-5 w-5" />
-        <span>Back to log in</span>
+        <Link href='/login'>
+          <ArrowLeft className="h-5 w-5" />
+          <span>Back to log in</span>
+        </Link>
       </Button>
     </main>
   )
