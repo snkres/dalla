@@ -41,7 +41,7 @@ export function RegisterForm({
     console.log(data)
     const res = await register({
       ...data,
-      userType: mode === 'company' ? 'company' : 'user',
+      userType: mode === 'company' ? 'company' : 'professional',
     })
     if (res.success) {
       if (typeof window !== undefined) {

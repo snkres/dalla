@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import OTPInputComponent from '@components/auth/otp/otp-input'
 import { verify } from '@lib/api/auth/otp-verify'
 import { Link } from 'next-view-transitions'
+import { cn } from '@dallah/utils'
 
 export default function page() {
   const [manually, setManually] = useState(true)
@@ -29,7 +30,7 @@ export default function page() {
       const res = await verify({
         email: email,
         otp: value,
-        userType: mode as 'company' | 'user',
+        userType: mode as 'company' | 'professional',
       })
       if (res) {
         setDone(true)
@@ -66,9 +67,16 @@ export default function page() {
             </Button>
           ) : (
             <div className="flex flex-col items-center justify-center gap-8">
-              <OTPInputComponent onChange={onChangeOTP} value={otp} />
+              <OTPInputComponent onChange={onChangeOTP} value={otp} mode={
+                mode as 'company' | 'professional'
+              } />
               <Button
-                className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg bg-sunshine-yellow-100 mx-auto mt-2 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-2 border-solid border-[#D0B981] px-[1rem] py-[10px] shadow-sm"
+                className={
+                  cn(
+                    "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg  mx-auto mt-2 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-2 border-solid  px-[1rem] py-[10px] shadow-sm",
+                    mode === 'company' ? 'bg-sunshine-yellow-100 border-[#D0B981]' : 'bg-coral-red-100 border-coral-red-90',
+                  )
+                }
                 style={{
                   boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
                 }}
@@ -80,7 +88,12 @@ export default function page() {
                 <span className="text-slate-blue-50">
                   Didn’t receive the email?
                 </span>
-                <span className="text-sunshine-yellow-100 cursor-pointer font-semibold">
+                <span className={
+                  cn(
+                    "cursor-pointer font-semibold",
+                    mode === 'company' ? 'text-sunshine-yellow-100' : 'text-coral-red-100',
+                  )
+                }>
                   Click to resend
                 </span>
               </p>
@@ -100,7 +113,12 @@ export default function page() {
             </p>
           </div>
           <Button
-            className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg mx-auto mt-2 flex w-[22.5rem] items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[2px] px-[1rem] py-[10px] shadow-sm"
+            className={
+              cn(
+                "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] text-text-lg mx-auto mt-2 flex w-[22.5rem] items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.125rem] border-solid stroke-[2px] px-[1rem] py-[10px] shadow-sm",
+                mode === 'company' ? 'border-[#CEB67B] bg-[#F4D283] ' : 'bg-coral-red-100 border-coral-red-90',
+              )
+            }
             style={{
               boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
             }}

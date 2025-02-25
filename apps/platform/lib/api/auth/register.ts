@@ -5,7 +5,7 @@ interface Payload {
   name: string
   password: string
   username: string
-  userType: 'company' | 'user'
+  userType: 'company' | 'professional'
 }
 
 export async function register(payload: Payload) {
