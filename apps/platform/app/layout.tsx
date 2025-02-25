@@ -4,6 +4,7 @@ import '@fontsource-variable/sora'
 import '@fontsource-variable/inter'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { ViewTransitions } from 'next-view-transitions'
+import { Suspense } from 'react'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -22,11 +23,12 @@ export default function RootLayout({
     <ViewTransitions>
       <html>
         <body className='font-inter'>
-          <NuqsAdapter> {children}</NuqsAdapter>
-
+          <Suspense>
+            <NuqsAdapter> {children}</NuqsAdapter>
+          </Suspense>
           {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
         </body>
       </html>
-    </ViewTransitions>
+    </ViewTransitions >
   )
 }
