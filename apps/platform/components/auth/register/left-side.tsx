@@ -7,8 +7,8 @@ export function RegisterLeftSide({
   mode,
   setMode,
 }: {
-  mode: 'companies' | 'professional'
-  setMode: (mode: 'companies' | 'professional') => void
+  mode: 'company' | 'professional'
+  setMode: (mode: 'company' | 'professional') => void
 }) {
   return (
     <section
@@ -20,27 +20,31 @@ export function RegisterLeftSide({
       )}
     >
       <LogoHorizontal
-        className='[&_path]:fill-sunshine-yellow-100'
+        className={
+          cn(
+            mode === 'company' ? '[&_path]:fill-sunshine-yellow-100' : '[&_path]:fill-coral-red-100',
+          )
+        }
       />
       <div className="flex max-w-[30.125rem] flex-col items-center justify-center gap-3">
         <h1
           className={cn(
             'font-sora text-center text-[2.0625rem] font-semibold leading-[130%] text-[#2D4C5C]',
-            mode === 'professional'
-              ? 'text-sunshine-yellow'
-              : 'text-slate-blue-100',
+            // mode === 'pro'
+            // ? 'text-sunshine-yellow'
+            'text-slate-blue-100',
           )}
         >
           Join Dalla Today!
         </h1>
         <p className="font-inter mx-auto self-stretch text-center text-[1rem] leading-[150%] tracking-[-0.48px] text-[#7FADBE]">
-          Whether you’re a professional or a company, Dalla connects you to
+          Whether you’re a pro or a company, Dalla connects you to
           endless opportunities in consulting and collaboration.
         </p>
       </div>
       <ModeToggle
-        mode={mode as 'companies' | 'professional'}
-        onModeChange={(mode) => setMode(mode as 'companies' | 'professional')}
+        mode={mode as 'company' | 'professional'}
+        onModeChange={(mode) => setMode(mode as 'company' | 'professional')}
       />
       <RegisterForm
         mode={

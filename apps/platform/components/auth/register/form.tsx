@@ -21,7 +21,7 @@ type FormData = z.infer<typeof schema>
 export function RegisterForm({
   mode
 }: {
-  mode: 'companies' | 'professional'
+  mode: 'company' | 'professional'
 }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
@@ -41,11 +41,11 @@ export function RegisterForm({
     console.log(data)
     const res = await register({
       ...data,
-      userType: mode === 'companies' ? 'company' : 'user',
+      userType: mode === 'company' ? 'company' : 'user',
     })
     if (res.success) {
       if (typeof window !== undefined) {
-        localStorage.setItem('mode', mode === 'companies' ? 'company' : 'user')
+        localStorage.setItem('mode', mode === 'company' ? 'company' : 'user')
       }
       if (typeof window !== 'undefined') {
         localStorage.setItem('email', data.email)
@@ -159,7 +159,13 @@ export function RegisterForm({
       </div>
 
       <Button
-        className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
+        className={
+          cn(
+            "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+            mode === 'professional'
+              ? '!bg-coral-red-100 !border-[#9F5055] hover:!bg-coral-red-80' : 'border-[#CEB67B] bg-[#F4D283]'
+          )
+        }
         type="submit"
         style={{
           boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
@@ -248,8 +254,10 @@ export function RegisterForm({
           <Link
             href="/login"
             className={cn(
-              'text-[0.875rem] font-semibold leading-[1.25rem] transition-colors duration-500 text-sunshine-yellow-100',
-
+              'text-[0.875rem] font-semibold leading-[1.25rem] text-[#2D4C5C] transition-colors duration-500',
+              mode === 'company'
+                ? 'text-sunshine-yellow'
+                : 'text-coral-red-100',
             )}
           >
             Log in

@@ -17,7 +17,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
+export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
   const router = useTransitionRouter()
@@ -33,12 +33,12 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
-    if (mode === 'companies') {
+    if (mode === 'company') {
       try {
         const res = await login({
           email: data.email,
           password: data.password,
-          userType: mode === 'companies' ? 'company' : 'user',
+          userType: mode === 'company' ? 'company' : 'user',
         })
         if (res) {
           router.push('/')
@@ -48,14 +48,14 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         if (e instanceof Error && 'status' in e && e.status === 422) {
           if (e.status === 422) {
             if (typeof window !== undefined) {
-              localStorage.setItem('mode', mode === 'companies' ? 'company' : 'user')
+              localStorage.setItem('mode', mode === 'company' ? 'company' : 'user')
             }
             if (typeof window !== 'undefined') {
               localStorage.setItem('email', data.email)
             }
             const res = await resendOTP({
               email: data.email,
-              userType: mode === 'companies' ? 'company' : 'user',
+              userType: mode === 'company' ? 'company' : 'user',
             })
             router.push('/verify')
           }
@@ -73,9 +73,10 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
             <label
               className={cn(
                 'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-                mode === 'professional'
-                  ? 'bg-slate-blue text-sunshine-yellow'
-                  : 'bg-white',
+                // mode === 'pro'
+                // ? 'bg-slate-blue text-sunshine-yellow'
+                // : 
+                'bg-white',
               )}
             >
               Email
@@ -102,9 +103,10 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
               htmlFor="pass"
               className={cn(
                 'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-                mode === 'professional'
-                  ? 'bg-slate-blue text-sunshine-yellow'
-                  : 'bg-white',
+                // mode === 'pro'
+                // ? 'bg-slate-blue text-sunshine-yellow'
+                // : 
+                'bg-white',
               )}
             >
               Password
@@ -118,7 +120,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
                 {...register('password')}
               />
               <button
-                className="text-muted-foreground/80 hover:text-foreground focus-visible:outline-ring/70 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg outline-offset-2 transition-colors focus:z-10 focus-visible:outline focus-visible:outline-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="text-slate-blue-100 hover:text-slate-blue-80 focus-visible:outline-ring/70 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg outline-offset-2 transition-colors focus:z-10 focus-visible:outline focus-visible:outline-2 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 type="button"
                 onClick={toggleVisibility}
                 aria-label={isVisible ? 'Hide password' : 'Show password'}
@@ -138,7 +140,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
           <Link
             className={cn(
               'text-text-sm font-inter self-stretch text-right text-[0.875rem] leading-[1.25rem] text-[#475467] transition-colors duration-500',
-              mode === 'professional' ? 'text-foreground' : 'text-slate-blue',
+              'text-slate-blue',
             )}
             href="#"
           >
@@ -147,7 +149,14 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         </div>
       </div>
       <Button
-        className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-[#F4D283] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
+        className={
+          cn(
+            "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
+            mode === 'professional'
+              ? '!bg-coral-red-100 !border-[#9F5055] hover:!bg-coral-red-80' : 'border-[#CEB67B] bg-[#F4D283]'
+
+          )
+        }
         type="submit"
         style={{
           boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
@@ -162,9 +171,9 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
           <p
             className={cn(
               'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
-              mode === 'professional'
-                ? 'text-slate-blue bg-sunshine-yellow'
-                : 'text-[#9A9A9A]',
+              // mode === 'pro'
+              // ? 'text-slate-blue bg-sunshine-yellow'
+              'text-[#9A9A9A]',
             )}
           >
             or
@@ -174,7 +183,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
 
         <Button
           variant="outline"
-          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] text-[#344054]"
         >
           <svg
             className="h-6 w-6"
@@ -211,7 +220,7 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
         </Button>
         <Button
           variant="outline"
-          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] text-[#344054]"
         >
           <svg
             className="h-6 w-6"
@@ -235,9 +244,9 @@ export function LoginForm({ mode }: { mode: 'companies' | 'professional' }) {
             href="/register"
             className={cn(
               'text-[0.875rem] font-semibold leading-[1.25rem] text-[#2D4C5C] transition-colors duration-500',
-              mode === 'professional'
+              mode === 'company'
                 ? 'text-sunshine-yellow'
-                : 'text-slate-blue',
+                : 'text-coral-red-100',
             )}
           >
             Sign Up
