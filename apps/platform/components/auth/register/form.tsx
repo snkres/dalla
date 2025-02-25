@@ -65,7 +65,13 @@ export function RegisterForm({
               'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
             )}
           >
-            Company Name <span className="text-sunshine-yellow-100">*</span>
+            {
+              mode === 'company' ? 'Company' : ''
+            } Name <span className={
+              cn(
+                mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-100'
+              )
+            }>*</span>
           </label>
           <Input
             className={cn(
@@ -85,7 +91,11 @@ export function RegisterForm({
               'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
             )}
           >
-            Username <span className="text-sunshine-yellow-100">*</span>
+            Username <span className={
+              cn(
+                mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
+              )
+            }>*</span>
           </label>
           <Input
             className={cn(
@@ -107,7 +117,11 @@ export function RegisterForm({
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
           )}
         >
-          Email <span className="text-sunshine-yellow-100">*</span>
+          Email <span className={
+            cn(
+              mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
+            )
+          }>*</span>
         </label>
         <div className="relative">
           <Input className={cn('rounded-md peer ps-10')}
@@ -132,7 +146,11 @@ export function RegisterForm({
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
           )}
         >
-          Password <span className="text-sunshine-yellow-100">*</span>
+          Password <span className={
+            cn(
+              mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
+            )
+          }>*</span>
         </label>
         <div className="relative">
           <Input
