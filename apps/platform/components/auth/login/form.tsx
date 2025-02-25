@@ -33,37 +33,35 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
-    if (mode === 'company') {
-      try {
-        const res = await login({
-          email: data.email,
-          password: data.password,
-          userType: mode === 'company' ? 'company' : 'professional',
-        })
-        if (res) {
-          router.push('/')
-          console.log('logged in')
-        }
-      } catch (e) {
-        if (e instanceof Error && 'status' in e && e.status === 422) {
-          if (e.status === 422) {
-            if (typeof window !== undefined) {
-              localStorage.setItem('mode', mode === 'company' ? 'company' : 'professional')
-            }
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('email', data.email)
-            }
-            const res = await resendOTP({
-              email: data.email,
-              userType: mode === 'company' ? 'company' : 'professional',
-            })
-            router.push('/verify')
-          }
-
-        }
+    try {
+      const res = await login({
+        email: data.email,
+        password: data.password,
+        userType: mode === 'company' ? 'company' : 'professional',
+      })
+      if (res) {
+        router.push('/')
+        console.log('logged in')
       }
+    } catch (e) {
+      if (e instanceof Error && 'status' in e && e.status === 422) {
+        if (e.status === 422) {
+          if (typeof window !== undefined) {
+            localStorage.setItem('mode', mode === 'company' ? 'company' : 'professional')
+          }
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('email', data.email)
+          }
+          const res = await resendOTP({
+            email: data.email,
+            userType: mode === 'company' ? 'company' : 'professional',
+          })
+          router.push('/verify')
+        }
 
+      }
     }
+
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-[29.625rem]">
