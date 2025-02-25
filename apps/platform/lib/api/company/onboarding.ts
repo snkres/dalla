@@ -1,6 +1,7 @@
+import { ProOnboardingData } from '@components/auth/register/wizard'
 import { axiosInstance } from '../instance'
 
-export interface Payload {
+export interface CompanyPayload {
   areas?: string[]
   bio?: string
   goals?: string[]
@@ -21,12 +22,23 @@ export interface Payload {
   }
 }
 
-export async function companyOnboarding(payload: Payload) {
+export async function companyOnboarding(payload: CompanyPayload) {
   const res = await axiosInstance
     .patch<{
       success: boolean
       message: string
     }>('/company/onboarding', payload)
+    .then((res) => res.data)
+
+  return res.success
+}
+
+export async function proOnboarding(payload: ProOnboardingData) {
+  const res = await axiosInstance
+    .patch<{
+      success: boolean
+      message: string
+    }>('/professional/onboarding', payload)
     .then((res) => res.data)
 
   return res.success
