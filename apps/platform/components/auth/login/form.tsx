@@ -181,7 +181,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
 
         <Button
           variant="outline"
-          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] text-[#344054]"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] text-[#344054]"
         >
           <svg
             className="h-6 w-6"
@@ -218,7 +218,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
         </Button>
         <Button
           variant="outline"
-          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] text-[#344054]"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] text-[#344054]"
         >
           <svg
             className="h-6 w-6"

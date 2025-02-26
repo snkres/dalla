@@ -45,7 +45,7 @@ export function RegisterForm({
     })
     if (res.success) {
       if (typeof window !== undefined) {
-        localStorage.setItem('mode', mode === 'company' ? 'company' : 'user')
+        localStorage.setItem('mode', mode === 'company' ? 'company' : 'professional')
       }
       if (typeof window !== 'undefined') {
         localStorage.setItem('email', data.email)

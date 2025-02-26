@@ -51,6 +51,7 @@ export function DatePicker({
       <div className="grid grid-cols-2 gap-2">
         <div className="relative" ref={monthRef}>
           <button
+            type="button"
             onClick={() => !disabled && setIsMonthOpen(!isMonthOpen)}
             className={`w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
               }`}
@@ -62,9 +63,10 @@ export function DatePicker({
             <ChevronDown size={20} className={`${disabled ? 'text-gray-300' : 'text-gray-400'}`} />
           </button>
           {isMonthOpen && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-10 w-full bottom-full mb-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
               {months.map((month) => (
                 <button
+                  type="button"
                   key={month}
                   onClick={() => {
                     onMonthChange(month);
@@ -82,6 +84,7 @@ export function DatePicker({
 
         <div className="relative" ref={yearRef}>
           <button
+            type="button"
             onClick={() => !disabled && setIsYearOpen(!isYearOpen)}
             className={`w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
               }`}
@@ -93,9 +96,10 @@ export function DatePicker({
             <ChevronDown size={20} className={`${disabled ? 'text-gray-300' : 'text-gray-400'}`} />
           </button>
           {isYearOpen && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-10 w-full bottom-full mb-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
               {years.map((year) => (
                 <button
+                  type="button"
                   key={year}
                   onClick={() => {
                     onYearChange(year);

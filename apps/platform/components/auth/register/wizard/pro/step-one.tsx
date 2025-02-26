@@ -42,8 +42,17 @@ export function ProWizardStepOne({
   })
 
   const onSubmit = (data: FormData) => {
-    console.log(data)
-    // handle login logic here
+    updateData((prev) => ({
+      ...prev,
+      meta: {
+        yearsOfExperience: data.yoe,
+        location: data.address,
+        phone: data.number,
+        skills: prev.meta.skills || [],
+        socialLinks: prev.meta.socialLinks || []
+      }
+    }))
+    handleNext()
   }
 
   const [dragActive, setDragActive] = useState(false)
@@ -59,19 +68,30 @@ export function ProWizardStepOne({
       setDragActive(false)
     }
   }
-
   useEffect(() => {
     const fetchData = async () => {
       if (uploadedCV instanceof File) {
-        const res = await parseCV(uploadedCV);
-        console.log(res);
+        try {
+          const res = await parseCV(uploadedCV);
+          console.log(res);
+        } catch (error) {
+          console.error("Error parsing CV:", error);
+        }
       }
     }
     fetchData();
   }, [uploadedCV]);
 
+  useEffect(() => {
+    if (uploadedImage) {
+      setValue('logo', uploadedImage);
+    } else {
+      setValue('logo', null);
+    }
+  }, [uploadedImage, setValue]);
+
   return (
-    <div className="flex flex-col ">
+    <form className="flex flex-col " onSubmit={handleSubmit(onSubmit)}>
       <Logomark
         className='h-14 w-14 [&_path]:fill-coral-red-100 mx-auto'
       />
@@ -175,8 +195,8 @@ export function ProWizardStepOne({
                 'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
               )}
               placeholder="Ex: 5"
-              type="name"
-              {...register('yoe')}
+              type="number"
+              {...register('yoe', { valueAsNumber: true })}
             />
             {errors.yoe && (
               <p className="mt-2 text-xs text-red-500">{errors.yoe.message}</p>
@@ -226,7 +246,6 @@ export function ProWizardStepOne({
       </div>
       <div className=" flex items-center justify-center gap-4 px-6">
         <Button
-          onClick={handleNext}
           variant="default"
           size="lg"
 
@@ -239,6 +258,6 @@ export function ProWizardStepOne({
           Continue
         </Button>
       </div>
-    </div>
+    </form>
   )
 }

@@ -125,7 +125,7 @@ export default function page() {
             onClick={() => setManually(true)}
             asChild
           >
-            <Link href='/profile'>
+            <Link href='/onboard'>
               Continue
             </Link>
           </Button>

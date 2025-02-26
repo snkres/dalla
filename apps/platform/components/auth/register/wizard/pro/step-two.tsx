@@ -49,9 +49,20 @@ export function ProWizardStepTwo({
   })
 
   const onSubmit = (data: FormData) => {
-    console.log(data)
-    // handle login logic here
+    updateData(
+      (prev) => {
+        return {
+          ...prev,
+          meta: {
+            ...prev.meta,
+            skills: skills,
+            socialLinks: [data.portfolio]
+          }
+        }
+      }
+    )
   }
+
 
   const [dragActive, setDragActive] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
@@ -65,7 +76,7 @@ export function ProWizardStepTwo({
       setDragActive(false)
     }
   }
-  const [skills, setSkills] = useState<string[]>(['Javascript', 'Photoshop']);
+  const [skills, setSkills] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -89,6 +100,7 @@ export function ProWizardStepTwo({
       setInputValue('');
       setSuggestions([]);
       setShowSuggestions(false);
+
     }
   };
 
@@ -121,7 +133,7 @@ export function ProWizardStepTwo({
     }
   };
   return (
-    <div className="flex flex-col gap-4 w-[43rem] px-6">
+    <form className="flex flex-col gap-4 w-[43rem] px-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="flex gap-[0.375rem] flex-col">
         <h2 className="text-4xl font-medium text-gray-700">
           Skills <span className="text-coral-red-50">*</span>
@@ -161,7 +173,7 @@ export function ProWizardStepTwo({
           {showSuggestions && suggestions.length > 0 && (
             <div
               ref={suggestionsRef}
-              className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto z-10"
+              className="absolute left-0 right-0 mt-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto z-10"
             >
               {suggestions.map((suggestion) => (
                 <button
@@ -177,7 +189,7 @@ export function ProWizardStepTwo({
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-[0.375rem]">
+      {/* <div className="flex w-full flex-col gap-[0.375rem]">
         <label
           className={cn(
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
@@ -196,7 +208,7 @@ export function ProWizardStepTwo({
         {errors.industry && (
           <p className="mt-2 text-xs text-red-500">{errors.industry.message}</p>
         )}
-      </div>
+      </div> */}
 
       <div className="flex w-full flex-col gap-[0.375rem]">
         <label
@@ -282,6 +294,6 @@ export function ProWizardStepTwo({
           Continue
         </Button>
       </div>
-    </div>
+    </form>
   )
 }

@@ -1,4 +1,5 @@
 import { cn } from '@dallah/utils'
+import Image from 'next/image'
 
 export function LoginRightSide({ proMode }: { proMode?: boolean }) {
   return (
@@ -8,12 +9,15 @@ export function LoginRightSide({ proMode }: { proMode?: boolean }) {
         proMode ? 'bg-slate-blue' : 'bg-white',
       )}
     >
-      <img
+      <Image
         src="/login.webp"
         alt="company"
         className="h-screen w-full object-cover object-top brightness-75"
+        width={500}
+        height={500}
+        loading='eager'
+        priority
       />
-
     </section>
   )
 }

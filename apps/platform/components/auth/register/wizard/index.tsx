@@ -1,14 +1,15 @@
 'use client'
 
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { StepOne } from './company/step-one'
 import { StepTwo } from './company/step-two'
 import { StepThree } from './company/step-three'
 import { SuccessfulPopUp } from './company/successful-popup'
-import { companyOnboarding } from '@lib/api/company/onboarding'
+import { companyOnboarding, proOnboarding } from '@lib/api/company/onboarding'
 import { ProWizardStepOne } from './pro/step-one'
 import { ProWizardStepTwo } from './pro/step-two'
+import { ProWizardStepThree } from './pro/step-three'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -101,7 +102,7 @@ export function OnboardingWizard() {
   }, [])
 
   const handleNext = () => {
-    if (step === 3) {
+    if (step === 3 && mode === 'company') {
       setStep('success')
     } else {
       setStep((prev) => (prev === 'success' ? 1 : ((prev + 1) as 1 | 2 | 3)))
@@ -136,8 +137,19 @@ export function OnboardingWizard() {
             },
           },
         })
-        console.log('Response:', res)
+        if (res.success) {
+          handleNext()
+        }
       } else {
+        console.log('Submitting data:', proData)
+        const res = await proOnboarding({
+          ...proData,
+          gender: 'male',
+          headline: "Hello World",
+          bio: "Hello World",
+          resume: '///'
+        })
+        console.log(res)
 
       }
     } catch (error) {
@@ -273,7 +285,7 @@ export function OnboardingWizard() {
                   </motion.div>
                 )}
 
-                {/* {step === 3 && (
+                {step === 3 && (
                   <motion.div
                     key="step3"
                     initial={{ opacity: 0, x: -50 }}
@@ -281,13 +293,22 @@ export function OnboardingWizard() {
                     exit={{ opacity: 0, x: 50 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <StepThree
-                      data={data}
-                      updateData={setData}
-                      onSubmit={handleSubmit}
+                    <ProWizardStepThree
+                      data={
+                        proData
+                      }
+                      updateData={
+                        setProData
+                      }
+                      handleNext={
+                        handleNext
+                      }
+                      onSubmit={
+                        handleSubmit
+                      }
                     />
                   </motion.div>
-                )} */}
+                )}
               </AnimatePresence>
             </div>
           </div>

@@ -30,15 +30,15 @@ export async function companyOnboarding(payload: CompanyPayload) {
     }>('/company/onboarding', payload)
     .then((res) => res.data)
 
-  return res.success
+  return res
 }
 
 export async function proOnboarding(payload: ProOnboardingData) {
   const res = await axiosInstance
-    .patch<{
+    .post<{
       success: boolean
       message: string
-    }>('/professional/onboarding', payload)
+    }>('/professionals/onboarding', payload)
     .then((res) => res.data)
 
   return res.success
