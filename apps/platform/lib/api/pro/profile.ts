@@ -1,4 +1,3 @@
-import { string } from 'zod'
 import { axiosInstance } from '../instance'
 
 export async function getProProfile() {

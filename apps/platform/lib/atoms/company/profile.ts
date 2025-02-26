@@ -1,6 +1,6 @@
 import { atomWithStorage } from 'jotai/utils'
 
-interface CompanyProfile {
+export interface CompanyProfile {
   id: string
   name: string
   email: string

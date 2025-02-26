@@ -13,12 +13,10 @@ export function ProWizardStepThree({
   data,
   updateData,
   handleNext,
-  onSubmit,
 }: {
   data: ProOnboardingData
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   handleNext: () => void
-  onSubmit: () => void
 }) {
   const [isExpOpen, setIsExpOpen] = useState(false)
 
@@ -62,12 +60,11 @@ export function ProWizardStepThree({
       <div className="flex gap-2 items-center w-full mt-6">
         <Button
           onClick={
-            data.experience.length > 0
-              ? onSubmit
-              : () => {
-                handleNext()
-                // setIsExpOpen(true)
-              }
+
+            () =>
+              handleNext()
+
+
           }
           variant="outline"
           size="lg"
@@ -78,7 +75,7 @@ export function ProWizardStepThree({
           }}
         >
           {
-            data.experience.length > 0 ? "Finish" : "Skip"
+            data.experience.length > 0 ? "Next" : "Skip"
           }
         </Button>
         <Button

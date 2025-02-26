@@ -140,13 +140,8 @@ export function OnboardingWizard() {
         }
       } else {
         console.log("Submitting data:", proData)
-        const res = await proOnboarding({
-          ...proData,
-          gender: "male",
-          headline: "Hello World",
-          bio: "Hello World",
-          resume: "///",
-        })
+        const res = await proOnboarding(proData)
+
         console.log(res)
         if (res.success) {
 
@@ -157,10 +152,6 @@ export function OnboardingWizard() {
       console.error("Error submitting data:", error)
     }
   }
-
-
-
-
 
   return (
     <AnimatePresence mode="wait">
@@ -278,7 +269,6 @@ export function OnboardingWizard() {
                     data={proData}
                     updateData={setProData}
                     handleNext={handleNext}
-                    onSubmit={handleSubmit}
                   />
                 </motion.div>
               )}

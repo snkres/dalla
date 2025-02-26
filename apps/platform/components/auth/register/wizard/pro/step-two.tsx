@@ -230,54 +230,7 @@ export function ProWizardStepTwo({
           <p className="mt-2 text-xs text-red-500">{errors.industry.message}</p>
         )}
       </div>
-      <div
-        className={
-          `flex-1 cursor-pointer rounded-lg border-2 border-solid p-6 transition-colors w-full ${dragActive
-            ? "border-coral-red-100 bg-[#f8eacf]/10"
-            : uploadedImage
-              ? "border-coral-red-100 bg-[#f8eacf]/5"
-              : "border-[#E4E7EC]"
-          }`
-        }
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          setDragActive(false)
-          // Handle file drop here
-          const file = e.dataTransfer.files[0]
-          if (file) {
-            const imageUrl = URL.createObjectURL(file)
-            setUploadedImage(imageUrl)
-          }
-        }}
-        onClick={() => {
-          // Trigger hidden file input
-          const input = document.createElement("input")
-          input.type = "file"
-          input.accept = "image/*"
-          input.onchange = (e) => {
-            const file = (e.target as HTMLInputElement).files?.[0]
-            if (file) {
-              const imageUrl = URL.createObjectURL(file)
-              setUploadedImage(imageUrl)
-            }
-          }
-          input.click()
-        }}
-      >
-        <div className="space-y-1 text-center">
-          <div className='border w-fit mx-auto p-2 rounded-lg  border-[#E4E7EC]  shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]'>
-            <UploadCloudIcon size={24} className="mx-auto" />
-          </div>
-          <p>
-            <span className="text-slate-blue-90 font-semibold">Upload Certifications</span> or drag and drop
-          </p>
-          <p className="text-sm text-[#98a2b3]"> PDF (max. 2MB)</p>
-        </div>
-      </div>
+
       <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
       </div>
       <div className=" flex items-center justify-center gap-4 w-full">

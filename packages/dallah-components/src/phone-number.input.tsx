@@ -11,10 +11,14 @@ import flags from 'react-phone-number-input/flags'
 
 export default function PhoneInputWithCountry({
   onChange,
+  defaultValue
 }: {
   onChange: (value: string) => void
+  defaultValue?: string
 }) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(
+    defaultValue ?? '',
+  )
 
   return (
     <div className="space-y-2" dir="ltr">
@@ -25,6 +29,7 @@ export default function PhoneInputWithCountry({
         countrySelectComponent={CountrySelect}
         inputComponent={PhoneInput}
         id="input-46"
+
         placeholder="Enter phone number"
         value={value}
         onChange={(newValue) => {
