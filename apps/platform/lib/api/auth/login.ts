@@ -1,4 +1,5 @@
 import { axiosInstance } from '../instance'
+import { getProProfile } from '../pro/profile'
 
 interface Payload {
   email: string

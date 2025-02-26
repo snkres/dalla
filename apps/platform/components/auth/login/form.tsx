@@ -9,6 +9,11 @@ import { cn } from '@dallah/utils'
 import { login } from '@lib/api/auth/login'
 import { useTransitionRouter } from 'next-view-transitions'
 import { resendOTP } from '@lib/api/auth/otp-verify'
+import { getProProfile } from '@lib/api/pro/profile'
+import { useAtom } from 'jotai'
+import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { companyProfileAtom } from '@lib/atoms/company/profile'
+import { getCompanyProfile } from '@lib/api/company/profile'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -30,6 +35,9 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
   })
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
+  const [_, setProProfile] = useAtom(proProfileAtom)
+  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
+
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
@@ -40,6 +48,21 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
         userType: mode === 'company' ? 'company' : 'professional',
       })
       if (res) {
+        if (mode === 'professional') {
+          const profile = await getProProfile()
+          setProProfile(profile.data.data)
+          if (profile.data.data.onboarded === false) {
+            router.push('/onboard')
+            return
+          }
+        } else {
+          const profile = await getCompanyProfile()
+          setCompanyProfile(profile.data.data)
+          if (profile.data.data.onboarded === false) {
+            router.push('/onboard')
+            return
+          }
+        }
         router.push('/')
         console.log('logged in')
       }

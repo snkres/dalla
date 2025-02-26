@@ -12,6 +12,7 @@ import { ProWizardStepTwo } from "./pro/step-two"
 import { ProWizardStepThree } from "./pro/step-three"
 import { ProWizardStepFour } from "./pro/step-four"
 
+
 export interface CompanyOnboardingData {
   // Step 1
   focusArea: string[]
@@ -92,6 +93,7 @@ export function OnboardingWizard() {
       yearsOfExperience: 0,
     },
   })
+
   const [mode, setMode] = useState("")
 
   useEffect(() => {
@@ -147,6 +149,7 @@ export function OnboardingWizard() {
         })
         console.log(res)
         if (res.success) {
+
           handleNext()
         }
       }
@@ -154,6 +157,10 @@ export function OnboardingWizard() {
       console.error("Error submitting data:", error)
     }
   }
+
+
+
+
 
   return (
     <AnimatePresence mode="wait">
@@ -165,7 +172,7 @@ export function OnboardingWizard() {
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.5 }}
         >
-          <SuccessfulPopUp />
+          <SuccessfulPopUp mode={mode} />
         </motion.div>
       ) : mode === "company" ? (
         <div className="mx-auto max-w-[43rem] rounded-xl bg-[#FFFDF9] shadow-lg">

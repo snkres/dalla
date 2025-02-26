@@ -13,7 +13,7 @@ const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
-  username: z.string().min(2, 'Username must be at least 2 characters long'),
+  username: z.string().min(2, 'Username must be at least 2 characters long').optional(),
 })
 
 type FormData = z.infer<typeof schema>
@@ -42,6 +42,7 @@ export function RegisterForm({
     const res = await register({
       ...data,
       userType: mode === 'company' ? 'company' : 'professional',
+      username: data.username || '',
     })
     if (res.success) {
       if (typeof window !== undefined) {
@@ -85,30 +86,34 @@ export function RegisterForm({
             <p className="text-text-xs text-coral-red-70">{errors.name.message}</p>
           )}
         </div>
-        <div className="flex w-full flex-col gap-[0.375rem]">
-          <label
-            className={cn(
-              'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-            )}
-          >
-            Username <span className={
-              cn(
-                mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
-              )
-            }>*</span>
-          </label>
-          <Input
-            className={cn(
-              'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
-            )}
-            placeholder="username"
-            type="name"
-            {...registerField('username')}
-          />
-          {errors.username && (
-            <p className="text-text-xs text-coral-red-70">{errors.username.message}</p>
-          )}
-        </div>
+        {
+          mode === 'professional' && (
+            <div className="flex w-full flex-col gap-[0.375rem]">
+              <label
+                className={cn(
+                  'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+                )}
+              >
+                Username <span className={
+                  cn(
+                    'text-coral-red-70'
+                  )
+                }>*</span>
+              </label>
+              <Input
+                className={cn(
+                  'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
+                )}
+                placeholder="username"
+                type="name"
+                {...registerField('username')}
+              />
+              {errors.username && (
+                <p className="text-text-xs text-coral-red-70">{errors.username.message}</p>
+              )}
+            </div>
+          )
+        }
       </div>
 
       <div className="flex w-full flex-col gap-[0.375rem]">
