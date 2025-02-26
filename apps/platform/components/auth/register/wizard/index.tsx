@@ -40,7 +40,7 @@ export interface ProOnboardingData {
     location: string
     yearsOfExperience: number
     skills: Array<string>
-    socialLinks: Array<string>
+    socialLinks: { [key: string]: string }
   }
   experience: Array<{
     title: string
@@ -91,7 +91,7 @@ export function OnboardingWizard() {
       location: "",
       phone: "",
       skills: [],
-      socialLinks: [],
+      socialLinks: {},
       yearsOfExperience: 0,
     },
   })
@@ -105,7 +105,7 @@ export function OnboardingWizard() {
   }, [])
 
   const handleNext = () => {
-    if ((step === 3 && mode === "company") || (step === 4 && mode === "pro")) {
+    if ((step === 3 && mode === "company") || (step === 4 && mode === "professional")) {
       setStep("success")
     } else {
       setStep((prev) => (prev === "success" ? 1 : ((prev + 1) as 1 | 2 | 3 | 4)))
@@ -141,8 +141,44 @@ export function OnboardingWizard() {
           handleNext()
         }
       } else {
+        console.log("Pro data:", proData.experience[0].startDate)
+        const submittedData: ProOnboardingData = {
+          headline: proData.headline || "mmm",
+          resume: proData.resume || "mmm",
+          bio: proData.bio || "mmm",
+          education: proData.education.map((edu) => ({
+            school: edu.school || "mmm",
+            degree: edu.degree || "mmm",
+            field: edu.field || "mmm",
+            startDate: new Date(`${edu.startDate} 01`).toISOString() || new Date().toISOString(),
+            endDate: new Date(`${edu.endDate} 01`).toISOString() || new Date().toISOString(),
+            description: edu.description || "mmm",
+          })),
+          experience: proData.experience.map((exp) => ({
+            title: exp.title || "mmm",
+            company: exp.company || "mmm",
+            location: exp.location || "mmm",
+            meta: {
+              skills: exp.meta.skills || ["mmm"],
+              achievements: exp.meta.achievements || "mmm",
+              responsibilities: exp.meta.responsibilities || "mmm",
+              employmentType: exp.meta.employmentType || "mmm",
+            },
+            startDate: new Date(`${exp.startDate} 01`).toISOString() || new Date().toISOString(),
+            endDate: new Date(`${exp.endDate} 01`).toISOString() || new Date().toISOString(),
+          })),
+          gender: "Male",
+          avatar: proData.avatar || "mmm",
+          meta: {
+            socialLinks: proData.meta.socialLinks || { mmm: "mmm" },
+            phone: proData.meta.phone || "mmm",
+            location: proData.meta.location || "mmm",
+            yearsOfExperience: proData.meta.yearsOfExperience || 0,
+            skills: proData.meta.skills || ["mmm"],
+          }
+        }
         console.log("Submitting data:", proData)
-        const res = await proOnboarding(proData)
+        const res = await proOnboarding(submittedData)
 
         console.log(res)
         if (res.success) {

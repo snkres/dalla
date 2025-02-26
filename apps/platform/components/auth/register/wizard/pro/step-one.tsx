@@ -261,12 +261,10 @@ export function ProWizardStepOne({
                 phone: res.data.profile.phone || prev.meta.phone,
                 location: res.data.profile.location || prev.meta.location,
                 yearsOfExperience: yoe,
-                socialLinks: [
-                  ...(prev.meta.socialLinks || []),
-                  res.data.profile.url || ''
-                ].filter((link, index, self) =>
-                  index === self.findIndex(l => l)
-                ),
+                socialLinks: {
+                  ...(prev.meta.socialLinks || {}),
+                  [res.data.profile.url || '']: res.data.profile.url || ''
+                },
               },
               education: educationEntries,
               experience: workExperience,

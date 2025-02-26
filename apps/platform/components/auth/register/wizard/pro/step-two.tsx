@@ -56,7 +56,7 @@ export function ProWizardStepTwo({
           meta: {
             ...prev.meta,
             skills: skills,
-            socialLinks: [data.portfolio]
+            socialLinks: { portfolio: data.portfolio }
           }
         }
       }

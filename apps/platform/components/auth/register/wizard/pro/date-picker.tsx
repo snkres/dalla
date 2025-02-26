@@ -31,6 +31,19 @@ export function DatePicker({
   const monthRef = React.useRef<HTMLDivElement>(null);
   const yearRef = React.useRef<HTMLDivElement>(null);
 
+  // Track internal state to ensure we're always displaying the correct values
+  const [internalMonth, setInternalMonth] = React.useState(selectedMonth);
+  const [internalYear, setInternalYear] = React.useState(selectedYear);
+
+  // Update internal state when props change
+  React.useEffect(() => {
+    setInternalMonth(selectedMonth);
+  }, [selectedMonth]);
+
+  React.useEffect(() => {
+    setInternalYear(selectedYear);
+  }, [selectedYear]);
+
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (monthRef.current && !monthRef.current.contains(event.target as Node)) {
@@ -45,9 +58,23 @@ export function DatePicker({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Handle month selection
+  const handleMonthSelect = (month: string) => {
+    setInternalMonth(month);
+    onMonthChange(month);
+    setIsMonthOpen(false);
+  };
+
+  // Handle year selection
+  const handleYearSelect = (year: string) => {
+    setInternalYear(year);
+    onYearChange(year);
+    setIsYearOpen(false);
+  };
+
   return (
     <div>
-      <label className="block text-text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="grid grid-cols-2 gap-2">
         <div className="relative" ref={monthRef}>
           <button
@@ -56,23 +83,21 @@ export function DatePicker({
             className={`w-full px-4 py-2 border border-[#d0d5dd] rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
               }`}
             disabled={disabled}
+            data-testid={`${label.toLowerCase().replace(/\s+/g, '-')}-month-selector`}
           >
             <span className={disabled ? 'text-gray-400' : ''}>
-              {selectedMonth || 'Month'}
+              {internalMonth || 'Month'}
             </span>
             <ChevronDown size={20} className={`${disabled ? 'text-gray-300' : 'text-gray-400'}`} />
           </button>
           {isMonthOpen && (
-            <div className="absolute z-10 w-full bottom-full mb-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-10 w-full mt-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
               {months.map((month) => (
                 <button
                   type="button"
                   key={month}
-                  onClick={() => {
-                    onMonthChange(month);
-                    setIsMonthOpen(false);
-                  }}
-                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${selectedMonth === month ? 'bg-blue-50 text-blue-700' : ''
+                  onClick={() => handleMonthSelect(month)}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${internalMonth === month ? 'bg-blue-50 text-blue-700' : ''
                     }`}
                 >
                   {month}
@@ -89,23 +114,21 @@ export function DatePicker({
             className={`w-full px-4 py-2 border border-[#d0d5dd] rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
               }`}
             disabled={disabled}
+            data-testid={`${label.toLowerCase().replace(/\s+/g, '-')}-year-selector`}
           >
             <span className={disabled ? 'text-gray-400' : ''}>
-              {selectedYear || 'Year'}
+              {internalYear || 'Year'}
             </span>
             <ChevronDown size={20} className={`${disabled ? 'text-gray-300' : 'text-gray-400'}`} />
           </button>
           {isYearOpen && (
-            <div className="absolute z-10 w-full bottom-full mb-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-10 w-full mt-1 bg-[#FFFDFA] border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
               {years.map((year) => (
                 <button
                   type="button"
                   key={year}
-                  onClick={() => {
-                    onYearChange(year);
-                    setIsYearOpen(false);
-                  }}
-                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${selectedYear === year ? 'bg-blue-50 text-blue-700' : ''
+                  onClick={() => handleYearSelect(year)}
+                  className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${internalYear === year ? 'bg-blue-50 text-blue-700' : ''
                     }`}
                 >
                   {year}

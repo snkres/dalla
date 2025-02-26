@@ -341,6 +341,7 @@ export function ExperienceForm({
           {errors.achievements && <p className="mt-1 text-text-sm text-coral-red-100">{errors.achievements.message}</p>}
         </div>
 
+
         <div>
           <label className="flex items-center space-x-2 mb-4">
             <input
@@ -352,28 +353,40 @@ export function ExperienceForm({
           </label>
 
           <div className="grid grid-cols-2 gap-4">
-            <DatePicker
-              label="Start Date"
-              selectedMonth={form.getValues("startMonth")}
-              selectedYear={form.getValues("startYear")}
-              onMonthChange={(month) => setValue("startMonth", month)}
-              onYearChange={(year) => setValue("startYear", year)}
-            />
-            {(errors.startMonth || errors.startYear) && (
-              <p className="mt-1 text-text-sm text-coral-red-100">Start date is required</p>
-            )}
+            <div>
+              <DatePicker
+                label="Start Date"
+                selectedMonth={watch("startMonth") || ""}
+                selectedYear={watch("startYear") || ""}
+                onMonthChange={(month) => {
+                  setValue("startMonth", month, { shouldValidate: true });
+                }}
+                onYearChange={(year) => {
+                  setValue("startYear", year, { shouldValidate: true });
+                }}
+              />
+              {(errors.startMonth || errors.startYear) && (
+                <p className="mt-1 text-sm text-coral-red-100">Start date is required</p>
+              )}
+            </div>
 
-            <DatePicker
-              label="End Date"
-              selectedMonth={form.getValues("endMonth") || ""}
-              selectedYear={form.getValues("endYear") || ""}
-              onMonthChange={(month) => setValue("endMonth", month)}
-              onYearChange={(year) => setValue("endYear", year)}
-              disabled={isCurrentlyWorking}
-            />
-            {!isCurrentlyWorking && (errors.endMonth || errors.endYear) && (
-              <p className="mt-1 text-text-sm text-coral-red-100">End date is required</p>
-            )}
+            <div>
+              <DatePicker
+                label="End Date"
+                selectedMonth={watch("endMonth") || ""}
+                selectedYear={watch("endYear") || ""}
+                onMonthChange={(month) => {
+                  setValue("endMonth", month, { shouldValidate: !isCurrentlyWorking });
+                }}
+                onYearChange={(year) => {
+                  setValue("endYear", year, { shouldValidate: !isCurrentlyWorking });
+                }}
+                disabled={isCurrentlyWorking}
+              />
+              {!isCurrentlyWorking && (errors.endMonth || errors.endYear) && (
+                <p className="mt-1 text-sm text-coral-red-100">End date is required</p>
+              )}
+            </div>
           </div>
         </div>
 
