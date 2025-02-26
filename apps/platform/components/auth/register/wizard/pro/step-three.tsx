@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { type Dispatch, useState } from "react"
+import { type Dispatch, useState, useEffect } from "react"
 import type { ProOnboardingData } from ".."
 import Image from "next/image"
 import { Button } from "@dallah/design-system"
@@ -19,13 +18,34 @@ export function ProWizardStepThree({
   handleNext: () => void
 }) {
   const [isExpOpen, setIsExpOpen] = useState(false)
+  const [editingIndex, setEditingIndex] = useState<number | null>(null)
+
+  useEffect(() => {
+    // Validate that all experience items have dates
+    const isValid = data.experience.every((exp) => exp.startDate && (exp.endDate || exp.endDate === "Present"))
+    if (!isValid) {
+      // If not valid, you might want to show an error message or prevent proceeding
+      console.error("All experience items must have start and end dates")
+    }
+  }, [data.experience])
 
   const handleExperienceSubmit = (experience: ProOnboardingData["experience"][0]) => {
-    updateData((prevData) => ({
-      ...prevData,
-      experience: [...prevData.experience, experience],
-    }))
+    updateData((prevData) => {
+      const newExperience = [...prevData.experience]
+      if (editingIndex !== null) {
+        newExperience[editingIndex] = experience
+      } else {
+        newExperience.push(experience)
+      }
+      return { ...prevData, experience: newExperience }
+    })
     setIsExpOpen(false)
+    setEditingIndex(null)
+  }
+
+  const handleEdit = (index: number) => {
+    setEditingIndex(index)
+    setIsExpOpen(true)
   }
 
   return (
@@ -49,6 +69,9 @@ export function ProWizardStepThree({
                 <p className="text-sm mt-1">
                   {exp.location} • {exp.meta.employmentType}
                 </p>
+                <Button onClick={() => handleEdit(index)} variant="outline" size="sm" className="mt-2">
+                  Edit
+                </Button>
               </div>
             ))}
           </div>
@@ -59,13 +82,7 @@ export function ProWizardStepThree({
 
       <div className="flex gap-2 items-center w-full mt-6">
         <Button
-          onClick={
-
-            () =>
-              handleNext()
-
-
-          }
+          onClick={handleNext}
           variant="outline"
           size="lg"
           className="shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
@@ -74,16 +91,14 @@ export function ProWizardStepThree({
             boxShadow: "0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset",
           }}
         >
-          {
-            data.experience.length > 0 ? "Next" : "Skip"
-          }
+          {data.experience.length > 0 ? "Next" : "Skip"}
         </Button>
         <Button
           variant="default"
-          onClick={
-            () =>
-              setIsExpOpen(true)
-          }
+          onClick={() => {
+            setEditingIndex(null)
+            setIsExpOpen(true)
+          }}
           size="lg"
           className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-coral-red-100 stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
           type="button"
@@ -95,8 +110,21 @@ export function ProWizardStepThree({
         </Button>
       </div>
 
-      <Modal isOpen={isExpOpen} onClose={() => setIsExpOpen(false)}>
-        <ExperienceForm onSubmit={handleExperienceSubmit} onCancel={() => setIsExpOpen(false)} />
+      <Modal
+        isOpen={isExpOpen}
+        onClose={() => {
+          setIsExpOpen(false)
+          setEditingIndex(null)
+        }}
+      >
+        <ExperienceForm
+          onSubmit={handleExperienceSubmit}
+          onCancel={() => {
+            setIsExpOpen(false)
+            setEditingIndex(null)
+          }}
+          initialData={editingIndex !== null ? data.experience[editingIndex] : undefined}
+        />
       </Modal>
     </div>
   )
