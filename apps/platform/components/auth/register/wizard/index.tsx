@@ -34,6 +34,7 @@ export interface ProOnboardingData {
   resume: string
   gender: string
   bio: string
+  avatar: string
   meta: {
     phone: string
     location: string
@@ -85,6 +86,7 @@ export function OnboardingWizard() {
     education: [],
     experience: [],
     gender: "",
+    avatar: "",
     meta: {
       location: "",
       phone: "",

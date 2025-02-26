@@ -5,17 +5,20 @@ export type ImageFile = {
   preview: string
 }
 
-export async function uploadImage(image: ImageFile) {
+export async function uploadImage(image: File) {
   const formData = new FormData()
-  formData.append('image', image.file)
+  formData.append('file', image)
 
   console.log(formData)
 
-  const res: {
-    message: string
-    url: string
-  } = await axiosInstance
-    .post('/upload', formData, {
+  const res = await axiosInstance
+    .post<{
+      success: boolean
+      message: string
+      data: {
+        fileUrl: string
+      }
+    }>('/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

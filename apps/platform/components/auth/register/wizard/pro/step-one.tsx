@@ -9,13 +9,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { UploadCloudIcon } from 'lucide-react'
 import { ProOnboardingData } from '..'
 import { CVParseResponse, parseCV } from '@lib/api/pro/parse-cv'
+import { uploadImage } from '@lib/api/shared/upload'
 
 // Enhanced schema with additional fields from CV parsing
 const schema = z.object({
   yoe: z.number(),
   address: z.string(),
   number: z.string(),
-  logo: z.string().nullable(),
+  avatar: z.string().nullable(),
   name: z.string().optional(),
   email: z.string().optional(),
 })
@@ -46,7 +47,7 @@ export function ProWizardStepOne({
       yoe: data.meta?.yearsOfExperience || 0,
       address: data.meta?.location || '',
       number: data.meta?.phone || '',
-      logo: null,
+      avatar: null,
     }
   })
 
@@ -61,12 +62,15 @@ export function ProWizardStepOne({
       },
       // Update headline with name if available
       headline: prev.headline || (formData.name ? `${formData.name}'s Professional Profile` : ''),
+      avatar: formData.avatar || '',
+      gender: "Male", // Default value
+
     }))
     handleNext()
   }
 
   const [dragActive, setDragActive] = useState(false)
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null)
   const [uploadedCV, setUploadedCV] = useState<File | null>(null)
   const [cvData, setCVData] = useState<CVParseResponse['data'] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -280,10 +284,16 @@ export function ProWizardStepOne({
   }, [uploadedCV, setValue, updateData]);
 
   useEffect(() => {
+    const uploadLogo = async () => {
+      const res = await uploadImage(uploadedImage!);
+    }
     if (uploadedImage) {
-      setValue('logo', uploadedImage);
+
+      uploadImage(uploadedImage).then((res) => {
+        setValue('avatar', res.data.fileUrl);
+      });
     } else {
-      setValue('logo', null);
+      setValue('avatar', '');
     }
   }, [uploadedImage, setValue]);
 
@@ -306,7 +316,7 @@ export function ProWizardStepOne({
         <div className='flex gap-4 flex-col items-center justify-center w-full '>
           <div className='flex flex-col gap-1'>
             <Image
-              src={uploadedImage || '/company-logo-placeholder.svg'}
+              src={uploadedImage ? URL.createObjectURL(uploadedImage) : '/company-logo-placeholder.svg'}
               alt='Company Logo'
               width={200}
               height={200}
@@ -318,8 +328,7 @@ export function ProWizardStepOne({
                 input.onchange = (e) => {
                   const file = (e.target as HTMLInputElement).files?.[0]
                   if (file) {
-                    const imageUrl = URL.createObjectURL(file)
-                    setUploadedImage(imageUrl)
+                    setUploadedImage(file)
                   }
                 }
                 input.click()
