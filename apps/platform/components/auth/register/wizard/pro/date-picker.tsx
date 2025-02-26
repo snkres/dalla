@@ -47,13 +47,13 @@ export function DatePicker({
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="block text-text-sm font-medium text-gray-700 mb-1">{label}</label>
       <div className="grid grid-cols-2 gap-2">
         <div className="relative" ref={monthRef}>
           <button
             type="button"
             onClick={() => !disabled && setIsMonthOpen(!isMonthOpen)}
-            className={`w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
+            className={`w-full px-4 py-2 border border-[#d0d5dd] rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
               }`}
             disabled={disabled}
           >
@@ -86,7 +86,7 @@ export function DatePicker({
           <button
             type="button"
             onClick={() => !disabled && setIsYearOpen(!isYearOpen)}
-            className={`w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
+            className={`w-full px-4 py-2 border border-[#d0d5dd] rounded-lg flex items-center justify-between ${disabled ? 'bg-gray-50 cursor-not-allowed' : 'hover:border-gray-400'
               }`}
             disabled={disabled}
           >

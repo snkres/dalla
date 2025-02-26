@@ -53,7 +53,7 @@ export function SwipeButton({
     >
       <span
         className={cn(
-          'pointer-events-none absolute inset-0 flex items-center justify-center text-sm font-medium',
+          'pointer-events-none absolute inset-0 flex items-center justify-center text-text-sm font-medium',
           disabled ? 'text-[#CBD5E1]' : 'text-foreground',
         )}
       >

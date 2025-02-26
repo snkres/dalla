@@ -144,7 +144,7 @@ export function ProWizardStepTwo({
               {skills.map((skill) => (
                 <span
                   key={skill}
-                  className="inline-flex items-center bg-slate-blue-10/70 text-gray-800 rounded-full px-3 py-1 text-sm"
+                  className="inline-flex items-center bg-slate-blue-10/70 text-gray-800 rounded-full px-3 py-1 text-text-sm"
                 >
                   {skill}
                   <button

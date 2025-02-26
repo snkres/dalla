@@ -47,7 +47,7 @@ export function ExperienceCard({
               <p className="text-gray-600">{company.subtitle}</p>
             </div>
             <div className="text-right">
-              <span className="inline-flex items-center px-4 py-1 rounded-full bg-blue-50 text-blue-700 text-sm font-medium">
+              <span className="inline-flex items-center px-4 py-1 rounded-full bg-blue-50 text-blue-700 text-text-sm font-medium">
                 {role}
               </span>
               <p className="mt-1 text-gray-600">{location}</p>
@@ -65,7 +65,7 @@ export function ExperienceCard({
           {tools.map((tool) => (
             <span
               key={tool.id}
-              className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm"
+              className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-text-sm"
             >
               {tool.name}
             </span>

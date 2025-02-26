@@ -1,66 +1,128 @@
-import { Dispatch, useState } from "react";
-import { ProOnboardingData } from "..";
-import Image from "next/image";
-import { Button } from "@dallah/design-system";
-import { Modal } from "@components/shared/modal";
-import React, { useRef, useEffect } from 'react';
-import { Search, ChevronDown, X } from 'lucide-react';
-import { DatePicker } from './date-picker';
-import { Input, Textarea } from '@dallah/design-system';
-import { cn } from '@dallah/utils';
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import {
+  Button,
+  Input,
+  Textarea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@dallah/design-system"
+import { Search, X } from "lucide-react"
+import type React from "react"
+import { useRef, useEffect, useState } from "react"
+import { DatePicker } from "./date-picker"
+import { cn } from "@dallah/utils"
+import type { ProOnboardingData } from ".."
+
+// Define the schema for the form
+const experienceSchema = z.object({
+  title: z.string().min(1, "Job title is required"),
+  company: z.string().min(1, "Company name is required"),
+  website: z.string().url("Please enter a valid URL").or(z.string().length(0)),
+  location: z.string().min(1, "Location is required"),
+  employmentType: z.enum(["Full time", "Part time", "Contract", "Freelance", "Internship"]),
+  responsibilities: z.string().min(1, "Responsibilities are required"),
+  achievements: z.string().min(1, "Achievements are required"),
+  isCurrentlyWorking: z.boolean(),
+  startMonth: z.string().min(1, "Start month is required"),
+  startYear: z.string().min(1, "Start year is required"),
+  endMonth: z.string().optional(),
+  endYear: z.string().optional(),
+  skills: z.array(z.string()).min(1, "At least one skill is required"),
+})
+
+type FormData = z.infer<typeof experienceSchema>
+
+const employmentOptions = ["Full time", "Part time", "Contract", "Freelance", "Internship"]
+
+const PREDEFINED_SKILLS = [
+  "JavaScript",
+  "Python",
+  "TypeScript",
+  "React",
+  "Node.js",
+  "HTML",
+  "CSS",
+  "SQL",
+  "Java",
+  "C++",
+  "Ruby",
+  "PHP",
+  "AWS",
+  "Docker",
+  "Kubernetes",
+  "Git",
+  "MongoDB",
+  "Photoshop",
+  "Illustrator",
+  "Figma",
+  "Sketch",
+  "Angular",
+  "Vue.js",
+  "Next.js",
+  "GraphQL",
+  "REST API",
+]
 
 interface Tool {
-  id: string;
-  name: string;
+  id: string
+  name: string
 }
 
-// Define employment options for the dropdown
-const employmentOptions = [
-  'Full time',
-  'Part time',
-  'Contract',
-  'Freelance',
-  'Internship'
-];
-
-// Predefined skills list for suggestions
-const PREDEFINED_SKILLS = [
-  'JavaScript', 'Python', 'TypeScript', 'React', 'Node.js',
-  'HTML', 'CSS', 'SQL', 'Java', 'C++', 'Ruby', 'PHP',
-  'AWS', 'Docker', 'Kubernetes', 'Git', 'MongoDB',
-  'Photoshop', 'Illustrator', 'Figma', 'Sketch',
-  'Angular', 'Vue.js', 'Next.js', 'GraphQL', 'REST API'
-];
-
-// Experience form component with added props to handle data integration
 export function ExperienceForm({
   onSubmit,
-  onCancel
+  onCancel,
 }: {
-  onSubmit: (experience: ProOnboardingData['experience'][0]) => void;
-  onCancel: () => void;
+  onSubmit: (experience: ProOnboardingData["experience"][0]) => void
+  onCancel: () => void
 }) {
-  const [selectedTools, setSelectedTools] = useState<Tool[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isCurrentlyWorking, setIsCurrentlyWorking] = useState(false);
-  const [startMonth, setStartMonth] = useState('');
-  const [startYear, setStartYear] = useState('');
-  const [endMonth, setEndMonth] = useState('');
-  const [endYear, setEndYear] = useState('');
+  const [selectedTools, setSelectedTools] = useState<Tool[]>([])
+  const [inputValue, setInputValue] = useState("")
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
-  // Form data fields
-  const [jobTitle, setJobTitle] = useState('');
-  const [company, setCompany] = useState('');
-  const [website, setWebsite] = useState('');
-  const [location, setLocation] = useState('');
-  const [employmentType, setEmploymentType] = useState(employmentOptions[0]);
-  const [responsibilities, setResponsibilities] = useState('');
-  const [achievements, setAchievements] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null)
+  const suggestionsRef = useRef<HTMLDivElement>(null)
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const suggestionsRef = useRef<HTMLDivElement>(null);
+  const form = useForm<FormData>({
+    resolver: zodResolver(experienceSchema),
+    defaultValues: {
+      title: "",
+      company: "",
+      website: "",
+      location: "",
+      employmentType: "Full time",
+      responsibilities: "",
+      achievements: "",
+      isCurrentlyWorking: false,
+      startMonth: "",
+      startYear: "",
+      skills: [],
+    },
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = form
+  const isCurrentlyWorking = watch("isCurrentlyWorking")
+
+  useEffect(() => {
+    // Update the skills field whenever selectedTools changes
+    setValue(
+      "skills",
+      selectedTools.map((tool) => tool.name),
+    )
+  }, [selectedTools, setValue])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -70,86 +132,66 @@ export function ExperienceForm({
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        setShowSuggestions(false);
+        setShowSuggestions(false)
       }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const removeTool = (toolId: string) => {
-    setSelectedTools(tools => tools.filter(tool => tool.id !== toolId));
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-
-    if (value.trim()) {
-      const filtered = PREDEFINED_SKILLS.filter(skill =>
-        skill.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
     }
-  };
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const handleAddSkill = (skill: string) => {
     const newTool: Tool = {
       id: `${skill}-${Date.now()}`,
-      name: skill
-    };
-
-    if (!selectedTools.some(tool => tool.name === skill)) {
-      setSelectedTools([...selectedTools, newTool]);
+      name: skill,
     }
 
-    setInputValue('');
-    setSuggestions([]);
-    setShowSuggestions(false);
-  };
+    if (!selectedTools.some((tool) => tool.name === skill)) {
+      setSelectedTools([...selectedTools, newTool])
+    }
+
+    setInputValue("")
+    setSuggestions([])
+    setShowSuggestions(false)
+  }
 
   const handleRemoveSkill = (toolToRemove: Tool) => {
-    setSelectedTools(tools => tools.filter(tool => tool.id !== toolToRemove.id));
-  };
+    setSelectedTools((tools) => tools.filter((tool) => tool.id !== toolToRemove.id))
+  }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && inputValue.trim() && suggestions.length > 0) {
-      e.preventDefault();
-      handleAddSkill(suggestions[0]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setInputValue(value)
+
+    if (value.trim()) {
+      const filtered = PREDEFINED_SKILLS.filter((skill) => skill.toLowerCase().includes(value.toLowerCase()))
+      setSuggestions(filtered)
+      setShowSuggestions(true)
+    } else {
+      setSuggestions([])
+      setShowSuggestions(false)
     }
-  };
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Create the experience object from form data
+  const onFormSubmit = handleSubmit((data) => {
     const experience = {
-      title: jobTitle,
-      company: company,
-      location: location,
+      title: data.title,
+      company: data.company,
+      location: data.location,
       meta: {
-        skills: selectedTools.map(tool => tool.name),
-        achievements: achievements,
-        responsibilities: responsibilities,
-        employmentType: employmentType
+        skills: data.skills,
+        achievements: data.achievements,
+        responsibilities: data.responsibilities,
+        employmentType: data.employmentType,
       },
-      startDate: `${startMonth} ${startYear}`,
-      endDate: isCurrentlyWorking ? 'Present' : `${endMonth} ${endYear}`
-    };
-
-    // Send the data back to parent component
-    onSubmit(experience);
-  };
+      startDate: `${data.startMonth} ${data.startYear}`,
+      endDate: data.isCurrentlyWorking ? "Present" : `${data.endMonth} ${data.endYear}`,
+    }
+    onSubmit(experience)
+  })
 
   return (
-    <form onSubmit={handleSubmit} className="p-8">
+    <form onSubmit={onFormSubmit} className="p-8">
       <div className="flex items-center justify-center mb-2">
         <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
           <img
@@ -165,83 +207,69 @@ export function ExperienceForm({
 
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
-          <Input
-            type="text"
-            value={jobTitle}
-            onChange={(e) => setJobTitle(e.target.value)}
-            placeholder="What is your job title?"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          <label className="block text-text-md font-medium text-gray-700 mb-1">
+            Job Title <span className="text-red-500">*</span>
+          </label>
+          <Input {...register("title")} placeholder="What is your job title?" className="w-full" />
+          {errors.title && <p className="mt-1 text-text-sm text-coral-red-100">{errors.title.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-          <div className="relative">
-            <Input
-              type="text"
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              placeholder="Search for company"
-              className="w-full py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+          <label className="block text-text-md font-medium text-gray-700 mb-1">
+            Company <span className="text-red-500">*</span>
+          </label>
+          <Input {...register("company")} placeholder="Search for company" className="w-full" />
+          {errors.company && <p className="mt-1 text-text-sm text-coral-red-100">{errors.company.message}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
-            <div className="flex">
-              <Input
-                type="text"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                placeholder="www.example.com"
-                className="w-full py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+            <label className="block text-text-md font-medium text-gray-700 mb-1">Website</label>
+            <Input {...register("website")} placeholder="www.example.com" className="w-full" />
+            {errors.website && <p className="mt-1 text-text-sm text-coral-red-100">{errors.website.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-            <div className="relative">
-              <Input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="location"
-                className="w-full py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+            <label className="block text-text-md font-medium text-gray-700 mb-1">
+              Location <span className="text-red-500">*</span>
+            </label>
+            <Input {...register("location")} placeholder="Location" className="w-full" />
+            {errors.location && <p className="mt-1 text-text-sm text-coral-red-100">{errors.location.message}</p>}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="employment-type">
-            Employment Type
+          <label className="block text-text-md font-medium text-gray-700 mb-1">
+            Employment Type <span className="text-red-500">*</span>
           </label>
-          <select
-            id="employment-type"
-            value={employmentType}
-            onChange={(e) => setEmploymentType(e.target.value)}
-            className="w-full px-4 py-2 text-left border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          <Select
+            onValueChange={(value) => setValue("employmentType", value as FormData["employmentType"])}
+            defaultValue={form.getValues("employmentType")}
           >
-            {employmentOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select employment type" />
+            </SelectTrigger>
+            <SelectContent>
+              {employmentOptions.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.employmentType && <p className="mt-1 text-text-sm text-coral-red-100">{errors.employmentType.message}</p>}
         </div>
 
         <div className="relative">
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tools & Technologies</label>
+          <label className="block text-text-md font-medium text-gray-700 mb-1">
+            Tools & Technologies <span className="text-red-500">*</span>
+          </label>
           <div className="border border-[#D0D5DD] rounded-lg bg-white p-3 focus-within:ring-2 focus-within:ring-slate-blue-20 focus-within:border-slate-blue-20">
             <div className="flex flex-wrap gap-2 mb-2">
               {selectedTools.map((tool) => (
                 <span
                   key={tool.id}
-                  className="inline-flex items-center bg-slate-blue-10/70 text-gray-800 rounded-full px-3 py-1 text-sm"
+                  className="inline-flex items-center bg-slate-blue-10/70 text-gray-800 rounded-full px-3 py-1 text-text-sm"
                 >
                   {tool.name}
                   <button
@@ -261,14 +289,12 @@ export function ExperienceForm({
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                onFocus={() => inputValue.trim() && setSuggestions(PREDEFINED_SKILLS.filter(skill =>
-                  skill.toLowerCase().includes(inputValue.toLowerCase())))}
                 placeholder="Select the tools, platforms, or technologies you are proficient in."
                 className="flex-1 ml-2 outline-none text-gray-700 placeholder-gray-400"
               />
             </div>
           </div>
+          {errors.skills && <p className="mt-1 text-text-sm text-coral-red-100">{errors.skills.message}</p>}
 
           {showSuggestions && suggestions.length > 0 && (
             <div
@@ -290,33 +316,36 @@ export function ExperienceForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Responsibilities</label>
+          <label className="block text-text-md font-medium text-gray-700 mb-1">
+            Responsibilities <span className="text-red-500">*</span>
+          </label>
           <Textarea
-            value={responsibilities}
-            onChange={(e) => setResponsibilities(e.target.value)}
-            placeholder="e.g. I joined Stripe's Customer Success team to help them scale their checkout product. I focused mainly on onboarding new customers and resolving complaints."
+            {...register("responsibilities")}
+            placeholder="Describe your key responsibilities..."
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full"
           />
+          {errors.responsibilities && <p className="mt-1 text-text-sm text-coral-red-100">{errors.responsibilities.message}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Achievements</label>
+          <label className="block text-text-md font-medium text-gray-700 mb-1">
+            Achievements <span className="text-red-500">*</span>
+          </label>
           <Textarea
-            value={achievements}
-            onChange={(e) => setAchievements(e.target.value)}
-            placeholder="e.g. I joined Stripe's Customer Success team to help them scale their checkout product. I focused mainly on onboarding new customers and resolving complaints."
+            {...register("achievements")}
+            placeholder="Describe your key achievements..."
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full"
           />
+          {errors.achievements && <p className="mt-1 text-text-sm text-coral-red-100">{errors.achievements.message}</p>}
         </div>
 
         <div>
           <label className="flex items-center space-x-2 mb-4">
             <input
               type="checkbox"
-              checked={isCurrentlyWorking}
-              onChange={(e) => setIsCurrentlyWorking(e.target.checked)}
+              {...register("isCurrentlyWorking")}
               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <span className="text-gray-700">I'm currently still working here</span>
@@ -325,42 +354,39 @@ export function ExperienceForm({
           <div className="grid grid-cols-2 gap-4">
             <DatePicker
               label="Start Date"
-              selectedMonth={startMonth}
-              selectedYear={startYear}
-              onMonthChange={setStartMonth}
-              onYearChange={setStartYear}
+              selectedMonth={form.getValues("startMonth")}
+              selectedYear={form.getValues("startYear")}
+              onMonthChange={(month) => setValue("startMonth", month)}
+              onYearChange={(year) => setValue("startYear", year)}
             />
+            {(errors.startMonth || errors.startYear) && (
+              <p className="mt-1 text-text-sm text-coral-red-100">Start date is required</p>
+            )}
 
             <DatePicker
               label="End Date"
-              selectedMonth={endMonth}
-              selectedYear={endYear}
-              onMonthChange={setEndMonth}
-              onYearChange={setEndYear}
+              selectedMonth={form.getValues("endMonth") || ""}
+              selectedYear={form.getValues("endYear") || ""}
+              onMonthChange={(month) => setValue("endMonth", month)}
+              onYearChange={(year) => setValue("endYear", year)}
               disabled={isCurrentlyWorking}
             />
+            {!isCurrentlyWorking && (errors.endMonth || errors.endYear) && (
+              <p className="mt-1 text-text-sm text-coral-red-100">End date is required</p>
+            )}
           </div>
         </div>
 
         <div className="flex gap-4">
-          <Button
-            type="button"
-            onClick={onCancel}
-            className="w-full py-3 px-4 text-gray-700 font-medium rounded-lg transition-colors border border-gray-300 bg-white"
-          >
+          <Button type="button" onClick={onCancel} variant="outline" className="w-full ">
             Cancel
           </Button>
-          <Button
-            type="submit"
-            className={cn(
-              "w-full py-3 px-4 text-white font-medium rounded-lg transition-colors",
-              'bg-coral-red-100'
-            )}
-          >
+          <Button type="submit" className={cn("w-full", "bg-coral-red-100")}>
             Add experience
           </Button>
         </div>
       </div>
     </form>
-  );
+  )
 }
+

@@ -57,7 +57,7 @@ export function ProRegisterForm() {
         </label>
         <Input
           className={cn(
-            'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
+            ' text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
             'bg-foreground text-zinc-900',
           )}
           placeholder="Name"
@@ -192,7 +192,7 @@ export function ProRegisterForm() {
         </label>
         <Input
           className={cn(
-            'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
+            ' text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
             'bg-foreground text-zinc-900',
           )}
           placeholder="Email"
@@ -219,7 +219,7 @@ export function ProRegisterForm() {
               placeholder="Password"
               type={isVisible ? 'text' : 'password'}
               className={cn(
-                'text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
+                ' text-text-sm h-12 rounded-xl pe-9 transition-colors duration-500 focus:outline-none',
                 'bg-foreground text-zinc-900',
               )}
               {...register('password')}

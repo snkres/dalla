@@ -41,5 +41,5 @@ export async function proOnboarding(payload: ProOnboardingData) {
     }>('/professionals/onboarding', payload)
     .then((res) => res.data)
 
-  return res.success
+  return res
 }

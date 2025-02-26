@@ -82,7 +82,7 @@ const CountrySelect = ({
         disabled={disabled}
         value={value}
         onChange={handleSelect}
-        className="absolute inset-0 text-sm opacity-0"
+        className="absolute inset-0 text-text-sm opacity-0"
         aria-label="Select country"
       >
         <option key="default" value="">

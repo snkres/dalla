@@ -197,7 +197,7 @@ export function RegisterForm({
         <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
         <p
           className={cn(
-            'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
+            ' text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
             'text-[#9A9A9A]',
           )}
         >

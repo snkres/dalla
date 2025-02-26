@@ -91,7 +91,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
               {...register('email')}
             />
             {errors.email && (
-              <p className="mt-2 text-xs text-red-500">
+              <p className="mt-2 text-text-sm text-coral-red-100">
                 {errors.email.message}
               </p>
             )}
@@ -137,7 +137,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
         <div className="flex items-center justify-end">
           <Link
             className={cn(
-              'text-text-sm font-inter self-stretch text-right text-[0.875rem] leading-[1.25rem] text-[#475467] transition-colors duration-500',
+              ' text-text-sm font-inter self-stretch text-right text-[0.875rem] leading-[1.25rem] text-[#475467] transition-colors duration-500',
               'text-slate-blue',
             )}
             href="#"
@@ -168,7 +168,7 @@ export function LoginForm({ mode }: { mode: 'company' | 'professional' }) {
           <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
           <p
             className={cn(
-              'text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
+              ' text-text-sm rounded-md px-1 py-0.5 transition-colors duration-500',
               // mode === 'pro'
               // ? 'text-slate-blue bg-sunshine-yellow'
               'text-[#9A9A9A]',

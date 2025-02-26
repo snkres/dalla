@@ -140,7 +140,7 @@ const OptionCard = React.forwardRef<HTMLDivElement, OptionCardProps>(
             <div className="p-4">
               <h3 className="font-semibold">{title}</h3>
               {description && (
-                <p className="text-muted-foreground text-sm">{description}</p>
+                <p className="text-muted-foreground text-text-sm">{description}</p>
               )}
             </div>
           </>
@@ -446,7 +446,7 @@ const MultiStepForm = React.forwardRef<HTMLDivElement, MultiStepFormProps>(
                   </h1>
                 )}
                 {formSteps[currentStep]?.description && (
-                  <p className="text-text-sm mx-auto max-w-md text-zinc-500">
+                  <p className=" text-text-sm mx-auto max-w-md text-zinc-500">
                     {formSteps[currentStep].description}
                   </p>
                 )}

@@ -199,7 +199,7 @@ export function ProWizardStepOne({
               {...register('yoe', { valueAsNumber: true })}
             />
             {errors.yoe && (
-              <p className="mt-2 text-xs text-red-500">{errors.yoe.message}</p>
+              <p className="mt-2 text-text-xs text-coral-red-80">{errors.yoe.message}</p>
             )}
           </div>
           <div className="flex flex-col gap-[0.375rem] w-full">
@@ -215,7 +215,7 @@ export function ProWizardStepOne({
             }}
             />
             {errors.number && (
-              <p className="mt-2 text-xs text-red-500">{errors.number.message}</p>
+              <p className="mt-2 text-text-xs text-coral-red-80">{errors.number.message}</p>
             )}
           </div>
         </div>
@@ -239,7 +239,7 @@ export function ProWizardStepOne({
           {...register('address')}
         />
         {errors.address && (
-          <p className="mt-2 text-xs text-red-500">{errors.address.message}</p>
+          <p className="mt-2 text-text-xs text-coral-red-80">{errors.address.message}</p>
         )}
       </div>
       <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
