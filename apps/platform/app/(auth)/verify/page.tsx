@@ -32,6 +32,11 @@ export default function page() {
         otp: value,
         userType: mode as 'company' | 'professional',
       })
+      if (res.success) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('access_token', res.data.access_token)
+        }
+      }
       if (res) {
         setDone(true)
       }
