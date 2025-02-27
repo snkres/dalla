@@ -1,11 +1,11 @@
 "use client"
 import { LogoHorizontal, Button, Logomark } from "@dallah/design-system";
-import { Home, Calendar, Inbox, Settings, Mail, Search } from "lucide-react";
+import { Home, Calendar, Inbox, Settings, Mail, Search, User, User2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
 export function Navbar() {
-  const [activeTab, setActiveTab] = useState("Projects")
+  const [activeTab, setActiveTab] = useState("Profile")
 
 
   const handleTabChange = (tab: string) => {
@@ -16,7 +16,7 @@ export function Navbar() {
       <LogoHorizontal className="w-36 [&_path]:fill-slate-blue-100" />
 
       <div className="hidden md:flex items-center gap-2  rounded-full p-1 ">
-        {["Home", "Projects", "Invoices", "Settings"].map((tab) => (
+        {["Home", "Projects", "Search", "Invoices", "Profile"].map((tab) => (
           <Button
             key={tab}
             size='lg'
@@ -26,8 +26,9 @@ export function Navbar() {
           >
             {tab === "Home" && <Home className="h-6 w-6" />}
             {tab === "Projects" && <Calendar className="h-6 w-6" />}
+            {tab === "Search" && <Search className="h-6 w-6" />}
             {tab === "Invoices" && <Inbox className="h-6 w-6" />}
-            {tab === "Settings" && <Settings className="h-6 w-6" />}
+            {tab === "Profile" && <User2 className="h-6 w-6" />}
             <span className="text-text-md font-sora">{tab}</span>
           </Button>
         ))}
@@ -38,9 +39,6 @@ export function Navbar() {
           <Mail className="h-5 w-5" />
         </Button>
 
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Search className="h-5 w-5" />
-        </Button>
         <div className="h-9 w-9 rounded-full bg-amber-100 overflow-hidden">
           <img
             src="https://avatars.githubusercontent.com/u/122938074?v=4"

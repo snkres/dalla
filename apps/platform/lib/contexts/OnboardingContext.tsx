@@ -45,7 +45,7 @@ const steps: Step[] = [
         desc: 'Select your goals',
     },
     {
-        id: 'professionals/amrtamer23',
+        id: 'companies/meza',
         title: 'Welcome to Dalla',
         desc: 'Your account is ready',
     },
