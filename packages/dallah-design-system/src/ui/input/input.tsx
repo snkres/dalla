@@ -1,23 +1,29 @@
-import * as React from 'react'
+import * as React from 'react';
+import { cn } from '@dallah/utils';
 
-import { cn } from '@dallah/utils'
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
         type={type}
         className={cn(
-          'border-input bg-sunshine-yellow-10 ring-offset-background file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-10 w-full border px-3 py-2 text-base placeholder-[#667085] file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
-          'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
-          className,
+          "flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm",
+          "placeholder:text-muted-foreground",
+          "hover:border-[#234d64]/70",
+          "focus:border-[#234d64]/80 focus:outline-none",
+          "file:border-0 file:bg-transparent file:text-sm file:font-medium",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          "transition-colors duration-200",
+          className
         )}
         ref={ref}
         {...props}
       />
-    )
-  },
-)
-Input.displayName = 'Input'
+    );
+  }
+);
+Input.displayName = 'Input';
 
-export { Input }
+export { Input };

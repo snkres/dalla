@@ -5,25 +5,31 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Button } from '@dallah/design-system';
 import { Input } from '@dallah/design-system';
-import { FaXTwitter, FaFacebookF, FaGoogle } from 'react-icons/fa6';
+import { useOnboarding } from '@lib/contexts/OnboardingContext';
+import { FaXTwitter } from "react-icons/fa6";
+import { FaFacebookF, FaGoogle } from 'react-icons/fa';
+import { AccountTypeToggle } from '@components/auth/AccountTypeToggle';
+import { AccountType } from '@lib/types/auth';
 import { RiAppleFill } from "react-icons/ri";
-import Link from 'next/link';
-import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate';
+import { fadeInUpVariants, fadeInVariants } from '@components/aniamtion/animate';
+import { Link } from 'next-view-transitions';
 
-
-interface LoginFormData {
+interface SignupFormData {
+  accountType: AccountType;
   email: string;
   password: string;
-  rememberMe: boolean;
+  confirmPassword: string;
 }
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter();
+  const { setCurrentStep } = useOnboarding();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState<SignupFormData>({
+    accountType: 'professional',
     email: '',
     password: '',
-    rememberMe: false,
+    confirmPassword: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,10 +37,11 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      // Add your login logic here
-      router.push('/dashboard');
+      // Add your signup logic here
+      setCurrentStep('verify');
+      router.push('/verify');
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Signup error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -52,12 +59,17 @@ export default function LoginPage() {
           </svg>
         </motion.div>
         <h1 className="text-2xl font-semibold text-gray-900">
-          Welcome back
+          Create your account
         </h1>
         <p className="text-gray-500 text-sm font-light">
-          Sign in to your Dalla Solutions account
+          Join Dalla Solutions and start your journey
         </p>
       </div>
+
+      <AccountTypeToggle
+        value={formData.accountType}
+        onChange={(type) => setFormData({ ...formData, accountType: type })}
+      />
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-4">
@@ -71,43 +83,41 @@ export default function LoginPage() {
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="Enter your email"
-              className="hx"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <Input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              placeholder="Enter your password"
               className="h-11"
               required
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={formData.rememberMe}
-                onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
-                className="rounded border-gray-300"
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="password" className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                placeholder="Choose password"
+                className="h-11"
+                required
               />
-              <span className="text-sm text-gray-700">Remember me</span>
-            </label>
+            </div>
 
-            <Link
-              href="/forgot-password"
-              className="text-sm text-[#234d64] hover:text-[#1a3b4d] font-medium"
-            >
-              Forgot password?
-            </Link>
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                placeholder="Confirm password"
+                className="h-11"
+                required
+              />
+            </div>
           </div>
         </div>
 
@@ -116,7 +126,7 @@ export default function LoginPage() {
           disabled={isSubmitting}
           className="w-full h-11 bg-[#234d64] hover:bg-[#1a3b4d] text-white font-medium"
         >
-          {isSubmitting ? 'Signing in...' : 'Sign in'}
+          {isSubmitting ? 'Creating account...' : 'Create account'}
         </Button>
       </form>
 
@@ -141,22 +151,23 @@ export default function LoginPage() {
             type="button"
             variant="outline"
             className="h-11"
-            onClick={() => {/* Handle social login */ }}
+            onClick={() => {/* Handle social signup */ }}
           >
             <Icon className="h-5 w-5" />
           </Button>
         ))}
       </div>
 
+
       <p className="text-center text-xs text-gray-500">
-        Don&apos;t have an account?{' '}
-        <Link href="/signup" className="text-[#234d64] hover:text-[#1a3b4d] font-medium">
-          Sign up
+        Already have an account?{' '}
+        <Link href="/login" className="text-[#234d64] hover:text-[#1a3b4d] font-medium">
+          Sign in
         </Link>
       </p>
 
       <p className="text-center text-xs text-gray-500">
-        By signing in, you agree to our{' '}
+        By creating an account, you agree to our{' '}
         <Link href="/terms" className="text-[#234d64] hover:text-[#1a3b4d]">
           Terms of Service
         </Link>{' '}
