@@ -5,6 +5,7 @@ import '@fontsource-variable/inter'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { ViewTransitions } from 'next-view-transitions'
 import { Suspense } from 'react'
+import { OnboardingProvider } from '@lib/contexts/OnboardingContext'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -24,7 +25,7 @@ export default function RootLayout({
       <html>
         <body className='font-inter'>
           <Suspense>
-            <NuqsAdapter> {children}</NuqsAdapter>
+            <NuqsAdapter> <OnboardingProvider> {children}</OnboardingProvider></NuqsAdapter>
           </Suspense>
           {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
         </body>
