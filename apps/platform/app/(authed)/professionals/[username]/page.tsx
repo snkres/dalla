@@ -119,7 +119,7 @@ export default function FreelancerProfile() {
         {/* Left Column - Profile Info */}
         <div className="gap-6 sticky top-12 h-[calc(100vh-6rem)] overflow-hidden flex flex-col ">
           {/* Profile Card */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border border-[#F3F2F1]/20">
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
                 <div className="h-24 w-24 rounded-full bg-amber-100 overflow-hidden mb-3">
@@ -184,7 +184,7 @@ export default function FreelancerProfile() {
           </div>
 
           {/* Detailed Information */}
-          <div className="bg-white !rounded-3xl p-6 shadow-sm h-full flex flex-col justify-center  w-full">
+          <div className="bg-white !rounded-3xl p-6 shadow-sm h-full flex flex-col   w-full">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Detailed Information</h3>
             </div>
@@ -588,7 +588,7 @@ export default function FreelancerProfile() {
                         <Progress
                           value={skill.level}
                           className="!h-1.5 bg-gray-100"
-                          indicatorClassName={'bg-slate-blue-80'}
+                          indicatorClassName={'!bg-slate-blue-80'}
                         />
                       </div>
                     ))
