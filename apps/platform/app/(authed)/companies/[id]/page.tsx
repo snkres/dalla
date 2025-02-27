@@ -106,15 +106,15 @@ export default function CompanyProfile() {
   return (
     <
       >
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
         {/* Left Column - Company Info */}
-        <div className="space-y-6">
+        <div className="gap-4 sticky top-6 h-[calc(100vh-6rem)] overflow-hidden flex flex-col ">
           {/* Company Profile Card */}
           <div className="bg-white rounded-3xl p-6 shadow-sm">
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
                 <div className="h-24 w-24 rounded-full bg-blue-100 overflow-hidden mb-3 flex items-center justify-center">
-                  <Building2 className="h-12 w-12 text-slatebg-slate-blue-80" />
+                  <Image src={"/meza.jpeg"} alt={"Meza"} width={500} height={500} className="w-full h-full" />
                 </div>
                 <Button
                   variant="outline"
@@ -124,8 +124,10 @@ export default function CompanyProfile() {
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </div>
-              <h2 className="text-2xl font-bold">TechNova Solutions</h2>
-              <p className="text-gray-600">Enterprise Software & Cloud Services</p>
+              <h2 className="text-2xl font-bold">Meza Consulting</h2>
+              <p className="text-gray-600">
+                Consulting
+              </p>
             </div>
 
             <div className="flex justify-center gap-3 mb-6">
@@ -144,7 +146,7 @@ export default function CompanyProfile() {
             </div>
 
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-center items-center">
                 <p className="font-medium">Company Stats</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -171,19 +173,19 @@ export default function CompanyProfile() {
           </div>
 
           {/* Detailed Information */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm">
+          <div className="bg-white rounded-3xl p-6 shadow-sm h-full flex justify-center flex-col">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Company Information</h3>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 ">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-white border flex items-center justify-center">
                   <Building className="h-4 w-4" />
                 </div>
                 <div className="flex-grow">
                   <p className="text-sm text-gray-500">Company Name</p>
-                  <p className="font-medium">TechNova Solutions Inc.</p>
+                  <p className="font-medium">Meza Consulting Company</p>
                 </div>
                 <Badge variant="outline" className="bg-white py-1 px-3 rounded-full text-green-600">
                   Verified
@@ -196,7 +198,7 @@ export default function CompanyProfile() {
                 </div>
                 <div className="flex-grow">
                   <p className="text-sm text-gray-500">Email Address</p>
-                  <p className="font-medium">contact@technovasolutions.com</p>
+                  <p className="font-medium">contact@Meza.com</p>
                 </div>
                 <Button variant="outline" size="icon" className="rounded-full bg-white h-8 w-8">
                   <Mail className="h-4 w-4" />
@@ -222,7 +224,7 @@ export default function CompanyProfile() {
                 </div>
                 <div className="flex-grow">
                   <p className="text-sm text-gray-500">Website</p>
-                  <p className="font-medium">www.technovasolutions.com</p>
+                  <p className="font-medium">www.mezaconsulting.com</p>
                 </div>
                 <Button variant="outline" size="icon" className="rounded-full bg-white h-8 w-8">
                   <Globe className="h-4 w-4" />
@@ -235,7 +237,7 @@ export default function CompanyProfile() {
                 </div>
                 <div className="flex-grow">
                   <p className="text-sm text-gray-500">Headquarters</p>
-                  <p className="font-medium">San Francisco, California</p>
+                  <p className="font-medium">Cairo, Egypt</p>
                 </div>
                 <Button variant="outline" size="icon" className="rounded-full bg-white h-8 w-8">
                   <Info className="h-4 w-4" />
@@ -282,18 +284,22 @@ export default function CompanyProfile() {
         <div className="lg:col-span-2 space-y-4">
           {/* Projects Section */}
           <div className="bg-white rounded-3xl p-6 shadow-sm">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <Button
-                  variant="default"
-                  className={`rounded-full ${activeProject === "Current Projects" ? "bg-slate-blue-80 text-white" : "bg-white text-black"}`}
+                  variant={
+                    activeProject === 'Current Projects' ? 'default' : 'outline'
+                  }
+                  className={`!rounded-full ${activeProject === "Current Projects" ? "!bg-slate-blue-80 !text-white" : ""}`}
                   onClick={() => handleProjectChange("Current Projects")}
                 >
                   Current Projects
                 </Button>
                 <Button
-                  variant="ghost"
-                  className={`rounded-full ${activeProject === "Completed Projects" ? "bg-black text-white" : ""}`}
+                  variant={
+                    activeProject === 'Completed Projects' ? 'default' : 'outline'
+                  }
+                  className={`!rounded-full ${activeProject === "Completed Projects" ? "!bg-slate-blue-80 !text-white" : ""}`}
                   onClick={() => handleProjectChange("Completed Projects")}
                 >
                   Completed Projects
@@ -313,7 +319,7 @@ export default function CompanyProfile() {
               {/* Project 1 */}
               <div className="bg-blue-50 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/60 py-1 px-3 rounded-full">
                     March 15, 2024
                   </Badge>
                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -323,21 +329,21 @@ export default function CompanyProfile() {
 
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold">Enterprise CRM System</h4>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                    <Info className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 !rounded-full bg-blue-300/20 ">
+                    <Info className="h-4 w-4 text-blue-400" />
                   </Button>
                 </div>
 
                 <div className="mb-4">
                   <p className="text-sm mb-1">Backend Development</p>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Progress value={75} className="h-2 bg-blue-200" indicatorClassName="bg-slate-blue-80" />
+                  <div className="flex items-center gap-2 my-2">
+                    <Progress value={75} className="h-2 bg-blue-200" indicatorClassName="!bg-blue-400" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/60 py-1 px-2 rounded-full text-xs">
                       75%
                     </Badge>
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/60 py-1 px-2 rounded-full text-xs">
                       Progress
                     </Badge>
                   </div>
@@ -372,20 +378,20 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white">
-                      <Plus className="h-4 w-4" />
-                    </Button>
                   </div>
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/60 py-1 px-3 rounded-full">
                     3 Weeks Left
                   </Badge>
                 </div>
+                <Button variant="outline" size="icon" className=" w-full rounded-full bg-white/70 mt-2">
+                  <Plus className="h-4 w-4" /> Hire a Professional
+                </Button>
               </div>
 
               {/* Project 2 */}
-              <div className="bg-green-50 rounded-xl p-4">
+              <div className="bg-[#63B7B7]/20 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/60 py-1 px-3 rounded-full">
                     April 02, 2024
                   </Badge>
                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -395,21 +401,21 @@ export default function CompanyProfile() {
 
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold">Cloud Migration</h4>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                    <Info className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 !rounded-full bg-[#63B7B7]/10">
+                    <Info className="h-4 w-4 text-[#60bcbc]" />
                   </Button>
                 </div>
 
                 <div className="mb-4">
                   <p className="text-sm mb-1">Infrastructure Setup</p>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Progress value={60} className="h-2 bg-green-200" indicatorClassName="bg-green-600" />
+                  <div className="flex items-center gap-2 my-2">
+                    <Progress value={60} className="h-2 bg-green-200" indicatorClassName="!bg-[#63B7B7]" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/60 py-1 px-2 rounded-full text-xs">
                       60%
                     </Badge>
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/60 py-1 px-2 rounded-full text-xs">
                       Progress
                     </Badge>
                   </div>
@@ -417,7 +423,7 @@ export default function CompanyProfile() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex -space-x-2">
-                    <div className="h-8 w-8 rounded-full bg-green-200 border-2 border-white overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/40 border-2 border-white overflow-hidden">
                       <Image
                         src="/placeholder.svg?height=32&width=32"
                         alt="Team member"
@@ -426,7 +432,7 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <div className="h-8 w-8 rounded-full bg-green-300 border-2 border-white overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/60 border-2 border-white overflow-hidden">
                       <Image
                         src="/placeholder.svg?height=32&width=32"
                         alt="Team member"
@@ -435,7 +441,7 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <div className="h-8 w-8 rounded-full bg-green-400 border-2 border-white overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/80 border-2 border-white overflow-hidden">
                       <Image
                         src="/placeholder.svg?height=32&width=32"
                         alt="Team member"
@@ -444,20 +450,21 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white">
-                      <Plus className="h-4 w-4" />
-                    </Button>
+
                   </div>
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/60 py-1 px-3 rounded-full">
                     5 Weeks Left
                   </Badge>
                 </div>
+                <Button variant="outline" size="icon" className=" w-full rounded-full bg-white/70 mt-2">
+                  <Plus className="h-4 w-4" /> Hire a Professional
+                </Button>
               </div>
 
               {/* Project 3 */}
-              <div className="bg-purple-50 rounded-xl p-4">
+              <div className="bg-sunshine-yellow/20 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/60 py-1 px-3 rounded-full">
                     March 28, 2024
                   </Badge>
                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -467,21 +474,21 @@ export default function CompanyProfile() {
 
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold">AI Analytics Platform</h4>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                    <Info className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 !rounded-full bg-amber-300/20">
+                    <Info className="h-4 w-4 text-amber-500" />
                   </Button>
                 </div>
 
                 <div className="mb-4">
                   <p className="text-sm mb-1">Algorithm Development</p>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Progress value={40} className="h-2 bg-purple-200" indicatorClassName="bg-purple-600" />
+                  <div className="flex items-center gap-2 my-2">
+                    <Progress value={40} className="h-2 bg-sunshine-yellow/40" indicatorClassName="!bg-sunshine-yellow" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/60 py-1 px-2 rounded-full text-xs">
                       40%
                     </Badge>
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/60 py-1 px-2 rounded-full text-xs">
                       Progress
                     </Badge>
                   </div>
@@ -489,7 +496,7 @@ export default function CompanyProfile() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex -space-x-2">
-                    <div className="h-8 w-8 rounded-full bg-purple-200 border-2 border-white overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-sunshine-yellow/30 border-2 border-white overflow-hidden">
                       <Image
                         src="/placeholder.svg?height=32&width=32"
                         alt="Team member"
@@ -498,7 +505,7 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <div className="h-8 w-8 rounded-full bg-purple-300 border-2 border-white overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-sunshine-yellow/50 border-2 border-white overflow-hidden">
                       <Image
                         src="/placeholder.svg?height=32&width=32"
                         alt="Team member"
@@ -507,7 +514,7 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <div className="h-8 w-8 rounded-full bg-purple-400 border-2 border-white overflow-hidden">
+                    <div className="h-8 w-8 rounded-full bg-sunshine-yellow/70 border-2 border-white overflow-hidden">
                       <Image
                         src="/placeholder.svg?height=32&width=32"
                         alt="Team member"
@@ -516,39 +523,39 @@ export default function CompanyProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white">
-                      <Plus className="h-4 w-4" />
-                    </Button>
                   </div>
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/60 py-1 px-3 rounded-full">
                     7 Weeks Left
                   </Badge>
                 </div>
+                <Button variant="outline" size="icon" className=" w-full rounded-full bg-white/70 mt-2">
+                  <Plus className="h-4 w-4" /> Hire a Professional
+                </Button>
               </div>
             </div>
           </div>
 
           {/* Company History and Services Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Company History */}
             <div className="bg-white rounded-3xl p-6 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold">Services & Expertise</h3>
-                <Badge className="bg-slate-blue-80 text-white rounded-full">Industry Leader</Badge>
+                <Badge className="bg-slate-blue-80 text-white !rounded-full">Industry Leader</Badge>
               </div>
 
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Button
                     variant={activeServiceCategory === "Core Services" ? "default" : "outline"}
-                    className="rounded-full"
+                    className={`!rounded-full ${activeServiceCategory === "Core Services" ? "bg-slate-blue-80 text-white" : "bg-white text-black"}`}
                     onClick={() => handleServiceCategoryChange("Core Services")}
                   >
                     Core Services
                   </Button>
                   <Button
                     variant={activeServiceCategory === "Additional Services" ? "default" : "outline"}
-                    className="rounded-full"
+                    className={`!rounded-full ${activeServiceCategory === "Additional Services" ? "bg-slate-blue-80 text-white" : "bg-white text-black"}`}
                     onClick={() => handleServiceCategoryChange("Additional Services")}
                   >
                     Additional Services
@@ -566,7 +573,7 @@ export default function CompanyProfile() {
                         </div>
                         <Progress
                           value={service.expertise}
-                          className="h-2 bg-gray-100"
+                          className="!h-1.5 bg-gray-100"
                           indicatorClassName={`${activeServiceCategory === "Core Services" ? "bg-slate-blue-80" : "bg-green-600"}`}
                         />
                       </div>
@@ -579,8 +586,8 @@ export default function CompanyProfile() {
                 <h3 className="text-md font-semibold mb-3">Company Values</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Award className="h-4 w-4 text-slatebg-slate-blue-80" />
+                    <div className="h-8 w-8 rounded-full  bg-[#63B7B7]/20 flex items-center justify-center">
+                      <Award className="h-4 w-4 text-[#63B7B7]" />
                     </div>
                     <div>
                       <p className="font-medium">Innovation</p>
@@ -588,8 +595,8 @@ export default function CompanyProfile() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Users className="h-4 w-4 text-slatebg-slate-blue-80" />
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/20 flex items-center justify-center">
+                      <Users className="h-4 w-4 text-[#63B7B7]" />
                     </div>
                     <div>
                       <p className="font-medium">Collaboration</p>
@@ -597,8 +604,8 @@ export default function CompanyProfile() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Trophy className="h-4 w-4 text-slatebg-slate-blue-80" />
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/20 flex items-center justify-center">
+                      <Trophy className="h-4 w-4 text-[#63B7B7]" />
                     </div>
                     <div>
                       <p className="font-medium">Excellence</p>
@@ -613,7 +620,7 @@ export default function CompanyProfile() {
             <div className="bg-white rounded-3xl p-6 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold">Professionals Testimonials</h3>
-                <Badge className=" !text-slate-blue-10">4.8/5 Average Rating</Badge>
+                <Badge className=" !text-slate-blue-10 bg-slate-blue-80 !rounded-full">4.8/5 Average Rating</Badge>
               </div>
 
               <div className="grid grid-cols-1  gap-4">

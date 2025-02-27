@@ -3,11 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import {
-  Bell,
   BriefcaseIcon,
-  ChevronLeft,
-  Clock,
-  Edit,
   Filter,
   GraduationCap,
   Heart,
@@ -19,13 +15,11 @@ import {
   Phone,
   Plus,
   Star,
-  StarIcon,
-  ThumbsUp,
   Trophy,
   Video,
 } from "lucide-react"
 
-import { Button, Badge, Progress, } from "@dallah/design-system"
+import { Button, Badge, Progress } from "@dallah/design-system"
 
 export default function FreelancerProfile() {
   const [activeProject, setActiveProject] = useState("Ongoing Projects")
@@ -52,20 +46,20 @@ export default function FreelancerProfile() {
       company: "TechNova Solutions",
       position: "Marketing Specialist",
       period: "2021 - Present",
-      description: "Leading digital marketing campaigns and brand strategy development."
+      description: "Leading digital marketing campaigns and brand strategy development.",
     },
     {
       company: "MediaCraft Agency",
       position: "Marketing Analyst",
       period: "2018 - 2021",
-      description: "Conducted market research and analyzed campaign performance metrics."
+      description: "Conducted market research and analyzed campaign performance metrics.",
     },
     {
       company: "CreativeHub",
       position: "Marketing Assistant",
       period: "2016 - 2018",
-      description: "Supported content creation and social media management."
-    }
+      description: "Supported content creation and social media management.",
+    },
   ]
 
   // Freelancer skills data
@@ -74,14 +68,14 @@ export default function FreelancerProfile() {
       { name: "SEO Optimization", level: 90 },
       { name: "Social Media Management", level: 85 },
       { name: "Content Marketing", level: 80 },
-      { name: "Email Marketing", level: 75 }
+      { name: "Email Marketing", level: 75 },
     ],
     Soft: [
       { name: "Communication", level: 95 },
       { name: "Time Management", level: 85 },
       { name: "Problem Solving", level: 80 },
-      { name: "Leadership", level: 70 }
-    ]
+      { name: "Leadership", level: 70 },
+    ],
   }
 
   // Education data
@@ -89,13 +83,13 @@ export default function FreelancerProfile() {
     {
       institution: "University of Marketing Sciences",
       degree: "Master's in Digital Marketing",
-      year: "2016"
+      year: "2016",
     },
     {
       institution: "Business Communications College",
       degree: "Bachelor's in Communications",
-      year: "2014"
-    }
+      year: "2014",
+    },
   ]
 
   return (
@@ -121,9 +115,9 @@ export default function FreelancerProfile() {
         </div>
       </div> */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 pb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 pb-6 relative">
         {/* Left Column - Profile Info */}
-        <div className="space-y-6">
+        <div className="gap-6 sticky top-12 h-[calc(100vh-6rem)] overflow-hidden flex flex-col ">
           {/* Profile Card */}
           <div className="bg-white rounded-3xl p-6 shadow-sm">
             <div className="flex flex-col items-center mb-6">
@@ -146,9 +140,7 @@ export default function FreelancerProfile() {
                 </Button>
               </div>
               <h2 className="text-2xl font-bold">Amr Tamer</h2>
-              <p className="text-gray-600">
-                Marketing Specialist
-              </p>
+              <p className="text-gray-600">Marketing Specialist</p>
             </div>
 
             <div className="flex justify-center gap-3 mb-6">
@@ -167,7 +159,7 @@ export default function FreelancerProfile() {
             </div>
 
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-center items-center">
                 <p className="font-medium">Freelancer Stats</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -192,7 +184,7 @@ export default function FreelancerProfile() {
           </div>
 
           {/* Detailed Information */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm">
+          <div className="bg-white !rounded-3xl p-6 shadow-sm h-full flex flex-col justify-center  w-full">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Detailed Information</h3>
             </div>
@@ -273,15 +265,19 @@ export default function FreelancerProfile() {
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center gap-2">
                 <Button
-                  variant="default"
-                  className={`rounded-full ${activeProject === "Ongoing Projects" ? "bg-slate-blue-100 text-white" : "bg-white text-black"}`}
+                  variant={
+                    activeProject === 'Ongoing Projects' ? 'default' : "outline"
+                  }
+                  className={`!rounded-full ${activeProject === "Ongoing Projects" ? "bg-slate-blue-100 text-white" : "bg-white text-black"}`}
                   onClick={() => handleProjectChange("Ongoing Projects")}
                 >
                   Ongoing Projects
                 </Button>
                 <Button
-                  variant="ghost"
-                  className={`rounded-full ${activeProject === "Completed Projects" ? "bg-black text-white" : ""}`}
+                  variant={
+                    activeProject === 'Completed Projects' ? 'default' : "outline"
+                  }
+                  className={`!rounded-full ${activeProject === "Completed Projects" ? "bg-black text-white" : ""}`}
                   onClick={() => handleProjectChange("Completed Projects")}
                 >
                   Completed Projects
@@ -311,21 +307,21 @@ export default function FreelancerProfile() {
 
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold">Digital Marketing Strategy</h4>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                    <Info className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 !rounded-full bg-amber-300/20">
+                    <Info className="h-4 w-4 text-amber-500" />
                   </Button>
                 </div>
 
                 <div className="mb-4">
                   <p className="text-sm mb-1">Campaign Development</p>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Progress value={60} className="h-2 bg-amber-200" indicatorClassName="bg-amber-400" />
+                  <div className="flex items-center gap-2 my-2">
+                    <Progress value={60} className="h-2 bg-amber-200" indicatorClassName="!bg-amber-400" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/40 py-1 px-2 rounded-full text-xs">
                       60%
                     </Badge>
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/40 py-1 px-2 rounded-full text-xs">
                       Progress
                     </Badge>
                   </div>
@@ -360,11 +356,9 @@ export default function FreelancerProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white">
-                      <Plus className="h-4 w-4" />
-                    </Button>
+
                   </div>
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/40 py-1 px-3 rounded-full">
                     2 Days Left
                   </Badge>
                 </div>
@@ -373,7 +367,7 @@ export default function FreelancerProfile() {
               {/* Project 2 */}
               <div className="bg-blue-50 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/40 py-1 px-3 rounded-full">
                     March 08, 2024
                   </Badge>
                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -383,21 +377,21 @@ export default function FreelancerProfile() {
 
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold">Social Media Campaign</h4>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                    <Info className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 !rounded-full bg-blue-300/20">
+                    <Info className="h-4 w-4 text-blue-400" />
                   </Button>
                 </div>
 
                 <div className="mb-4">
                   <p className="text-sm mb-1">Content Creation</p>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Progress value={80} className="h-2 bg-blue-200" indicatorClassName="bg-blue-400" />
+                  <div className="flex items-center gap-2 my-2">
+                    <Progress value={80} className="h-2 bg-blue-200" indicatorClassName="!bg-blue-400" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/40 py-1 px-2 rounded-full text-xs">
                       80%
                     </Badge>
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/40 py-1 px-2 rounded-full text-xs">
                       Progress
                     </Badge>
                   </div>
@@ -432,11 +426,9 @@ export default function FreelancerProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white">
-                      <Plus className="h-4 w-4" />
-                    </Button>
+
                   </div>
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/40 py-1 px-3 rounded-full">
                     5 Days Left
                   </Badge>
                 </div>
@@ -445,7 +437,7 @@ export default function FreelancerProfile() {
               {/* Project 3 */}
               <div className="bg-red-50 rounded-xl p-4">
                 <div className="flex justify-between items-center mb-3">
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/40 py-1 px-3 rounded-full">
                     March 12, 2024
                   </Badge>
                   <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -455,21 +447,21 @@ export default function FreelancerProfile() {
 
                 <div className="flex justify-between items-center mb-2">
                   <h4 className="font-bold">SEO Optimization</h4>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-                    <Info className="h-4 w-4" />
+                  <Button variant="ghost" size="icon" className="h-8 w-8 !rounded-full bg-red-400/20">
+                    <Info className="h-4 w-4 text-red-400" />
                   </Button>
                 </div>
 
                 <div className="mb-4">
                   <p className="text-sm mb-1">Keyword Research</p>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 my-2">
                     <Progress value={40} className="h-2 bg-red-200" indicatorClassName="bg-red-400" />
                   </div>
                   <div className="flex justify-between items-center">
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/40 py-1 px-2 rounded-full text-xs">
                       40%
                     </Badge>
-                    <Badge variant="outline" className="bg-white py-1 px-2 rounded-full text-xs">
+                    <Badge variant="outline" className="bg-white/40 py-1 px-2 rounded-full text-xs">
                       Progress
                     </Badge>
                   </div>
@@ -504,11 +496,9 @@ export default function FreelancerProfile() {
                         className="object-cover"
                       />
                     </div>
-                    <Button variant="outline" size="icon" className="h-8 w-8 rounded-full bg-white">
-                      <Plus className="h-4 w-4" />
-                    </Button>
+
                   </div>
-                  <Badge variant="outline" className="bg-white py-1 px-3 rounded-full">
+                  <Badge variant="outline" className="bg-white/40 py-1 px-3 rounded-full">
                     8 Days Left
                   </Badge>
                 </div>
@@ -535,7 +525,7 @@ export default function FreelancerProfile() {
               <div className="space-y-5">
                 {experiences.map((exp, index) => (
                   <div key={index} className="border-l-2 border-gray-200 pl-4 relative">
-                    <div className="absolute -left-[9px] top-0 h-4 w-4 rounded-full bg-amber-400"></div>
+                    <div className="absolute -left-[9px] top-0 h-4 w-4 rounded-full bg-[#63B7B7]"></div>
                     <h4 className="font-semibold">{exp.position}</h4>
                     <p className="text-sm text-gray-600">{exp.company}</p>
                     <p className="text-xs text-gray-500 mb-2">{exp.period}</p>
@@ -549,7 +539,7 @@ export default function FreelancerProfile() {
                 {education.map((edu, index) => (
                   <div key={index} className="mb-3 flex items-start gap-3">
                     <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                      <GraduationCap className="h-4 w-4" />
+                      <GraduationCap className="h-4 w-4 text-[#5C5C5C]" />
                     </div>
                     <div>
                       <h4 className="font-medium">{edu.degree}</h4>
@@ -565,23 +555,21 @@ export default function FreelancerProfile() {
             <div className="bg-white rounded-3xl p-6 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold">Skills & Expertise</h3>
-                <Badge className="bg-black text-white rounded-full">
-                  Top 5%
-                </Badge>
+                <Badge className="bg-slate-blue-90 text-white !rounded-full">Top 5%</Badge>
               </div>
 
               <div className="mb-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Button
                     variant={activeSkillCategory === "Technical" ? "default" : "outline"}
-                    className="rounded-full"
+                    className={`!rounded-full ${activeSkillCategory === "Technical" ? "!bg-slate-blue-100 text-white" : ""}`}
                     onClick={() => handleSkillCategoryChange("Technical")}
                   >
                     Technical Skills
                   </Button>
                   <Button
                     variant={activeSkillCategory === "Soft" ? "default" : "outline"}
-                    className="rounded-full"
+                    className={`!rounded-full ${activeSkillCategory === "Soft" ? "!bg-slate-blue-100 text-white" : ""}`}
                     onClick={() => handleSkillCategoryChange("Soft")}
                   >
                     Soft Skills
@@ -589,7 +577,6 @@ export default function FreelancerProfile() {
                 </div>
 
                 <div className="space-y-4">
-
                   {
                     //@ts-ignore
                     skills[activeSkillCategory].map((skill, index) => (
@@ -598,9 +585,14 @@ export default function FreelancerProfile() {
                           <p className="text-sm font-medium">{skill.name}</p>
                           <p className="text-sm text-gray-600">{skill.level}%</p>
                         </div>
-                        <Progress value={skill.level} className="h-2 bg-gray-100" indicatorClassName={`${activeSkillCategory === "Technical" ? "bg-amber-400" : "bg-blue-400"}`} />
+                        <Progress
+                          value={skill.level}
+                          className="!h-1.5 bg-gray-100"
+                          indicatorClassName={'bg-slate-blue-80'}
+                        />
                       </div>
-                    ))}
+                    ))
+                  }
                 </div>
               </div>
 
@@ -609,8 +601,8 @@ export default function FreelancerProfile() {
                 <h3 className="text-md font-semibold mb-3">Certifications</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
-                      <Trophy className="h-4 w-4 text-amber-600" />
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/20 flex items-center justify-center">
+                      <Trophy className="h-4 w-4 text-[#63B7B7]" />
                     </div>
                     <div>
                       <p className="font-medium">Google Analytics Certification</p>
@@ -618,8 +610,8 @@ export default function FreelancerProfile() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
-                      <Trophy className="h-4 w-4 text-amber-600" />
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/20 flex items-center justify-center">
+                      <Trophy className="h-4 w-4 text-[#63B7B7]" />
                     </div>
                     <div>
                       <p className="font-medium">Facebook Blueprint Certification</p>
@@ -627,8 +619,8 @@ export default function FreelancerProfile() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center">
-                      <Trophy className="h-4 w-4 text-amber-600" />
+                    <div className="h-8 w-8 rounded-full bg-[#63B7B7]/20 flex items-center justify-center">
+                      <Trophy className="h-4 w-4 text-[#63B7B7]" />
                     </div>
                     <div>
                       <p className="font-medium">HubSpot Content Marketing</p>
@@ -641,12 +633,10 @@ export default function FreelancerProfile() {
           </div>
 
           {/* Testimonials & Reviews Section */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm ">
+          {/* <div className="bg-white rounded-3xl p-6 shadow-sm ">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold">Client Reviews</h3>
-              <Badge className="bg-gray-100 text-snow-white-20">
-                4.9/5 Average
-              </Badge>
+              <Badge className="bg-gray-100 text-snow-white-20">4.9/5 Average</Badge>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -671,8 +661,8 @@ export default function FreelancerProfile() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-600">
-                  "Amr delivered an exceptional marketing strategy that increased our conversion rate by 45%.
-                  His attention to detail and understanding of our market was impressive."
+                  "Amr delivered an exceptional marketing strategy that increased our conversion rate by 45%. His
+                  attention to detail and understanding of our market was impressive."
                 </p>
                 <p className="text-xs text-gray-500 mt-2">Project: Digital Marketing Campaign · Feb 2025</p>
               </div>
@@ -698,8 +688,8 @@ export default function FreelancerProfile() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-600">
-                  "Working with Amr was a game-changer for our social media presence. He helped us increase
-                  engagement by 78% and develop a consistent brand voice across all platforms."
+                  "Working with Amr was a game-changer for our social media presence. He helped us increase engagement
+                  by 78% and develop a consistent brand voice across all platforms."
                 </p>
                 <p className="text-xs text-gray-500 mt-2">Project: Social Media Management · Jan 2025</p>
               </div>
@@ -710,10 +700,10 @@ export default function FreelancerProfile() {
                 View All Reviews (24)
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
-
     </>
   )
 }
+
