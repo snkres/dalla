@@ -4,7 +4,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
 
   return (
-    <div className="min-h-screen bg-slate-blue-10">
+    <div className="min-h-screen bg-[#F3F2F1]">
       {/* Main container */}
       <div className=" mx-auto px-6 pt-3">
         {/* Top Navigation */}
