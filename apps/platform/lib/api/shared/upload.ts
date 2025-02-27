@@ -7,7 +7,7 @@ export type ImageFile = {
 
 export async function uploadImage(image: ImageFile) {
   const formData = new FormData()
-  formData.append('image', image.file)
+  formData.append('file', image.file)
 
   console.log(formData)
 
