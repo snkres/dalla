@@ -43,7 +43,7 @@ export default function GoalsPage() {
 
     const handleComplete = () => {
         setCurrentStep('profile');
-        router.push('/profile');
+        router.push('/companies/meza');
     };
 
     return (

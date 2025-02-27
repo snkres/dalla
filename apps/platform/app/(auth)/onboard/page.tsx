@@ -58,7 +58,7 @@ export default function ProfilePage() {
       </motion.div>
 
       <form onSubmit={handleSubmit}>
-        <motion.div variants={fadeInVariants} className="pb-8">
+        <motion.div variants={fadeInVariants} className="pb-2">
           <motion.div variants={fadeInUpVariants}>
             <AvatarUpload />
           </motion.div>
@@ -216,7 +216,10 @@ export default function ProfilePage() {
               </div>
             </motion.div>
           </div>
-          <ButtonsContainer handlePrevious={goToPreviousStep} handleSubmit={handleSubmit} isSubmitting={isSubmitting} previousText="Previous" continueText="Continue" />
+          <div className='mt-4'>
+            <ButtonsContainer handlePrevious={goToPreviousStep} handleSubmit={handleSubmit} isSubmitting={isSubmitting} previousText="Previous" continueText="Continue" />
+
+          </div>
         </motion.div>
       </form>
     </motion.div>
