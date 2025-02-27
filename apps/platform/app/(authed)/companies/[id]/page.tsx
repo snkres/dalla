@@ -173,7 +173,7 @@ export default function CompanyProfile() {
           </div>
 
           {/* Detailed Information */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm h-full flex justify-center flex-col">
+          <div className="bg-white rounded-3xl p-6 shadow-sm h-full flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Company Information</h3>
             </div>
@@ -574,7 +574,7 @@ export default function CompanyProfile() {
                         <Progress
                           value={service.expertise}
                           className="!h-1.5 bg-gray-100"
-                          indicatorClassName={`${activeServiceCategory === "Core Services" ? "bg-slate-blue-80" : "bg-green-600"}`}
+                          indicatorClassName={"!bg-slate-blue-80"}
                         />
                       </div>
                     ))
