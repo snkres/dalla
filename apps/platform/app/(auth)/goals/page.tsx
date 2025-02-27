@@ -42,8 +42,8 @@ export default function GoalsPage() {
     };
 
     const handleComplete = () => {
-        setCurrentStep('welcome');
-        router.push('/welcome');
+        setCurrentStep('profile');
+        router.push('/profile');
     };
 
     return (
