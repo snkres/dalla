@@ -9,6 +9,19 @@ import { FaXTwitter, FaFacebookF, FaGoogle } from 'react-icons/fa6';
 import { RiAppleFill } from "react-icons/ri";
 import Link from 'next/link';
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate';
+import { useQueryState } from 'nuqs';
+import { AccountTypeToggle } from '@components/auth/AccountTypeToggle';
+import { AccountType } from '@lib/types/auth';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { login } from '@lib/api/auth/login';
+import { resendOTP } from '@lib/api/auth/otp-verify';
+import { proProfileAtom } from '@lib/atoms/pro/profile';
+import { companyProfileAtom } from '@lib/atoms/company/profile';
+import { useAtom } from 'jotai';
+import { getProProfile } from '@lib/api/pro/profile';
+import { getCompanyProfile } from '@lib/api/company/profile';
 
 
 interface LoginFormData {
@@ -17,28 +30,79 @@ interface LoginFormData {
   rememberMe: boolean;
 }
 
+const schema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
+  rememberMe: z.boolean(),
+})
+
+type FormData = z.infer<typeof schema>
+
 export default function LoginPage() {
+  const [mode, setMode] = useQueryState('mode', {
+    defaultValue: 'company',
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  })
+
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-    rememberMe: false,
-  });
+  const [_, setProProfile] = useAtom(proProfileAtom)
+  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const onSubmit = async (data: FormData) => {
+    console.log(data)
     try {
-      // Add your login logic here
-      router.push('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
-      setIsSubmitting(false);
+      const res = await login({
+        email: data.email,
+        password: data.password,
+        userType: mode === 'company' ? 'company' : 'user',
+      })
+      if (res) {
+        if (mode === 'professional') {
+          const profile = await getProProfile()
+          setProProfile(profile.data.data)
+          if (profile.data.data.onboarded === false) {
+            router.push('/onboard')
+            return
+          }
+        } else {
+          const profile = await getCompanyProfile()
+          setCompanyProfile(profile.data.data)
+          if (profile.data.data.onboarded === false) {
+            router.push('/onboard')
+            return
+          }
+        }
+        router.push('/')
+        console.log('logged in')
+      }
+    } catch (e) {
+      if (e instanceof Error && 'status' in e && e.status === 422) {
+        if (e.status === 422) {
+          if (typeof window !== undefined) {
+            localStorage.setItem('mode', mode === 'company' ? 'company' : 'professional')
+          }
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('email', data.email)
+          }
+          const res = await resendOTP({
+            email: data.email,
+            userType: mode === 'company' ? 'company' : 'user',
+          })
+          router.push('/verify')
+        }
+
+      }
     }
-  };
+
+  }
 
   return (
     <motion.div variants={fadeInVariants} initial="hidden" animate="visible" className="space-y-8">
@@ -59,7 +123,16 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <AccountTypeToggle
+        value={mode as AccountType}
+        onChange={
+          (type) => {
+            setMode(type)
+          }
+        }
+      />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -68,11 +141,9 @@ export default function LoginPage() {
             <Input
               id="email"
               type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              {...register('email')}
               placeholder="Enter your email"
               className="hx"
-              required
             />
           </div>
 
@@ -83,11 +154,9 @@ export default function LoginPage() {
             <Input
               id="password"
               type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              {...register('password')}
               placeholder="Enter your password"
               className="h-11"
-              required
             />
           </div>
 
@@ -95,9 +164,8 @@ export default function LoginPage() {
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
-                checked={formData.rememberMe}
-                onChange={(e) => setFormData({ ...formData, rememberMe: e.target.checked })}
                 className="rounded border-gray-300"
+                {...register('rememberMe')}
               />
               <span className="text-sm text-gray-700">Remember me</span>
             </label>
