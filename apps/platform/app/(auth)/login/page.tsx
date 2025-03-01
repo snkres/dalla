@@ -22,6 +22,7 @@ import { useAtom } from "jotai"
 import { getProProfile } from "@lib/api/pro/profile"
 import { getCompanyProfile } from "@lib/api/company/profile"
 import { useTransitionRouter } from "next-view-transitions"
+import { useToast } from "@dallah/design-system/ui/toast/use-toast"
 
 interface LoginFormData {
   email: string
@@ -42,8 +43,6 @@ export default function LoginPage() {
     defaultValue: "company",
   })
 
-  const [apiError, setApiError] = useState<string | null>(null)
-
   const {
     register,
     handleSubmit,
@@ -53,6 +52,7 @@ export default function LoginPage() {
   })
 
   const router = useTransitionRouter()
+  const { toast } = useToast()
   const [_, setProProfile] = useAtom(proProfileAtom)
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
@@ -99,8 +99,11 @@ export default function LoginPage() {
           router.push("/verify")
         }
       } else {
-        // Handle general login errors
-        setApiError("Invalid email or password. Please try again.")
+        toast({
+          title: "Error",
+          description: e instanceof Error ? e.message : "An unknown error occurred",
+          variant: "destructive",
+        })
       }
     }
   }
@@ -134,9 +137,6 @@ export default function LoginPage() {
       />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {apiError && (
-          <div className="p-3 mb-4 text-sm text-red-500 bg-red-50 rounded-md border border-red-200">{apiError}</div>
-        )}
         <div className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-gray-700">

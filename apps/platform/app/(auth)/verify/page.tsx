@@ -3,14 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { useOnboarding } from '@lib/contexts/OnboardingContext';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@components/auth/otp/input-otp";
 import { ButtonsContainer } from '@lib/constants/ButtonsContianer';
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate';
 
 export default function VerifyPage() {
   const router = useRouter();
-  const { setCurrentStep } = useOnboarding();
   const [verificationCode, setVerificationCode] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,7 +19,7 @@ export default function VerifyPage() {
     setIsSubmitting(true);
 
     try {
-      setCurrentStep('profile');
+
       router.push('/onboard');
     } catch (error) {
       console.error('Verification error:', error);
@@ -31,7 +29,6 @@ export default function VerifyPage() {
   };
 
   const handlePrevious = () => {
-    setCurrentStep('signup');
     router.push('/signup');
   }
 
