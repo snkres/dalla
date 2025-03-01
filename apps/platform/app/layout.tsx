@@ -2,10 +2,10 @@ import type { Metadata } from 'next'
 import '../globals.css'
 import '@fontsource-variable/sora'
 import '@fontsource-variable/inter'
+import { Toaster } from '@dallah/design-system/ui/toast/toaster'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { ViewTransitions } from 'next-view-transitions'
 import { Suspense } from 'react'
-import { OnboardingProvider } from '@lib/contexts/OnboardingContext'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -25,9 +25,10 @@ export default function RootLayout({
       <html>
         <body className='font-inter'>
           <Suspense>
-            <NuqsAdapter> <OnboardingProvider> {children}</OnboardingProvider></NuqsAdapter>
+            <NuqsAdapter>{children}</NuqsAdapter>
           </Suspense>
           {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
+          <Toaster />
         </body>
       </html>
     </ViewTransitions >
