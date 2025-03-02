@@ -18,11 +18,7 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>
 
-export function RegisterForm({
-  mode
-}: {
-  mode: 'company' | 'professional'
-}) {
+export function RegisterForm({ mode }: { mode: 'company' | 'professional' }) {
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState)
@@ -58,20 +54,23 @@ export function RegisterForm({
       className="max-h-m mx-auto flex w-full max-w-[30.125rem] flex-col gap-2"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className='flex gap-2'>
+      <div className="flex gap-2">
         <div className="flex w-full flex-col gap-[0.375rem]">
           <label
             className={cn(
               'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
             )}
           >
-            {
-              mode === 'company' ? 'Company' : ''
-            } Name <span className={
-              cn(
-                mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-100'
-              )
-            }>*</span>
+            {mode === 'company' ? 'Company' : ''} Name{' '}
+            <span
+              className={cn(
+                mode === 'company'
+                  ? 'text-sunshine-yellow-100'
+                  : 'text-coral-red-100',
+              )}
+            >
+              *
+            </span>
           </label>
           <Input
             className={cn(
@@ -82,61 +81,30 @@ export function RegisterForm({
             {...registerField('name')}
           />
           {errors.name && (
-            <p className="text-text-xs text-coral-red-70">{errors.name.message}</p>
+            <p className="text-text-xs text-coral-red-70">
+              {errors.name.message}
+            </p>
           )}
         </div>
-        <div className="flex w-full flex-col gap-[0.375rem]">
-          <label
-            className={cn(
-              'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-            )}
-          >
-            Username <span className={
-              cn(
-                mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
-              )
-            }>*</span>
-          </label>
-          <Input
-            className={cn(
-              'text-text-lg flex h-12 items-center gap-[0.5rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] bg-[#FFFDF9] px-[0.875rem] py-[10px] shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)] transition-colors duration-500 focus:outline-none',
-            )}
-            placeholder="username"
-            type="name"
-            {...registerField('username')}
-          />
-          {errors.username && (
-            <p className="text-text-xs text-coral-red-70">{errors.username.message}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="flex w-full flex-col gap-[0.375rem]">
-        <label
-          className={cn(
-            'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
-          )}
-        >
-          Email <span className={
-            cn(
-              mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
-            )
-          }>*</span>
-        </label>
-        <div className="relative">
-          <Input className={cn('rounded-md peer ps-10')}
-            placeholder="Email"
-            type="email"
-            {...registerField('email')} />
-          <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
-            <svg className='w-5 h-5' viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1.66699 5.83301L8.47109 10.5959C9.02207 10.9816 9.29756 11.1744 9.59721 11.2491C9.8619 11.3151 10.1387 11.3151 10.4034 11.2491C10.7031 11.1744 10.9786 10.9816 11.5296 10.5959L18.3337 5.83301M5.66699 16.6663H14.3337C15.7338 16.6663 16.4339 16.6663 16.9686 16.3939C17.439 16.1542 17.8215 15.7717 18.0612 15.3013C18.3337 14.7665 18.3337 14.0665 18.3337 12.6663V7.33301C18.3337 5.93288 18.3337 5.23281 18.0612 4.69803C17.8215 4.22763 17.439 3.84517 16.9686 3.60549C16.4339 3.33301 15.7338 3.33301 14.3337 3.33301H5.66699C4.26686 3.33301 3.5668 3.33301 3.03202 3.60549C2.56161 3.84517 2.17916 4.22763 1.93948 4.69803C1.66699 5.23281 1.66699 5.93288 1.66699 7.33301V12.6663C1.66699 14.0665 1.66699 14.7665 1.93948 15.3013C2.17916 15.7717 2.56161 16.1542 3.03202 16.3939C3.5668 16.6663 4.26686 16.6663 5.66699 16.6663Z" stroke="#667085" strokeWidth="1.66667" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-
+        {mode === 'professional' && (
+          <div className="flex w-full flex-col gap-[0.375rem]">
+            <label
+              className={cn(
+                'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+              )}
+            >
+              Username{' '}
+              <span
+                className={cn(
+                  mode === 'company'
+                    ? 'text-sunshine-yellow-100'
+                    : 'text-coral-red-70',
+                )}
+              >
+                *
+              </span>
+            </label>
           </div>
-        </div>
-        {errors.email && (
-          <p className="text-text-xs text-coral-red-70">{errors.email.message}</p>
         )}
       </div>
 
@@ -146,11 +114,64 @@ export function RegisterForm({
             'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
           )}
         >
-          Password <span className={
-            cn(
-              mode === 'company' ? "text-sunshine-yellow-100" : 'text-coral-red-70'
-            )
-          }>*</span>
+          Email{' '}
+          <span
+            className={cn(
+              mode === 'company'
+                ? 'text-sunshine-yellow-100'
+                : 'text-coral-red-70',
+            )}
+          >
+            *
+          </span>
+        </label>
+        <div className="relative">
+          <Input
+            className={cn('peer rounded-md ps-10')}
+            placeholder="Email"
+            type="email"
+            {...registerField('email')}
+          />
+          <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1.66699 5.83301L8.47109 10.5959C9.02207 10.9816 9.29756 11.1744 9.59721 11.2491C9.8619 11.3151 10.1387 11.3151 10.4034 11.2491C10.7031 11.1744 10.9786 10.9816 11.5296 10.5959L18.3337 5.83301M5.66699 16.6663H14.3337C15.7338 16.6663 16.4339 16.6663 16.9686 16.3939C17.439 16.1542 17.8215 15.7717 18.0612 15.3013C18.3337 14.7665 18.3337 14.0665 18.3337 12.6663V7.33301C18.3337 5.93288 18.3337 5.23281 18.0612 4.69803C17.8215 4.22763 17.439 3.84517 16.9686 3.60549C16.4339 3.33301 15.7338 3.33301 14.3337 3.33301H5.66699C4.26686 3.33301 3.5668 3.33301 3.03202 3.60549C2.56161 3.84517 2.17916 4.22763 1.93948 4.69803C1.66699 5.23281 1.66699 5.93288 1.66699 7.33301V12.6663C1.66699 14.0665 1.66699 14.7665 1.93948 15.3013C2.17916 15.7717 2.56161 16.1542 3.03202 16.3939C3.5668 16.6663 4.26686 16.6663 5.66699 16.6663Z"
+                stroke="#667085"
+                strokeWidth="1.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
+        {errors.email && (
+          <p className="text-text-xs text-coral-red-70">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+
+      <div className="flex w-full flex-col gap-[0.375rem]">
+        <label
+          className={cn(
+            'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
+          )}
+        >
+          Password{' '}
+          <span
+            className={cn(
+              mode === 'company'
+                ? 'text-sunshine-yellow-100'
+                : 'text-coral-red-70',
+            )}
+          >
+            *
+          </span>
         </label>
         <div className="relative">
           <Input
@@ -177,23 +198,22 @@ export function RegisterForm({
       </div>
 
       <Button
-        className={
-          cn(
-            "text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm",
-            mode === 'professional'
-              ? '!bg-coral-red-100 !border-[#9F5055] hover:!bg-coral-red-80' : 'border-[#CEB67B] bg-[#F4D283]'
-          )
-        }
+        className={cn(
+          'text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] mt-6 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid stroke-[0.1px] px-[1rem] py-[10px] shadow-sm',
+          mode === 'professional'
+            ? '!bg-coral-red-100 hover:!bg-coral-red-80 !border-[#9F5055]'
+            : 'border-[#CEB67B] bg-[#F4D283]',
+        )}
         type="submit"
         style={{
           boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',
         }}
-      // variant={mode === 'professional' ? 'secondary' : 'default'}
+        // variant={mode === 'professional' ? 'secondary' : 'default'}
       >
         Create Account
       </Button>
 
-      <div className="flex items-center gap-1 mt-2">
+      <div className="mt-2 flex items-center gap-1">
         <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
         <p
           className={cn(
@@ -205,13 +225,13 @@ export function RegisterForm({
         </p>
         <div className="h-0.5 w-full flex-1 bg-[#D9D9D9]"></div>
       </div>
-      <div className='flex flex-col gap-4 mt-2'>
+      <div className="mt-2 flex flex-col gap-4">
         <Button
           style={{
             boxShadow: '0px -2px 1px 1px rgba(16, 24, 40, 0.05) inset',
           }}
           variant="outline"
-          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px] !shadow-[rgba(16, 24, 40, 0.18)]"
+          className="shadow-[0px_0px_0px_1px_rgba(16,24,40,0.18))_inset,0px_-2px_0px_0px_var(--Colors-Effects-Shadows-shadow-skeumorphic-inner,rgba(16,24,40,0.05))_inset,0px_1px_2px_0px_var(--Colors-Effects-Shadows-shadow-xs,rgba(16,24,40,0.05)] !shadow-[rgba(16, 24, 40, 0.18)] flex items-center justify-center gap-[0.75rem] self-stretch rounded-[0.5rem] border-[0.0625rem] border-solid border-[#D0D5DD] !bg-[#FFFDF9] bg-transparent px-[1rem] py-[10px]"
         >
           <svg
             className="h-6 w-6"
@@ -268,7 +288,8 @@ export function RegisterForm({
         </Button>
       </div>
       <div className="mt-6">
-        <p className="font-inter text-center text-[0.875rem] leading-[1.25rem] text-[#475467]">Already have an account?{' '}
+        <p className="font-inter text-center text-[0.875rem] leading-[1.25rem] text-[#475467]">
+          Already have an account?{' '}
           <Link
             href="/login"
             className={cn(

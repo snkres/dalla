@@ -5,7 +5,7 @@ interface Payload {
   name: string
   password: string
   username: string
-  userType: 'company' | 'professional'
+  userType: 'company' | 'user'
 }
 
 export async function register(payload: Payload) {
@@ -15,6 +15,11 @@ export async function register(payload: Payload) {
       message: string
     }>('/auth/register', payload)
     .then((res) => res.data)
+    .catch((err) => {
+      throw new Error(
+        err.response?.data?.message || 'An unknown error occurred',
+      )
+    })
 
   return res
 }

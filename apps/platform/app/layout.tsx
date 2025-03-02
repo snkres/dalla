@@ -10,7 +10,7 @@ import { Suspense } from 'react'
 const isProd = process.env.NODE_ENV === 'production'
 
 export const metadata: Metadata = {
-  title: 'Dalla' + (isProd ? '' : ' - Dev'),
+  title: 'Dalla Platform' + (isProd ? '' : ' - Dev'),
   description: 'Dalla Platform',
   icons: ['/favicon.svg'],
 }
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html>
-        <body className='font-inter'>
+        <body className="font-inter">
           <Suspense>
             <NuqsAdapter>{children}</NuqsAdapter>
           </Suspense>
@@ -31,6 +31,6 @@ export default function RootLayout({
           <Toaster />
         </body>
       </html>
-    </ViewTransitions >
+    </ViewTransitions>
   )
 }
