@@ -7,6 +7,7 @@ import { expertiseOptions } from '../data'
 import ExpertiseSelect from '../ExpertiseSelect'
 import { CompanyOnboardingData } from '../../page'
 import PhoneInput from '@dallah/components/phoneInput'
+import { useState } from 'react'
 
 export function CompanyOnboardingOne({
   data,
@@ -33,7 +34,13 @@ export function CompanyOnboardingOne({
 
       <motion.div variants={fadeInVariants} className="pb-2">
         <motion.div variants={fadeInUpVariants}>
-          <AvatarUpload />
+          <AvatarUpload
+            setUploadedURL={(url) => {
+              setData({ ...data, logo: url })
+              console.log(url)
+              console.log(data)
+            }}
+          />
         </motion.div>
 
         <div className="flex w-full flex-col gap-8">
