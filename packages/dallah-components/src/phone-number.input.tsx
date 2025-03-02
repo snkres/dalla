@@ -10,16 +10,18 @@ import * as RPNInput from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
 
 export default function PhoneInputWithCountry({
+  defaultValue,
   onChange,
 }: {
+  defaultValue: string
   onChange: (value: string) => void
 }) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(defaultValue)
 
   return (
     <div className="space-y-2" dir="ltr">
       <RPNInput.default
-        className="flex rounded-lg shadow-sm shadow-black/5"
+        className="flex h-11 !rounded-xl"
         international
         flagComponent={FlagComponent}
         countrySelectComponent={CountrySelect}
@@ -41,7 +43,7 @@ const PhoneInput = forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
     return (
       <Input
         className={cn(
-          '-ms-px rounded-s-none shadow-none focus-visible:z-10 rounded-e-lg',
+          '-ms-px h-11 rounded-e-xl rounded-s-none shadow-none focus-visible:z-10',
           className,
         )}
         ref={ref}
@@ -71,7 +73,7 @@ const CountrySelect = ({
   }
 
   return (
-    <div className="border-[#D0D5DD] bg-background text-muted-foreground focus-within:border-ring focus-within:ring-ring/20 hover:bg-accent hover:text-foreground relative inline-flex items-center self-stretch rounded-s-lg border border-e-0 !bg-[#FFFDF9] py-2 ps-3 transition-shadow focus-within:z-10 focus-within:outline-none focus-within:ring-[3px] has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
+    <div className="text-muted-foreground focus-within:border-ring focus-within:ring-ring/20 hover:bg-accent hover:text-foreground relative inline-flex items-center self-stretch rounded-s-lg border border-e-0 border-[#D0D5DD] py-2 ps-3 transition-shadow focus-within:z-10 focus-within:outline-none focus-within:ring-[3px] has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
       <div className="inline-flex items-center gap-1" aria-hidden="true">
         <FlagComponent country={value} countryName={value} aria-hidden="true" />
         <span className="text-slate-blue-100">

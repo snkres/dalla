@@ -3,7 +3,7 @@ import { axiosInstance } from '../instance'
 interface Payload {
   email: string
   otp: string
-  userType: 'company' | 'professional'
+  userType: 'company' | 'user'
 }
 
 export async function verify(payload: Payload) {
@@ -18,12 +18,12 @@ export async function verify(payload: Payload) {
     }>('/auth/verify', payload)
     .then((res) => res.data)
 
-  return res.success
+  return res
 }
 
 export async function resendOTP(payload: {
   email: string
-  userType: 'company' | 'professional'
+  userType: 'company' | 'user'
 }) {
   const res = await axiosInstance
     .post<{}>('/auth/resend-otp', payload)

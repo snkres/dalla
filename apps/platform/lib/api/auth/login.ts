@@ -3,7 +3,7 @@ import { axiosInstance } from '../instance'
 interface Payload {
   email: string
   password: string
-  userType: 'company' | 'professional'
+  userType: 'company' | 'user'
 }
 
 export async function login(payload: Payload) {
