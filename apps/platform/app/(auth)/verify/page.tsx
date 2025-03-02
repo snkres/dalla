@@ -8,7 +8,7 @@ import {
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@components/auth/otp/input-otp'
+} from './(components)/input-otp'
 import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { verify } from '@lib/api/auth/otp-verify'
@@ -58,7 +58,7 @@ export default function VerifyPage() {
   }
 
   const handlePrevious = () => {
-    router.push('/signup')
+    router.push('/login')
   }
 
   const handleContinue = async () => {
@@ -129,6 +129,7 @@ export default function VerifyPage() {
             previousText="Back"
             continueText="Verify email"
             handleSubmit={() => handleContinue()}
+            isNextDisabled={false}
           />
         </form>
       </div>
