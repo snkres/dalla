@@ -7,8 +7,9 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UploadCloudIcon } from 'lucide-react'
-import { ProOnboardingData } from '..'
+
 import { parseCV } from '@lib/api/pro/parse-cv'
+import { ProOnboardingData } from 'app/(auth)/onboard/page'
 
 const schema = z.object({
   yoe: z.number(),
@@ -16,7 +17,6 @@ const schema = z.object({
   number: z.string(),
   logo: z.string().nullable(),
 })
-
 
 type FormData = z.infer<typeof schema>
 
@@ -26,12 +26,9 @@ export function ProWizardStepOne({
   handleNext,
 }: {
   data: ProOnboardingData
-  updateData: Dispatch<
-    React.SetStateAction<ProOnboardingData>
-  >
-  handleNext: () => void,
+  updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
+  handleNext: () => void
 }) {
-
   const {
     register,
     handleSubmit,
@@ -53,9 +50,9 @@ export function ProWizardStepOne({
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
+    if (e.type === 'dragenter' || e.type === 'dragover') {
       setDragActive(true)
-    } else if (e.type === "dragleave") {
+    } else if (e.type === 'dragleave') {
       setDragActive(false)
     }
   }
@@ -63,41 +60,38 @@ export function ProWizardStepOne({
   useEffect(() => {
     const fetchData = async () => {
       if (uploadedCV instanceof File) {
-        const res = await parseCV(uploadedCV);
-        console.log(res);
+        const res = await parseCV(uploadedCV)
+        console.log(res)
       }
     }
-    fetchData();
-  }, [uploadedCV]);
+    fetchData()
+  }, [uploadedCV])
 
   return (
-    <div className="flex flex-col ">
-      <Logomark
-        className='h-14 w-14 [&_path]:fill-coral-red-100 mx-auto'
-      />
-      <div className="text-center flex flex-col items-center gap-1 px-6 mt-4">
+    <div className="flex flex-col">
+      <Logomark className="[&_path]:fill-coral-red-100 mx-auto h-14 w-14" />
+      <div className="mt-4 flex flex-col items-center gap-1 px-6 text-center">
         <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
           Finalize Your Profile
         </h2>
         <p className="text-paragraph-md text-slate-blue-90">
-          Whether you’re a professional or a company, Dalla connects you to endless opportunities in consulting and collaboration.
+          Whether you’re a professional or a company, Dalla connects you to
+          endless opportunities in consulting and collaboration.
         </p>
       </div>
-      <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
-      </div>
-      <div className='flex flex-col px-6'>
-        <div className='flex gap-4 flex-col items-center justify-center w-full '>
-          <div className='flex flex-col gap-1'>
+      <div className="flex flex-col px-6">
+        <div className="flex w-full flex-col items-center justify-center gap-4">
+          <div className="flex flex-col gap-1">
             <Image
               src={uploadedImage || '/company-logo-placeholder.svg'}
-              alt='Company Logo'
+              alt="Company Logo"
               width={200}
               height={200}
-              className='w-[4.5rem] h-[4.5rem] mx-auto cursor-pointer'
+              className="mx-auto h-[4.5rem] w-[4.5rem] cursor-pointer"
               onClick={() => {
-                const input = document.createElement("input")
-                input.type = "file"
-                input.accept = "image/*"
+                const input = document.createElement('input')
+                input.type = 'file'
+                input.accept = 'image/*'
                 input.onchange = (e) => {
                   const file = (e.target as HTMLInputElement).files?.[0]
                   if (file) {
@@ -108,19 +102,16 @@ export function ProWizardStepOne({
                 input.click()
               }}
             />
-            <span className='font-medium text-text-md '>
-              Add Photo
-            </span>
+            <span className="text-text-md font-medium">Add Photo</span>
           </div>
           <div
-            className={
-              `flex-1 cursor-pointer rounded-lg border-2 border-solid p-6 transition-colors w-full ${dragActive
-                ? "border-coral-red-100 bg-[#f8eacf]/10"
+            className={`w-full flex-1 cursor-pointer rounded-lg border-2 border-solid p-6 transition-colors ${
+              dragActive
+                ? 'border-coral-red-100 bg-[#f8eacf]/10'
                 : uploadedImage
-                  ? "border-coral-red-100 bg-[#f8eacf]/5"
-                  : "border-[#E4E7EC]"
-              }`
-            }
+                  ? 'border-coral-red-100 bg-[#f8eacf]/5'
+                  : 'border-[#E4E7EC]'
+            }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -131,37 +122,38 @@ export function ProWizardStepOne({
               // Handle file drop here
               const file = e.dataTransfer.files[0]
               if (file) {
-
                 setUploadedCV(file)
               }
             }}
             onClick={() => {
-              const input = document.createElement("input");
-              input.type = "file";
-              input.accept = "application/pdf"; // Ensure proper MIME type
+              const input = document.createElement('input')
+              input.type = 'file'
+              input.accept = 'application/pdf' // Ensure proper MIME type
               input.onchange = (e) => {
-                const file = (e.target as HTMLInputElement).files?.[0];
+                const file = (e.target as HTMLInputElement).files?.[0]
                 if (file) {
-                  setUploadedCV(file); // Store the file instead of the URL
+                  setUploadedCV(file) // Store the file instead of the URL
                 }
-              };
-              input.click();
+              }
+              input.click()
             }}
           >
             <div className="space-y-1 text-center">
-              <div className='border w-fit mx-auto p-2 rounded-lg  border-[#E4E7EC]  shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]'>
+              <div className="mx-auto w-fit rounded-lg border border-[#E4E7EC] p-2 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
                 <UploadCloudIcon size={24} className="mx-auto" />
               </div>
               <p>
-                <span className="text-slate-blue-90 font-semibold">Upload Your CV</span> or drag and drop
+                <span className="text-slate-blue-90 font-semibold">
+                  Upload Your CV
+                </span>{' '}
+                or drag and drop
               </p>
               <p className="text-sm text-[#98a2b3]"> PDF (max. 2MB)</p>
             </div>
           </div>
         </div>
-        <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
-        </div>
-        <div className='flex gap-4'>
+        <div className="my-5 h-0.5 w-full bg-[#E3E7EB]"></div>
+        <div className="flex gap-4">
           <div className="flex w-1/3 flex-col gap-[0.375rem]">
             <label
               className={cn(
@@ -182,7 +174,7 @@ export function ProWizardStepOne({
               <p className="mt-2 text-xs text-red-500">{errors.yoe.message}</p>
             )}
           </div>
-          <div className="flex flex-col gap-[0.375rem] w-full">
+          <div className="flex w-full flex-col gap-[0.375rem]">
             <label
               className={cn(
                 'text-[0.875rem] font-medium leading-[1.25rem] text-[#344054]',
@@ -190,18 +182,20 @@ export function ProWizardStepOne({
             >
               Phone Number
             </label>
-            <PhoneInput onChange={(e) => {
-              setValue('number', e)
-            }}
+            <PhoneInput
+              onChange={(e) => {
+                setValue('number', e)
+              }}
             />
             {errors.number && (
-              <p className="mt-2 text-xs text-red-500">{errors.number.message}</p>
+              <p className="mt-2 text-xs text-red-500">
+                {errors.number.message}
+              </p>
             )}
           </div>
         </div>
       </div>
-      <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
-      </div>
+      <div className="my-5 h-0.5 w-full bg-[#E3E7EB]"></div>
       <div className="flex flex-col gap-[0.375rem] px-6">
         <label
           className={cn(
@@ -222,15 +216,13 @@ export function ProWizardStepOne({
           <p className="mt-2 text-xs text-red-500">{errors.address.message}</p>
         )}
       </div>
-      <div className='h-0.5 w-full bg-[#E3E7EB] my-5'>
-      </div>
-      <div className=" flex items-center justify-center gap-4 px-6">
+      <div className="my-5 h-0.5 w-full bg-[#E3E7EB]"></div>
+      <div className="flex items-center justify-center gap-4 px-6">
         <Button
           onClick={handleNext}
           variant="default"
           size="lg"
-
-          className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] bg-coral-red-100 stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
+          className="text-sunshine-yellow-10 shadow-[rgba(16, 24, 40, 0.18)] bg-coral-red-100 flex w-full items-center justify-center gap-[0.375rem] self-stretch rounded-[0.5rem] border-[0.05rem] border-solid border-[#CEB67B] stroke-[0.1px] px-[1rem] py-[10px] shadow-sm"
           type="submit"
           style={{
             boxShadow: '0px -1px 0px 0px rgba(16, 24, 40, 0.1) inset',

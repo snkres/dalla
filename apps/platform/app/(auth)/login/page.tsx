@@ -58,6 +58,9 @@ export default function LoginPage() {
         userType: mode === 'company' ? 'company' : 'user',
       })
       if (res) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('mode', mode)
+        }
         if (mode === 'professional') {
           const profile = await getProProfile()
           setProProfile(profile.data.data)

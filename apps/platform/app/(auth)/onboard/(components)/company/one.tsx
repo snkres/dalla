@@ -7,7 +7,6 @@ import { expertiseOptions } from '../data'
 import ExpertiseSelect from '../ExpertiseSelect'
 import { CompanyOnboardingData } from '../../page'
 import PhoneInput from '@dallah/components/phoneInput'
-import { useState } from 'react'
 
 export function CompanyOnboardingOne({
   data,
@@ -40,6 +39,7 @@ export function CompanyOnboardingOne({
               console.log(url)
               console.log(data)
             }}
+            required={false}
           />
         </motion.div>
 

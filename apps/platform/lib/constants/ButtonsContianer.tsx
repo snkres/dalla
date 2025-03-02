@@ -4,8 +4,9 @@ interface ButtonsContainerProps {
   handlePrevious: () => void
   handleSubmit: () => void | Promise<void>
   isSubmitting: boolean
-  previousText: string
+  previousText: string | null
   continueText: string
+  isNextDisabled: boolean
 }
 
 export function ButtonsContainer({
@@ -14,20 +15,23 @@ export function ButtonsContainer({
   isSubmitting,
   previousText,
   continueText,
+  isNextDisabled,
 }: ButtonsContainerProps) {
   return (
     <div className="flex justify-between gap-4">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handlePrevious}
-        className="w-full"
-      >
-        {previousText}
-      </Button>
+      {previousText && (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={handlePrevious}
+          className="w-full"
+        >
+          {previousText}
+        </Button>
+      )}
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isNextDisabled}
         onClick={handleSubmit}
         className="w-full bg-[#234d64] text-white hover:bg-[#1a3b4d]"
       >

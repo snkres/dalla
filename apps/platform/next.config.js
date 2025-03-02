@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   assetPrefix: '/docs-static',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'dalla-dev.fra1.cdn.digitaloceanspaces.com',
+      },
+    ],
+  },
   async rewrites() {
     return {
       beforeFiles: [

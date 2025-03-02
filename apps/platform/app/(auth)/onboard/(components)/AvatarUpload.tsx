@@ -6,14 +6,19 @@ import { useRef } from 'react'
 import { Camera, Check, UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import { uploadImage } from '@lib/api/shared/upload'
+import { RequiredIndicator } from './pro/one'
 
 const AvatarUpload = ({
   setUploadedURL,
+  required,
+  initialURL,
 }: {
   setUploadedURL: (url: string) => void
+  required: boolean
+  initialURL?: string
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [previewUrl, setPreviewUrl] = useState<string>('')
+  const [previewUrl, setPreviewUrl] = useState<string>(initialURL || '')
   const [isHovered, setIsHovered] = useState(false)
 
   const handleFileChange = async (
@@ -33,7 +38,7 @@ const AvatarUpload = ({
   }
 
   return (
-    <div className="mb-8 flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -88,7 +93,16 @@ const AvatarUpload = ({
           className="hidden"
         />
       </motion.div>
-      <p className="text-sm text-gray-500">Upload your profile picture</p>
+      <p className="text-sm text-gray-500">
+        {required ? (
+          <>
+            Upload your profile picture
+            <RequiredIndicator />
+          </>
+        ) : (
+          'Upload your profile picture'
+        )}
+      </p>
     </div>
   )
 }

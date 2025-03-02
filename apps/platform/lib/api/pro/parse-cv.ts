@@ -61,6 +61,10 @@ export async function parseCV(cv: File) {
       },
     })
     .then((res) => res.data)
+    .catch((err) => {
+      console.log(err)
+      throw err
+    })
 
   return res
 }
