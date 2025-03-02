@@ -38,7 +38,7 @@ export default function VerifyPage() {
         const res = await verify({
           email: email,
           otp: verificationCode,
-          userType: mode as 'company' | 'user',
+          userType: mode === 'company' ? 'company' : 'user',
         })
         if (res.success) {
           if (typeof window !== 'undefined') {

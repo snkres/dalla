@@ -10,11 +10,13 @@ import * as RPNInput from 'react-phone-number-input'
 import flags from 'react-phone-number-input/flags'
 
 export default function PhoneInputWithCountry({
+  defaultValue,
   onChange,
 }: {
+  defaultValue: string
   onChange: (value: string) => void
 }) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(defaultValue)
 
   return (
     <div className="space-y-2" dir="ltr">

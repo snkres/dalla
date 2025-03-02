@@ -11,6 +11,10 @@ import { CompanyOnboardingThree } from './(components)/company/three'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { CompletionDialog } from './(components)/CompletionDialog'
 import { useTransitionRouter } from 'next-view-transitions'
+import { ProOnboardingOne } from './(components)/pro/one'
+import { ProOnboardingTwo } from './(components)/pro/two'
+import { ProOnboardingThree } from './(components)/pro/three'
+import { ProOnboardingFour } from './(components)/pro/four'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -69,6 +73,7 @@ export default function Page() {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const router = useTransitionRouter()
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
+  const [isAbleToProceed, setIsAbleToProceed] = useState(false)
   const [companyData, setCompanyData] = useState<CompanyOnboardingData>({
     areas: [],
     targetIndustries: [],
@@ -101,8 +106,8 @@ export default function Page() {
   })
 
   const [mode, setMode] = useState('company')
-  const [showProgress, setShowProgress] = useState(true)
   const companySteps = [{ id: 1 }, { id: 2 }, { id: 3 }]
+  const proSteps = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
   const currentStep = step
 
   const { toast } = useToast()
@@ -140,46 +145,45 @@ export default function Page() {
       } else {
         console.log('Pro data:', proData.experience[0].startDate)
         const submittedData: ProOnboardingData = {
-          headline: proData.headline || 'mmm',
-          resume: proData.resume || 'mmm',
-          bio: proData.bio || 'mmm',
+          headline: proData.headline,
+          resume: proData.resume,
+          bio: proData.bio,
           education: proData.education.map((edu) => ({
-            school: edu.school || 'mmm',
-            degree: edu.degree || 'mmm',
-            field: edu.field || 'mmm',
+            school: edu.school,
+            degree: edu.degree,
+            field: edu.field,
             startDate:
               new Date(`${edu.startDate} 01`).toISOString() ||
               new Date().toISOString(),
             endDate:
               new Date(`${edu.endDate} 01`).toISOString() ||
               new Date().toISOString(),
-            description: edu.description || 'mmm',
+            description: edu.description,
           })),
+          // @ts-ignore
           experience: proData.experience.map((exp) => ({
-            title: exp.title || 'mmm',
-            company: exp.company || 'mmm',
-            location: exp.location || 'mmm',
-            meta: {
-              skills: exp.meta.skills || ['mmm'],
-              achievements: exp.meta.achievements || 'mmm',
-              responsibilities: exp.meta.responsibilities || 'mmm',
-              employmentType: exp.meta.employmentType || 'mmm',
-            },
-            startDate:
-              new Date(`${exp.startDate} 01`).toISOString() ||
-              new Date().toISOString(),
+            title: exp.title,
+            company: exp.company,
+            location: exp.location,
+            skills: exp.meta.skills ?? [],
+            achievements: exp.meta.achievements,
+            responsibilities: exp.meta.responsibilities,
+            employmentType: exp.meta.employmentType,
+
+            startDate: new Date(`${exp.startDate} 01`).toISOString(),
             endDate:
-              new Date(`${exp.endDate} 01`).toISOString() ||
-              new Date().toISOString(),
+              exp.endDate === 'present'
+                ? 'present'
+                : new Date(`${exp.endDate} 01`).toISOString(),
           })),
           gender: 'Male',
-          avatar: proData.avatar || 'mmm',
+          avatar: proData.avatar,
           meta: {
-            socialLinks: proData.meta.socialLinks || { mmm: 'mmm' },
-            phone: proData.meta.phone || 'mmm',
-            location: proData.meta.location || 'mmm',
-            yearsOfExperience: proData.meta.yearsOfExperience || 0,
-            skills: proData.meta.skills || ['mmm'],
+            socialLinks: proData.meta.socialLinks,
+            phone: proData.meta.phone,
+            location: proData.meta.location,
+            yearsOfExperience: proData.meta.yearsOfExperience,
+            skills: proData.meta.skills ?? [],
           },
         }
         console.log('Submitting data:', proData)
@@ -212,21 +216,19 @@ export default function Page() {
       ) : mode === 'company' ? (
         <div className="flex flex-col items-center justify-center">
           <div className="bg-white/80 pb-4 pt-2 backdrop-blur-sm">
-            {showProgress && (
-              <div className="flex gap-2">
-                {companySteps.map((step) => (
-                  <div
-                    key={step.id}
-                    className={`h-[3px] w-[20px] rounded-full transition-all duration-300 ${
-                      companySteps.findIndex((s) => s.id === currentStep) >=
-                      companySteps.findIndex((s) => s.id === step.id)
-                        ? 'bg-[#234d64]'
-                        : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex gap-2">
+              {companySteps.map((step) => (
+                <div
+                  key={step.id}
+                  className={`h-[3px] w-[20px] rounded-full transition-all duration-300 ${
+                    companySteps.findIndex((s) => s.id === currentStep) >=
+                    companySteps.findIndex((s) => s.id === step.id)
+                      ? 'bg-[#234d64]'
+                      : 'bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
           <div className="py-6">
             <AnimatePresence mode="wait">
@@ -277,6 +279,7 @@ export default function Page() {
             </AnimatePresence>
           </div>
           <ButtonsContainer
+            isNextDisabled={!isAbleToProceed}
             continueText={step === 3 ? 'Submit' : 'Proceed'}
             handlePrevious={() => {
               setStep((prev) =>
@@ -297,70 +300,114 @@ export default function Page() {
           />
         </div>
       ) : (
-        // <div className="mx-auto max-w-[43rem] rounded-xl bg-[#FFFDF9] shadow-lg">
-        //   <div className="h-2 overflow-hidden rounded-t-xl bg-coral-red-30">
-        //     <div
-        //       className="h-full bg-coral-red-100 transition-all duration-300 ease-in-out"
-        //       style={{ width: `${(Number(step) / 4) * 100}%` }}
-        //     />
-        //   </div>
-        //   <div className="py-6">
-        //     <AnimatePresence mode="wait">
-        //       {step === 1 && (
-        //         <motion.div
-        //           key="step1"
-        //           initial={{ opacity: 0, x: -50 }}
-        //           animate={{ opacity: 1, x: 0 }}
-        //           exit={{ opacity: 0, x: 50 }}
-        //           transition={{ duration: 0.3 }}
-        //         >
-        //           <ProWizardStepOne data={proData} updateData={setProData} handleNext={handleNext} />
-        //         </motion.div>
-        //       )}
+        <div className="flex flex-col items-center justify-center">
+          <div className="bg-white/80 pb-4 pt-2 backdrop-blur-sm">
+            <div className="flex gap-2">
+              {proSteps.map((step) => (
+                <div
+                  key={step.id}
+                  className={`h-[3px] w-[20px] rounded-full transition-all duration-300 ${
+                    proSteps.findIndex((s) => s.id === currentStep) >=
+                    proSteps.findIndex((s) => s.id === step.id)
+                      ? 'bg-[#234d64]'
+                      : 'bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="w-full py-6">
+            <AnimatePresence mode="wait">
+              {step === 1 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProOnboardingOne
+                    data={proData}
+                    setData={setProData}
+                    updateData={setProData}
+                    setIsAbleToProceed={setIsAbleToProceed}
+                  />
+                </motion.div>
+              )}
 
-        //       {step === 2 && (
-        //         <motion.div
-        //           key="step2"
-        //           initial={{ opacity: 0, x: -50 }}
-        //           animate={{ opacity: 1, x: 0 }}
-        //           exit={{ opacity: 0, x: 50 }}
-        //           transition={{ duration: 0.3 }}
-        //         >
-        //           <ProWizardStepTwo data={proData} updateData={setProData} handleNext={handleNext} />
-        //         </motion.div>
-        //       )}
+              {step === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProOnboardingTwo
+                    data={proData}
+                    setData={setProData}
+                    setIsAbleToProceed={setIsAbleToProceed}
+                  />
+                </motion.div>
+              )}
 
-        //       {step === 3 && (
-        //         <motion.div
-        //           key="step3"
-        //           initial={{ opacity: 0, x: -50 }}
-        //           animate={{ opacity: 1, x: 0 }}
-        //           exit={{ opacity: 0, x: 50 }}
-        //           transition={{ duration: 0.3 }}
-        //         >
-        //           <ProWizardStepThree
-        //             data={proData}
-        //             updateData={setProData}
-        //             handleNext={handleNext}
-        //           />
-        //         </motion.div>
-        //       )}
+              {step === 3 && (
+                <motion.div
+                  key="step3"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProOnboardingThree
+                    data={proData}
+                    updateData={setProData}
+                    setIsAbleToProceed={setIsAbleToProceed}
+                  />
+                </motion.div>
+              )}
 
-        //       {step === 4 && (
-        //         <motion.div
-        //           key="step4"
-        //           initial={{ opacity: 0, x: -50 }}
-        //           animate={{ opacity: 1, x: 0 }}
-        //           exit={{ opacity: 0, x: 50 }}
-        //           transition={{ duration: 0.3 }}
-        //         >
-        //           <ProWizardStepFour data={proData} updateData={setProData} onSubmit={handleSubmit} />
-        //         </motion.div>
-        //       )}
-        //     </AnimatePresence>
-        //   </div>
-        // </div>
-        <></>
+              {step === 4 && (
+                <motion.div
+                  key="step4"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ProOnboardingFour
+                    data={proData}
+                    updateData={setProData}
+                    onSubmit={handleSubmit}
+                    setIsAbleToProceed={setIsAbleToProceed}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className="w-full">
+            <ButtonsContainer
+              continueText={step === 4 ? 'Submit' : 'Proceed'}
+              handlePrevious={() => {
+                setStep((prev) =>
+                  prev === 1 ? 1 : (((prev as number) - 1) as 1 | 2 | 3 | 4),
+                )
+              }}
+              isNextDisabled={!isAbleToProceed}
+              previousText={step === 1 ? null : 'Back'}
+              handleSubmit={() => {
+                if (step === 4) {
+                  handleSubmit()
+                } else {
+                  setStep((prev) =>
+                    prev === 4 ? 4 : (((prev as number) + 1) as 1 | 2 | 3 | 4),
+                  )
+                }
+              }}
+              isSubmitting={false}
+            />
+          </div>
+        </div>
       )}
     </AnimatePresence>
   )
