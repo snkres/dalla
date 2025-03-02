@@ -23,7 +23,7 @@ const ExpertiseSelect = ({ value, onChange, expertiseOptions }: ExpertiseSelectP
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full justify-between rounded-xl border-2 hover:border-[#234d64] transition-colors h-12 px-4"
+                    className="w-full justify-between rounded-xl border-2 hover:border-[#234d64] transition-colors  px-4 h-full !py-0 hover:bg-transparent"
                 >
                     <div className="flex flex-wrap gap-1 max-w-[90%]">
                         {value.length > 0 ? (
@@ -36,19 +36,19 @@ const ExpertiseSelect = ({ value, onChange, expertiseOptions }: ExpertiseSelectP
                                 </span>
                             ))
                         ) : (
-                            <span className="text-gray-500">Select expertise...</span>
+                            <span className="text-gray-500">Select Target Industries...</span>
                         )}
                     </div>
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
+            <PopoverContent className="w-full p-0 h-full">
                 <Command className="rounded-lg">
                     <CommandInput
                         placeholder="Search expertise..."
                         className="h-12 border-0 focus:ring-0 focus-visible:ring-0 focus:outline-none"
                     />
-                    <CommandList className="max-h-[300px] p-2">
+                    <CommandList className="h-full p-2">
                         <CommandEmpty>No expertise found.</CommandEmpty>
                         <CommandGroup>
                             {expertiseOptions.map((option) => (

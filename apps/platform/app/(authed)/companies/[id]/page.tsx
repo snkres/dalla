@@ -110,7 +110,7 @@ export default function CompanyProfile() {
         {/* Left Column - Company Info */}
         <div className="gap-4 sticky top-6 h-[calc(100vh-6rem)] overflow-hidden flex flex-col ">
           {/* Company Profile Card */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border-[#F3F2F1]/30">
             <div className="flex flex-col items-center mb-6">
               <div className="relative">
                 <div className="h-24 w-24 rounded-full bg-blue-100 overflow-hidden mb-3 flex items-center justify-center">
@@ -173,7 +173,7 @@ export default function CompanyProfile() {
           </div>
 
           {/* Detailed Information */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm h-full flex justify-center flex-col">
+          <div className="bg-white rounded-3xl p-6 shadow-sm h-full flex flex-col border-[#F3F2F1]/30">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold">Company Information</h3>
             </div>
@@ -283,7 +283,7 @@ export default function CompanyProfile() {
         {/* Middle and Right Columns */}
         <div className="lg:col-span-2 space-y-4">
           {/* Projects Section */}
-          <div className="bg-white rounded-3xl p-6 shadow-sm">
+          <div className="bg-white rounded-3xl p-6 shadow-sm border-[#F3F2F1]/30">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">
                 <Button
@@ -538,7 +538,7 @@ export default function CompanyProfile() {
           {/* Company History and Services Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Company History */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm">
+            <div className="bg-white rounded-3xl p-6 shadow-sm border-[#F3F2F1]/30">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold">Services & Expertise</h3>
                 <Badge className="bg-slate-blue-80 text-white !rounded-full">Industry Leader</Badge>
@@ -574,7 +574,7 @@ export default function CompanyProfile() {
                         <Progress
                           value={service.expertise}
                           className="!h-1.5 bg-gray-100"
-                          indicatorClassName={`${activeServiceCategory === "Core Services" ? "bg-slate-blue-80" : "bg-green-600"}`}
+                          indicatorClassName={"!bg-slate-blue-80"}
                         />
                       </div>
                     ))
@@ -617,7 +617,7 @@ export default function CompanyProfile() {
             </div>
 
             {/* Services Section */}
-            <div className="bg-white rounded-3xl p-6 shadow-sm">
+            <div className="bg-white rounded-3xl p-6 shadow-sm border-[#F3F2F1]/30">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-bold">Professionals Testimonials</h3>
                 <Badge className=" !text-slate-blue-10 bg-slate-blue-80 !rounded-full">4.8/5 Average Rating</Badge>

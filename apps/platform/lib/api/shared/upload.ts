@@ -1,19 +1,16 @@
 import { axiosInstance } from '../instance'
 
-export type ImageFile = {
-  file: File
-  preview: string
-}
-
-export async function uploadImage(image: ImageFile) {
+export async function uploadImage(image: File) {
   const formData = new FormData()
-  formData.append('file', image.file)
+  formData.append('file', image)
 
   console.log(formData)
 
   const res: {
     message: string
-    url: string
+    data: {
+      fileUrl: string
+    }
   } = await axiosInstance
     .post('/upload', formData, {
       headers: {

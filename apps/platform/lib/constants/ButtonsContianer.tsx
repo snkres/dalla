@@ -1,38 +1,42 @@
-import { Button } from "@dallah/design-system";
+import { Button } from '@dallah/design-system'
 
 interface ButtonsContainerProps {
-    handlePrevious: () => void;
-    handleSubmit: (e: React.FormEvent) => Promise<void>;
-    isSubmitting: boolean;
-    previousText: string;
-    continueText: string;
+  handlePrevious: () => void
+  handleSubmit: () => void | Promise<void>
+  isSubmitting: boolean
+  previousText: string | null
+  continueText: string
+  isNextDisabled: boolean
 }
 
-export const ButtonsContainer = ({
-    handlePrevious,
-    handleSubmit,
-    isSubmitting,
-    previousText,
-    continueText
-}: ButtonsContainerProps) => {
-    return (
-        <div className="flex justify-between gap-4 mt-12">
-            <Button
-                type="button"
-                variant="outline"
-                onClick={handlePrevious}
-                className="w-full"
-            >
-                {previousText}
-            </Button>
-            <Button
-                type="submit"
-                disabled={isSubmitting}
-                onClick={handleSubmit}
-                className="w-full bg-[#234d64] hover:bg-[#1a3b4d] text-white"
-            >
-                {continueText}
-            </Button>
-        </div>
-    );
-};
+export function ButtonsContainer({
+  handlePrevious,
+  handleSubmit,
+  isSubmitting,
+  previousText,
+  continueText,
+  isNextDisabled,
+}: ButtonsContainerProps) {
+  return (
+    <div className="flex justify-between gap-4">
+      {previousText && (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={handlePrevious}
+          className="w-full"
+        >
+          {previousText}
+        </Button>
+      )}
+      <Button
+        type="submit"
+        disabled={isSubmitting || isNextDisabled}
+        onClick={handleSubmit}
+        className="w-full bg-[#234d64] text-white hover:bg-[#1a3b4d]"
+      >
+        {continueText}
+      </Button>
+    </div>
+  )
+}

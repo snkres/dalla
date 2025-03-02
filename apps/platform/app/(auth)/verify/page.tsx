@@ -1,73 +1,123 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'motion/react';
-import { useOnboarding } from '@lib/contexts/OnboardingContext';
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@components/auth/otp/input-otp";
-import { ButtonsContainer } from '@lib/constants/ButtonsContianer';
-import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate';
-
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { motion } from 'motion/react'
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from './(components)/input-otp'
+import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
+import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
+import { verify } from '@lib/api/auth/otp-verify'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 export default function VerifyPage() {
-  const router = useRouter();
-  const { setCurrentStep } = useOnboarding();
-  const [verificationCode, setVerificationCode] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter()
+  const { toast } = useToast()
+  const [verificationCode, setVerificationCode] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [mode, setMode] = useState('')
+  const [email, setEmail] = useState('')
 
-  const handleVerificationSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSubmitting) return;
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setEmail(localStorage.getItem('email') || '')
+      setMode(localStorage.getItem('mode') || '')
+    }
+  }, [])
 
-    setIsSubmitting(true);
+  const handleVerificationSubmit = async () => {
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
 
     try {
-      setCurrentStep('profile');
-      router.push('/onboard');
+      if (verificationCode.length === 4) {
+        const res = await verify({
+          email: email,
+          otp: verificationCode,
+          userType: mode === 'company' ? 'company' : 'user',
+        })
+        if (res.success) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('access_token', res.data.access_token)
+          }
+        }
+      }
     } catch (error) {
-      console.error('Verification error:', error);
+      toast({
+        title: 'Verification failed',
+        description: 'Please try again',
+        variant: 'destructive',
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const handlePrevious = () => {
-    setCurrentStep('signup');
-    router.push('/signup');
+    router.push('/login')
   }
 
-  const handleContinue = async (e: React.FormEvent) => {
-    e.preventDefault();
-    handleVerificationSubmit(e);
+  const handleContinue = async () => {
+    await handleVerificationSubmit().then(() => {
+      router.push('/onboard')
+    })
   }
-
 
   return (
-    <motion.div variants={fadeInVariants} initial="hidden" animate="visible" className="w-full max-w-[420px] mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <motion.div
+      variants={fadeInVariants}
+      initial="hidden"
+      animate="visible"
+      className="mx-auto w-full max-w-[420px] px-4 py-8 sm:px-6 sm:py-12"
+    >
       <div className="space-y-8">
-        <motion.div variants={fadeInUpVariants} initial="initial" animate="animate" transition={{ delay: 0.2 }} className="text-center space-y-3">
+        <motion.div
+          variants={fadeInUpVariants}
+          initial="initial"
+          animate="animate"
+          transition={{ delay: 0.2 }}
+          className="space-y-3 text-center"
+        >
           <h1 className="text-2xl font-semibold text-gray-900">
             Check your email
           </h1>
-          <p className="text-gray-500 text-sm font-light">
+          <p className="text-sm font-light text-gray-500">
             We&apos;ve sent a verification code to your email
           </p>
         </motion.div>
 
-        <form onSubmit={handleVerificationSubmit} className="space-y-6">
-          <motion.div variants={fadeInUpVariants} initial="initial" animate="animate" transition={{ delay: 0.1 }} className="space-y-4">
-            <label className="text-sm font-medium text-gray-700 block text-center">
+        <form
+          onSubmit={handleVerificationSubmit}
+          className="flex flex-col items-center justify-center gap-6"
+        >
+          <motion.div
+            variants={fadeInUpVariants}
+            initial="initial"
+            animate="animate"
+            transition={{ delay: 0.1 }}
+            className="space-y-4"
+          >
+            <label className="block text-center text-sm font-medium text-gray-700">
               Enter verification code
             </label>
-            <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode} disabled={isSubmitting} className="flex justify-center gap-2">
+            <InputOTP
+              maxLength={4}
+              value={verificationCode}
+              onChange={setVerificationCode}
+              disabled={isSubmitting}
+              className="flex justify-center gap-2"
+            >
               <InputOTPGroup className="gap-2">
-                {[0, 1, 2].map((index) => (
-                  <InputOTPSlot key={index} index={index} className="w-11 h-11 text-lg font-medium rounded border border-gray-200  focus:ring-1 focus:ring-[#234d64] focus:border-[#234d64] transition-all duration-200" />
-                ))}
-              </InputOTPGroup>
-              <InputOTPSeparator className="mx-2" />
-              <InputOTPGroup className="gap-2">
-                {[3, 4, 5].map((index) => (
-                  <InputOTPSlot key={index} index={index} className="w-11 h-11 text-lg font-medium rounded border border-gray-200  focus:ring-1 focus:ring-[#234d64] focus:border-[#234d64] transition-all duration-200" />
+                {[0, 1, 2, 3].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className="h-11 w-11 rounded border border-gray-200 text-lg font-medium transition-all duration-200 focus:border-[#234d64] focus:ring-1 focus:ring-[#234d64]"
+                  />
                 ))}
               </InputOTPGroup>
             </InputOTP>
@@ -78,10 +128,11 @@ export default function VerifyPage() {
             isSubmitting={isSubmitting}
             previousText="Back"
             continueText="Verify email"
-            handleSubmit={handleContinue}
+            handleSubmit={() => handleContinue()}
+            isNextDisabled={false}
           />
         </form>
       </div>
     </motion.div>
-  );
+  )
 }

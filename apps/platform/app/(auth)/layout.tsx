@@ -3,12 +3,10 @@
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useOnboarding } from '@lib/contexts/OnboardingContext';
 import { fadeInVariants, fadeInUpVariants } from "@components/aniamtion/animate";
 
 export default function AuthLayout({ children, }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { steps, currentStep } = useOnboarding();
   const isAuthFlow = !pathname.includes('login');
   const showProgress = isAuthFlow;
 
@@ -44,21 +42,6 @@ export default function AuthLayout({ children, }: { children: React.ReactNode })
       </motion.div>
 
       <div className="flex-1 flex flex-col h-full relative">
-        <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-sm pt-2 pb-4">
-          {showProgress && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-2">
-              {steps.map((step) => (
-                <div
-                  key={step.id}
-                  className={`h-[3px] w-[20px] rounded-full transition-all duration-300 ${steps.findIndex(s => s.id === currentStep) >= steps.findIndex(s => s.id === step.id)
-                    ? 'bg-[#234d64]'
-                    : 'bg-gray-200'
-                    }`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
 
         <div className="flex-1 overflow-y-auto">
           <div className="flex items-center justify-center p-4 sm:p-8 min-h-full">
