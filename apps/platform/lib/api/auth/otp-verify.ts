@@ -18,7 +18,7 @@ export async function verify(payload: Payload) {
     }>('/auth/verify', payload)
     .then((res) => res.data)
 
-  return res.success
+  return res
 }
 
 export async function resendOTP(payload: {
