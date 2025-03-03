@@ -92,6 +92,7 @@ export function CompanyOnboardingOne({
                         phoneNumber: value,
                       })
                     }}
+                    defaultValue={data.phoneNumber}
                   />
                 </div>
                 <div className="relative w-full">
