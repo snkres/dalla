@@ -328,7 +328,6 @@ export default function Page() {
                 >
                   <ProOnboardingOne
                     data={proData}
-                    setData={setProData}
                     updateData={setProData}
                     setIsAbleToProceed={setIsAbleToProceed}
                   />
@@ -345,7 +344,7 @@ export default function Page() {
                 >
                   <ProOnboardingTwo
                     data={proData}
-                    setData={setProData}
+                    updateData={setProData}
                     setIsAbleToProceed={setIsAbleToProceed}
                   />
                 </motion.div>
