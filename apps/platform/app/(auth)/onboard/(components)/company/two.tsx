@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { GoalCard } from '../GoalCard'
+import { GoalCard } from '../goal-card'
 import { focusAreaOptions } from '@lib/data/focus-options'
 import { GoalOption } from '@lib/types/goals'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
