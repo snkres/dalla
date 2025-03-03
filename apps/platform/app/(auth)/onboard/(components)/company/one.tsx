@@ -86,6 +86,7 @@ export function CompanyOnboardingOne({
               <div className="flex gap-4">
                 <div className="relative w-full">
                   <PhoneInput
+                    defaultValue={data.phoneNumber}
                     onChange={(value) => {
                       setData({
                         ...data,
