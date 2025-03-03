@@ -4,11 +4,11 @@ import { fadeInVariants } from '@components/aniamtion/animate'
 import { SkillSelector } from '@components/shared/skill-selector'
 import PhoneInput from '@dallah/components/phoneInput'
 import { motion } from 'motion/react'
-import type { ProOnboardingData } from '../../page'
+import type { ProOnboardingData } from '../../hooks/use-onboarding'
 import type { Dispatch, SetStateAction } from 'react'
 import { Globe2 } from 'lucide-react'
 import { Input, Label } from '@dallah/design-system'
-import { useProOnboarding } from '../../(hooks)/use-pro-onboarding'
+import { useProOnboarding } from '../../hooks/use-pro-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 
 export function ProOnboardingTwo({

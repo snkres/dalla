@@ -4,8 +4,8 @@ import { MapPin, Globe2 } from 'lucide-react'
 import { motion } from 'motion/react'
 import AvatarUpload from '@components/shared/AvatarUpload'
 import { expertiseOptions } from '../data'
-import ExpertiseSelect from '../ExpertiseSelect'
-import { CompanyOnboardingData } from '../../page'
+import ExpertiseSelect from '../expertise-select'
+import { CompanyOnboardingData } from '../../hooks/use-onboarding'
 import PhoneInput from '@dallah/components/phoneInput'
 
 export function CompanyOnboardingOne({

@@ -1,12 +1,12 @@
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { CVParseResponse, parseCV } from '@lib/api/pro/parse-cv'
 import { useState, useEffect, Dispatch, useCallback } from 'react'
-import { ProOnboardingData } from '../page'
 import {
   calculateYearsOfExperience,
   extractEducation,
   extractWorkExperience,
 } from '@lib/utils/parse-cv'
+import { ProOnboardingData } from './use-onboarding'
 
 // Form validation helpers
 function validatePhone(phone: string | undefined): boolean {
