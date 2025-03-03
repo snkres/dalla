@@ -264,7 +264,7 @@ export function ProOnboardingOne({
             // Update parent component with all CV data
             updateData((prev) => ({
               ...prev,
-              headline: `${res.data.profile.name}'s Professional Profile`,
+              headline: `${res.data.profile.name}`,
               bio: bio,
               gender: prev.gender, // Keep existing gender
               meta: {
