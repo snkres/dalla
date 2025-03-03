@@ -10,3 +10,27 @@ export async function getProProfile() {
 
   return res
 }
+
+export async function updateProProfile(
+  profile: Partial<{
+    bio?: string
+    education?: ProProfile['UserProfile']['education']
+    experience?: ProProfile['UserProfile']['experience']
+    gender?: string
+    headline?: string
+    meta?: ProProfile['UserProfile']['meta']
+    resume?: string
+    [property: string]: any
+  }>,
+) {
+  let res = await axiosInstance
+    .patch<{
+      success: boolean
+      message: string
+    }>('/professionals/profile', profile)
+    .catch((err) => {
+      throw err
+    })
+
+  return res
+}

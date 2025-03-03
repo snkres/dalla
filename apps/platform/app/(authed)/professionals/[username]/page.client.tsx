@@ -8,6 +8,7 @@ import { Skills } from '../(components)/skills'
 import { Projects } from '../(components)/projects'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { updateProProfile } from '@lib/api/pro/profile'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [activeSkillCategory, setActiveSkillCategory] = useState('Technical')
@@ -50,6 +51,13 @@ export function ProProfileClient({ username }: { username: string }) {
             isOwner={isOwner}
             yearsOfExperience={profile?.UserProfile?.meta?.yearsOfExperience}
             bio={profile?.UserProfile?.bio}
+            onUpdateProfile={async (updatedProfile) => {
+              return await updateProProfile({
+                bio: updatedProfile.bio,
+                headline: updatedProfile.title,
+                yearsOfExperience: updatedProfile.yearsOfExperience || 0,
+              })
+            }}
           />
           <DetailedInfo
             name={profile?.name}
