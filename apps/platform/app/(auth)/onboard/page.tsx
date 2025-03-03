@@ -377,7 +377,6 @@ export default function Page() {
                   <ProOnboardingFour
                     data={proData}
                     updateData={setProData}
-                    onSubmit={handleSubmit}
                     setIsAbleToProceed={setIsAbleToProceed}
                   />
                 </motion.div>
