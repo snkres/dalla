@@ -8,7 +8,7 @@ import type { ProOnboardingData } from '../../page'
 import type { Dispatch, SetStateAction } from 'react'
 import { Globe2 } from 'lucide-react'
 import { Input, Label } from '@dallah/design-system'
-import { useOnboarding } from '../../(hooks)/use-onboarding'
+import { useProOnboarding } from '../../(hooks)/use-pro-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 
 export function ProOnboardingTwo({
@@ -20,7 +20,7 @@ export function ProOnboardingTwo({
   updateData: Dispatch<SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<SetStateAction<boolean>>
 }) {
-  const { handleSkills, phoneError } = useOnboarding({
+  const { handleSkills, phoneError } = useProOnboarding({
     data,
     updateData,
     setIsAbleToProceed,

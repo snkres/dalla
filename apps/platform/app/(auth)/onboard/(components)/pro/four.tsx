@@ -1,14 +1,14 @@
 'use client'
 
 import type React from 'react'
-import { type Dispatch, useState, useEffect } from 'react'
+import { type Dispatch } from 'react'
 import Image from 'next/image'
 import { Button } from '@dallah/design-system'
 import { Modal } from '@components/shared/modal'
 import { EducationForm } from './edu-form'
 import type { ProOnboardingData } from '../../page'
 import { PlusIcon } from 'lucide-react'
-import { useOnboarding } from '../../(hooks)/use-onboarding'
+import { useProOnboarding } from '../../(hooks)/use-pro-onboarding'
 
 export function ProOnboardingFour({
   data,
@@ -27,7 +27,7 @@ export function ProOnboardingFour({
     isAllValid,
     handleEduEdit,
     handleEducationSubmit,
-  } = useOnboarding({
+  } = useProOnboarding({
     data,
     updateData,
     setIsAbleToProceed,

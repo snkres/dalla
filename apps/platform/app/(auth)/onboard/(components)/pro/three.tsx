@@ -1,7 +1,7 @@
 'use client'
 
 import type React from 'react'
-import { type Dispatch, useState, useEffect } from 'react'
+import { type Dispatch } from 'react'
 
 import Image from 'next/image'
 import { Button } from '@dallah/design-system'
@@ -9,7 +9,7 @@ import { Modal } from '@components/shared/modal'
 import { ExperienceForm } from './exp-form'
 import { ProOnboardingData } from '../../page'
 import { PlusIcon } from 'lucide-react'
-import { useOnboarding } from '../../(hooks)/use-onboarding'
+import { useProOnboarding } from '../../(hooks)/use-pro-onboarding'
 
 export function ProOnboardingThree({
   data,
@@ -28,7 +28,7 @@ export function ProOnboardingThree({
     isAllValid,
     handleExperienceSubmit,
     handleEditExp,
-  } = useOnboarding({
+  } = useProOnboarding({
     data,
     updateData,
     setIsAbleToProceed,

@@ -17,7 +17,7 @@ import AvatarUpload from '@components/shared/AvatarUpload'
 import type { ProOnboardingData } from '../../page'
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
-import { useOnboarding } from '../../(hooks)/use-onboarding'
+import { useProOnboarding } from '../../(hooks)/use-pro-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 
 export function ProOnboardingOne({
@@ -30,7 +30,7 @@ export function ProOnboardingOne({
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
-  const { isLoading, uploadedCV, setUploadedCV, cvData } = useOnboarding({
+  const { isLoading, uploadedCV, setUploadedCV, cvData } = useProOnboarding({
     data,
     updateData,
     setIsAbleToProceed,
