@@ -184,6 +184,7 @@ select {
 body,
 html{
   height: 100%;
+  background-color: #F3F2F1;
 }
 
 body,
