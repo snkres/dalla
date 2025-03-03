@@ -1,10 +1,10 @@
 import { ProProfileClient } from './page.client'
 
 interface ProProfileProps {
-  params: Promise<{ username: string }>
+  params: Promise<{ id: string }>
 }
 
 export default async function ProProfile({ params }: ProProfileProps) {
-  const { username } = await params
-  return <ProProfileClient username={username} />
+  const { id } = await params
+  return <ProProfileClient id={id} />
 }

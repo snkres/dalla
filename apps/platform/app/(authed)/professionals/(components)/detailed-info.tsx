@@ -85,23 +85,6 @@ export const DetailedInfo = ({
             <div className="h-2 w-2 rounded-full bg-black"></div>
           </div>
           <div className="flex-grow">
-            <p className="text-sm text-gray-500">Designation</p>
-            <p className="font-medium">{designation}</p>
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 rounded-full bg-white"
-          >
-            <Info className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border bg-white">
-            <div className="h-2 w-2 rounded-full bg-black"></div>
-          </div>
-          <div className="flex-grow">
             <p className="text-sm text-gray-500">Location</p>
             <p className="font-medium">{location}</p>
           </div>

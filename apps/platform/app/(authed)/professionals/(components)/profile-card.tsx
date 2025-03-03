@@ -12,12 +12,11 @@ import { AxiosResponse } from 'axios'
 import {
   Mail,
   MessageCircle,
-  MoreHorizontal,
   Phone,
   Verified,
   Video,
-  Edit,
   Edit2,
+  Eye,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -29,6 +28,8 @@ interface ProfileCardProps {
   isOwner: boolean
   yearsOfExperience: number
   bio: string
+  isPublicView?: boolean
+  onPublicViewToggle?: (value: boolean) => void
   onUpdateProfile?: (
     updatedProfile: Partial<{
       bio: string
@@ -46,22 +47,46 @@ export const ProfileCard = ({
   isOwner,
   yearsOfExperience,
   bio,
+  isPublicView = false,
+  onPublicViewToggle,
   onUpdateProfile,
 }: ProfileCardProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const { toast } = useToast()
 
+  const handlePublicViewToggle = () => {
+    if (onPublicViewToggle) {
+      onPublicViewToggle(!isPublicView)
+    }
+  }
+
   return (
     <div className="relative flex flex-col gap-4 rounded-3xl border border-[#F3F2F1]/30 bg-white p-6 shadow-sm">
       {isOwner && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-4 top-4 h-8 w-8 rounded-full"
-          onClick={() => setIsEditModalOpen(true)}
-        >
-          <Edit2 className="h-4 w-4" />
-        </Button>
+        <>
+          {!isPublicView && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute left-4 top-4 h-8 w-8 rounded-full"
+              onClick={() => setIsEditModalOpen(true)}
+            >
+              <Edit2 className="h-5 w-5" />
+            </Button>
+          )}
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4 h-8 w-8 rounded-full"
+            onClick={handlePublicViewToggle}
+            title={isPublicView ? 'Exit public view' : 'View as public'}
+          >
+            <Eye
+              className={`h-5 w-5 ${isPublicView ? 'text-coral-red-100' : ''}`}
+            />
+          </Button>
+        </>
       )}
 
       <div className="flex flex-col items-center">

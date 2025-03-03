@@ -9,35 +9,23 @@ import { Projects } from '../(components)/projects'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
 import { updateProProfile } from '@lib/api/pro/profile'
+import { useQueryState } from 'nuqs'
 
-export function ProProfileClient({ username }: { username: string }) {
-  const [activeSkillCategory, setActiveSkillCategory] = useState('Technical')
-
-  const handleSkillCategoryChange = (category: string) => {
-    setActiveSkillCategory(category)
-  }
-
-  const skills = {
-    Technical: [
-      { name: 'SEO Optimization', level: 90 },
-      { name: 'Social Media Management', level: 85 },
-      { name: 'Content Marketing', level: 80 },
-      { name: 'Email Marketing', level: 75 },
-    ],
-    Soft: [
-      { name: 'Communication', level: 95 },
-      { name: 'Time Management', level: 85 },
-      { name: 'Problem Solving', level: 80 },
-      { name: 'Leadership', level: 70 },
-    ],
-  }
-
-  const [profile, setProfile] = useAtom(proProfileAtom)
+export function ProProfileClient({ id }: { id: string }) {
+  const [profile] = useAtom(proProfileAtom)
   const [isOwner, setIsOwner] = useState(false)
+  const [isPublicView, setIsPublicView] = useQueryState('publicView', {
+    defaultValue: false,
+    parse: (value) => value === 'true',
+  })
 
   useEffect(() => {
-    setIsOwner(profile?.username === username)
-  }, [profile, username])
+    setIsOwner(profile?.id === id)
+  }, [profile, id])
+
+  const handlePublicViewToggle = (value: boolean) => {
+    setIsPublicView(value)
+  }
 
   return (
     <>
@@ -51,6 +39,8 @@ export function ProProfileClient({ username }: { username: string }) {
             isOwner={isOwner}
             yearsOfExperience={profile?.UserProfile?.meta?.yearsOfExperience}
             bio={profile?.UserProfile?.bio}
+            onPublicViewToggle={handlePublicViewToggle}
+            isPublicView={isPublicView}
             onUpdateProfile={async (updatedProfile) => {
               return await updateProProfile({
                 bio: updatedProfile.bio,
@@ -66,39 +56,41 @@ export function ProProfileClient({ username }: { username: string }) {
             location={profile?.UserProfile?.meta?.location}
             designation={profile?.UserProfile?.headline}
             yearsOfExperience={profile?.UserProfile?.meta?.yearsOfExperience}
-            isOwner={isOwner}
+            isOwner={isOwner && !isPublicView}
           />
         </div>
 
         <div className="space-y-4 lg:col-span-2">
-          <Projects
-            projects={[
-              {
-                title: 'Digital Marketing Strategy',
-                description: 'Campaign Development',
-                startDate: 'March 05, 2024',
-                endDate: 'March 05, 2024',
-                status: 'Ongoing',
-                teamMembers: ['John Doe', 'Jane Smith'],
-                progress: 60,
-                teamSize: 2,
-                category: 'Marketing',
-                color: '#FFA500',
-              },
-              {
-                title: 'Website Redesign',
-                description: 'UI/UX Design',
-                startDate: 'March 05, 2024',
-                endDate: 'March 05, 2024',
-                status: 'Completed',
-                teamMembers: ['John Doe', 'Jane Smith'],
-                progress: 100,
-                teamSize: 2,
-                category: 'Design',
-                color: '#0d0d0d',
-              },
-            ]}
-          />
+          {isOwner && !isPublicView && (
+            <Projects
+              projects={[
+                {
+                  title: 'Digital Marketing Strategy',
+                  description: 'Campaign Development',
+                  startDate: 'March 05, 2024',
+                  endDate: 'March 05, 2024',
+                  status: 'Ongoing',
+                  teamMembers: ['John Doe', 'Jane Smith'],
+                  progress: 60,
+                  teamSize: 2,
+                  category: 'Marketing',
+                  color: '#FFA500',
+                },
+                {
+                  title: 'Website Redesign',
+                  description: 'UI/UX Design',
+                  startDate: 'March 05, 2024',
+                  endDate: 'March 05, 2024',
+                  status: 'Completed',
+                  teamMembers: ['John Doe', 'Jane Smith'],
+                  progress: 100,
+                  teamSize: 2,
+                  category: 'Design',
+                  color: '#0d0d0d',
+                },
+              ]}
+            />
+          )}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <ProExp
               experiences={profile?.UserProfile?.experience || []}
