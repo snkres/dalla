@@ -242,7 +242,7 @@ export default function Page() {
                 >
                   <CompanyOnboardingOne
                     data={companyData}
-                    setData={setCompanyData}
+                    updateData={setCompanyData}
                   />
                 </motion.div>
               )}
