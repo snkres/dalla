@@ -9,7 +9,7 @@ import { Modal } from '@components/shared/modal'
 import { ExperienceForm } from './exp-form'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
 import { PlusIcon } from 'lucide-react'
-import { useProOnboarding } from '../../hooks/use-pro-onboarding'
+import { useProOnboarding } from '../../hooks/use-professional-onboarding'
 
 export function ProOnboardingThree({
   data,

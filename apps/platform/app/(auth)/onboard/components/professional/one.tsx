@@ -16,7 +16,7 @@ import { useState, type Dispatch } from 'react'
 import AvatarUpload from '@components/shared/AvatarUpload'
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
-import { useProOnboarding } from '../../hooks/use-pro-onboarding'
+import { useProOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
 

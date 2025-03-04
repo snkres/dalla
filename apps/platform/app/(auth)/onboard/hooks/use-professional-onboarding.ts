@@ -48,7 +48,7 @@ function validateEntryDates(
   )
 }
 
-export const useProOnboarding = ({
+export const useProfessionalOnboarding = ({
   data,
   updateData,
   setIsAbleToProceed,

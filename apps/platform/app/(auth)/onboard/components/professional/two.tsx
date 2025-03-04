@@ -8,7 +8,7 @@ import type { ProOnboardingData } from '../../hooks/use-onboarding'
 import type { Dispatch, SetStateAction } from 'react'
 import { Globe2 } from 'lucide-react'
 import { Input, Label } from '@dallah/design-system'
-import { useProOnboarding } from '../../hooks/use-pro-onboarding'
+import { useProOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 
 export function ProOnboardingTwo({
