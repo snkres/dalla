@@ -6,11 +6,11 @@ import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
 import { CompanyOnboardingTwo } from './components/company/two'
 import { CompanyOnboardingThree } from './components/company/three'
 import { CompletionDialog } from './components/completion-dialog'
-import { ProOnboardingOne } from './components/pro/one'
-import { ProOnboardingTwo } from './components/pro/two'
-import { ProOnboardingThree } from './components/pro/three'
-import { ProOnboardingFour } from './components/pro/four'
 import { useOnboarding } from './hooks/use-onboarding'
+import { ProOnboardingOne } from './components/professional/one'
+import { ProOnboardingTwo } from './components/professional/two'
+import { ProOnboardingThree } from './components/professional/three'
+import { ProOnboardingFour } from './components/professional/four'
 
 export default function Page() {
   const {

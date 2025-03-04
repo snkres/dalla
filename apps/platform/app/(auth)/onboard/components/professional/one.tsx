@@ -16,7 +16,7 @@ import { useState, type Dispatch } from 'react'
 import AvatarUpload from '@components/shared/AvatarUpload'
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
-import { useProOnboarding } from '../../hooks/use-professional-onboarding'
+import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
 
@@ -30,11 +30,12 @@ export function ProOnboardingOne({
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
-  const { isLoading, uploadedCV, setUploadedCV, cvData } = useProOnboarding({
-    data,
-    updateData,
-    setIsAbleToProceed,
-  })
+  const { isLoading, uploadedCV, setUploadedCV, cvData } =
+    useProfessionalOnboarding({
+      data,
+      updateData,
+      setIsAbleToProceed,
+    })
   const [dragActive, setDragActive] = useState(false)
 
   const handleDrag = (e: React.DragEvent) => {
