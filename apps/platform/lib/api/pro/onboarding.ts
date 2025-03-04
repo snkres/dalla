@@ -1,4 +1,4 @@
-import { ProOnboardingData } from 'app/(auth)/onboard/page'
+import { ProOnboardingData } from 'app/(auth)/onboard/hooks/use-onboarding'
 import { axiosInstance } from '../instance'
 
 export async function proOnboarding(payload: ProOnboardingData) {

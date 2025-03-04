@@ -1,11 +1,11 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { GoalCard } from '../GoalCard'
+import { GoalCard } from '../goal-card'
 import { focusAreaOptions } from '@lib/data/focus-options'
 import { GoalOption } from '@lib/types/goals'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
-import { CompanyOnboardingData } from '../../page'
+import { CompanyOnboardingData } from '../../hooks/use-onboarding'
 
 export function CompanyOnboardingTwo({
   data,

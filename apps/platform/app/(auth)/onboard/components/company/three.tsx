@@ -3,10 +3,10 @@
 import React, { useState } from 'react'
 import { motion } from 'motion/react'
 import { goalOptions } from '@lib/data/focus-options'
-import { GoalCard } from '../GoalCard'
+import { GoalCard } from '../goal-card'
 import { GoalOption } from '@lib/types/goals'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
-import { CompanyOnboardingData } from '../../page'
+import { CompanyOnboardingData } from '../../hooks/use-onboarding'
 
 export function CompanyOnboardingThree({
   data,

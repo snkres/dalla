@@ -1,14 +1,15 @@
 'use client'
 
 import type React from 'react'
-import { type Dispatch, useState, useEffect } from 'react'
+import { type Dispatch } from 'react'
 
 import Image from 'next/image'
 import { Button } from '@dallah/design-system'
 import { Modal } from '@components/shared/modal'
 import { ExperienceForm } from './exp-form'
-import { ProOnboardingData } from '../../page'
+import { ProOnboardingData } from '../../hooks/use-onboarding'
 import { PlusIcon } from 'lucide-react'
+import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 
 export function ProOnboardingThree({
   data,
@@ -19,40 +20,19 @@ export function ProOnboardingThree({
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
-  const [isExpOpen, setIsExpOpen] = useState(false)
-  const [editingIndex, setEditingIndex] = useState<number | null>(null)
-  const [isAllValid, setIsAllValid] = useState(false)
-
-  useEffect(() => {
-    const isValid = data.experience.every(
-      (exp: { startDate: any; endDate: string }) =>
-        exp.startDate && (exp.endDate || exp.endDate === 'Present'),
-    )
-    setIsAllValid(isValid)
-    setIsAbleToProceed(isValid)
-  }, [data.experience])
-
-  const handleExperienceSubmit = (
-    experience: ProOnboardingData['experience'][0],
-  ) => {
-    updateData((prevData) => {
-      const newExperience = [...prevData.experience]
-      if (editingIndex !== null) {
-        newExperience[editingIndex] = experience
-      } else {
-        newExperience.push(experience)
-      }
-      return { ...prevData, experience: newExperience }
-    })
-    setIsExpOpen(false)
-    setEditingIndex(null)
-  }
-
-  const handleEdit = (index: number) => {
-    setEditingIndex(index)
-    setIsExpOpen(true)
-  }
-
+  const {
+    isExpOpen,
+    setIsExpOpen,
+    editingIndex,
+    setEditingIndex,
+    isAllValid,
+    handleExperienceSubmit,
+    handleEditExp,
+  } = useProfessionalOnboarding({
+    data,
+    updateData,
+    setIsAbleToProceed,
+  })
   return (
     <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
       <div className="flex flex-col items-center justify-center gap-1">
@@ -94,7 +74,7 @@ export function ProOnboardingThree({
                     )}
                   </div>
                   <Button
-                    onClick={() => handleEdit(index)}
+                    onClick={() => handleEditExp(index)}
                     variant="ghost"
                     size="sm"
                     className="text-gray-500 hover:text-gray-700"
