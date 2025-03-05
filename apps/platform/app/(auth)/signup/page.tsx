@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useQueryState } from 'nuqs'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { setCookie } from 'cookies-next'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
@@ -53,15 +54,8 @@ export default function SignupPage() {
         username: data.username || '',
       })
       if (res.success) {
-        if (typeof window !== undefined) {
-          localStorage.setItem(
-            'mode',
-            mode === 'company' ? 'company' : 'professional',
-          )
-        }
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('email', data.email)
-        }
+        setCookie('mode', mode === 'company' ? 'company' : 'professional')
+        setCookie('email', data.email)
         router.push('/verify')
       }
     } catch (error) {

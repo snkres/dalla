@@ -5,6 +5,7 @@ import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { useTransitionRouter } from 'next-view-transitions'
 import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
+import { getCookie } from 'cookies-next'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -106,8 +107,9 @@ export function useOnboarding() {
   const { toast } = useToast()
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setMode(localStorage.getItem('mode') || '')
+    const mode = getCookie('mode')
+    if (mode) {
+      setMode(mode as string)
     }
   }, [])
 

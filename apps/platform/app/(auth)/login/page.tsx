@@ -22,6 +22,7 @@ import { getProProfile } from '@lib/api/pro/profile'
 import { getCompanyProfile } from '@lib/api/company/profile'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { setCookie } from 'cookies-next'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -58,9 +59,7 @@ export default function LoginPage() {
         userType: mode === 'company' ? 'company' : 'user',
       })
       if (res) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('mode', mode)
-        }
+        setCookie('mode', mode)
         if (mode === 'professional') {
           const profile = await getProProfile()
           setProProfile(profile.data.data)
@@ -82,15 +81,8 @@ export default function LoginPage() {
     } catch (e) {
       if (e instanceof Error && 'status' in e && e.status === 422) {
         if (e.status === 422) {
-          if (typeof window !== undefined) {
-            localStorage.setItem(
-              'mode',
-              mode === 'company' ? 'company' : 'professional',
-            )
-          }
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('email', data.email)
-          }
+          setCookie('mode', mode === 'company' ? 'company' : 'professional')
+          setCookie('email', data.email)
           const res = await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',

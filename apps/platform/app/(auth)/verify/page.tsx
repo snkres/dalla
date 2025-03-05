@@ -13,6 +13,7 @@ import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { verify } from '@lib/api/auth/otp-verify'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { getCookie, setCookie } from 'cookies-next'
 export default function VerifyPage() {
   const router = useRouter()
   const { toast } = useToast()
@@ -22,9 +23,11 @@ export default function VerifyPage() {
   const [email, setEmail] = useState('')
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setEmail(localStorage.getItem('email') || '')
-      setMode(localStorage.getItem('mode') || '')
+    const email = getCookie('email')
+    const mode = getCookie('mode')
+    if (email && mode) {
+      setEmail(email as string)
+      setMode(mode as string)
     }
   }, [])
 
@@ -41,9 +44,7 @@ export default function VerifyPage() {
           userType: mode === 'company' ? 'company' : 'user',
         })
         if (res.success) {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('access_token', res.data.access_token)
-          }
+          setCookie('access_token', res.data.access_token)
         }
       }
     } catch (error) {

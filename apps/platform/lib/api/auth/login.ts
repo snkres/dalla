@@ -1,3 +1,4 @@
+import { setCookie } from 'cookies-next'
 import { axiosInstance } from '../instance'
 
 interface Payload {
@@ -16,9 +17,9 @@ export async function login(payload: Payload) {
   }>('/auth/login', payload)
 
   if (res.data.data.access_token) {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', res.data.data.access_token)
-    }
+    setCookie('access_token', res.data.data.access_token)
+    setCookie('mode', payload.userType)
+    setCookie('email', payload.email)
   }
 
   return res
