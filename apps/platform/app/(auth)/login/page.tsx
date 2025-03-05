@@ -59,7 +59,12 @@ export default function LoginPage() {
         userType: mode === 'company' ? 'company' : 'user',
       })
       if (res) {
-        setCookie('mode', mode)
+        setCookie('mode', mode, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
         if (mode === 'professional') {
           const profile = await getProProfile()
           setProProfile(profile.data.data)
@@ -81,8 +86,18 @@ export default function LoginPage() {
     } catch (e) {
       if (e instanceof Error && 'status' in e && e.status === 422) {
         if (e.status === 422) {
-          setCookie('mode', mode === 'company' ? 'company' : 'professional')
-          setCookie('email', data.email)
+          setCookie('mode', mode === 'company' ? 'company' : 'professional', {
+            httpOnly: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 30,
+            secure: process.env.NODE_ENV === 'production',
+            path: '/',
+          })
+          setCookie('email', data.email, {
+            httpOnly: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 30,
+            secure: process.env.NODE_ENV === 'production',
+            path: '/',
+          })
           const res = await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',

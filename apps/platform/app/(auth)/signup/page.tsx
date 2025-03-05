@@ -54,8 +54,18 @@ export default function SignupPage() {
         username: data.username || '',
       })
       if (res.success) {
-        setCookie('mode', mode === 'company' ? 'company' : 'professional')
-        setCookie('email', data.email)
+        setCookie('mode', mode === 'company' ? 'company' : 'professional', {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
+        setCookie('email', data.email, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
         router.push('/verify')
       }
     } catch (error) {

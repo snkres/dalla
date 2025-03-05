@@ -44,7 +44,12 @@ export default function VerifyPage() {
           userType: mode === 'company' ? 'company' : 'user',
         })
         if (res.success) {
-          setCookie('access_token', res.data.access_token)
+          setCookie('access_token', res.data.access_token, {
+            httpOnly: process.env.NODE_ENV === 'production',
+            maxAge: 60 * 60 * 24 * 30,
+            secure: process.env.NODE_ENV === 'production',
+            path: '/',
+          })
         }
       }
     } catch (error) {
