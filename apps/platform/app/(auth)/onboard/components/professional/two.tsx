@@ -4,71 +4,27 @@ import { fadeInVariants } from '@components/aniamtion/animate'
 import { SkillSelector } from '@components/shared/skill-selector'
 import PhoneInput from '@dallah/components/phoneInput'
 import { motion } from 'motion/react'
-import type { ProOnboardingData } from '../../page'
+import type { ProOnboardingData } from '../../hooks/use-onboarding'
 import type { Dispatch, SetStateAction } from 'react'
 import { Globe2 } from 'lucide-react'
 import { Input, Label } from '@dallah/design-system'
-import { useEffect, useState } from 'react'
-
-// Helper component for required field indicator
-const RequiredIndicator = () => <span className="ml-1 text-red-500">*</span>
+import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
+import { RequiredIndicator } from '@components/shared/required-indicator'
 
 export function ProOnboardingTwo({
   data,
-  setData,
+  updateData,
   setIsAbleToProceed,
 }: {
   data: ProOnboardingData
-  setData: Dispatch<SetStateAction<ProOnboardingData>>
+  updateData: Dispatch<SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<SetStateAction<boolean>>
 }) {
-  const [phoneError, setPhoneError] = useState<string | null>(null)
-
-  // Validate phone number format
-  const validatePhone = (phone: string | undefined): boolean => {
-    if (!phone) return false
-
-    // Remove all non-digit characters for validation
-    const digitsOnly = phone.replace(/\D/g, '')
-
-    // Basic validation: phone number should have at least 10 digits
-    return digitsOnly.length >= 10
-  }
-
-  // Add validation to check if all required fields are filled
-  useEffect(() => {
-    const isPhoneValid = validatePhone(data.meta.phone)
-
-    // Update phone error state
-    if (data.meta.phone && !isPhoneValid) {
-      setPhoneError('Please enter a valid phone number')
-      setIsAbleToProceed(false)
-    } else {
-      setPhoneError(null)
-    }
-
-    const requiredFields = {
-      skills: data.meta.skills.length > 0,
-      yearsOfExperience: data.meta.yearsOfExperience > 0,
-      portfolio: !!data.meta.socialLinks?.portfolio,
-      phone: isPhoneValid,
-    }
-
-    const allFieldsFilled = Object.values(requiredFields).every(Boolean)
-    setIsAbleToProceed(allFieldsFilled)
-
-    // For debugging
-    if (!allFieldsFilled) {
-      const missingFields = Object.entries(requiredFields)
-        .filter(([_, value]) => !value)
-        .map(([key]) => key)
-      console.log('Missing fields:', missingFields)
-    }
-  }, [data, setIsAbleToProceed]) // Removed validatePhone from dependencies
-
-  const handleSkills = (skills: string[]) => {
-    setData({ ...data, meta: { ...data.meta, skills } })
-  }
+  const { handleSkills, phoneError } = useProfessionalOnboarding({
+    data,
+    updateData,
+    setIsAbleToProceed,
+  })
 
   return (
     <motion.div
@@ -122,7 +78,7 @@ export function ProOnboardingTwo({
                 : ''
             }
             onChange={(e) =>
-              setData({
+              updateData({
                 ...data,
                 meta: {
                   ...data.meta,
@@ -147,7 +103,7 @@ export function ProOnboardingTwo({
             id="portfolio"
             value={data.meta.socialLinks?.portfolio || ''}
             onChange={(e) =>
-              setData({
+              updateData({
                 ...data,
                 meta: {
                   ...data.meta,
@@ -177,7 +133,7 @@ export function ProOnboardingTwo({
         <PhoneInput
           defaultValue={data.meta.phone}
           onChange={(value) => {
-            setData({
+            updateData({
               ...data,
               meta: {
                 ...data.meta,

@@ -1,58 +1,37 @@
 'use client'
 
 import type React from 'react'
-import { type Dispatch, useState, useEffect } from 'react'
+import { type Dispatch } from 'react'
 import Image from 'next/image'
 import { Button } from '@dallah/design-system'
 import { Modal } from '@components/shared/modal'
 import { EducationForm } from './edu-form'
-import type { ProOnboardingData } from '../../page'
+import type { ProOnboardingData } from '../../hooks/use-onboarding'
 import { PlusIcon } from 'lucide-react'
+import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 
 export function ProOnboardingFour({
   data,
   updateData,
-  onSubmit,
   setIsAbleToProceed,
 }: {
   data: ProOnboardingData
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
-  onSubmit: () => void
 }) {
-  const [isEduOpen, setIsEduOpen] = useState(false)
-  const [editingIndex, setEditingIndex] = useState<number | null>(null)
-  const [isAllValid, setIsAllValid] = useState(false)
-
-  useEffect(() => {
-    const isValid = data.education.every(
-      (edu: { startDate: any; endDate: string }) =>
-        edu.startDate && (edu.endDate || edu.endDate === 'Present'),
-    )
-    setIsAllValid(isValid)
-    setIsAbleToProceed(isValid)
-  }, [data.education])
-
-  const handleEducationSubmit = (
-    education: ProOnboardingData['education'][0],
-  ) => {
-    updateData((prevData: ProOnboardingData) => {
-      const newEducation = [...prevData.education]
-      if (editingIndex !== null) {
-        newEducation[editingIndex] = education
-      } else {
-        newEducation.push(education)
-      }
-      return { ...prevData, education: newEducation }
-    })
-    setIsEduOpen(false)
-    setEditingIndex(null)
-  }
-
-  const handleEdit = (index: number) => {
-    setEditingIndex(index)
-    setIsEduOpen(true)
-  }
+  const {
+    isEduOpen,
+    setIsEduOpen,
+    editingIndex,
+    setEditingIndex,
+    isAllValid,
+    handleEduEdit,
+    handleEducationSubmit,
+  } = useProfessionalOnboarding({
+    data,
+    updateData,
+    setIsAbleToProceed,
+  })
 
   return (
     <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
@@ -93,7 +72,7 @@ export function ProOnboardingFour({
                       </p>
                     </div>
                     <Button
-                      onClick={() => handleEdit(index as number)}
+                      onClick={() => handleEduEdit(index as number)}
                       variant="ghost"
                       size="sm"
                       className="h-8 rounded-full hover:bg-slate-100"

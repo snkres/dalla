@@ -6,7 +6,7 @@ import { useRef } from 'react'
 import { Camera, Check, UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import { uploadImage } from '@lib/api/shared/upload'
-import { RequiredIndicator } from './pro/one'
+import { RequiredIndicator } from '@components/shared/required-indicator'
 
 const AvatarUpload = ({
   setUploadedURL,
