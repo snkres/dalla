@@ -8,6 +8,7 @@ import { getCookie } from 'cookies-next'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
+import { cn } from '@dallah/utils'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useTransitionRouter()
@@ -50,12 +51,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Main container */}
-      <div className="mx-auto px-6 pt-3">
-        {/* Top Navigation */}
-        <Navbar />
+      <Navbar />
+      <main className={cn('transition-all duration-200 ease-in-out')}>
         {children}
-      </div>
+      </main>
     </div>
   )
 }
