@@ -2,13 +2,14 @@
 import { Navbar } from '@components/layout/navbar'
 import { getCompanyProfile } from '@lib/api/company/profile'
 import { getProProfile } from '@lib/api/pro/profile'
-import { companyProfileAtom } from '@lib/atoms/company/profile'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
+import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
 import { getCookie } from 'cookies-next'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@dallah/utils'
+import { useEffect } from 'react'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useTransitionRouter()
@@ -16,38 +17,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [_, setProProfile] = useAtom(proProfileAtom)
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
-  useQuery({
-    queryKey: ['profile', mode],
+  console.log(getCookie('id'))
+  console.log(mode)
+  console.log(getCookie('access_token'))
+
+  const { data, isFetched } = useQuery({
+    queryKey: ['profile', mode, getCookie('id')],
     staleTime: Infinity,
     queryFn: async () => {
-      if (mode === 'professional') {
+      if (mode === 'user') {
         const res = await getProProfile()
-        return res.data
+        return res.data.data
       } else {
         const res = await getCompanyProfile()
-        return res.data
+        return res.data.data
       }
-    },
-    // @ts-ignore
-    onSuccess: (data) => {
-      if (mode === 'professional') {
-        setProProfile(data.data)
-        if (!data.data.onboarded) {
-          router.push('/onboard')
-        }
-      } else {
-        setCompanyProfile(data.data)
-        if (!data.data.onboarded) {
-          router.push('/onboard')
-        }
-      }
-    },
-    // @ts-ignore
-    onError: (error) => {
-      console.error('Failed to fetch profile:', error)
-      // Handle error appropriately - could redirect to error page or show toast
     },
   })
+
+  useEffect(() => {
+    if (!data) return
+
+    if (mode === 'user') {
+      setProProfile(data as ProProfile)
+      if (!data.onboarded) {
+        router.push('/onboard')
+      }
+    } else {
+      setCompanyProfile(data as CompanyProfile)
+      if (!data.onboarded) {
+        router.push('/onboard')
+      }
+    }
+  }, [data, isFetched])
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
