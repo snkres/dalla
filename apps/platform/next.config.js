@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'dalla-dev.fra1.cdn.digitaloceanspaces.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
     ],
   },
 }
