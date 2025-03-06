@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { ProfileCard } from '../(components)/profile-card'
 import { DetailedInfo } from '../(components)/detailed-info'
 import { ProExp } from '../(components)/pro-exp'
@@ -10,18 +9,15 @@ import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
 import { updateProProfile } from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
+import { getCookie } from 'cookies-next'
 
 export function ProProfileClient({ id }: { id: string }) {
+  const isOwner = getCookie('id') === id
   const [profile] = useAtom(proProfileAtom)
-  const [isOwner, setIsOwner] = useState(false)
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
   })
-
-  useEffect(() => {
-    setIsOwner(profile?.id === id)
-  }, [profile, id])
 
   const handlePublicViewToggle = (value: boolean) => {
     setIsPublicView(value)
