@@ -3,12 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from './(components)/input-otp'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from './(components)/input-otp'
 import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { verify } from '@lib/api/auth/otp-verify'
@@ -25,44 +20,39 @@ export default function VerifyPage() {
   useEffect(() => {
     const email = getCookie('email')
     const mode = getCookie('mode')
-    if (email && mode) {
-      setEmail(email as string)
-      setMode(mode as string)
+    if (!email || !mode) {
+      router.push('/login')
+      return
     }
-  }, [])
+    setEmail(email as string)
+    setMode(mode as string)
+  }, [router])
 
   const handleVerificationSubmit = async () => {
     if (isSubmitting) return
+    if (verificationCode.length !== 4) {
+      toast({
+        title: 'Invalid code',
+        description: 'Please enter a 4-digit verification code',
+        variant: 'destructive',
+      })
+      return
+    }
 
     setIsSubmitting(true)
 
     try {
-      if (verificationCode.length === 4) {
-        const res = await verify({
-          email: email,
-          otp: verificationCode,
-          userType: mode === 'company' ? 'company' : 'user',
-        })
-        if (res.success) {
-          setCookie('access_token', res.data.access_token, {
-            httpOnly: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 30,
-            secure: process.env.NODE_ENV === 'production',
-            path: '/',
-          })
-          setCookie('refresh_token', res.data.refresh_token, {
-            httpOnly: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 30,
-            secure: process.env.NODE_ENV === 'production',
-            path: '/',
-          })
-          setCookie('id', res.data.id, {
-            httpOnly: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 30,
-            secure: process.env.NODE_ENV === 'production',
-            path: '/',
-          })
-        }
+      const res = await verify({
+        email: email,
+        otp: verificationCode,
+        userType: mode === 'company' ? 'company' : 'user',
+      })
+
+      if (res.success) {
+        // Assuming the API returns a success flag
+        router.push('/onboard')
+      } else {
+        throw new Error('Verification failed')
       }
     } catch (error) {
       toast({
@@ -77,12 +67,6 @@ export default function VerifyPage() {
 
   const handlePrevious = () => {
     router.push('/login')
-  }
-
-  const handleContinue = async () => {
-    await handleVerificationSubmit().then(() => {
-      router.push('/onboard')
-    })
   }
 
   return (
@@ -109,7 +93,10 @@ export default function VerifyPage() {
         </motion.div>
 
         <form
-          onSubmit={handleVerificationSubmit}
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleVerificationSubmit()
+          }}
           className="flex flex-col items-center justify-center gap-6"
         >
           <motion.div
@@ -146,8 +133,8 @@ export default function VerifyPage() {
             isSubmitting={isSubmitting}
             previousText="Back"
             continueText="Verify email"
-            handleSubmit={() => handleContinue()}
-            isNextDisabled={false}
+            handleSubmit={handleVerificationSubmit}
+            isNextDisabled={verificationCode.length !== 4}
           />
         </form>
       </div>

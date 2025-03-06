@@ -29,22 +29,32 @@ export async function login(payload: Payload) {
       data: {
         id: string
         access_token: string
+        refresh_token: string
       }
     }>('/auth/login', payload)
     .then((res) => {
-      setCookie('access_token', res.data.data.access_token, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 30,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-      })
+      if (res.data.success) {
+        setCookie('access_token', res.data.data.access_token, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
 
-      setCookie('id', res.data.data.id, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 30,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-      })
+        setCookie('refresh_token', res.data.data.refresh_token, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
+
+        setCookie('id', res.data.data.id, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
+      }
 
       return res.data
     })

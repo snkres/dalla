@@ -1,3 +1,4 @@
+import { setCookie } from 'cookies-next'
 import { axiosInstance } from '../instance'
 
 interface Payload {
@@ -17,8 +18,32 @@ export async function verify(payload: Payload) {
         refresh_token: string
       }
     }>('/auth/verify', payload)
-    .then((res) => res.data)
+    .then((res) => {
+      if (res.data.success) {
+        setCookie('access_token', res.data.data.access_token, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
 
+        setCookie('refresh_token', res.data.data.refresh_token, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
+
+        setCookie('id', res.data.data.id, {
+          httpOnly: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+        })
+      }
+
+      return res.data
+    })
   return res
 }
 
