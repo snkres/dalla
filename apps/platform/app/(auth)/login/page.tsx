@@ -15,11 +15,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { login } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
-import { companyProfileAtom } from '@lib/atoms/company/profile'
-import { useAtom } from 'jotai'
-import { getProProfile } from '@lib/api/pro/profile'
-import { getCompanyProfile } from '@lib/api/company/profile'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { setCookie } from 'cookies-next'
@@ -47,8 +42,6 @@ export default function LoginPage() {
 
   const router = useTransitionRouter()
   const { toast } = useToast()
-  const [_, setProProfile] = useAtom(proProfileAtom)
-  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
@@ -65,21 +58,6 @@ export default function LoginPage() {
           secure: process.env.NODE_ENV === 'production',
           path: '/',
         })
-        if (mode === 'professional') {
-          const profile = await getProProfile()
-          setProProfile(profile.data.data)
-          if (profile.data.data.onboarded === false) {
-            router.push('/onboard')
-            return
-          }
-        } else {
-          const profile = await getCompanyProfile()
-          setCompanyProfile(profile.data.data)
-          if (profile.data.data.onboarded === false) {
-            router.push('/onboard')
-            return
-          }
-        }
         router.push('/')
         console.log('logged in')
       }
@@ -98,7 +76,7 @@ export default function LoginPage() {
             secure: process.env.NODE_ENV === 'production',
             path: '/',
           })
-          const res = await resendOTP({
+          await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',
           })

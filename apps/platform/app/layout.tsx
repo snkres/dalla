@@ -3,9 +3,9 @@ import '../globals.css'
 import '@fontsource-variable/sora'
 import '@fontsource-variable/inter'
 import { Toaster } from '@dallah/design-system/ui/toast/toaster'
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { ViewTransitions } from 'next-view-transitions'
 import { Suspense } from 'react'
+import Providers from './providers'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -25,9 +25,8 @@ export default function RootLayout({
       <html>
         <body className="font-inter">
           <Suspense>
-            <NuqsAdapter>{children}</NuqsAdapter>
+            <Providers>{children}</Providers>
           </Suspense>
-          {/* <PrefetchCrossZoneLinks hrefs={['/', '/about']} /> */}
           <Toaster />
         </body>
       </html>

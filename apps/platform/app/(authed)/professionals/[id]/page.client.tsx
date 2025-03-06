@@ -45,7 +45,12 @@ export function ProProfileClient({ id }: { id: string }) {
               return await updateProProfile({
                 bio: updatedProfile.bio,
                 headline: updatedProfile.title,
-                yearsOfExperience: updatedProfile.yearsOfExperience || 0,
+                education: profile?.UserProfile?.education || [],
+                experience: profile?.UserProfile?.experience || [],
+                meta: {
+                  ...profile?.UserProfile?.meta,
+                  yearsOfExperience: updatedProfile.yearsOfExperience || 0,
+                },
               })
             }}
           />
