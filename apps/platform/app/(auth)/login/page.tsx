@@ -17,7 +17,6 @@ import { login } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { setCookie } from 'cookies-next'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -51,31 +50,12 @@ export default function LoginPage() {
         password: data.password,
         userType: mode === 'company' ? 'company' : 'user',
       })
-      if (res) {
-        setCookie('mode', mode, {
-          httpOnly: process.env.NODE_ENV === 'production',
-          maxAge: 60 * 60 * 24 * 30,
-          secure: process.env.NODE_ENV === 'production',
-          path: '/',
-        })
+      if (res.success) {
         router.push('/')
-        console.log('logged in')
       }
     } catch (e) {
       if (e instanceof Error && 'status' in e && e.status === 422) {
         if (e.status === 422) {
-          setCookie('mode', mode === 'company' ? 'company' : 'professional', {
-            httpOnly: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 30,
-            secure: process.env.NODE_ENV === 'production',
-            path: '/',
-          })
-          setCookie('email', data.email, {
-            httpOnly: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 * 30,
-            secure: process.env.NODE_ENV === 'production',
-            path: '/',
-          })
           await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',
