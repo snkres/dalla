@@ -79,7 +79,7 @@ export function ProfileSummary({
                   onClick={() => setIsEditing(false)}
                   className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
                 >
-                  <X className="mr-1 h-3 w-3" />
+                  <X className="mr-1 !h-4 !w-4" />
                   Cancel
                 </Button>
                 <Button
@@ -88,7 +88,7 @@ export function ProfileSummary({
                   onClick={handleSave}
                   className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
                 >
-                  <Check className="mr-1 h-3 w-3" />
+                  <Check className="mr-1 !h-4 !w-4" />
                   Save
                 </Button>
               </div>

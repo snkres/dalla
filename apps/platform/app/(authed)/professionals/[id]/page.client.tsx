@@ -11,8 +11,9 @@ import ProjectsSection from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
 import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import DetailedInfo from './components/detailed-info'
-import { Language } from '@lib/types/profile'
+import { LanguagesSection } from './components/langs-section'
+import { SocialsSection } from './components/socials-section'
+import { Language, Social } from '@lib/types/profile'
 
 export function ProProfileClient({ id }: { id: string }) {
   const isOwner = getCookie('id') === id
@@ -23,10 +24,52 @@ export function ProProfileClient({ id }: { id: string }) {
     parse: (value) => value === 'true',
   })
 
-  const handlePublicViewToggle = (value: boolean) => {
-    setIsPublicView(value)
+  // Helper function to handle common profile update pattern
+  const handleProfileUpdate = async (
+    updateData: any,
+    successMessage = 'Profile updated successfully',
+  ) => {
+    if (!profile) return
+
+    try {
+      await updateProProfile({
+        ...updateData,
+        education: profile.UserProfile.education?.map(
+          ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+        ),
+        experience: profile.UserProfile.experience?.map(
+          ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
+            ...exp,
+            meta: {
+              ...exp.meta,
+              skills: exp.meta.skills,
+            },
+          }),
+        ),
+      })
+
+      // Update local state with the new data
+      setProfile({
+        ...profile,
+        UserProfile: {
+          ...profile.UserProfile,
+          ...updateData,
+        },
+      })
+
+      toast({
+        title: successMessage,
+        description: 'Your profile has been updated successfully',
+      })
+    } catch (error) {
+      console.error('Failed to update profile:', error)
+      toast({
+        title: 'Update failed',
+        description: 'There was a problem updating your profile',
+        variant: 'destructive',
+      })
+    }
   }
-  console.log(profile)
 
   return (
     <div className="mx-auto max-w-[1400px] p-4">
@@ -48,54 +91,56 @@ export function ProProfileClient({ id }: { id: string }) {
             isPublicView={isPublicView}
             isOwner={isOwner}
           />
-          {/* <SkillsSection /> */}
-          <DetailedInfo
-            languages={
-              profile?.UserProfile.meta.languages as unknown as Language[]
-            }
-            onChange={(languages: Language[]) => {
-              updateProProfile({
-                meta: {
-                  ...profile?.UserProfile.meta,
-                  languages: languages.reduce(
-                    (acc, { language, proficiency }) => ({
-                      ...acc,
-                      [language]: proficiency,
-                    }),
-                    {},
-                  ),
-                },
-                education: profile?.UserProfile.education?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
-                ),
-                experience: profile?.UserProfile.experience?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...exp }) => exp,
-                ),
-              }).then(() => {
-                setProfile({
-                  ...profile,
-                  UserProfile: {
-                    ...profile?.UserProfile,
-                    meta: {
-                      ...profile?.UserProfile.meta,
-                      languages: languages.reduce(
-                        (acc, { language, proficiency }) => ({
-                          ...acc,
-                          [language]: proficiency,
-                        }),
-                        {},
-                      ),
-                    },
+          <div className="mx-auto flex max-w-5xl flex-col gap-5">
+            <LanguagesSection
+              languages={
+                profile?.UserProfile.meta.languages as unknown as Language[]
+              }
+              onChange={(languages) => {
+                const languagesObj = languages.reduce(
+                  (acc, { language, proficiency }) => ({
+                    ...acc,
+                    [language]: proficiency,
+                  }),
+                  {},
+                )
+
+                handleProfileUpdate({
+                  meta: {
+                    ...profile?.UserProfile.meta,
+                    languages: languagesObj,
                   },
                 })
-                toast({
-                  title: 'Profile updated successfully',
-                  description: 'Your profile has been updated successfully',
-                })
-              })
-            }}
-          />
-          {/* <FilesReview /> */}
+              }}
+            />
+            <SocialsSection
+              socials={Object.entries(
+                profile?.UserProfile?.meta?.socialLinks ||
+                  ({} as Record<string, string>),
+              ).map(([platform, url]) => ({ platform, url }) as Social)}
+              onChange={(socials) => {
+                if (!profile) return
+
+                const socialLinksObj = socials.reduce<Record<string, string>>(
+                  (acc, { platform, url }) => ({
+                    ...acc,
+                    [platform]: url,
+                  }),
+                  {},
+                )
+
+                handleProfileUpdate(
+                  {
+                    meta: {
+                      ...profile.UserProfile.meta,
+                      socialLinks: socialLinksObj,
+                    },
+                  },
+                  'Social links updated successfully',
+                )
+              }}
+            />
+          </div>
         </div>
         <div className="space-y-6 lg:col-span-8">
           <ProfileSummary
@@ -107,36 +152,13 @@ export function ProProfileClient({ id }: { id: string }) {
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdateSummary={(updatedSummary) => {
-              updateProProfile({
+              handleProfileUpdate({
                 headline: updatedSummary.title,
                 bio: updatedSummary.content,
                 meta: {
                   ...profile?.UserProfile.meta,
                   skills: updatedSummary.skills,
                 },
-                education: profile?.UserProfile.education?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
-                ),
-                experience: profile?.UserProfile.experience?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...exp }) => exp,
-                ),
-              }).then(() => {
-                setProfile({
-                  ...profile,
-                  UserProfile: {
-                    ...profile?.UserProfile,
-                    headline: updatedSummary.title,
-                    bio: updatedSummary.content,
-                    meta: {
-                      ...profile?.UserProfile.meta,
-                      skills: updatedSummary.skills,
-                    },
-                  },
-                })
-                toast({
-                  title: 'Profile updated successfully',
-                  description: 'Your profile has been updated successfully',
-                })
               })
             }}
           />
@@ -144,7 +166,17 @@ export function ProProfileClient({ id }: { id: string }) {
           <ExperienceSection
             experiences={profile?.UserProfile.experience}
             onUpdateExperiences={(updatedExperiences) => {
-              updateProProfile({
+              if (!profile) return
+
+              setProfile({
+                ...profile,
+                UserProfile: {
+                  ...profile.UserProfile,
+                  experience: updatedExperiences,
+                },
+              })
+
+              handleProfileUpdate({
                 experience: updatedExperiences.map(
                   ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
                     ...exp,
@@ -154,53 +186,26 @@ export function ProProfileClient({ id }: { id: string }) {
                     },
                   }),
                 ),
-                education: profile?.UserProfile.education?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
-                ),
-                // meta: profile?.UserProfile.meta,
-              }).then(() => {
-                setProfile({
-                  ...profile,
-                  UserProfile: {
-                    ...profile?.UserProfile,
-                    experience: updatedExperiences,
-                  },
-                })
-                toast({
-                  title: 'Profile updated successfully',
-                  description: 'Your profile has been updated successfully',
-                })
               })
             }}
           />
           <EducationSection
             education={profile?.UserProfile.education}
             onUpdateEducation={(updatedEducation) => {
-              updateProProfile({
-                experience: profile?.UserProfile.experience?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
-                    ...exp,
-                    meta: {
-                      ...exp.meta,
-                      skills: exp.meta.skills,
-                    },
-                  }),
-                ),
+              if (!profile) return
+
+              setProfile({
+                ...profile,
+                UserProfile: {
+                  ...profile.UserProfile,
+                  education: updatedEducation,
+                },
+              })
+
+              handleProfileUpdate({
                 education: updatedEducation?.map(
                   ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
                 ),
-              }).then(() => {
-                setProfile({
-                  ...profile,
-                  UserProfile: {
-                    ...profile?.UserProfile,
-                    education: updatedEducation,
-                  },
-                })
-                toast({
-                  title: 'Profile updated successfully',
-                  description: 'Your profile has been updated successfully',
-                })
               })
             }}
           />

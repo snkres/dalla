@@ -9,15 +9,11 @@ import {
   SelectValue,
 } from '@dallah/design-system'
 import { ProficiencyBadge } from './proficiency-badge'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Language } from '@lib/types/profile'
 
 type LanguagesSectionProps = {
   languages: Language[]
-  editedLanguages: Language[]
-  setEditedLanguages: React.Dispatch<React.SetStateAction<Language[]>>
-  isEditing: boolean
-  setEditingSection: React.Dispatch<React.SetStateAction<string | null>>
   onChange: (languages: Language[]) => void
 }
 
@@ -31,12 +27,10 @@ const PROFICIENCY_LEVELS = [
 
 export function LanguagesSection({
   languages,
-  editedLanguages,
-  setEditedLanguages,
-  isEditing,
-  setEditingSection,
   onChange,
 }: LanguagesSectionProps) {
+  const [editedLanguages, setEditedLanguages] = useState<Language[]>([])
+  const [isEditing, setIsEditing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleEdit = () => {
@@ -52,17 +46,17 @@ export function LanguagesSection({
       )
       setEditedLanguages(languagesArray)
     }
-    setEditingSection('languages')
+    setIsEditing(true)
     setTimeout(() => inputRef.current?.focus(), 100)
   }
 
   const handleSave = () => {
-    setEditingSection(null)
+    setIsEditing(false)
     onChange(editedLanguages)
   }
 
   const handleCancel = () => {
-    setEditingSection(null)
+    setIsEditing(false)
   }
 
   const addLanguage = () => {
@@ -80,7 +74,6 @@ export function LanguagesSection({
   const removeLanguage = (index: number) => {
     const updated = editedLanguages.filter((_, i) => i !== index)
     setEditedLanguages(updated)
-    onChange(updated)
   }
 
   const updateLanguage = (
@@ -197,22 +190,39 @@ export function LanguagesSection({
           </div>
         ) : (
           <div className="divide-y divide-gray-50">
-            {Object.entries(languages || {}).map(
-              ([language, proficiency], index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-3 transition-colors hover:bg-gray-50/50"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-800">
-                      {language}
-                    </span>
+            {Object.entries(languages || {}).length > 0 ? (
+              Object.entries(languages || {}).map(
+                ([language, proficiency], index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-3 transition-colors hover:bg-gray-50/50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-medium text-gray-800">
+                        {language}
+                      </span>
+                    </div>
+                    <ProficiencyBadge
+                      proficiency={proficiency as unknown as string}
+                    />
                   </div>
-                  <ProficiencyBadge
-                    proficiency={proficiency as unknown as string}
-                  />
-                </div>
-              ),
+                ),
+              )
+            ) : (
+              <div className="flex flex-col items-center justify-center py-6 text-center">
+                <p className="mb-2 text-sm text-gray-500">
+                  No languages added yet
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleEdit}
+                  className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+                >
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Add languages
+                </Button>
+              </div>
             )}
           </div>
         )}

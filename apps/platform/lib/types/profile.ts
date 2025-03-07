@@ -55,12 +55,17 @@ export type Social = {
 }
 
 export type SocialsSectionProps = {
-  socials: Social[]
-  setSocials: React.Dispatch<React.SetStateAction<Social[]>>
-  editedSocials: Social[]
-  setEditedSocials: React.Dispatch<React.SetStateAction<Social[]>>
+  socials: { platform: string; url: string }[]
+  editedSocials: { platform: string; url: string }[]
+  setEditedSocials: React.Dispatch<
+    React.SetStateAction<{ platform: string; url: string }[]>
+  >
   isEditing: boolean
   setEditingSection: React.Dispatch<React.SetStateAction<string | null>>
+  onChange: (
+    languages: Language[],
+    socials: { platform: string; url: string }[],
+  ) => void
 }
 
 type Achievement = { text: string }
@@ -133,4 +138,17 @@ export interface SidebarHeaderProps {
   icon: React.ReactNode
   title: string
   action?: React.ReactNode
+}
+
+export interface PlatformInfo {
+  name: string
+  icon: string // Icon component name from lucide-react
+  domain: string | string[]
+  color: string // Tailwind color class
+  regex?: RegExp // Optional regex for more precise matching
+}
+
+export interface SocialLink {
+  platform: string
+  url: string
 }
