@@ -54,6 +54,7 @@ export interface ProProfile {
         achievements: string
         employmentType: string
         responsibilities: string
+        [key: string]: string | Array<string>
       }
       startDate: string
       endDate: string

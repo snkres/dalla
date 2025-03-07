@@ -17,10 +17,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [_, setProProfile] = useAtom(proProfileAtom)
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
-  console.log(getCookie('id'))
-  console.log(mode)
-  console.log(getCookie('access_token'))
-
   const { data, isFetched } = useQuery({
     queryKey: ['profile', mode, getCookie('id')],
     staleTime: Infinity,

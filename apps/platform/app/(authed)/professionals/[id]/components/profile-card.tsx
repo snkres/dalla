@@ -29,6 +29,8 @@ import { cn } from '@dallah/utils'
 
 export function ProfileCard({
   profile,
+  isPublicView,
+  isOwner,
 }: {
   profile: {
     name: string
@@ -42,6 +44,8 @@ export function ProfileCard({
     rating: number | null
     projectCompletion: string | null
   }
+  isPublicView: boolean
+  isOwner: boolean
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedProfile, setEditedProfile] = useState({ ...profile })
@@ -67,46 +71,52 @@ export function ProfileCard({
     }))
   }
 
+  console.log(profile)
+  console.log(isPublicView)
+  console.log(isOwner)
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
         <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
           <Briefcase className="mr-1.5 h-3.5 w-3.5 text-[#63B7B7]" />
-          Freelancer Profile
+          Professional Profile
         </h2>
 
-        {!isEditing ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleEdit}
-            className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
-          >
-            <Edit className="mr-1 !h-4 !w-4" />
-            Edit
-          </Button>
-        ) : (
-          <div className="flex items-center gap-2">
+        {isOwner &&
+          !isPublicView &&
+          (!isEditing ? (
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleCancel}
-              className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
+              onClick={handleEdit}
+              className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
             >
-              <X className="mr-1 h-3 w-3" />
-              Cancel
+              <Edit className="mr-1 !h-4 !w-4" />
+              Edit
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSave}
-              className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
-            >
-              <Check className="mr-1 h-3 w-3" />
-              Save
-            </Button>
-          </div>
-        )}
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleCancel}
+                className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
+              >
+                <X className="mr-1 h-3 w-3" />
+                Cancel
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSave}
+                className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+              >
+                <Check className="mr-1 h-3 w-3" />
+                Save
+              </Button>
+            </div>
+          ))}
       </div>
 
       <div className="p-5">
@@ -199,78 +209,89 @@ export function ProfileCard({
             </>
           )}
 
-          <div className="mb-4 flex items-center gap-1">
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`h-3.5 w-3.5 ${
-                    star <= Math.floor(profile.rating || 0)
-                      ? 'fill-amber-400 text-amber-400'
-                      : star - 0.5 <= (profile.rating || 0)
-                        ? 'fill-amber-400/50 text-amber-400'
-                        : 'fill-gray-200 text-gray-200'
-                  }`}
-                />
-              ))}
+          {profile.rating && (
+            <div className="mb-4 flex items-center gap-1">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-3.5 w-3.5 ${
+                      star <= Math.floor(profile.rating || 0)
+                        ? 'fill-amber-400 text-amber-400'
+                        : star - 0.5 <= (profile.rating || 0)
+                          ? 'fill-amber-400/50 text-amber-400'
+                          : 'fill-gray-200 text-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-gray-600">
+                ({profile.rating?.toFixed(1)})
+              </span>
             </div>
-            <span className="text-xs text-gray-600">({profile.rating})</span>
-          </div>
+          )}
 
           <div className="mb-5 grid w-full grid-cols-2 gap-3">
-            <Button className="h-9 !bg-[#63B7B7] text-xs text-white transition-colors duration-200 hover:!bg-[#63B7B7]/90">
-              Contact
-            </Button>
-            <Button
-              variant="outline"
-              className="h-9 border-[#63B7B7] text-xs text-[#63B7B7] transition-colors duration-200 hover:border-[#63B7B7] hover:!bg-[#63B7B7]/10"
-            >
-              Hire Now
-            </Button>
+            {!isOwner && (
+              <>
+                <Button className="h-9 !bg-[#63B7B7] text-xs text-white transition-colors duration-200 hover:!bg-[#63B7B7]/90">
+                  Contact
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-9 border-[#63B7B7] text-xs text-[#63B7B7] transition-colors duration-200 hover:border-[#63B7B7] hover:!bg-[#63B7B7]/10"
+                >
+                  Hire Now
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="mb-5 grid w-full grid-cols-2 gap-4">
-            <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
-              <div className="mb-1 flex items-center justify-center">
-                <DollarSign className="h-4 w-4 text-[#63B7B7]" />
-              </div>
-              {isEditing ? (
-                <Input
-                  type="number"
-                  value={editedProfile.hourlyRate || ''}
-                  onChange={(e) =>
-                    handleChange('hourlyRate', parseInt(e.target.value))
-                  }
-                  className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
-                />
-              ) : (
-                <div className="text-base font-medium text-[#63B7B7]">
-                  ${profile.hourlyRate}/hr
+            {profile.hourlyRate && (
+              <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
+                <div className="mb-1 flex items-center justify-center">
+                  <DollarSign className="h-4 w-4 text-[#63B7B7]" />
                 </div>
-              )}
-              <div className="text-xs text-gray-600">Hourly Rate</div>
-            </div>
-
-            <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
-              <div className="mb-1 flex items-center justify-center">
-                <CreditCard className="h-4 w-4 text-[#63B7B7]" />
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={editedProfile.hourlyRate || ''}
+                    onChange={(e) =>
+                      handleChange('hourlyRate', parseInt(e.target.value))
+                    }
+                    className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
+                  />
+                ) : (
+                  <div className="text-base font-medium text-[#63B7B7]">
+                    ${profile.hourlyRate}/hr
+                  </div>
+                )}
+                <div className="text-xs text-gray-600">Hourly Rate</div>
               </div>
-              {isEditing ? (
-                <Input
-                  type="number"
-                  value={editedProfile.totalEarned || ''}
-                  onChange={(e) =>
-                    handleChange('totalEarned', parseInt(e.target.value))
-                  }
-                  className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
-                />
-              ) : (
-                <div className="text-base font-medium text-[#63B7B7]">
-                  ${profile.totalEarned?.toLocaleString()}
+            )}
+            {profile.totalEarned && (
+              <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
+                <div className="mb-1 flex items-center justify-center">
+                  <CreditCard className="h-4 w-4 text-[#63B7B7]" />
                 </div>
-              )}
-              <div className="text-xs text-gray-600">Total Earned</div>
-            </div>
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={editedProfile.totalEarned || ''}
+                    onChange={(e) =>
+                      handleChange('totalEarned', parseInt(e.target.value))
+                    }
+                    className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
+                  />
+                ) : (
+                  <div className="text-base font-medium text-[#63B7B7]">
+                    ${profile.totalEarned?.toLocaleString()}
+                  </div>
+                )}
+                <div className="text-xs text-gray-600">Total Earned</div>
+              </div>
+            )}
           </div>
 
           <div className="mb-5 w-full space-y-3">
@@ -296,7 +317,7 @@ export function ProfileCard({
                   />
                 ) : (
                   <span className="text-xs font-medium text-gray-800">
-                    {profile.projectsCompleted}
+                    {profile.projectsCompleted || 0}
                   </span>
                 )}
               </div>
@@ -320,7 +341,7 @@ export function ProfileCard({
                   />
                 ) : (
                   <span className="text-xs font-medium text-gray-800">
-                    {profile.successRate}%
+                    {profile.successRate ? `${profile.successRate}%` : 'N/A'}
                   </span>
                 )}
               </div>
@@ -351,7 +372,9 @@ export function ProfileCard({
                   </div>
                 ) : (
                   <span className="text-xs font-medium text-gray-800">
-                    {profile.weeklyAvailability}+ hrs/week
+                    {profile.weeklyAvailability
+                      ? `${profile.weeklyAvailability}+ hrs/week`
+                      : 'N/A'}
                   </span>
                 )}
               </div>
@@ -383,7 +406,9 @@ export function ProfileCard({
             ) : (
               <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
                 <span className="text-sm font-medium text-[#63B7B7]">
-                  {profile.projectCompletion}
+                  {profile.projectCompletion
+                    ? profile.projectCompletion
+                    : 'N/A'}
                 </span>
               </div>
             )}

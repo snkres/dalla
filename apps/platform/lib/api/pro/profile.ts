@@ -14,8 +14,14 @@ export async function getProProfile() {
 export async function updateProProfile(
   profile: Partial<{
     bio?: string
-    education?: ProProfile['UserProfile']['education']
-    experience?: ProProfile['UserProfile']['experience']
+    education?: Omit<
+      ProProfile['UserProfile']['education'][number],
+      'id' | 'profileId' | 'createdAt' | 'updatedAt'
+    >[]
+    experience?: Omit<
+      ProProfile['UserProfile']['experience'][number],
+      'id' | 'profileId' | 'createdAt' | 'updatedAt'
+    >[]
     gender?: string
     headline?: string
     meta?: ProProfile['UserProfile']['meta']

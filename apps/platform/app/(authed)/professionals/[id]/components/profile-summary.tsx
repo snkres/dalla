@@ -9,12 +9,16 @@ import { Input } from '@dallah/design-system'
 
 export function ProfileSummary({
   summary,
+  isPublicView,
+  isOwner,
 }: {
   summary: {
     title: string
     content: string
     skills: string[]
   }
+  isPublicView: boolean
+  isOwner: boolean
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedSummary, setEditedSummary] = useState({ ...summary })
@@ -40,37 +44,41 @@ export function ProfileSummary({
           Professional Summary
         </h2>
 
-        {!isEditing ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleEdit}
-            className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
-          >
-            <Edit className="mr-1 !h-4 !w-4" />
-            Edit
-          </Button>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsEditing(false)}
-              className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
-            >
-              <X className="mr-1 h-3 w-3" />
-              Cancel
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleSave}
-              className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
-            >
-              <Check className="mr-1 h-3 w-3" />
-              Save
-            </Button>
-          </div>
+        {!isPublicView && isOwner && (
+          <>
+            {!isEditing ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleEdit}
+                className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
+              >
+                <Edit className="mr-1 !h-4 !w-4" />
+                Edit
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEditing(false)}
+                  className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
+                >
+                  <X className="mr-1 h-3 w-3" />
+                  Cancel
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSave}
+                  className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+                >
+                  <Check className="mr-1 h-3 w-3" />
+                  Save
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -133,7 +141,7 @@ export function ProfileSummary({
           <Badge
             key={index}
             variant="outline"
-            className="!rounded-full border-[#BEDDF1]/30 bg-[#BEDDF1]/10 text-xs text-[#3A97A0] transition-colors duration-200 hover:bg-[#BEDDF1]/20"
+            className="!rounded-full border-[#BEDDF1]/30 !bg-[#BEDDF1]/10 text-xs !text-[#3A97A0] transition-colors duration-200 hover:!bg-[#BEDDF1]/20"
           >
             {skill}
           </Badge>

@@ -10,6 +10,9 @@ import {
   LogOut,
   ChevronRight,
 } from 'lucide-react'
+import { getCookie } from 'cookies-next'
+import { useAtom } from 'jotai'
+import { proProfileAtom } from '@lib/atoms/pro/profile'
 
 type ProfileItem = {
   icon: React.ElementType
@@ -23,8 +26,15 @@ type ProfilePopupProps = {
 }
 
 const ProfilePopup = ({ name, email }: ProfilePopupProps) => {
+  const mode = getCookie('mode')
+  const [profile] = useAtom(proProfileAtom)
+  console.log(profile)
   const profileItems: ProfileItem[] = [
-    { icon: User, label: 'View Profile', href: '/user/profile' },
+    {
+      icon: User,
+      label: 'View Profile',
+      href: `/${mode === 'user' ? 'professionals' : 'companies'}/${profile?.id}`,
+    },
     { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
     { icon: HelpCircle, label: 'Help & Support', href: '/support' },
   ]

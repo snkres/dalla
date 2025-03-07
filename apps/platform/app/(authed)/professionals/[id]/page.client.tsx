@@ -7,10 +7,14 @@ import { updateProProfile } from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
 import { getCookie } from 'cookies-next'
 import ProfileSummary from './components/profile-summary'
+import ProjectsSection from './components/projects-section'
+import { ExperienceSection } from './components/exp-section'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 export function ProProfileClient({ id }: { id: string }) {
   const isOwner = getCookie('id') === id
-  const [profile] = useAtom(proProfileAtom)
+  const [profile, setProfile] = useAtom(proProfileAtom)
+  const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
@@ -19,6 +23,7 @@ export function ProProfileClient({ id }: { id: string }) {
   const handlePublicViewToggle = (value: boolean) => {
     setIsPublicView(value)
   }
+  console.log(profile)
 
   return (
     <div className="mx-auto max-w-[1400px] p-4">
@@ -33,10 +38,12 @@ export function ProProfileClient({ id }: { id: string }) {
               projectsCompleted: null,
               successRate: null,
               weeklyAvailability: null,
-              availability: 'Available',
+              availability: 'available',
               rating: null,
               projectCompletion: null,
             }}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
           />
           {/* <SkillsSection /> */}
           {/* <DetailedInfo /> */}
@@ -49,9 +56,42 @@ export function ProProfileClient({ id }: { id: string }) {
               content: profile?.UserProfile.bio,
               skills: profile?.UserProfile.meta.skills,
             }}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
           />
-          {/* <ProjectsSection /> */}
-          {/* <ExperienceSection /> */}
+          <ProjectsSection />
+          <ExperienceSection
+            experiences={profile?.UserProfile.experience}
+            onUpdateExperiences={(updatedExperiences) => {
+              updateProProfile({
+                experience: updatedExperiences.map(
+                  ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
+                    ...exp,
+                    meta: {
+                      ...exp.meta,
+                      skills: exp.meta.skills,
+                    },
+                  }),
+                ),
+                education: profile?.UserProfile.education?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+                ),
+                // meta: profile?.UserProfile.meta,
+              }).then(() => {
+                setProfile({
+                  ...profile,
+                  UserProfile: {
+                    ...profile?.UserProfile,
+                    experience: updatedExperiences,
+                  },
+                })
+                toast({
+                  title: 'Profile updated successfully',
+                  description: 'Your profile has been updated successfully',
+                })
+              })
+            }}
+          />
           {/* <EducationSection /> */}
         </div>
       </div>
