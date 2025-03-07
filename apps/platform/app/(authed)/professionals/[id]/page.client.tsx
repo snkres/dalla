@@ -9,6 +9,7 @@ import { getCookie } from 'cookies-next'
 import ProfileSummary from './components/profile-summary'
 import ProjectsSection from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
+import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 export function ProProfileClient({ id }: { id: string }) {
@@ -125,7 +126,37 @@ export function ProProfileClient({ id }: { id: string }) {
               })
             }}
           />
-          {/* <EducationSection /> */}
+          <EducationSection
+            education={profile?.UserProfile.education}
+            onUpdateEducation={(updatedEducation) => {
+              updateProProfile({
+                experience: profile?.UserProfile.experience?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
+                    ...exp,
+                    meta: {
+                      ...exp.meta,
+                      skills: exp.meta.skills,
+                    },
+                  }),
+                ),
+                education: updatedEducation?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+                ),
+              }).then(() => {
+                setProfile({
+                  ...profile,
+                  UserProfile: {
+                    ...profile?.UserProfile,
+                    education: updatedEducation,
+                  },
+                })
+                toast({
+                  title: 'Profile updated successfully',
+                  description: 'Your profile has been updated successfully',
+                })
+              })
+            }}
+          />
         </div>
       </div>
     </div>
