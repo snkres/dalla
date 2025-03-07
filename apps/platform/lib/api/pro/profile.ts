@@ -1,5 +1,6 @@
 import { ProProfile } from '@lib/atoms/pro/profile'
 import { axiosInstance } from '../instance'
+import { Language } from '@lib/types/profile'
 
 export async function getProProfile() {
   let res = await axiosInstance.get<{
@@ -26,6 +27,7 @@ export async function updateProProfile(
     headline?: string
     meta?: ProProfile['UserProfile']['meta']
     resume?: string
+
     [property: string]: any
   }>,
 ) {

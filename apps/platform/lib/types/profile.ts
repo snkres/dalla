@@ -42,7 +42,6 @@ export type Language = {
 
 export type LanguagesSectionProps = {
   languages: Language[]
-  setLanguages: React.Dispatch<React.SetStateAction<Language[]>>
   editedLanguages: Language[]
   setEditedLanguages: React.Dispatch<React.SetStateAction<Language[]>>
   isEditing: boolean

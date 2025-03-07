@@ -11,6 +11,8 @@ import ProjectsSection from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
 import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import DetailedInfo from './components/detailed-info'
+import { Language } from '@lib/types/profile'
 
 export function ProProfileClient({ id }: { id: string }) {
   const isOwner = getCookie('id') === id
@@ -47,7 +49,52 @@ export function ProProfileClient({ id }: { id: string }) {
             isOwner={isOwner}
           />
           {/* <SkillsSection /> */}
-          {/* <DetailedInfo /> */}
+          <DetailedInfo
+            languages={
+              profile?.UserProfile.meta.languages as unknown as Language[]
+            }
+            onChange={(languages: Language[]) => {
+              updateProProfile({
+                meta: {
+                  ...profile?.UserProfile.meta,
+                  languages: languages.reduce(
+                    (acc, { language, proficiency }) => ({
+                      ...acc,
+                      [language]: proficiency,
+                    }),
+                    {},
+                  ),
+                },
+                education: profile?.UserProfile.education?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+                ),
+                experience: profile?.UserProfile.experience?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...exp }) => exp,
+                ),
+              }).then(() => {
+                setProfile({
+                  ...profile,
+                  UserProfile: {
+                    ...profile?.UserProfile,
+                    meta: {
+                      ...profile?.UserProfile.meta,
+                      languages: languages.reduce(
+                        (acc, { language, proficiency }) => ({
+                          ...acc,
+                          [language]: proficiency,
+                        }),
+                        {},
+                      ),
+                    },
+                  },
+                })
+                toast({
+                  title: 'Profile updated successfully',
+                  description: 'Your profile has been updated successfully',
+                })
+              })
+            }}
+          />
           {/* <FilesReview /> */}
         </div>
         <div className="space-y-6 lg:col-span-8">

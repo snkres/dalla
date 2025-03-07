@@ -26,6 +26,7 @@ export interface ProProfile {
         [key: string]: string
       }
       yearsOfExperience: number
+      [key: string]: string | Array<string> | number | { [key: string]: string }
     }
     resume: string
     precentage: number
