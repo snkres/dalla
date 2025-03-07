@@ -58,6 +58,39 @@ export function ProProfileClient({ id }: { id: string }) {
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
+            onUpdateSummary={(updatedSummary) => {
+              updateProProfile({
+                headline: updatedSummary.title,
+                bio: updatedSummary.content,
+                meta: {
+                  ...profile?.UserProfile.meta,
+                  skills: updatedSummary.skills,
+                },
+                education: profile?.UserProfile.education?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+                ),
+                experience: profile?.UserProfile.experience?.map(
+                  ({ id, profileId, createdAt, updatedAt, ...exp }) => exp,
+                ),
+              }).then(() => {
+                setProfile({
+                  ...profile,
+                  UserProfile: {
+                    ...profile?.UserProfile,
+                    headline: updatedSummary.title,
+                    bio: updatedSummary.content,
+                    meta: {
+                      ...profile?.UserProfile.meta,
+                      skills: updatedSummary.skills,
+                    },
+                  },
+                })
+                toast({
+                  title: 'Profile updated successfully',
+                  description: 'Your profile has been updated successfully',
+                })
+              })
+            }}
           />
           <ProjectsSection />
           <ExperienceSection

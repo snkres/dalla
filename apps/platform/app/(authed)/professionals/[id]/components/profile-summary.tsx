@@ -6,11 +6,13 @@ import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
+import { SkillSelector } from '@components/shared/skill-selector'
 
 export function ProfileSummary({
   summary,
   isPublicView,
   isOwner,
+  onUpdateSummary,
 }: {
   summary: {
     title: string
@@ -19,6 +21,11 @@ export function ProfileSummary({
   }
   isPublicView: boolean
   isOwner: boolean
+  onUpdateSummary: (summary: {
+    title: string
+    content: string
+    skills: string[]
+  }) => void
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedSummary, setEditedSummary] = useState({ ...summary })
@@ -32,8 +39,16 @@ export function ProfileSummary({
   }
 
   const handleSave = () => {
-    setEditedSummary({ ...summary })
+    onUpdateSummary({
+      title: editedSummary.title,
+      content: editedSummary.content,
+      skills: editedSummary.skills,
+    })
     setIsEditing(false)
+  }
+
+  const handleSkills = (skills: string[]) => {
+    setEditedSummary((prev) => ({ ...prev, skills }))
   }
 
   return (
@@ -122,6 +137,17 @@ export function ProfileSummary({
                 }
                 className="min-h-[120px] rounded-lg border border-gray-200 text-sm"
                 placeholder="Write a brief summary about yourself, your expertise and experience"
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs font-medium text-gray-500">
+                Skills
+              </label>
+              <SkillSelector
+                skills={editedSummary.skills}
+                handleSkills={handleSkills}
+                maxSkills={10}
               />
             </div>
           </div>
