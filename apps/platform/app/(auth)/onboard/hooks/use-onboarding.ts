@@ -132,6 +132,8 @@ export function useOnboarding() {
 
       if (mode === 'company' && 'areas' in companyData!) {
         const res = await companyOnboarding({
+          headline: companyData.headline,
+          bio: companyData.bio,
           areas: companyData.areas,
           goals: companyData.workPreference,
           targetIndustries: companyData.targetIndustries,
