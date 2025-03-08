@@ -7,6 +7,7 @@ import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { companyProfileAtom } from '@lib/atoms/company/profile'
 import { CompanyCard } from '../components/company-card'
 import { updateCompanyProfile } from '@lib/api/company/profile'
+import { AboutSection } from '../components/about-section'
 
 export function CompanyProfileClient({ name }: { name: string }) {
   const isOwner = getCookie('name') === name
@@ -26,6 +27,10 @@ export function CompanyProfileClient({ name }: { name: string }) {
 
       // Prepare the API payload with the correct structure
       const apiPayload: Partial<{
+        headline: string
+        bio: string
+        areas: string[]
+        goals: string[]
         location: string
         website: string
         meta: {
@@ -49,6 +54,22 @@ export function CompanyProfileClient({ name }: { name: string }) {
         apiPayload.website = updateData.website
       }
 
+      if (updateData.goals) {
+        apiPayload.goals = updateData.goals
+      }
+
+      if (updateData.areas) {
+        apiPayload.areas = updateData.areas
+      }
+
+      if (updateData.headline) {
+        apiPayload.headline = updateData.headline
+      }
+
+      if (updateData.bio) {
+        apiPayload.bio = updateData.bio
+      }
+
       // Handle meta fields
       apiPayload.meta = {
         ...(profile?.CompanyProfile?.meta || {}),
@@ -66,6 +87,10 @@ export function CompanyProfileClient({ name }: { name: string }) {
         ...profile,
         CompanyProfile: {
           ...profile.CompanyProfile,
+          ...(updateData.headline && { headline: updateData.headline }),
+          ...(updateData.bio && { bio: updateData.bio }),
+          ...(updateData.areas && { areas: updateData.areas }),
+          ...(updateData.goals && { goals: updateData.goals }),
           ...(updateData.location && { location: updateData.location }),
           ...(updateData.website && { website: updateData.website }),
           meta: {
@@ -120,7 +145,19 @@ export function CompanyProfileClient({ name }: { name: string }) {
           {/* <ContactInfoCard /> */}
         </aside>
         <main className="space-y-6 lg:col-span-2">
-          {/* <AboutSection /> */}
+          <AboutSection
+            data={{
+              name: profile?.name,
+              size: profile?.CompanyProfile?.meta?.size,
+              industry: profile?.CompanyProfile?.meta?.industry,
+              headline: profile?.CompanyProfile?.headline,
+              bio: profile?.CompanyProfile?.bio,
+              areas: profile?.CompanyProfile?.areas || [],
+            }}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
+            onUpdate={handleProfileUpdate}
+          />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {/* <AreasSection /> */}
             {/* <TargetIndustriesSection /> */}
