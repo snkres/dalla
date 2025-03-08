@@ -5,9 +5,11 @@ import { useQueryState } from 'nuqs'
 import { getCookie } from 'cookies-next'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { companyProfileAtom } from '@lib/atoms/company/profile'
-import { CompanyCard } from '../components/company-card'
+import { CompanyCard } from './components/company-card'
 import { updateCompanyProfile } from '@lib/api/company/profile'
-import { AboutSection } from '../components/about-section'
+import { AboutSection } from './components/about-section'
+import { AreasSection } from './components/areas-section'
+import { TargetIndustriesSection } from './components/target-section'
 
 export function CompanyProfileClient({ name }: { name: string }) {
   const isOwner = getCookie('name') === name
@@ -159,8 +161,18 @@ export function CompanyProfileClient({ name }: { name: string }) {
             onUpdate={handleProfileUpdate}
           />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* <AreasSection /> */}
-            {/* <TargetIndustriesSection /> */}
+            <AreasSection
+              areas={profile?.CompanyProfile?.areas || []}
+              isPublicView={isPublicView}
+              isOwner={isOwner}
+              onUpdate={handleProfileUpdate}
+            />
+            <TargetIndustriesSection
+              industries={profile?.CompanyProfile?.targetIndustries || []}
+              // isPublicView={isPublicView}
+              // isOwner={isOwner}
+              // onUpdate={handleProfileUpdate}
+            />
           </div>
           {/* <GoalsSection /> */}
         </main>
