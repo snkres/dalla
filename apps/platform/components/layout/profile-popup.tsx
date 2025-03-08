@@ -28,13 +28,13 @@ type ProfilePopupProps = {
 const ProfilePopup = ({ name, email }: ProfilePopupProps) => {
   const mode = getCookie('mode')
 
-  const username = getCookie('username')
-
   const profileItems: ProfileItem[] = [
     {
       icon: User,
       label: 'View Profile',
-      href: `/${mode === 'user' ? 'professionals' : 'companies'}/${username}`,
+      href: `/${mode === 'user' ? 'professionals' : 'companies'}/${
+        mode === 'user' ? getCookie('username') : getCookie('name')
+      }`,
     },
     { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
     { icon: HelpCircle, label: 'Help & Support', href: '/support' },

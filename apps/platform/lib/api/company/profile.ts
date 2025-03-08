@@ -39,7 +39,28 @@ export async function getCompanyProfile() {
   return res
 }
 
-export async function editCompanyProfile(payload: Partial<CompanyProfile>) {
+export async function updateCompanyProfile(
+  payload: Partial<{
+    location: string
+    areas: Array<string>
+    goals: Array<string>
+    targetIndustries: Array<string>
+    website: string
+    headline: string
+    bio: string
+    logo: string
+    meta: {
+      size: string
+      type: string
+      phone: string
+      industry: string
+      socialLinks: {
+        url: string
+        name: string
+      }
+    }
+  }>,
+) {
   let res = await axiosInstance.patch<{
     success: boolean
     message: string
@@ -47,7 +68,7 @@ export async function editCompanyProfile(payload: Partial<CompanyProfile>) {
       id: string
       name: string
       email: string
-      domain: any
+      domain: string
       onboarded: boolean
       suspended: boolean
       verified: boolean
@@ -57,9 +78,9 @@ export async function editCompanyProfile(payload: Partial<CompanyProfile>) {
         goals: Array<string>
         targetIndustries: Array<string>
         website: string
-        headline: any
-        bio: any
-        logo: any
+        headline: string
+        bio: string
+        logo: string
         meta: {
           size: string
           type: string
@@ -73,6 +94,9 @@ export async function editCompanyProfile(payload: Partial<CompanyProfile>) {
       }
     }
   }>('/company/profile', payload)
+
+  console.log('payload', payload)
+  console.log('res', res)
 
   return res
 }

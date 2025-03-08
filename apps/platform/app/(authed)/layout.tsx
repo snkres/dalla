@@ -18,7 +18,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const { data, isFetched } = useQuery({
-    queryKey: ['profile', mode, getCookie('username')],
+    queryKey: [
+      'profile',
+      mode,
+      mode === 'user' ? getCookie('username') : getCookie('name'),
+    ],
     staleTime: Infinity,
     queryFn: async () => {
       if (mode === 'user') {
@@ -50,6 +54,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       if (!data.onboarded) {
         router.push('/onboard')
       }
+      setCookie('name', (data as CompanyProfile).name, {
+        httpOnly: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 30,
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      })
     }
   }, [data, isFetched])
 

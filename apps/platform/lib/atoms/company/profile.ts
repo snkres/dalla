@@ -18,6 +18,7 @@ export interface CompanyProfile {
     bio: any
     logo: any
     meta: {
+      [key: string]: any
       size: string
       type: string
       phone: string
