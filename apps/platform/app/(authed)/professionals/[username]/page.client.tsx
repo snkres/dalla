@@ -141,7 +141,11 @@ export function ProProfileClient({ username }: { username: string }) {
               isPublicView={isPublicView}
               isOwner={isOwner}
             />
-            <VerificationsSection isEmailVerified={profile.verified} />
+            <VerificationsSection
+              isEmailVerified={profile.verified}
+              isPublicView={isPublicView}
+              isOwner={isOwner}
+            />
             <SocialsSection
               socials={Object.entries(
                 profile?.UserProfile?.meta?.socialLinks ||

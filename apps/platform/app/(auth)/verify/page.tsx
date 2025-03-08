@@ -49,7 +49,6 @@ export default function VerifyPage() {
       })
 
       if (res.success) {
-        // Assuming the API returns a success flag
         router.push('/onboard')
       } else {
         throw new Error('Verification failed')
@@ -66,7 +65,7 @@ export default function VerifyPage() {
   }
 
   const handlePrevious = () => {
-    router.push('/login')
+    router.back()
   }
 
   return (
