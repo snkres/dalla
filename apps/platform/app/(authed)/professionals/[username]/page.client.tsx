@@ -14,6 +14,7 @@ import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { LanguagesSection } from './components/langs-section'
 import { SocialsSection } from './components/socials-section'
 import { Language, Social } from '@lib/types/profile'
+import { VerificationsSection } from './components/verifications-section'
 
 export function ProProfileClient({ username }: { username: string }) {
   const isOwner = getCookie('username') === username
@@ -140,6 +141,7 @@ export function ProProfileClient({ username }: { username: string }) {
               isPublicView={isPublicView}
               isOwner={isOwner}
             />
+            <VerificationsSection isEmailVerified={profile.verified} />
             <SocialsSection
               socials={Object.entries(
                 profile?.UserProfile?.meta?.socialLinks ||

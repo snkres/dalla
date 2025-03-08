@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const { data, isFetched } = useQuery({
-    queryKey: ['profile', mode, getCookie('id')],
+    queryKey: ['profile', mode, getCookie('username')],
     staleTime: Infinity,
     queryFn: async () => {
       if (mode === 'user') {
