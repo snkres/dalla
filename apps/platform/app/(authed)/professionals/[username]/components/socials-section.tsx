@@ -209,7 +209,7 @@ export function SocialsSection({ socials, onChange }: SocialsSectionProps) {
                       platform={social.platform}
                       url={social.url}
                       size={18}
-                      className={social.platformInfo.color}
+                      className={'text-[#64B7B7]'}
                     />
                   </div>
                   <div className="flex flex-col">

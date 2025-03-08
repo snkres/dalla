@@ -47,13 +47,6 @@ export async function login(payload: Payload) {
           secure: process.env.NODE_ENV === 'production',
           path: '/',
         })
-
-        setCookie('id', res.data.data.id, {
-          httpOnly: process.env.NODE_ENV === 'production',
-          maxAge: 60 * 60 * 24 * 30,
-          secure: process.env.NODE_ENV === 'production',
-          path: '/',
-        })
       }
 
       return res.data

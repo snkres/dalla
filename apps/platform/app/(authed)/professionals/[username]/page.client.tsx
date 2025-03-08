@@ -15,8 +15,9 @@ import { LanguagesSection } from './components/langs-section'
 import { SocialsSection } from './components/socials-section'
 import { Language, Social } from '@lib/types/profile'
 
-export function ProProfileClient({ id }: { id: string }) {
-  const isOwner = getCookie('id') === id
+export function ProProfileClient({ username }: { username: string }) {
+  const isOwner = getCookie('username') === username
+  console.log(isOwner, username, getCookie('username'))
   const [profile, setProfile] = useAtom(proProfileAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {

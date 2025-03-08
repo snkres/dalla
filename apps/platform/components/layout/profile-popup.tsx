@@ -27,13 +27,14 @@ type ProfilePopupProps = {
 
 const ProfilePopup = ({ name, email }: ProfilePopupProps) => {
   const mode = getCookie('mode')
-  const [profile] = useAtom(proProfileAtom)
-  console.log(profile)
+
+  const username = getCookie('username')
+
   const profileItems: ProfileItem[] = [
     {
       icon: User,
       label: 'View Profile',
-      href: `/${mode === 'user' ? 'professionals' : 'companies'}/${profile?.id}`,
+      href: `/${mode === 'user' ? 'professionals' : 'companies'}/${username}`,
     },
     { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
     { icon: HelpCircle, label: 'Help & Support', href: '/support' },

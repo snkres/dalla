@@ -4,7 +4,7 @@ import { getCompanyProfile } from '@lib/api/company/profile'
 import { getProProfile } from '@lib/api/pro/profile'
 import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
 import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
-import { getCookie } from 'cookies-next'
+import { getCookie, setCookie } from 'cookies-next'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
@@ -39,6 +39,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       if (!data.onboarded) {
         router.push('/onboard')
       }
+      setCookie('username', (data as ProProfile).username, {
+        httpOnly: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24 * 30,
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      })
     } else {
       setCompanyProfile(data as CompanyProfile)
       if (!data.onboarded) {
