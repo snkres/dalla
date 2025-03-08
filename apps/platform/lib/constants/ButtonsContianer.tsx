@@ -6,7 +6,7 @@ interface ButtonsContainerProps {
   isSubmitting: boolean
   previousText: string | null
   continueText: string
-  isNextDisabled: boolean
+  isNextDisabled?: boolean
 }
 
 export function ButtonsContainer({
