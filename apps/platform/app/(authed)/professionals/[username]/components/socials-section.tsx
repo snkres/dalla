@@ -11,10 +11,17 @@ import { detectPlatform, enhanceSocialLink } from '@lib/utils/detect-platform'
 
 interface SocialsSectionProps {
   socials: SocialLink[]
-  onChange: (socials: SocialLink[]) => void
+  onUpdate: (socials: SocialLink[]) => void
+  isPublicView: boolean
+  isOwner: boolean
 }
 
-export function SocialsSection({ socials, onChange }: SocialsSectionProps) {
+export function SocialsSection({
+  socials,
+  onUpdate,
+  isPublicView,
+  isOwner,
+}: SocialsSectionProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [editedSocials, setEditedSocials] = useState<SocialLink[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
@@ -37,7 +44,7 @@ export function SocialsSection({ socials, onChange }: SocialsSectionProps) {
       (social) => social.platform && social.url,
     )
 
-    onChange(processedSocials)
+    onUpdate(processedSocials)
   }
 
   const handleCancel = () => {
@@ -98,7 +105,7 @@ export function SocialsSection({ socials, onChange }: SocialsSectionProps) {
           Social Media
         </h2>
 
-        {!isEditing ? (
+        {!isEditing && !isPublicView && isOwner && (
           <Button
             variant="ghost"
             size="sm"
@@ -107,7 +114,9 @@ export function SocialsSection({ socials, onChange }: SocialsSectionProps) {
           >
             <Edit className="mr-1 h-3.5 w-3.5" /> Edit
           </Button>
-        ) : (
+        )}
+
+        {isEditing && !isPublicView && isOwner && (
           <div className="flex gap-2">
             <Button
               variant="ghost"
@@ -130,11 +139,9 @@ export function SocialsSection({ socials, onChange }: SocialsSectionProps) {
       </div>
 
       <div className="p-4">
-        {isEditing ? (
+        {isEditing && !isPublicView && isOwner ? (
           <div className="space-y-3">
             {editedSocials?.map((social, index) => {
-              const platformInfo = detectPlatform(social.url)
-
               return (
                 <div key={index} className="group flex items-center gap-1">
                   <div className="flex flex-1 gap-1">

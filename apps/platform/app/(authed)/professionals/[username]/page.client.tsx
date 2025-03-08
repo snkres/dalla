@@ -47,7 +47,6 @@ export function ProProfileClient({ username }: { username: string }) {
         ),
       })
 
-      // Update local state with the new data
       setProfile({
         ...profile,
         UserProfile: {
@@ -122,7 +121,7 @@ export function ProProfileClient({ username }: { username: string }) {
               languages={
                 profile?.UserProfile.meta.languages as unknown as Language[]
               }
-              onChange={(languages) => {
+              onUpdate={(languages) => {
                 const languagesObj = languages.reduce(
                   (acc, { language, proficiency }) => ({
                     ...acc,
@@ -138,13 +137,15 @@ export function ProProfileClient({ username }: { username: string }) {
                   },
                 })
               }}
+              isPublicView={isPublicView}
+              isOwner={isOwner}
             />
             <SocialsSection
               socials={Object.entries(
                 profile?.UserProfile?.meta?.socialLinks ||
                   ({} as Record<string, string>),
               ).map(([platform, url]) => ({ platform, url }) as Social)}
-              onChange={(socials) => {
+              onUpdate={(socials) => {
                 if (!profile) return
 
                 const socialLinksObj = socials.reduce<Record<string, string>>(
@@ -165,6 +166,8 @@ export function ProProfileClient({ username }: { username: string }) {
                   'Social links updated successfully',
                 )
               }}
+              isPublicView={isPublicView}
+              isOwner={isOwner}
             />
           </div>
         </div>
@@ -177,7 +180,7 @@ export function ProProfileClient({ username }: { username: string }) {
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
-            onUpdateSummary={(updatedSummary) => {
+            onUpdate={(updatedSummary) => {
               handleProfileUpdate({
                 headline: updatedSummary.title,
                 bio: updatedSummary.content,
@@ -191,7 +194,7 @@ export function ProProfileClient({ username }: { username: string }) {
           {process.env.NODE_ENV === 'development' && <ProjectsSection />}
           <ExperienceSection
             experiences={profile?.UserProfile.experience}
-            onUpdateExperiences={(updatedExperiences) => {
+            onUpdate={(updatedExperiences) => {
               setProfile({
                 ...profile,
                 UserProfile: {
@@ -212,6 +215,8 @@ export function ProProfileClient({ username }: { username: string }) {
                 ),
               })
             }}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
           />
           <EducationSection
             education={profile?.UserProfile.education}
@@ -232,6 +237,8 @@ export function ProProfileClient({ username }: { username: string }) {
                 ),
               })
             }}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
           />
         </div>
       </div>

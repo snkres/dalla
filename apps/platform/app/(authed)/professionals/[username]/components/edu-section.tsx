@@ -18,11 +18,15 @@ import { MonthYearPicker } from './month-year-date-picker'
 export function EducationSection({
   education,
   onUpdateEducation,
+  isPublicView,
+  isOwner,
 }: {
   education: ProProfile['UserProfile']['education']
   onUpdateEducation: (
     updatedEducation: ProProfile['UserProfile']['education'],
   ) => void
+  isPublicView: boolean
+  isOwner: boolean
 }) {
   const [editedEducation, setEditedEducation] =
     useState<ProProfile['UserProfile']['education']>(education)
@@ -96,7 +100,7 @@ export function EducationSection({
           Education
         </h2>
 
-        {!isEditing ? (
+        {!isEditing && !isPublicView && isOwner && (
           <Button
             variant="ghost"
             size="sm"
@@ -106,7 +110,9 @@ export function EducationSection({
             <Edit className="mr-1 !h-4 !w-4" />
             Edit
           </Button>
-        ) : (
+        )}
+
+        {isEditing && !isPublicView && isOwner && (
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"

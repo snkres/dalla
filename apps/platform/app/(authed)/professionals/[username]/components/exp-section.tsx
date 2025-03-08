@@ -20,12 +20,16 @@ import { MonthYearPicker } from './month-year-date-picker'
 
 export function ExperienceSection({
   experiences,
-  onUpdateExperiences,
+  onUpdate,
+  isPublicView,
+  isOwner,
 }: {
   experiences: ProProfile['UserProfile']['experience']
-  onUpdateExperiences?: (
+  onUpdate?: (
     updatedExperiences: ProProfile['UserProfile']['experience'],
   ) => void
+  isPublicView: boolean
+  isOwner: boolean
 }) {
   const [editedExperiences, setEditedExperiences] =
     useState<ProProfile['UserProfile']['experience']>(experiences)
@@ -70,7 +74,7 @@ export function ExperienceSection({
       },
     }))
 
-    onUpdateExperiences?.(validExperiences)
+    onUpdate?.(validExperiences)
     setIsEditing(false)
   }
 
@@ -232,7 +236,7 @@ export function ExperienceSection({
           Professional Experience
         </h2>
 
-        {!isEditing ? (
+        {!isEditing && !isPublicView && isOwner && (
           <Button
             variant="ghost"
             size="sm"
@@ -242,7 +246,9 @@ export function ExperienceSection({
             <Edit className="mr-1 !h-4 !w-4" />
             Edit
           </Button>
-        ) : (
+        )}
+
+        {isEditing && !isPublicView && isOwner && (
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -267,7 +273,7 @@ export function ExperienceSection({
       </div>
 
       <div className="p-4">
-        {isEditing ? (
+        {isEditing && (
           <div className="space-y-8">
             {Object.entries(groupedExperiences()).map(
               ([company, companyExps], groupIndex) => (
@@ -530,7 +536,9 @@ export function ExperienceSection({
               </Button>
             </div>
           </div>
-        ) : experiences?.length === 0 ? (
+        )}
+
+        {experiences?.length === 0 && (
           <div className="flex flex-col items-center justify-center py-6 text-center">
             <p className="mb-2 text-sm text-gray-500">
               No professional experience added yet
@@ -545,7 +553,9 @@ export function ExperienceSection({
               Add experience
             </Button>
           </div>
-        ) : (
+        )}
+
+        {experiences?.length > 0 && !isEditing && (
           <div className="space-y-8">
             {(() => {
               const grouped: {

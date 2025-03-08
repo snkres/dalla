@@ -12,7 +12,7 @@ export function ProfileSummary({
   summary,
   isPublicView,
   isOwner,
-  onUpdateSummary,
+  onUpdate,
 }: {
   summary: {
     title: string
@@ -21,7 +21,7 @@ export function ProfileSummary({
   }
   isPublicView: boolean
   isOwner: boolean
-  onUpdateSummary: (summary: {
+  onUpdate: (summary: {
     title: string
     content: string
     skills: string[]
@@ -39,7 +39,7 @@ export function ProfileSummary({
   }
 
   const handleSave = () => {
-    onUpdateSummary({
+    onUpdate({
       title: editedSummary.title,
       content: editedSummary.content,
       skills: editedSummary.skills,
@@ -61,7 +61,7 @@ export function ProfileSummary({
 
         {!isPublicView && isOwner && (
           <>
-            {!isEditing ? (
+            {!isEditing && !isPublicView && isOwner && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -71,7 +71,9 @@ export function ProfileSummary({
                 <Edit className="mr-1 !h-4 !w-4" />
                 Edit
               </Button>
-            ) : (
+            )}
+
+            {isEditing && !isPublicView && isOwner && (
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
