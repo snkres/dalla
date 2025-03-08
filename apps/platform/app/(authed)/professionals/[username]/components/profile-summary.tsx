@@ -29,8 +29,10 @@ export function ProfileSummary({
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedSummary, setEditedSummary] = useState({ ...summary })
+  const [showAllSkills, setShowAllSkills] = useState(false)
 
   const titleRef = useRef<HTMLInputElement>(null)
+  const skillsContainerRef = useRef<HTMLDivElement>(null)
 
   const handleEdit = () => {
     setEditedSummary({ ...summary })
@@ -48,8 +50,28 @@ export function ProfileSummary({
   }
 
   const handleSkills = (skills: string[]) => {
-    setEditedSummary((prev) => ({ ...prev, skills }))
+    // Limit skills to 30
+    const limitedSkills = skills.slice(0, 30)
+    setEditedSummary((prev) => ({ ...prev, skills: limitedSkills }))
   }
+
+  // Check if skills container has overflow
+  const [hasSkillsOverflow, setHasSkillsOverflow] = useState(false)
+
+  React.useEffect(() => {
+    const checkOverflow = () => {
+      const container = skillsContainerRef.current
+      if (container) {
+        // Check if content height is greater than container height
+        const hasOverflow = container.scrollHeight > container.clientHeight
+        setHasSkillsOverflow(hasOverflow && summary.skills.length > 0)
+      }
+    }
+
+    checkOverflow()
+    window.addEventListener('resize', checkOverflow)
+    return () => window.removeEventListener('resize', checkOverflow)
+  }, [summary.skills, showAllSkills])
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
@@ -149,8 +171,11 @@ export function ProfileSummary({
               <SkillSelector
                 skills={editedSummary.skills}
                 handleSkills={handleSkills}
-                maxSkills={10}
+                maxSkills={30}
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Maximum 30 skills allowed
+              </p>
             </div>
           </div>
         ) : (
@@ -164,16 +189,30 @@ export function ProfileSummary({
           </div>
         )}
       </div>
-      <div className="flex flex-wrap gap-2 p-4">
-        {summary.skills.map((skill, index) => (
-          <Badge
-            key={index}
-            variant="outline"
-            className="!rounded-full border-[#BEDDF1]/30 !bg-[#BEDDF1]/10 text-xs !text-[#3A97A0] transition-colors duration-200 hover:!bg-[#BEDDF1]/20"
+      <div className="flex flex-col">
+        <div
+          ref={skillsContainerRef}
+          className={`flex flex-wrap gap-2 p-4 ${!showAllSkills ? 'max-h-[60px] overflow-hidden' : ''}`}
+        >
+          {summary.skills.map((skill, index) => (
+            <Badge
+              key={index}
+              variant="outline"
+              className="!rounded-full border-[#BEDDF1]/30 !bg-[#BEDDF1]/10 text-xs !text-[#3A97A0] transition-colors duration-200 hover:!bg-[#BEDDF1]/20"
+            >
+              {skill}
+            </Badge>
+          ))}
+        </div>
+
+        {hasSkillsOverflow && (
+          <button
+            onClick={() => setShowAllSkills(!showAllSkills)}
+            className="mx-4 mb-2 self-start text-xs font-medium text-[#3A97A0] hover:text-[#63B7B7]"
           >
-            {skill}
-          </Badge>
-        ))}
+            {showAllSkills ? 'Show less' : 'Show all skills'}
+          </button>
+        )}
       </div>
     </div>
   )
