@@ -46,7 +46,7 @@ export function PlatformIcon({
 
   return (
     <div
-      className={`flex items-center justify-center ${platformInfo.color} ${className}`}
+      className={`flex items-center justify-center ${platformInfo.color} ${className} rounded-md bg-[#63B7B7]/10 p-2`}
     >
       <IconComponent size={size} />
     </div>

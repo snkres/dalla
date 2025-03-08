@@ -71,6 +71,8 @@ export function ProProfileClient({ username }: { username: string }) {
     }
   }
 
+  if (!profile) return null
+
   return (
     <div className="mx-auto max-w-[1400px] p-4">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">

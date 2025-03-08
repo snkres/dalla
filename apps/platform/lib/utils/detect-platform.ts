@@ -78,7 +78,7 @@ function getDefaultPlatform(): PlatformInfo {
     name: 'Website',
     icon: 'Globe',
     domain: '',
-    color: 'text-[#63B7B7]',
+    color: '',
   }
 }
 
