@@ -125,3 +125,8 @@
     -ms-overflow-style: none;
   }
 }
+
+html {
+  scroll-behavior: smooth;
+  background-color: #F9FAFB;
+}
