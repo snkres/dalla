@@ -15,6 +15,8 @@ import {
   CheckCircle,
   X,
   Check,
+  Eye,
+  EyeOff,
 } from 'lucide-react'
 import Image from 'next/image'
 import { Input } from '@dallah/design-system'
@@ -31,8 +33,12 @@ export function ProfileCard({
   profile,
   isPublicView,
   isOwner,
+  onTogglePublicView,
+  onUpdate,
 }: {
   profile: {
+    avatar: string
+    isVerified: boolean
     name: string
     title: string
     hourlyRate: number | null
@@ -46,6 +52,8 @@ export function ProfileCard({
   }
   isPublicView: boolean
   isOwner: boolean
+  onTogglePublicView?: () => void
+  onUpdate?: (updatedProfile: typeof profile) => void
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedProfile, setEditedProfile] = useState({ ...profile })
@@ -56,7 +64,9 @@ export function ProfileCard({
   }
 
   const handleSave = () => {
-    setEditedProfile({ ...profile })
+    if (onUpdate) {
+      onUpdate(editedProfile)
+    }
     setIsEditing(false)
   }
 
@@ -84,17 +94,40 @@ export function ProfileCard({
         </h2>
 
         {isOwner &&
-          !isPublicView &&
           (!isEditing ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleEdit}
-              className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
-            >
-              <Edit className="mr-1 !h-4 !w-4" />
-              Edit
-            </Button>
+            <div className="flex items-center gap-2">
+              {onTogglePublicView && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onTogglePublicView}
+                  className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
+                  title={
+                    isPublicView
+                      ? 'Switch to private view'
+                      : 'Switch to public view'
+                  }
+                >
+                  {isPublicView ? (
+                    <EyeOff className="mr-1 !h-4 !w-4" />
+                  ) : (
+                    <Eye className="mr-1 !h-4 !w-4" />
+                  )}
+                  {isPublicView ? 'Private' : 'Public'}
+                </Button>
+              )}
+              {!isPublicView && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleEdit}
+                  className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
+                >
+                  <Edit className="mr-1 !h-4 !w-4" />
+                  Edit
+                </Button>
+              )}
+            </div>
           ) : (
             <div className="flex items-center gap-2">
               <Button
@@ -169,7 +202,7 @@ export function ProfileCard({
           <div className="relative mb-4 h-24 w-24">
             <div className="h-24 w-24 overflow-hidden rounded-full bg-[#63B7B7]/10 shadow-sm ring-4 ring-[#63B7B7]/20">
               <Image
-                src="https://avatars.githubusercontent.com/u/122938074?v=4"
+                src={profile.avatar}
                 alt="Profile"
                 width={96}
                 height={96}
@@ -177,12 +210,14 @@ export function ProfileCard({
                 priority
               />
             </div>
-            <div className="absolute -right-1 -top-1 rounded-full bg-white p-0.5">
+            {/* <div className="absolute -right-1 -top-1 rounded-full bg-white p-0.5">
               <Award className="h-5 w-5 fill-amber-400 text-white" />
-            </div>
-            <div className="absolute bottom-0 right-0 rounded-full">
-              <BadgeCheck className="h-5 w-5 fill-[#63B7B7] text-white" />
-            </div>
+            </div> */}
+            {profile.isVerified && (
+              <div className="absolute bottom-0 right-0 rounded-full">
+                <BadgeCheck className="h-5 w-5 fill-[#63B7B7] text-white" />
+              </div>
+            )}
           </div>
 
           {isEditing ? (
@@ -232,7 +267,7 @@ export function ProfileCard({
           )}
 
           <div className="mb-5 grid w-full grid-cols-2 gap-3">
-            {!isOwner && (
+            {isOwner && isPublicView && (
               <>
                 <Button className="h-9 !bg-[#63B7B7] text-xs text-white transition-colors duration-200 hover:!bg-[#63B7B7]/90">
                   Contact
@@ -248,50 +283,38 @@ export function ProfileCard({
           </div>
 
           <div className="mb-5 grid w-full grid-cols-2 gap-4">
-            {profile.hourlyRate && (
-              <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
-                <div className="mb-1 flex items-center justify-center">
-                  <DollarSign className="h-4 w-4 text-[#63B7B7]" />
-                </div>
-                {isEditing ? (
-                  <Input
-                    type="number"
-                    value={editedProfile.hourlyRate || ''}
-                    onChange={(e) =>
-                      handleChange('hourlyRate', parseInt(e.target.value))
-                    }
-                    className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
-                  />
-                ) : (
-                  <div className="text-base font-medium text-[#63B7B7]">
-                    ${profile.hourlyRate}/hr
-                  </div>
-                )}
-                <div className="text-xs text-gray-600">Hourly Rate</div>
+            <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
+              <div className="mb-1 flex items-center justify-center">
+                <DollarSign className="h-4 w-4 text-[#63B7B7]" />
               </div>
-            )}
-            {profile.totalEarned && (
-              <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
-                <div className="mb-1 flex items-center justify-center">
-                  <CreditCard className="h-4 w-4 text-[#63B7B7]" />
+              {isEditing ? (
+                <Input
+                  type="number"
+                  value={editedProfile.hourlyRate || ''}
+                  onChange={(e) =>
+                    handleChange('hourlyRate', parseInt(e.target.value))
+                  }
+                  className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
+                />
+              ) : (
+                <div className="text-base font-medium text-[#63B7B7]">
+                  ${profile.hourlyRate || '0'}/hr
                 </div>
-                {isEditing ? (
-                  <Input
-                    type="number"
-                    value={editedProfile.totalEarned || ''}
-                    onChange={(e) =>
-                      handleChange('totalEarned', parseInt(e.target.value))
-                    }
-                    className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
-                  />
-                ) : (
-                  <div className="text-base font-medium text-[#63B7B7]">
-                    ${profile.totalEarned?.toLocaleString()}
-                  </div>
-                )}
-                <div className="text-xs text-gray-600">Total Earned</div>
+              )}
+              <div className="text-xs text-gray-600">Hourly Rate</div>
+            </div>
+
+            <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
+              <div className="mb-1 flex items-center justify-center">
+                <CreditCard className="h-4 w-4 text-[#63B7B7]" />
               </div>
-            )}
+
+              <div className="text-base font-medium text-[#63B7B7]">
+                ${profile.totalEarned || '0'}
+              </div>
+
+              <div className="text-xs text-gray-600">Total Earned</div>
+            </div>
           </div>
 
           <div className="mb-5 w-full space-y-3">
@@ -303,23 +326,10 @@ export function ProfileCard({
                 <span className="text-xs text-gray-600">
                   Projects Completed
                 </span>
-                {isEditing ? (
-                  <Input
-                    type="number"
-                    value={editedProfile.projectsCompleted || ''}
-                    onChange={(e) =>
-                      handleChange(
-                        'projectsCompleted',
-                        parseInt(e.target.value),
-                      )
-                    }
-                    className="h-6 w-16 text-right text-xs"
-                  />
-                ) : (
-                  <span className="text-xs font-medium text-gray-800">
-                    {profile.projectsCompleted || 0}
-                  </span>
-                )}
+
+                <span className="text-xs font-medium text-gray-800">
+                  {profile.projectsCompleted || 0}
+                </span>
               </div>
             </div>
 
@@ -329,21 +339,9 @@ export function ProfileCard({
               </div>
               <div className="flex w-full justify-between">
                 <span className="text-xs text-gray-600">Success Rate</span>
-                {isEditing ? (
-                  <Input
-                    type="number"
-                    value={editedProfile.successRate || ''}
-                    onChange={(e) =>
-                      handleChange('successRate', parseInt(e.target.value))
-                    }
-                    className="h-6 w-16 text-right text-xs"
-                    max={100}
-                  />
-                ) : (
-                  <span className="text-xs font-medium text-gray-800">
-                    {profile.successRate ? `${profile.successRate}%` : 'N/A'}
-                  </span>
-                )}
+                <span className="text-xs font-medium text-gray-800">
+                  {profile.successRate ? `${profile.successRate}%` : 'N/A'}
+                </span>
               </div>
             </div>
 
@@ -351,12 +349,12 @@ export function ProfileCard({
               <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <Clock className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
-              <div className="flex w-full justify-between">
+              <div className="flex w-full items-center justify-between">
                 <span className="text-xs text-gray-600">
                   Weekly Availability
                 </span>
                 {isEditing ? (
-                  <div className="flex items-center">
+                  <div className="flex w-1/2 items-center">
                     <Input
                       type="number"
                       value={editedProfile.weeklyAvailability || ''}
@@ -366,7 +364,7 @@ export function ProfileCard({
                           parseInt(e.target.value),
                         )
                       }
-                      className="h-6 w-16 text-right text-xs"
+                      className="h-9 text-right !text-xs"
                     />
                     <span className="ml-1 text-xs">hrs/week</span>
                   </div>
@@ -397,15 +395,15 @@ export function ProfileCard({
                   <SelectValue placeholder="Project Completion Time" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1 week">1 week</SelectItem>
-                  <SelectItem value="2-3 weeks">2-3 weeks</SelectItem>
-                  <SelectItem value="1 month">1 month</SelectItem>
-                  <SelectItem value="1-2 months">1-2 months</SelectItem>
+                  <SelectItem value="1 week">1 Week</SelectItem>
+                  <SelectItem value="2-3 weeks">2-3 Weeks</SelectItem>
+                  <SelectItem value="1 month">1 Month</SelectItem>
+                  <SelectItem value="1-2 months">1-2 Months</SelectItem>
                 </SelectContent>
               </Select>
             ) : (
               <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
-                <span className="text-sm font-medium text-[#63B7B7]">
+                <span className="text-sm font-medium capitalize text-[#63B7B7]">
                   {profile.projectCompletion
                     ? profile.projectCompletion
                     : 'N/A'}

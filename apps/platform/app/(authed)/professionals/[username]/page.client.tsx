@@ -25,7 +25,6 @@ export function ProProfileClient({ username }: { username: string }) {
     parse: (value) => value === 'true',
   })
 
-  // Helper function to handle common profile update pattern
   const handleProfileUpdate = async (
     updateData: any,
     successMessage = 'Profile updated successfully',
@@ -79,18 +78,43 @@ export function ProProfileClient({ username }: { username: string }) {
           <ProfileCard
             profile={{
               name: profile?.name,
+              avatar: profile.UserProfile.avatar,
               title: profile?.UserProfile.headline,
-              hourlyRate: null,
-              totalEarned: null,
-              projectsCompleted: null,
-              successRate: null,
-              weeklyAvailability: null,
-              availability: 'available',
-              rating: null,
-              projectCompletion: null,
+              hourlyRate:
+                Number(profile.UserProfile.meta['hourlyRate']) || null,
+              totalEarned:
+                Number(profile.UserProfile.meta['totalEarned']) || null,
+              projectsCompleted:
+                Number(profile.UserProfile.meta['projectsCompleted']) || null,
+              successRate:
+                Number(profile.UserProfile.meta['successRate']) || null,
+              weeklyAvailability:
+                Number(profile.UserProfile.meta['weeklyAvailability']) || null,
+              availability: String(profile.UserProfile.meta['availability']),
+              rating: Number(profile.UserProfile.meta['rating']) || null,
+              projectCompletion:
+                String(profile.UserProfile.meta['projectCompletion']) || null,
+              isVerified: profile.verified,
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
+            onTogglePublicView={
+              isOwner ? () => setIsPublicView(!isPublicView) : undefined
+            }
+            onUpdate={(updatedProfile) => {
+              handleProfileUpdate({
+                meta: {
+                  ...profile?.UserProfile.meta,
+                  hourlyRate: updatedProfile.hourlyRate,
+                  totalEarned: updatedProfile.totalEarned,
+                  projectsCompleted: updatedProfile.projectsCompleted,
+                  successRate: updatedProfile.successRate,
+                  weeklyAvailability: updatedProfile.weeklyAvailability,
+                  availability: updatedProfile.availability,
+                  projectCompletion: updatedProfile.projectCompletion,
+                },
+              })
+            }}
           />
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
