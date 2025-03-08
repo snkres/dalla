@@ -244,43 +244,39 @@ export function ProfileCard({
             </>
           )}
 
-          {profile.rating && (
-            <div className="mb-4 flex items-center gap-1">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-3.5 w-3.5 ${
-                      star <= Math.floor(profile.rating || 0)
-                        ? 'fill-amber-400 text-amber-400'
-                        : star - 0.5 <= (profile.rating || 0)
-                          ? 'fill-amber-400/50 text-amber-400'
-                          : 'fill-gray-200 text-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-xs text-gray-600">
-                ({profile.rating?.toFixed(1)})
-              </span>
+          <div className="mb-4 flex items-center gap-1">
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={`h-3.5 w-3.5 ${
+                    star <= Math.floor(profile.rating || 0)
+                      ? 'fill-amber-400 text-amber-400'
+                      : star - 0.5 <= (profile.rating || 0)
+                        ? 'fill-amber-400/50 text-amber-400'
+                        : 'fill-gray-200 text-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-gray-600">
+              {profile.rating?.toFixed(1) || 'N/A'}
+            </span>
+          </div>
+
+          {isOwner && isPublicView && (
+            <div className="mb-5 grid w-full grid-cols-2 gap-3">
+              <Button className="h-9 !bg-[#63B7B7] text-xs text-white transition-colors duration-200 hover:!bg-[#63B7B7]/90">
+                Contact
+              </Button>
+              <Button
+                variant="outline"
+                className="h-9 border-[#63B7B7] text-xs text-[#63B7B7] transition-colors duration-200 hover:border-[#63B7B7] hover:!bg-[#63B7B7]/10"
+              >
+                Hire Now
+              </Button>
             </div>
           )}
-
-          <div className="mb-5 grid w-full grid-cols-2 gap-3">
-            {isOwner && isPublicView && (
-              <>
-                <Button className="h-9 !bg-[#63B7B7] text-xs text-white transition-colors duration-200 hover:!bg-[#63B7B7]/90">
-                  Contact
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-9 border-[#63B7B7] text-xs text-[#63B7B7] transition-colors duration-200 hover:border-[#63B7B7] hover:!bg-[#63B7B7]/10"
-                >
-                  Hire Now
-                </Button>
-              </>
-            )}
-          </div>
 
           <div className="mb-5 grid w-full grid-cols-2 gap-4">
             <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">

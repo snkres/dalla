@@ -29,9 +29,8 @@ export function ProProfileClient({ username }: { username: string }) {
     updateData: any,
     successMessage = 'Profile updated successfully',
   ) => {
-    if (!profile) return
-
     try {
+      console.log('updateData', updateData)
       await updateProProfile({
         ...updateData,
         education: profile.UserProfile.education?.map(
@@ -189,12 +188,10 @@ export function ProProfileClient({ username }: { username: string }) {
               })
             }}
           />
-          <ProjectsSection />
+          {process.env.NODE_ENV === 'development' && <ProjectsSection />}
           <ExperienceSection
             experiences={profile?.UserProfile.experience}
             onUpdateExperiences={(updatedExperiences) => {
-              if (!profile) return
-
               setProfile({
                 ...profile,
                 UserProfile: {
