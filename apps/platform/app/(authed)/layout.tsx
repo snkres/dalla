@@ -14,28 +14,28 @@ import { globalAtom } from '@lib/atoms/global'
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
   const router = useTransitionRouter()
-  const mode = global.mode
-  const [__, setProProfile] = useAtom(proProfileAtom)
-  const [___, setCompanyProfile] = useAtom(companyProfileAtom)
+  const [_, setProProfile] = useAtom(proProfileAtom)
+  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const { data, isFetched } = useQuery({
-    queryKey: ['profile', mode, global.email],
+    queryKey: ['profile', global.mode, global.email],
     staleTime: Infinity,
     queryFn: async () => {
-      if (mode === 'user') {
+      if (global.mode === 'user') {
         const res = await getProProfile()
         return res.data.data
-      } else {
+      } else if (global.mode === 'company') {
         const res = await getCompanyProfile()
         return res.data.data
       }
     },
+    enabled: !!global.email,
   })
 
   useEffect(() => {
     if (!data) return
 
-    if (mode === 'user') {
+    if (global.mode === 'user') {
       setGlobal({
         ...global,
         email: data.email,
