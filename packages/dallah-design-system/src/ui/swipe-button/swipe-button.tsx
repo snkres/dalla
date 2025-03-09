@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { motion, PanInfo } from 'framer-motion'
+import { motion, PanInfo } from 'motion/react'
 import { cn } from '@dallah/utils'
 
 interface SwipeButtonProps {
