@@ -5,7 +5,8 @@ import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { useTransitionRouter } from 'next-view-transitions'
 import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
-import { getCookie } from 'cookies-next'
+import { globalAtom } from '@lib/atoms/global'
+import { useAtom } from 'jotai'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -61,6 +62,7 @@ export interface ProOnboardingData {
 }
 
 export function useOnboarding() {
+  const [global] = useAtom(globalAtom)
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const router = useTransitionRouter()
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
@@ -107,7 +109,7 @@ export function useOnboarding() {
   const { toast } = useToast()
 
   useEffect(() => {
-    const mode = getCookie('mode')
+    const mode = global.mode
     if (mode) {
       setMode(mode as string)
     }
@@ -217,7 +219,7 @@ export function useOnboarding() {
 
   const handleStepAction = () => {
     const isLastStep =
-      (mode === 'company' && step === 3) || (mode === 'pro' && step === 4)
+      (mode === 'company' && step === 3) || (mode === 'user' && step === 4)
 
     if (isLastStep) {
       handleSubmit()

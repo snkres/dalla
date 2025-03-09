@@ -4,21 +4,22 @@ import { getCompanyProfile } from '@lib/api/company/profile'
 import { getProProfile } from '@lib/api/pro/profile'
 import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
 import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
-import { getCookie, setCookie } from 'cookies-next'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@dallah/utils'
 import { useEffect } from 'react'
+import { globalAtom } from '@lib/atoms/global'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const [global, setGlobal] = useAtom(globalAtom)
   const router = useTransitionRouter()
-  const mode = getCookie('mode')
-  const [_, setProProfile] = useAtom(proProfileAtom)
-  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
+  const mode = global.mode
+  const [__, setProProfile] = useAtom(proProfileAtom)
+  const [___, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const { data, isFetched } = useQuery({
-    queryKey: ['profile', mode, getCookie('username')],
+    queryKey: ['profile', mode, global.email],
     staleTime: Infinity,
     queryFn: async () => {
       if (mode === 'user') {
@@ -35,16 +36,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (!data) return
 
     if (mode === 'user') {
+      setGlobal({
+        ...global,
+        email: data.email,
+        username: (data as ProProfile).username || '',
+        name: data.name,
+        mode: 'user',
+      })
       setProProfile(data as ProProfile)
       if (!data.onboarded) {
         router.push('/onboard')
       }
-      setCookie('username', (data as ProProfile).username, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 30,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-      })
     } else {
       setCompanyProfile(data as CompanyProfile)
       if (!data.onboarded) {
