@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -24,8 +24,31 @@ import {
   SidebarCardProps,
   SidebarHeaderProps,
 } from '@lib/types/profile'
+import { useAtom } from 'jotai'
+import { proProfileAtom } from '@lib/atoms/pro/profile'
 
 export function ProfileSidebar() {
+  const [profile] = useAtom(proProfileAtom)
+  const [isWindowFocused, setIsWindowFocused] = useState(true)
+
+  // Add effect to track window focus
+  useEffect(() => {
+    const handleFocus = () => setIsWindowFocused(true)
+    const handleBlur = () => setIsWindowFocused(false)
+
+    window.addEventListener('focus', handleFocus)
+    window.addEventListener('blur', handleBlur)
+
+    // Set initial state based on document.hasFocus()
+    setIsWindowFocused(document.hasFocus())
+
+    // Cleanup event listeners
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+      window.removeEventListener('blur', handleBlur)
+    }
+  }, [])
+
   const projects: ProjectSidebar[] = [
     {
       id: 'p1',
@@ -103,21 +126,27 @@ export function ProfileSidebar() {
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3 h-20 w-20 rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white ring-offset-1">
               <Image
-                src="https://avatars.githubusercontent.com/u/122938074?v=4"
+                src={profile?.UserProfile.avatar || ''}
                 alt="Profile"
                 width={80}
                 height={80}
                 className="rounded-full object-cover"
               />
-              <div className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm">
+              {/* <div className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm">
                 <Star className="h-4 w-4 text-amber-400" />
-              </div>
-              <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white bg-green-500"></div>
+              </div> */}
+              <div
+                className={`absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white ${
+                  isWindowFocused ? 'bg-green-500' : 'bg-yellow-500'
+                }`}
+              ></div>
             </div>
             <h3 className="mb-0.5 text-base font-medium text-gray-800">
-              Alex Morgan
+              {profile.name}
             </h3>
-            <p className="text-xs text-gray-500">Marketing Specialist</p>
+            <p className="text-xs text-gray-500">
+              {profile.UserProfile.headline}
+            </p>
           </div>
 
           <div className="mb-4 grid grid-cols-2 gap-3">
@@ -134,23 +163,31 @@ export function ProfileSidebar() {
           <div className="mb-4 space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600">Profile Completion</span>
-              <span className="font-medium text-[#63B7B7]">85%</span>
+              <span className="font-medium text-[#63B7B7]">
+                {profile.UserProfile.precentage}%
+              </span>
             </div>
             <div className="w-full">
               <Progress
-                value={85}
-                className="h-1.5 bg-gray-100"
-                indicatorClassName="bg-[#63B7B7]"
+                value={profile.UserProfile.precentage}
+                className="h-1.5 !bg-gray-100"
+                indicatorClassName="!bg-[#63B7B7]"
               />
             </div>
           </div>
 
-          <Button className="h-9 w-full bg-[#63B7B7] text-sm font-normal transition-colors duration-200 hover:bg-[#63B7B7]/90">
-            View Profile
+          <Button
+            className="h-9 w-full !bg-[#63B7B7] !text-sm font-normal transition-colors duration-200 hover:!bg-[#63B7B7]/90"
+            asChild
+          >
+            <Link href={`/professionals/${profile.username}`}>
+              View Profile
+            </Link>
           </Button>
         </div>
       </SidebarCard>
 
+      {/* TODO: EndPoint not ready */}
       <SidebarCard>
         <SidebarHeader
           icon={<Briefcase />}
@@ -176,19 +213,19 @@ export function ProfileSidebar() {
               <div className="mb-1.5 flex items-center justify-between">
                 <Badge
                   className={cn(
-                    'rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
+                    '!rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
                     project.match >= 90
-                      ? 'bg-[#63B7B7]/20 text-[#166534]'
+                      ? '!bg-[#63B7B7]/20 !text-[#166534]'
                       : project.match >= 80
-                        ? 'bg-[#FEF9C3]/50 text-[#854D0E]'
-                        : 'bg-[#F3F4F6]/50 text-[#4B5563]',
+                        ? '!bg-[#FEF9C3]/50 !text-[#854D0E]'
+                        : '!bg-[#F3F4F6]/50 !text-[#4B5563]',
                   )}
                 >
                   {project.match}% match
                 </Badge>
 
                 {project.isNew && (
-                  <Badge className="rounded-full border-none bg-[#DBEAFE] px-1.5 py-0.5 text-[10px] font-normal text-[#1E40AF]">
+                  <Badge className="!rounded-full border-none !bg-[#DBEAFE] !px-1.5 !py-0.5 !text-[10px] !font-normal !text-[#1E40AF]">
                     New
                   </Badge>
                 )}
@@ -220,7 +257,7 @@ export function ProfileSidebar() {
         </div>
       </SidebarCard>
 
-      <SidebarCard>
+      {/* <SidebarCard>
         <SidebarHeader
           icon={<PieChart />}
           title="Skills & Expertise"
@@ -245,12 +282,12 @@ export function ProfileSidebar() {
                     </span>
                     <Badge
                       className={cn(
-                        'ml-1 rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
+                        'ml-1 !rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
                         item.demand === 'High'
-                          ? 'bg-[#63B7B7]/20 text-[#166534]'
+                          ? '!bg-[#63B7B7]/20 !text-[#166534]'
                           : item.demand === 'Medium'
-                            ? 'bg-[#FEF9C3]/50 text-[#854D0E]'
-                            : 'bg-[#FEEBC8]/50 text-[#9A3412]',
+                            ? '!bg-[#FEF9C3]/50 !text-[#854D0E]'
+                            : '!bg-[#FEEBC8]/50 !text-[#9A3412]',
                       )}
                     >
                       {item.demand}
@@ -286,7 +323,7 @@ export function ProfileSidebar() {
             ))}
           </div>
         </div>
-      </SidebarCard>
+      </SidebarCard> */}
 
       <SidebarCard>
         <SidebarHeader icon={<Search />} title="Quick Actions" />
