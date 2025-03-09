@@ -15,12 +15,23 @@ export function CompanyOnboardingTwo({
   setData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
   const handleToggle = (goal: string) => {
-    setData((prev: CompanyOnboardingData) => ({
-      ...prev,
-      areas: prev.areas.includes(goal)
-        ? prev.areas.filter((area: string) => area !== goal)
-        : [...prev.areas, goal],
-    }))
+    setData((prev: CompanyOnboardingData) => {
+      if (prev.areas.includes(goal)) {
+        return {
+          ...prev,
+          areas: prev.areas.filter((area: string) => area !== goal),
+        }
+      }
+
+      if (prev.areas.length < 3) {
+        return {
+          ...prev,
+          areas: [...prev.areas, goal],
+        }
+      }
+
+      return prev
+    })
   }
 
   return (
@@ -39,7 +50,7 @@ export function CompanyOnboardingTwo({
             Choose Your Focus Areas
           </h1>
           <p className="text-sm font-light text-gray-500">
-            Select the key areas that align with your professional goals and
+            Select the key areas that align with your company goals and
             expertise
           </p>
         </motion.div>
@@ -69,11 +80,11 @@ export function CompanyOnboardingTwo({
           {data.areas.length > 0 ? (
             <span className="text-sm font-light text-gray-500">
               {data.areas.length} area{data.areas.length > 1 ? 's' : ''}{' '}
-              selected
+              selected {data.areas.length === 3 ? '(maximum)' : '(maximum 3)'}
             </span>
           ) : (
             <span className="text-sm font-light text-gray-500">
-              Select at least one focus area to continue
+              Select 1-3 focus areas to continue
             </span>
           )}
         </motion.div>

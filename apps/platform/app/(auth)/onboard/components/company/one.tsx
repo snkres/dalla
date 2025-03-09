@@ -82,7 +82,7 @@ export function CompanyOnboardingOne({
 
           <motion.div variants={fadeInUpVariants} className="w-full gap-8">
             <div className="space-y-4">
-              <Label>Professional Details</Label>
+              <Label>Company Details</Label>
               <div className="flex gap-4">
                 <div className="relative w-full">
                   <PhoneInput
@@ -128,13 +128,18 @@ export function CompanyOnboardingOne({
                   <Label>Target Industries</Label>
                   <ExpertiseSelect
                     value={data.targetIndustries}
-                    onChange={(value: string[]) =>
-                      updateData({ ...data, targetIndustries: value })
-                    }
+                    onChange={(value: string[]) => {
+                      const limitedValue = value.slice(0, 5)
+                      updateData({ ...data, targetIndustries: limitedValue })
+                    }}
                     expertiseOptions={expertiseOptions.map(
                       (option) => option.label,
                     )}
                   />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Maximum 5 industries allowed {data.targetIndustries.length}
+                    /5
+                  </p>
                 </div>
               </div>
             </div>

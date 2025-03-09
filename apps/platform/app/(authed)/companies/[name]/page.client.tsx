@@ -10,6 +10,8 @@ import { updateCompanyProfile } from '@lib/api/company/profile'
 import { AboutSection } from './components/about-section'
 import { AreasSection } from './components/areas-section'
 import { TargetIndustriesSection } from './components/target-section'
+import { GoalsSection } from './components/goals-section'
+import { ContactInfoCard } from './components/contact-info'
 
 export function CompanyProfileClient({ name }: { name: string }) {
   const isOwner = getCookie('name') === name
@@ -144,7 +146,13 @@ export function CompanyProfileClient({ name }: { name: string }) {
             onUpdate={handleProfileUpdate}
             onTogglePublicView={() => setIsPublicView(!isPublicView)}
           />
-          {/* <ContactInfoCard /> */}
+          <ContactInfoCard
+            data={{
+              email: profile?.email,
+              website: profile?.CompanyProfile?.website,
+              location: profile?.CompanyProfile?.location,
+            }}
+          />
         </aside>
         <main className="space-y-6 lg:col-span-2">
           <AboutSection
@@ -174,7 +182,7 @@ export function CompanyProfileClient({ name }: { name: string }) {
               // onUpdate={handleProfileUpdate}
             />
           </div>
-          {/* <GoalsSection /> */}
+          <GoalsSection goals={profile?.CompanyProfile?.goals || []} />
         </main>
       </div>
     </div>
