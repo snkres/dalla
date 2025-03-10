@@ -12,9 +12,10 @@ import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { LanguagesSection } from './components/langs-section'
 import { SocialsSection } from './components/socials-section'
-import { Language, Social } from '@lib/types/profile'
+import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
+import { ReviewsSection } from './components/reviews-section'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
@@ -198,7 +199,24 @@ export function ProProfileClient({ username }: { username: string }) {
               })
             }}
           />
-          {process.env.NODE_ENV === 'development' && <ProjectsSection />}
+          {process.env.NODE_ENV === 'development' && (
+            <>
+              <ProjectsSection
+                projects={[]}
+                isPublicView={isPublicView}
+                isOwner={isOwner}
+                onUpdate={(updatedProjects) => {
+                  handleProfileUpdate({
+                    meta: {
+                      ...profile?.UserProfile?.meta,
+                      showcaseProjects: updatedProjects,
+                    },
+                  })
+                }}
+              />
+              <ReviewsSection />
+            </>
+          )}
           <ExperienceSection
             experiences={profile?.UserProfile?.experience || []}
             onUpdate={(updatedExperiences) => {
