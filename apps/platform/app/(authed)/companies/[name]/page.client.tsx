@@ -2,7 +2,6 @@
 
 import { useAtom } from 'jotai'
 import { useQueryState } from 'nuqs'
-import { getCookie } from 'cookies-next'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { companyProfileAtom } from '@lib/atoms/company/profile'
 import { CompanyCard } from './components/company-card'
@@ -12,9 +11,12 @@ import { AreasSection } from './components/areas-section'
 import { TargetIndustriesSection } from './components/target-section'
 import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
+import { globalAtom } from '@lib/atoms/global'
 
 export function CompanyProfileClient({ name }: { name: string }) {
-  const isOwner = getCookie('name') === name
+  const [global] = useAtom(globalAtom)
+  const isOwner = global.name?.replace(/\s+/g, '') === name?.replace(/\s+/g, '')
+
   const [profile, setProfile] = useAtom(companyProfileAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
@@ -140,6 +142,7 @@ export function CompanyProfileClient({ name }: { name: string }) {
               location: profile?.CompanyProfile?.location,
               website: profile?.CompanyProfile?.website,
               rating: profile?.CompanyProfile?.meta?.rating,
+              joinedAt: new Date().toISOString(),
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}

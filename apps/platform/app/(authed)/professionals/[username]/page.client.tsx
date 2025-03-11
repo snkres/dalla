@@ -199,24 +199,24 @@ export function ProProfileClient({ username }: { username: string }) {
               })
             }}
           />
-          {process.env.NODE_ENV === 'development' && (
-            <>
-              <ProjectsSection
-                projects={[]}
-                isPublicView={isPublicView}
-                isOwner={isOwner}
-                onUpdate={(updatedProjects) => {
-                  handleProfileUpdate({
-                    meta: {
-                      ...profile?.UserProfile?.meta,
-                      showcaseProjects: updatedProjects,
-                    },
-                  })
-                }}
-              />
-              <ReviewsSection />
-            </>
-          )}
+          {/* {process.env.NODE_ENV === 'development' && (
+            <> */}
+          <ProjectsSection
+            projects={[]}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
+            onUpdate={(updatedProjects) => {
+              handleProfileUpdate({
+                meta: {
+                  ...profile?.UserProfile?.meta,
+                  showcaseProjects: updatedProjects,
+                },
+              })
+            }}
+          />
+          <ReviewsSection />
+          {/* </>
+          )} */}
           <ExperienceSection
             experiences={profile?.UserProfile?.experience || []}
             onUpdate={(updatedExperiences) => {

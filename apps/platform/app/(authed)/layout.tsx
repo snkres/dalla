@@ -18,8 +18,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const { data, isFetched } = useQuery({
-    queryKey: ['profile', global.mode, global.email],
+    queryKey: ['profile'],
     staleTime: Infinity,
+    //@ts-ignore
+    cacheTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     queryFn: async () => {
       if (global.mode === 'user') {
         const res = await getProProfile()
@@ -29,7 +34,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         return res.data.data
       }
     },
-    enabled: !!global.email,
   })
 
   useEffect(() => {
@@ -38,18 +42,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (global.mode === 'user') {
       setGlobal({
         ...global,
-        email: data.email,
+        email: (data as ProProfile).email,
         username: (data as ProProfile).username || '',
-        name: data.name,
+        name: (data as ProProfile).name || '',
         mode: 'user',
       })
       setProProfile(data as ProProfile)
-      if (!data.onboarded) {
+      if (!(data as ProProfile).onboarded) {
         router.push('/onboard')
       }
     } else {
+      setGlobal({
+        ...global,
+        email: (data as CompanyProfile).email,
+        username: '',
+        name: (data as CompanyProfile).name || '',
+        mode: 'company',
+      })
       setCompanyProfile(data as CompanyProfile)
-      if (!data.onboarded) {
+      if (!(data as CompanyProfile).onboarded) {
         router.push('/onboard')
       }
     }

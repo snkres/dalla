@@ -36,6 +36,7 @@ export function CompanyCard({
     location: string
     website: string
     rating: number
+    joinedAt: string
   }
   isOwner: boolean
   isPublicView: boolean
@@ -256,18 +257,11 @@ export function CompanyCard({
               <Globe className="h-3 w-3 text-[#3A97A0]" />
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="text-xs text-gray-600">Website</span>
-              {isEditing ? (
-                <Input
-                  value={editedCompany.website}
-                  onChange={(e) => handleChange('website', e.target.value)}
-                  className="h-7 !w-48 text-right text-xs"
-                />
-              ) : (
-                <span className="text-xs font-medium text-gray-800">
-                  {data.website}
-                </span>
-              )}
+              <span className="text-xs text-gray-600">Joined Dalla since</span>
+
+              <span className="text-xs font-medium text-gray-800">
+                {data.joinedAt}
+              </span>
             </div>
           </div>
         </div>
