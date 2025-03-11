@@ -109,6 +109,7 @@ export type Project = {
 }
 
 export type ShowcaseProject = {
+  id: string
   title: string
   role: string
   description: string

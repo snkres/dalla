@@ -12,7 +12,7 @@ export interface CompanyOnboardingData {
   // Step 1
   targetIndustries: string[]
   // Step 3
-  workPreference: string[]
+  goals: string[]
   areas: string[]
   website: string
   industry: string
@@ -72,7 +72,7 @@ export function useOnboarding() {
   const [companyData, setCompanyData] = useState<CompanyOnboardingData>({
     areas: [],
     targetIndustries: [],
-    workPreference: [],
+    goals: [],
     website: '',
     industry: '',
     businessType: '',
@@ -137,7 +137,7 @@ export function useOnboarding() {
           headline: companyData.headline,
           bio: companyData.bio,
           areas: companyData.areas,
-          goals: companyData.workPreference,
+          goals: companyData.goals,
           targetIndustries: companyData.targetIndustries,
           website: companyData.website,
           location: companyData.address,

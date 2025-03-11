@@ -1,4 +1,4 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 export interface CompanyProfile {
   id: string
@@ -18,6 +18,7 @@ export interface CompanyProfile {
     bio: any
     logo: any
     meta: {
+      [key: string]: any
       size: string
       type: string
       phone: string
@@ -30,7 +31,10 @@ export interface CompanyProfile {
   }
 }
 
+const storage = createJSONStorage<CompanyProfile>(() => sessionStorage)
+
 export const companyProfileAtom = atomWithStorage<CompanyProfile>(
   'profile',
   {} as CompanyProfile,
+  storage,
 )

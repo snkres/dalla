@@ -62,6 +62,16 @@ export interface ProProfile {
       createdAt: string
       updatedAt: string
     }>
+    projects: Array<{
+      id: string
+      title: string
+      role: string
+      description: string
+      skills: Array<string>
+      thumbnail: string
+      link: string
+      media: Array<string>
+    }>
   }
 }
 
