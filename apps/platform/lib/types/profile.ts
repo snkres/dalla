@@ -16,6 +16,7 @@ export interface ProfileFormData {
     github?: string
   }
 }
+
 export interface ProfileFormData {
   avatar: string
   fullName: string
@@ -105,6 +106,17 @@ export type Project = {
     company: string
     rating: number
   }
+}
+
+export type ShowcaseProject = {
+  title: string
+  role: string
+  description: string
+  skills: string[]
+  contractLink?: string
+  thumbnail?: string
+  link?: string
+  media?: string[]
 }
 
 export type ProjectSidebar = {

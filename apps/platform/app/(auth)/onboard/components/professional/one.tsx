@@ -13,7 +13,7 @@ import {
 } from '@dallah/design-system'
 import { MapPin, UploadCloudIcon } from 'lucide-react'
 import { useState, type Dispatch } from 'react'
-import AvatarUpload from '@components/shared/AvatarUpload'
+import AvatarUpload from '@components/shared/avatar-upload'
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'

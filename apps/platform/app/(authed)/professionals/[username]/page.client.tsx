@@ -5,7 +5,6 @@ import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
 import { updateProProfile } from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
-import { getCookie } from 'cookies-next'
 import ProfileSummary from './components/profile-summary'
 import ProjectsSection from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
@@ -13,12 +12,14 @@ import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { LanguagesSection } from './components/langs-section'
 import { SocialsSection } from './components/socials-section'
-import { Language, Social } from '@lib/types/profile'
+import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
+import { globalAtom } from '@lib/atoms/global'
+import { ReviewsSection } from './components/reviews-section'
 
 export function ProProfileClient({ username }: { username: string }) {
-  const isOwner = getCookie('username') === username
-  console.log(isOwner, username, getCookie('username'))
+  const [global] = useAtom(globalAtom)
+  const isOwner = global.username === username
   const [profile, setProfile] = useAtom(proProfileAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
@@ -79,23 +80,24 @@ export function ProProfileClient({ username }: { username: string }) {
           <ProfileCard
             profile={{
               name: profile?.name,
-              avatar: profile.UserProfile.avatar,
-              title: profile?.UserProfile.headline,
+              avatar: profile?.UserProfile?.avatar,
+              title: profile?.UserProfile?.headline,
               hourlyRate:
-                Number(profile.UserProfile.meta['hourlyRate']) || null,
+                Number(profile?.UserProfile?.meta['hourlyRate']) || null,
               totalEarned:
-                Number(profile.UserProfile.meta['totalEarned']) || null,
+                Number(profile?.UserProfile?.meta['totalEarned']) || null,
               projectsCompleted:
-                Number(profile.UserProfile.meta['projectsCompleted']) || null,
+                Number(profile?.UserProfile?.meta['projectsCompleted']) || null,
               successRate:
-                Number(profile.UserProfile.meta['successRate']) || null,
+                Number(profile?.UserProfile?.meta['successRate']) || null,
               weeklyAvailability:
-                Number(profile.UserProfile.meta['weeklyAvailability']) || null,
-              availability: String(profile.UserProfile.meta['availability']),
-              rating: Number(profile.UserProfile.meta['rating']) || null,
+                Number(profile?.UserProfile?.meta['weeklyAvailability']) ||
+                null,
+              availability: String(profile?.UserProfile?.meta['availability']),
+              rating: Number(profile?.UserProfile?.meta['rating']) || null,
               projectCompletion:
-                String(profile.UserProfile.meta['projectCompletion']) || null,
-              isVerified: profile.verified,
+                String(profile?.UserProfile?.meta['projectCompletion']) || null,
+              isVerified: profile?.verified,
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -120,7 +122,7 @@ export function ProProfileClient({ username }: { username: string }) {
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
               languages={
-                profile?.UserProfile.meta.languages as unknown as Language[]
+                profile?.UserProfile?.meta?.languages as unknown as Language[]
               }
               onUpdate={(languages) => {
                 const languagesObj = languages.reduce(
@@ -133,7 +135,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
                 handleProfileUpdate({
                   meta: {
-                    ...profile?.UserProfile.meta,
+                    ...profile?.UserProfile?.meta,
                     languages: languagesObj,
                   },
                 })
@@ -142,7 +144,7 @@ export function ProProfileClient({ username }: { username: string }) {
               isOwner={isOwner}
             />
             <VerificationsSection
-              isEmailVerified={profile.verified}
+              isEmailVerified={profile?.verified}
               isPublicView={isPublicView}
               isOwner={isOwner}
             />
@@ -165,7 +167,7 @@ export function ProProfileClient({ username }: { username: string }) {
                 handleProfileUpdate(
                   {
                     meta: {
-                      ...profile.UserProfile.meta,
+                      ...profile?.UserProfile?.meta,
                       socialLinks: socialLinksObj,
                     },
                   },
@@ -180,9 +182,9 @@ export function ProProfileClient({ username }: { username: string }) {
         <div className="space-y-6 lg:col-span-8">
           <ProfileSummary
             summary={{
-              title: profile?.UserProfile.headline,
-              content: profile?.UserProfile.bio,
-              skills: profile?.UserProfile.meta.skills,
+              title: profile?.UserProfile?.headline,
+              content: profile?.UserProfile?.bio,
+              skills: profile?.UserProfile?.meta?.skills || [],
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -191,15 +193,32 @@ export function ProProfileClient({ username }: { username: string }) {
                 headline: updatedSummary.title,
                 bio: updatedSummary.content,
                 meta: {
-                  ...profile?.UserProfile.meta,
+                  ...profile?.UserProfile?.meta,
                   skills: updatedSummary.skills,
                 },
               })
             }}
           />
-          {process.env.NODE_ENV === 'development' && <ProjectsSection />}
+          {process.env.NODE_ENV === 'development' && (
+            <>
+              <ProjectsSection
+                projects={[]}
+                isPublicView={isPublicView}
+                isOwner={isOwner}
+                onUpdate={(updatedProjects) => {
+                  handleProfileUpdate({
+                    meta: {
+                      ...profile?.UserProfile?.meta,
+                      showcaseProjects: updatedProjects,
+                    },
+                  })
+                }}
+              />
+              <ReviewsSection />
+            </>
+          )}
           <ExperienceSection
-            experiences={profile?.UserProfile.experience}
+            experiences={profile?.UserProfile?.experience || []}
             onUpdate={(updatedExperiences) => {
               setProfile({
                 ...profile,
@@ -225,7 +244,7 @@ export function ProProfileClient({ username }: { username: string }) {
             isOwner={isOwner}
           />
           <EducationSection
-            education={profile?.UserProfile.education}
+            education={profile?.UserProfile?.education || []}
             onUpdateEducation={(updatedEducation) => {
               if (!profile) return
 

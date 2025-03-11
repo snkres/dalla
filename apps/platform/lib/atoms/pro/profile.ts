@@ -1,4 +1,4 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 export interface ProProfile {
   id: string
@@ -65,36 +65,10 @@ export interface ProProfile {
   }
 }
 
-export const proProfileAtom = atomWithStorage<ProProfile>('profile', {
-  id: '',
-  name: '',
-  username: '',
-  email: '',
-  password: '', // Added missing password property
-  onboarded: false,
-  verified: true,
-  suspended: false,
-  createdAt: '',
-  updatedAt: '',
-  UserProfile: {
-    id: '',
-    userId: '',
-    headline: '',
-    gender: '',
-    bio: '',
-    avatar: '',
-    meta: {
-      phone: '',
-      skills: [],
-      location: '',
-      socialLinks: {},
-      yearsOfExperience: 0,
-    },
-    resume: '',
-    precentage: 0,
-    createdAt: '',
-    updatedAt: '',
-    education: [],
-    experience: [],
-  },
-})
+const storage = createJSONStorage<ProProfile>(() => sessionStorage)
+
+export const proProfileAtom = atomWithStorage<ProProfile>(
+  'profile',
+  {} as ProProfile,
+  storage,
+)

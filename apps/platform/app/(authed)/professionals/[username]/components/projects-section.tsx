@@ -2,263 +2,475 @@
 
 import React, { useState } from 'react'
 import {
-  Star,
-  Quote,
-  MoreHorizontal,
-  Download,
-  Share,
-  Archive,
-  Trash2,
   Briefcase,
+  Edit,
+  Plus,
+  X,
+  Check,
+  Link as LinkIcon,
+  Image as ImageIcon,
+  FileText,
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@dallah/design-system'
+import { Input } from '@dallah/design-system'
+import { Textarea } from '@dallah/design-system'
 import { motion, AnimatePresence } from 'motion/react'
-import { cn } from '@dallah/utils'
-import { Project, ProjectStatus } from '@lib/types/profile'
+import { ShowcaseProject } from '@lib/types/profile'
+import { SkillSelector } from '@components/shared/skill-selector'
 
-export function ProjectsSection() {
-  const [activeTab, setActiveTab] = useState<ProjectStatus>('completed')
+import ImageUpload from '@components/shared/image-upload'
+import MultiImageUpload from '@components/shared/multiImage-upload'
 
-  const projects: Project[] = [
-    {
-      date: 'March 05, 2024',
-      title: 'Digital Marketing Strategy',
-      subtask: 'Campaign Development',
-      progress: 60,
-      daysLeft: 2,
-      status: 'ongoing',
-      price: '$2,800',
-    },
-    {
-      date: 'March 08, 2024',
-      title: 'Social Media Campaign',
-      subtask: 'Content Creation',
-      progress: 80,
-      daysLeft: 5,
-      status: 'ongoing',
-      price: '$3,400',
-    },
-    {
-      date: 'Jan 15, 2024',
-      title: 'SEO Optimization',
-      subtask: 'Keyword Research',
-      progress: 100,
-      daysLeft: 0,
-      status: 'completed',
-      price: '$1,950',
-      testimonial: {
-        text: 'Outstanding SEO work that significantly improved our search rankings.',
-        author: 'Michael Chen',
-        company: 'GlobalReach Solutions',
-        rating: 5,
-      },
-    },
-    {
-      date: 'Feb 20, 2024',
-      title: 'Brand Identity Redesign',
-      subtask: 'Visual Identity',
-      progress: 100,
-      daysLeft: 0,
-      status: 'completed',
-      price: '$4,200',
-      testimonial: {
-        text: 'Exceptional strategy that transformed our online presence. The new brand looks amazing!',
-        author: 'Sarah Johnson',
-        company: 'TechGrowth Inc.',
-        rating: 4.8,
-      },
-    },
-    {
-      date: 'Dec 10, 2023',
-      title: 'Email Marketing Campaign',
-      subtask: 'Lead Generation',
-      progress: 100,
-      daysLeft: 0,
-      status: 'completed',
-      price: '$2,500',
-    },
-  ]
+interface ProjectsSectionProps {
+  projects?: ShowcaseProject[]
+  isPublicView?: boolean
+  isOwner?: boolean
+  onUpdate?: (projects: ShowcaseProject[]) => void
+}
 
-  const filteredProjects = projects.filter(
-    (project) => project.status === activeTab,
+export function ProjectsSection({
+  projects = [],
+  isPublicView = false,
+  isOwner = false,
+  onUpdate = () => {},
+}: ProjectsSectionProps) {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingProjectIndex, setEditingProjectIndex] = useState<number | null>(
+    null,
   )
+  const [editedProjects, setEditedProjects] =
+    useState<ShowcaseProject[]>(projects)
+
+  const handleEdit = () => {
+    setEditedProjects([...projects])
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    onUpdate(editedProjects)
+    setIsEditing(false)
+    setEditingProjectIndex(null)
+  }
+
+  const handleCancel = () => {
+    setEditedProjects([...projects])
+    setIsEditing(false)
+    setEditingProjectIndex(null)
+  }
+
+  const handleAddProject = () => {
+    const newProject: ShowcaseProject = {
+      title: '',
+      role: '',
+      description: '',
+      skills: [],
+      thumbnail: '',
+      link: '',
+      media: [],
+    }
+
+    setEditedProjects([...editedProjects, newProject])
+    setEditingProjectIndex(editedProjects.length)
+  }
+
+  const handleRemoveProject = (index: number) => {
+    const updatedProjects = [...editedProjects]
+    updatedProjects.splice(index, 1)
+    setEditedProjects(updatedProjects)
+  }
+
+  const handleProjectChange = (
+    index: number,
+    field: keyof ShowcaseProject,
+    value: any,
+  ) => {
+    const updatedProjects = [...editedProjects]
+    updatedProjects[index] = {
+      ...updatedProjects[index],
+      [field]: value,
+    }
+    setEditedProjects(updatedProjects)
+  }
+
+  const handleSkillsChange = (index: number, skills: string[]) => {
+    handleProjectChange(index, 'skills', skills)
+  }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 p-5">
         <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
           <Briefcase className="mr-1.5 h-3.5 w-3.5 text-[#63B7B7]" />
-          Client Projects
+          Projects Showcase
         </h2>
-      </div>
 
-      <div className="px-5 pb-4 pt-6">
-        <div className="flex max-w-fit rounded-lg bg-[#e6f3f3] p-0.5">
-          {(['completed', 'ongoing'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                'relative rounded-md px-4 py-2 text-sm font-medium capitalize transition-all duration-200',
-                activeTab === tab
-                  ? 'text-white'
-                  : 'text-[#63B7B7] hover:text-[#4a8a8a]',
-              )}
-            >
-              {activeTab === tab && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute inset-0 rounded-md bg-[#63B7B7] shadow-sm"
-                  transition={{ type: 'spring', duration: 0.5 }}
-                  style={{ zIndex: 0 }}
-                />
-              )}
-              <span className="relative z-10">{tab} Projects</span>
-            </button>
-          ))}
-        </div>
+        {!isPublicView && isOwner && (
+          <>
+            {!isEditing ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleEdit}
+                className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#63B7B7]"
+              >
+                <Edit className="mr-1 !h-4 !w-4" />
+                Edit
+              </Button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCancel}
+                  className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
+                >
+                  <X className="mr-1 !h-4 !w-4" />
+                  Cancel
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSave}
+                  className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+                >
+                  <Check className="mr-1 !h-4 !w-4" />
+                  Save
+                </Button>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <div className="px-5 pb-5">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="space-y-6"
-          >
-            {filteredProjects.length > 0 ? (
-              filteredProjects.map((project, index) => (
+        {isEditing ? (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="editing"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              {editedProjects.map((project, index) => (
                 <motion.div
-                  key={`${project.title}-${index}`}
+                  key={index}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className={cn(
-                    'rounded-lg border border-gray-100 bg-white p-4 transition-colors hover:bg-gray-50/50',
-                    'group',
-                  )}
+                  className="relative rounded-lg border border-gray-200 p-4"
                 >
-                  <div className="flex flex-col space-y-3 sm:flex-row sm:justify-between sm:space-y-0">
-                    <div>
-                      <h4 className="font-medium text-gray-900">
-                        {project.title}
-                      </h4>
-                      <div className="mt-1 flex items-center text-sm">
-                        <span className="text-gray-600">{project.subtask}</span>
-                        <span className="mx-2 text-gray-300">•</span>
-                        <span className="font-medium text-[#63B7B7]">
-                          {project.price}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between sm:justify-end sm:space-x-3">
-                      <span className="rounded-full bg-[#f5fafa] px-3 py-1 text-xs text-gray-500">
-                        {project.date}
-                      </span>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 rounded-full opacity-70 group-hover:bg-[#e6f3f3] group-hover:opacity-100"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                          align="end"
-                          className="w-56 rounded-lg"
-                        >
-                          <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
-                            <Share className="h-4 w-4" />
-                            <span>Share Project</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
-                            <Download className="h-4 w-4" />
-                            <span>Export as PDF</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
-                            <Download className="h-4 w-4" />
-                            <span>Export as Docx</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="flex cursor-pointer items-center gap-2">
-                            <Archive className="h-4 w-4" />
-                            <span>Archive project</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="flex cursor-pointer items-center gap-2 text-red-500 focus:text-red-500">
-                            <Trash2 className="h-4 w-4" />
-                            <span>Delete project</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                  <div className="absolute right-2 top-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveProject(index)}
+                      className="h-8 w-8 rounded-full p-0 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
 
-                  {project.testimonial && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-4 rounded-lg border-l-2 border-[#63B7B7]/30 bg-[#f5fafa] px-4 py-3"
-                    >
-                      <div className="flex items-start gap-2">
-                        <Quote className="mt-1 h-4 w-4 flex-shrink-0 text-[#63B7B7] opacity-70" />
-                        <div className="flex-1">
-                          <div className="mb-1 flex gap-1">
-                            {Array.from({ length: 5 }).map((_, i) => {
-                              const rating = project.testimonial?.rating || 0
+                  <div className="space-y-4">
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Project Title
+                      </label>
+                      <Input
+                        value={project.title}
+                        onChange={(e) =>
+                          handleProjectChange(index, 'title', e.target.value)
+                        }
+                        className="rounded-lg border border-gray-200 text-sm"
+                        placeholder="Enter project title"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Your Role
+                      </label>
+                      <Input
+                        value={project.role}
+                        onChange={(e) =>
+                          handleProjectChange(index, 'role', e.target.value)
+                        }
+                        className="rounded-lg border border-gray-200 text-sm"
+                        placeholder="Enter your role in the project"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Description
+                      </label>
+                      <Textarea
+                        value={project.description}
+                        onChange={(e) =>
+                          handleProjectChange(
+                            index,
+                            'description',
+                            e.target.value,
+                          )
+                        }
+                        className="min-h-[100px] rounded-lg border border-gray-200 text-sm"
+                        placeholder="Describe the project and your contributions"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Skills Used
+                      </label>
+                      <SkillSelector
+                        skills={project.skills}
+                        handleSkills={(skills) =>
+                          handleSkillsChange(index, skills)
+                        }
+                        maxSkills={10}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Contract Link (Optional)
+                      </label>
+                      <Input
+                        value={project.contractLink || ''}
+                        onChange={(e) =>
+                          handleProjectChange(
+                            index,
+                            'contractLink',
+                            e.target.value,
+                          )
+                        }
+                        className="rounded-lg border border-gray-200 text-sm"
+                        placeholder="Link to the contract in the platform"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Project Link (Optional)
+                      </label>
+                      <Input
+                        value={project.link || ''}
+                        onChange={(e) =>
+                          handleProjectChange(index, 'link', e.target.value)
+                        }
+                        className="rounded-lg border border-gray-200 text-sm"
+                        placeholder="Link to the project"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-1 block text-xs font-medium text-gray-500">
+                        Thumbnail Image (Optional)
+                      </label>
+                      <ImageUpload
+                        initialURL={project.thumbnail || ''}
+                        setUploadedURL={(url) =>
+                          handleProjectChange(index, 'thumbnail', url)
+                        }
+                        label="Add thumbnail"
+                        aspectRatio="rectangle"
+                        size="lg"
+                        className="mb-2"
+                      />
+                    </div>
+
+                    <div>
+                      <MultiImageUpload
+                        images={project.media || []}
+                        onImagesChange={(images) =>
+                          handleProjectChange(index, 'media', images)
+                        }
+                        maxImages={10}
+                        label="Project Media (Optional)"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="viewing"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-8"
+            >
+              {projects.length > 0 ? (
+                projects.map((project, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    className="group relative overflow-hidden rounded-lg border border-gray-100 transition-all hover:border-gray-200 hover:shadow-md"
+                  >
+                    {project.thumbnail && (
+                      <div className="h-48 w-full overflow-hidden">
+                        <img
+                          src={project.thumbnail}
+                          alt={project.title}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement
+                            target.src =
+                              'https://placehold.co/800x400/e6f3f3/63B7B7?text=Project+Thumbnail'
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    <div className="p-5">
+                      <h3 className="mb-1 text-lg font-medium text-gray-900">
+                        {project.title}
+                      </h3>
+                      <p className="mb-3 text-sm font-medium text-[#63B7B7]">
+                        {project.role}
+                      </p>
+
+                      <p className="mb-4 text-sm text-gray-600">
+                        {project.description}
+                      </p>
+
+                      {project.skills && project.skills.length > 0 && (
+                        <div className="mb-4 flex flex-wrap gap-2">
+                          {project.skills.map((skill, skillIndex) => (
+                            <span
+                              key={skillIndex}
+                              className="rounded-full bg-[#f5fafa] px-3 py-1 text-xs text-[#3A97A0]"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex flex-wrap gap-4">
+                        {project.link && (
+                          <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-xs font-medium text-[#63B7B7] hover:underline"
+                          >
+                            <LinkIcon className="mr-1 h-3 w-3" />
+                            View Project
+                          </a>
+                        )}
+
+                        {project.contractLink && (
+                          <a
+                            href={project.contractLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-xs font-medium text-[#63B7B7] hover:underline"
+                          >
+                            <Briefcase className="mr-1 h-3 w-3" />
+                            View Contract
+                          </a>
+                        )}
+                      </div>
+
+                      {project.media && project.media.length > 0 && (
+                        <div className="mt-4 border-t border-gray-100 pt-4">
+                          <p className="mb-2 text-xs font-medium text-gray-500">
+                            Project Media
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {project.media.map((mediaUrl, mediaIndex) => {
+                              const isPdf = mediaUrl
+                                .toLowerCase()
+                                .endsWith('.pdf')
+
                               return (
-                                <Star
-                                  key={i}
-                                  className={`h-3 w-3 ${i < Math.floor(rating) ? 'fill-[#FFD580] text-[#FFD580]' : i < rating ? 'fill-[#FFD580]/50 text-[#FFD580]' : 'text-gray-200'}`}
-                                />
+                                <div
+                                  key={mediaIndex}
+                                  className="relative h-16 w-16 overflow-hidden rounded border border-gray-200"
+                                >
+                                  {isPdf ? (
+                                    <a
+                                      href={mediaUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex h-full w-full flex-col items-center justify-center bg-gray-50 hover:bg-gray-100"
+                                    >
+                                      <FileText className="h-6 w-6 text-[#63B7B7]" />
+                                      <span className="mt-1 text-[8px] text-gray-500">
+                                        PDF
+                                      </span>
+                                    </a>
+                                  ) : (
+                                    <img
+                                      src={mediaUrl}
+                                      alt={`Project media ${mediaIndex}`}
+                                      className="h-full w-full object-cover"
+                                      onError={(e) => {
+                                        const target =
+                                          e.target as HTMLImageElement
+                                        target.src =
+                                          'https://placehold.co/64x64/e6f3f3/63B7B7?text=Media'
+                                      }}
+                                    />
+                                  )}
+                                </div>
                               )
                             })}
                           </div>
-                          <p className="mb-1 text-sm italic text-gray-700">
-                            {project.testimonial.text}
-                          </p>
-                          <div className="text-xs text-gray-500">
-                            <span className="font-medium">
-                              {project.testimonial.author}
-                            </span>{' '}
-                            · {project.testimonial.company}
-                          </div>
                         </div>
-                      </div>
-                    </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="mb-4 rounded-full bg-[#f5fafa] p-3">
+                    <Briefcase className="h-6 w-6 text-[#63B7B7]" />
+                  </div>
+                  <h3 className="mb-1 text-lg font-medium text-gray-900">
+                    No showcase projects yet
+                  </h3>
+                  <p className="max-w-md text-sm text-gray-500">
+                    {isOwner
+                      ? 'Add your projects to showcase your skills and experience.'
+                      : "This professional hasn't added any showcase projects yet."}
+                  </p>
+                  {isOwner && !isPublicView && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        handleEdit()
+                        handleAddProject()
+                      }}
+                      className="mt-4 border-[#63B7B7] text-[#63B7B7] hover:bg-[#63B7B7]/10"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Project
+                    </Button>
                   )}
-                </motion.div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="mb-4 rounded-full bg-[#f5fafa] p-3">
-                  <Briefcase className="h-6 w-6 text-[#63B7B7]" />
                 </div>
-                <h3 className="mb-1 text-lg font-medium text-gray-900">
-                  No {activeTab} projects
-                </h3>
-                <p className="max-w-md text-sm text-gray-500">
-                  {activeTab === 'ongoing'
-                    ? "You don't have any ongoing projects at the moment."
-                    : "You don't have any completed projects yet."}
-                </p>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        )}
+        {isEditing && (
+          <Button
+            variant="outline"
+            onClick={handleAddProject}
+            className="w-full border-dashed border-gray-300 py-6 text-gray-500 hover:border-[#63B7B7] hover:text-[#63B7B7]"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add New Project
+          </Button>
+        )}
       </div>
     </div>
   )
