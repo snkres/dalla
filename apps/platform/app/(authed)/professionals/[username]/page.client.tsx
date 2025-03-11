@@ -3,7 +3,11 @@
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
-import { createShowCaseProject, updateProProfile, updateShowCaseProject } from '@lib/api/pro/profile'
+import {
+  createShowCaseProject,
+  updateProProfile,
+  updateShowCaseProject,
+} from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
 import ProfileSummary from './components/profile-summary'
 import { ProjectsSection } from './components/projects-section'
@@ -207,21 +211,18 @@ export function ProProfileClient({ username }: { username: string }) {
             isOwner={isOwner}
             onUpdate={async (updatedProjects) => {
               try {
-                // Create an array to store the final projects
                 const finalProjects: Array<{
-                  id: string;
-                  title: string;
-                  role: string;
-                  description: string;
-                  skills: string[];
-                  thumbnail: string;
-                  link: string;
-                  media: string[];
-                }> = [];
-                
-                // Process each project one by one to handle type safety
+                  id: string
+                  title: string
+                  role: string
+                  description: string
+                  skills: string[]
+                  thumbnail: string
+                  link: string
+                  media: string[]
+                }> = []
+
                 for (const project of updatedProjects) {
-                  // Ensure all required fields have values to match the expected type
                   const projectData = {
                     title: project.title,
                     role: project.role,
@@ -230,26 +231,28 @@ export function ProProfileClient({ username }: { username: string }) {
                     thumbnail: project.thumbnail || '',
                     link: project.link || '',
                     media: project.media || [],
-                  };
-                  
+                  }
+
                   if (project.id) {
-                    // Update existing project
-                    await updateShowCaseProject(profile.id, project.id, projectData);
-                    
-                    // Add the updated project to our final array
+                    await updateShowCaseProject(
+                      profile.id,
+                      project.id,
+                      projectData,
+                    )
+
                     finalProjects.push({
                       id: project.id,
-                      ...projectData
-                    });
+                      ...projectData,
+                    })
                   } else {
                     try {
-                      // Create new project and get the response
-                      const response = await createShowCaseProject(profile.id, projectData);
-                      
-                      // The response is the axios response object which has a data property
-                      // that contains the response from the server
-                      const newProject = response.data.data;
-                      
+                      const response = await createShowCaseProject(
+                        profile.id,
+                        projectData,
+                      )
+
+                      const newProject = response.data.data
+
                       finalProjects.push({
                         id: newProject.id,
                         title: newProject.title,
@@ -259,34 +262,32 @@ export function ProProfileClient({ username }: { username: string }) {
                         thumbnail: newProject.thumbnail,
                         link: newProject.link,
                         media: newProject.media,
-                      });
+                      })
                     } catch (error) {
-                      console.error("Failed to create project:", error);
-                      // Continue with other projects even if one fails
+                      console.error('Failed to create project:', error)
                     }
                   }
                 }
 
-                // Update the profile state with the updated projects
                 setProfile({
                   ...profile,
                   UserProfile: {
                     ...profile.UserProfile,
                     projects: finalProjects,
                   },
-                });
+                })
 
                 toast({
                   title: 'Projects updated successfully',
                   description: 'Your projects have been updated successfully',
-                });
+                })
               } catch (error) {
-                console.error('Failed to update projects:', error);
+                console.error('Failed to update projects:', error)
                 toast({
                   title: 'Update failed',
                   description: 'There was a problem updating your projects',
                   variant: 'destructive',
-                });
+                })
               }
             }}
           />
@@ -300,7 +301,7 @@ export function ProProfileClient({ username }: { username: string }) {
                   ...profile.UserProfile,
                   experience: updatedExperiences,
                 },
-              });
+              })
 
               handleProfileUpdate({
                 experience: updatedExperiences.map(
@@ -317,12 +318,6 @@ export function ProProfileClient({ username }: { username: string }) {
             isPublicView={isPublicView}
             isOwner={isOwner}
           />
-          <div
-            className="h-96 w-96 bg-red-900"
-            onClick={async () => {
-              await axiosInstance.get('/professionals/projects')
-            }}
-          ></div>
           <EducationSection
             education={profile?.UserProfile?.education || []}
             onUpdateEducation={(updatedEducation) => {
@@ -334,7 +329,7 @@ export function ProProfileClient({ username }: { username: string }) {
                   ...profile.UserProfile,
                   education: updatedEducation,
                 },
-              });
+              })
 
               handleProfileUpdate({
                 education: updatedEducation?.map(
