@@ -3,10 +3,10 @@
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
-import { updateProProfile } from '@lib/api/pro/profile'
+import { createShowCaseProject, updateProProfile } from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
 import ProfileSummary from './components/profile-summary'
-import ProjectsSection from './components/projects-section'
+import { ProjectsSection } from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
 import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
@@ -16,6 +16,7 @@ import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
+import { axiosInstance } from '@lib/api/instance'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
@@ -199,18 +200,39 @@ export function ProProfileClient({ username }: { username: string }) {
               })
             }}
           />
-          {/* {process.env.NODE_ENV === 'development' && (
-            <> */}
           <ProjectsSection
-            projects={[]}
+            projects={profile?.UserProfile?.projects || []}
+            proId={profile?.id || ''}
             isPublicView={isPublicView}
             isOwner={isOwner}
-            onUpdate={(updatedProjects) => {
-              handleProfileUpdate({
-                meta: {
-                  ...profile?.UserProfile?.meta,
-                  showcaseProjects: updatedProjects,
-                },
+            onUpdate={async (updatedProjects) => {
+              Promise.all(
+                updatedProjects.map(async (project) => {
+                  const res = await createShowCaseProject(profile.id, {
+                    title: project.title,
+                    role: project.role,
+                    description: project.description,
+                    skills: project.skills,
+                    thumbnail:
+                      project.thumbnail ||
+                      'https://avatars.githubusercontent.com/u/122938074?s=400&u=d36b34f35b24138ba8884345fc178ef0f0d7f7e0&v=4', // Provide empty string as default
+                    link: project.link || 'https://github.com', // Provide empty string as default
+                    media: project.media || [], // Provide empty array as default
+                  })
+                  return res.data
+                }),
+              ).then((res) => {
+                setProfile({
+                  ...profile,
+                  UserProfile: {
+                    ...profile.UserProfile,
+                    projects: res.map((p) => p.data),
+                  },
+                })
+                toast({
+                  title: 'Projects updated successfully',
+                  description: 'Your projects have been updated successfully',
+                })
               })
             }}
           />
@@ -243,6 +265,12 @@ export function ProProfileClient({ username }: { username: string }) {
             isPublicView={isPublicView}
             isOwner={isOwner}
           />
+          <div
+            className="h-96 w-96 bg-red-900"
+            onClick={async () => {
+              await axiosInstance.get('/professionals/projects')
+            }}
+          ></div>
           <EducationSection
             education={profile?.UserProfile?.education || []}
             onUpdateEducation={(updatedEducation) => {
