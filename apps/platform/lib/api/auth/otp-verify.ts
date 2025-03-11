@@ -11,13 +11,10 @@ export async function verify(payload: Payload) {
     .post<{
       success: boolean
       message: string
-      data: {
-        access_token: string
-        refresh_token: string
-      }
     }>('/auth/verify', payload)
-    .then((res) => res.data)
-
+    .then((res) => {
+      return res.data
+    })
   return res
 }
 

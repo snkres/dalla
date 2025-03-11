@@ -3,48 +3,54 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from './(components)/input-otp'
+import { InputOTP, InputOTPGroup, InputOTPSlot } from './(components)/input-otp'
 import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { verify } from '@lib/api/auth/otp-verify'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { globalAtom } from '@lib/atoms/global'
+import { useAtom } from 'jotai'
+
 export default function VerifyPage() {
   const router = useRouter()
+  const [global] = useAtom(globalAtom)
   const { toast } = useToast()
   const [verificationCode, setVerificationCode] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [mode, setMode] = useState('')
-  const [email, setEmail] = useState('')
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setEmail(localStorage.getItem('email') || '')
-      setMode(localStorage.getItem('mode') || '')
+    const email = global.email
+    const mode = global.mode
+    if (!email || !mode) {
+      router.push('/login')
+      return
     }
-  }, [])
+  }, [router, global])
 
   const handleVerificationSubmit = async () => {
     if (isSubmitting) return
+    if (verificationCode.length !== 4) {
+      toast({
+        title: 'Invalid code',
+        description: 'Please enter a 4-digit verification code',
+        variant: 'destructive',
+      })
+      return
+    }
 
     setIsSubmitting(true)
 
     try {
-      if (verificationCode.length === 4) {
-        const res = await verify({
-          email: email,
-          otp: verificationCode,
-          userType: mode === 'company' ? 'company' : 'user',
-        })
-        if (res.success) {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('access_token', res.data.access_token)
-          }
-        }
+      const res = await verify({
+        email: global.email,
+        otp: verificationCode,
+        userType: global.mode === 'company' ? 'company' : 'user',
+      })
+
+      if (res.success) {
+        router.push('/onboard')
+      } else {
+        throw new Error('Verification failed')
       }
     } catch (error) {
       toast({
@@ -58,13 +64,7 @@ export default function VerifyPage() {
   }
 
   const handlePrevious = () => {
-    router.push('/login')
-  }
-
-  const handleContinue = async () => {
-    await handleVerificationSubmit().then(() => {
-      router.push('/onboard')
-    })
+    router.back()
   }
 
   return (
@@ -91,7 +91,10 @@ export default function VerifyPage() {
         </motion.div>
 
         <form
-          onSubmit={handleVerificationSubmit}
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleVerificationSubmit()
+          }}
           className="flex flex-col items-center justify-center gap-6"
         >
           <motion.div
@@ -128,8 +131,8 @@ export default function VerifyPage() {
             isSubmitting={isSubmitting}
             previousText="Back"
             continueText="Verify email"
-            handleSubmit={() => handleContinue()}
-            isNextDisabled={false}
+            handleSubmit={handleVerificationSubmit}
+            isNextDisabled={verificationCode.length !== 4}
           />
         </form>
       </div>

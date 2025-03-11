@@ -107,7 +107,7 @@ export default function Page() {
             </AnimatePresence>
           </div>
           <ButtonsContainer
-            isNextDisabled={!isAbleToProceed}
+            // isNextDisabled={!isAbleToProceed}
             continueText={step === 3 ? 'Submit' : 'Proceed'}
             handlePrevious={handlePrevious}
             previousText={step === 1 ? 'Skip' : 'Back'}

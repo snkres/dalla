@@ -5,12 +5,14 @@ import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { useTransitionRouter } from 'next-view-transitions'
 import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
+import { globalAtom } from '@lib/atoms/global'
+import { useAtom } from 'jotai'
 
 export interface CompanyOnboardingData {
   // Step 1
   targetIndustries: string[]
   // Step 3
-  workPreference: string[]
+  goals: string[]
   areas: string[]
   website: string
   industry: string
@@ -60,6 +62,7 @@ export interface ProOnboardingData {
 }
 
 export function useOnboarding() {
+  const [global] = useAtom(globalAtom)
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const router = useTransitionRouter()
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
@@ -69,7 +72,7 @@ export function useOnboarding() {
   const [companyData, setCompanyData] = useState<CompanyOnboardingData>({
     areas: [],
     targetIndustries: [],
-    workPreference: [],
+    goals: [],
     website: '',
     industry: '',
     businessType: '',
@@ -106,8 +109,9 @@ export function useOnboarding() {
   const { toast } = useToast()
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setMode(localStorage.getItem('mode') || '')
+    const mode = global.mode
+    if (mode) {
+      setMode(mode as string)
     }
   }, [])
 
@@ -130,8 +134,10 @@ export function useOnboarding() {
 
       if (mode === 'company' && 'areas' in companyData!) {
         const res = await companyOnboarding({
+          headline: companyData.headline,
+          bio: companyData.bio,
           areas: companyData.areas,
-          goals: companyData.workPreference,
+          goals: companyData.goals,
           targetIndustries: companyData.targetIndustries,
           website: companyData.website,
           location: companyData.address,
@@ -213,7 +219,7 @@ export function useOnboarding() {
 
   const handleStepAction = () => {
     const isLastStep =
-      (mode === 'company' && step === 3) || (mode === 'pro' && step === 4)
+      (mode === 'company' && step === 3) || (mode === 'user' && step === 4)
 
     if (isLastStep) {
       handleSubmit()

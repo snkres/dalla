@@ -16,6 +16,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useQueryState } from 'nuqs'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useAtom } from 'jotai'
+import { globalAtom } from '@lib/atoms/global'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
@@ -30,6 +32,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export default function SignupPage() {
+  const [global, setGlobal] = useAtom(globalAtom)
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
@@ -53,15 +56,12 @@ export default function SignupPage() {
         username: data.username || '',
       })
       if (res.success) {
-        if (typeof window !== undefined) {
-          localStorage.setItem(
-            'mode',
-            mode === 'company' ? 'company' : 'professional',
-          )
-        }
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('email', data.email)
-        }
+        setGlobal({
+          mode: mode === 'company' ? 'company' : 'user',
+          email: data.email,
+          name: data.name,
+          username: data.username || '',
+        })
         router.push('/verify')
       }
     } catch (error) {

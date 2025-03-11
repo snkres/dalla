@@ -7,19 +7,23 @@ interface Payload {
 }
 
 export async function login(payload: Payload) {
-  let res = await axiosInstance.post<{
-    success: boolean
-    message: string
-    data: {
-      access_token: string
-    }
-  }>('/auth/login', payload)
-
-  if (res.data.data.access_token) {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('access_token', res.data.data.access_token)
-    }
-  }
+  let res = await axiosInstance
+    .post<{
+      success: boolean
+      message: string
+      data: {
+        id: string
+        access_token: string
+        refresh_token: string
+      }
+    }>('/auth/login', payload)
+    .then((res) => {
+      return res.data
+    })
+    .catch((err) => {
+      console.log(err)
+      throw err
+    })
 
   return res
 }

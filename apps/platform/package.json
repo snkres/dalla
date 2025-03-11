@@ -18,8 +18,10 @@
     "@dallah/utils": "workspace:*",
     "@radix-ui/react-toast": "^1.2.6",
     "class-variance-authority": "^0.7.1",
+    "cookies-next": "^5.1.0",
     "input-otp": "^1.4.1",
     "jotai": "^2.12.1",
+    "localforage": "^1.10.0",
     "lucide-react": "^0.468.0",
     "next": "15.0.3",
     "nuqs": "^2.2.3",
@@ -27,6 +29,7 @@
     "react-dom": "19.0.0",
     "react-icons": "^5.5.0",
     "react-lottie-player": "^2.1.0",
+    "react-pdf": "^9.2.1",
     "swiper": "^11.1.15"
   },
   "devDependencies": {

@@ -47,6 +47,8 @@
     "@fontsource-variable/sora": "^5.1.0",
     "@hookform/resolvers": "^3.9.1",
     "@next/eslint-plugin-next": "^15.0.3",
+    "@tanstack/react-query": "^5.67.1",
+    "@tanstack/react-query-devtools": "^5.67.1",
     "axios": "^1.7.9",
     "motion": "^11.15.0",
     "next-view-transitions": "^0.3.4",

@@ -16,12 +16,23 @@ export function CompanyOnboardingThree({
   setData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
   const handleToggle = (pref: string) => {
-    setData((prev) => ({
-      ...prev,
-      workPreference: prev.workPreference.includes(pref)
-        ? prev.workPreference.filter((p) => p !== pref)
-        : [...prev.workPreference, pref],
-    }))
+    setData((prev) => {
+      if (prev.goals.includes(pref)) {
+        return {
+          ...prev,
+          goals: prev.goals.filter((p) => p !== pref),
+        }
+      }
+
+      if (prev.goals.length < 3) {
+        return {
+          ...prev,
+          goals: [...prev.goals, pref],
+        }
+      }
+
+      return prev
+    })
   }
   return (
     <div className="bg-background">
@@ -36,10 +47,10 @@ export function CompanyOnboardingThree({
           className="mb-12 space-y-4 text-center"
         >
           <h1 className="text-2xl font-semibold text-gray-900">
-            What are your Work Prefrences?
+            What are your Company Goals?
           </h1>
           <p className="text-sm font-light text-gray-500">
-            Select the Prefrences that align with your professional journey
+            Select up to 3 Goals that align with your Company Goals
           </p>
         </motion.div>
 
@@ -57,7 +68,7 @@ export function CompanyOnboardingThree({
             >
               <GoalCard
                 option={option as GoalOption}
-                isSelected={data.workPreference.includes(option.label)}
+                isSelected={data.goals.includes(option.label)}
                 onToggle={handleToggle}
               />
             </motion.div>
