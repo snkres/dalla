@@ -15,11 +15,21 @@ export function AboutSection({
     industry: string
     headline: string
     bio: string
-    areas: string[]
+    areas: Array<{
+      name: string
+      description: string
+    }>
   }
   isPublicView: boolean
   isOwner: boolean
-  onUpdate: (data: { headline: string; bio: string; areas: string[] }) => void
+  onUpdate: (data: {
+    headline: string
+    bio: string
+    areas: Array<{
+      name: string
+      description: string
+    }>
+  }) => void
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedData, setEditedData] = useState({ ...data })
@@ -39,7 +49,7 @@ export function AboutSection({
     setIsEditing(false)
   }
 
-  const handleAreas = (areas: string[]) => {
+  const handleAreas = (areas: Array<{ name: string; description: string }>) => {
     // Limit areas to 30
     const limitedAreas = areas.slice(0, 30)
     setEditedData((prev) => ({ ...prev, areas: limitedAreas }))
@@ -153,20 +163,6 @@ export function AboutSection({
                 placeholder="Write a brief description about your company"
               />
             </div>
-
-            <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500">
-                Focus Areas
-              </label>
-              <SkillSelector
-                skills={editedData.areas}
-                handleSkills={handleAreas}
-                maxSkills={30}
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                Maximum 30 areas allowed
-              </p>
-            </div>
           </div>
         ) : (
           <div>
@@ -176,32 +172,6 @@ export function AboutSection({
 
             <p className="text-xs leading-relaxed text-gray-600">{data.bio}</p>
           </div>
-        )}
-      </div>
-
-      <div className="flex flex-col">
-        <div
-          ref={areasContainerRef}
-          className={`flex flex-wrap gap-2 p-4 ${!showAllAreas ? 'max-h-[60px] overflow-hidden' : ''}`}
-        >
-          {data.areas.map((area, index) => (
-            <Badge
-              key={index}
-              variant="outline"
-              className="!rounded-full border-[#BEDDF1]/30 !bg-[#BEDDF1]/10 text-xs !text-[#3A97A0] transition-colors duration-200 hover:!bg-[#BEDDF1]/20"
-            >
-              {area}
-            </Badge>
-          ))}
-        </div>
-
-        {hasAreasOverflow && (
-          <button
-            onClick={() => setShowAllAreas(!showAllAreas)}
-            className="mx-4 mb-2 self-start text-xs font-medium text-[#3A97A0] hover:text-[#63B7B7]"
-          >
-            {showAllAreas ? 'Show less' : 'Show all areas'}
-          </button>
         )}
       </div>
     </div>

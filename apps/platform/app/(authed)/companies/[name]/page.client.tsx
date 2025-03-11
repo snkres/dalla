@@ -3,7 +3,10 @@
 import { useAtom } from 'jotai'
 import { useQueryState } from 'nuqs'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { companyProfileAtom } from '@lib/atoms/company/profile'
+import {
+  type CompanyProfile,
+  companyProfileAtom,
+} from '@lib/atoms/company/profile'
 import { CompanyCard } from './components/company-card'
 import { updateCompanyProfile } from '@lib/api/company/profile'
 import { AboutSection } from './components/about-section'
@@ -25,89 +28,40 @@ export function CompanyProfileClient({ name }: { name: string }) {
   })
 
   const handleProfileUpdate = async (
-    updateData: any,
+    updateData: Partial<CompanyProfile['CompanyProfile']>,
     successMessage = 'Profile updated successfully',
   ) => {
     try {
-      console.log('updateData', updateData)
+      const { industry, size, type, phone, socialLinks, ...directFields } =
+        updateData as any
 
-      // Prepare the API payload with the correct structure
-      const apiPayload: Partial<{
-        headline: string
-        bio: string
-        areas: string[]
-        goals: string[]
-        location: string
-        website: string
-        meta: {
-          size: string
-          type: string
-          phone: string
-          industry: string
-          socialLinks: {
-            url: string
-            name: string
-          }
+      const metaUpdates = {
+        ...(industry && { industry }),
+        ...(size && { size }),
+        ...(type && { type }),
+        ...(phone && { phone }),
+        ...(socialLinks && { socialLinks }),
+      }
+
+      const apiPayload: any = { ...directFields }
+
+      if (Object.keys(metaUpdates).length > 0) {
+        apiPayload.meta = {
+          ...(profile?.CompanyProfile?.meta || {}),
+          ...metaUpdates,
         }
-      }> = {}
-
-      // Map fields to the correct structure
-      if (updateData.location) {
-        apiPayload.location = updateData.location
-      }
-
-      if (updateData.website) {
-        apiPayload.website = updateData.website
-      }
-
-      if (updateData.goals) {
-        apiPayload.goals = updateData.goals
-      }
-
-      if (updateData.areas) {
-        apiPayload.areas = updateData.areas
-      }
-
-      if (updateData.headline) {
-        apiPayload.headline = updateData.headline
-      }
-
-      if (updateData.bio) {
-        apiPayload.bio = updateData.bio
-      }
-
-      // Handle meta fields
-      apiPayload.meta = {
-        ...(profile?.CompanyProfile?.meta || {}),
-        ...(updateData.industry && { industry: updateData.industry }),
-        ...(updateData.size && { size: updateData.size }),
-        ...(updateData.type && { type: updateData.type }),
-        ...(updateData.phone && { phone: updateData.phone }),
-        ...(updateData.socialLinks && { socialLinks: updateData.socialLinks }),
       }
 
       await updateCompanyProfile(apiPayload)
 
-      // Update local state
       setProfile({
         ...profile,
         CompanyProfile: {
           ...profile.CompanyProfile,
-          ...(updateData.headline && { headline: updateData.headline }),
-          ...(updateData.bio && { bio: updateData.bio }),
-          ...(updateData.areas && { areas: updateData.areas }),
-          ...(updateData.goals && { goals: updateData.goals }),
-          ...(updateData.location && { location: updateData.location }),
-          ...(updateData.website && { website: updateData.website }),
+          ...directFields,
           meta: {
-            ...profile.CompanyProfile.meta,
-            ...(updateData.industry && { industry: updateData.industry }),
-            ...(updateData.size && { size: updateData.size }),
-            ...(updateData.type && { type: updateData.type }),
-            ...(updateData.phone && { phone: updateData.phone }),
-            ...(updateData.socialLinks && {
-              socialLinks: updateData.socialLinks,
-            }),
+            ...(profile?.CompanyProfile?.meta || {}),
+            ...metaUpdates,
           },
         },
       })
@@ -142,7 +96,7 @@ export function CompanyProfileClient({ name }: { name: string }) {
               location: profile?.CompanyProfile?.location,
               website: profile?.CompanyProfile?.website,
               rating: profile?.CompanyProfile?.meta?.rating,
-              joinedAt: new Date().toISOString(),
+              joinedAt: new Date(profile.createdAt).toLocaleDateString(),
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
@@ -154,7 +108,11 @@ export function CompanyProfileClient({ name }: { name: string }) {
               email: profile?.email,
               website: profile?.CompanyProfile?.website,
               location: profile?.CompanyProfile?.location,
+              socialLinks: profile?.CompanyProfile?.meta?.socialLinks,
             }}
+            isOwner={isOwner}
+            isPublicView={isPublicView}
+            onUpdate={handleProfileUpdate}
           />
         </aside>
         <main className="space-y-6 lg:col-span-2">
@@ -180,12 +138,17 @@ export function CompanyProfileClient({ name }: { name: string }) {
             />
             <TargetIndustriesSection
               industries={profile?.CompanyProfile?.targetIndustries || []}
-              // isPublicView={isPublicView}
-              // isOwner={isOwner}
-              // onUpdate={handleProfileUpdate}
+              isPublicView={isPublicView}
+              isOwner={isOwner}
+              onUpdate={handleProfileUpdate}
             />
           </div>
-          <GoalsSection goals={profile?.CompanyProfile?.goals || []} />
+          <GoalsSection
+            goals={profile?.CompanyProfile?.goals || []}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
+            onUpdate={handleProfileUpdate}
+          />
         </main>
       </div>
     </div>
