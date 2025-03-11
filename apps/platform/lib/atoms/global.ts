@@ -1,4 +1,4 @@
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithLocalForage } from './atom-with-localforge'
 
 interface GlobalAtom {
   mode: 'company' | 'user'
@@ -7,10 +7,7 @@ interface GlobalAtom {
   name: string
 }
 
-const storage = createJSONStorage<GlobalAtom>(() => sessionStorage)
-
-export const globalAtom = atomWithStorage<GlobalAtom>(
-  'global',
+export const globalAtom = atomWithLocalForage<GlobalAtom>(
+  'dalla:global',
   {} as GlobalAtom,
-  storage,
 )

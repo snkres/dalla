@@ -1,4 +1,5 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithLocalForage } from '../atom-with-localforge'
 
 export interface CompanyProfile {
   id: string
@@ -31,10 +32,7 @@ export interface CompanyProfile {
   }
 }
 
-const storage = createJSONStorage<CompanyProfile>(() => sessionStorage)
-
-export const companyProfileAtom = atomWithStorage<CompanyProfile>(
-  'profile',
+export const companyProfileAtom = atomWithLocalForage<CompanyProfile>(
+  'dalla:company:profile',
   {} as CompanyProfile,
-  storage,
 )

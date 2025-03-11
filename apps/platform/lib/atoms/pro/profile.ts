@@ -1,4 +1,5 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithLocalForage } from '../atom-with-localforge'
 
 export interface ProProfile {
   id: string
@@ -75,10 +76,7 @@ export interface ProProfile {
   }
 }
 
-const storage = createJSONStorage<ProProfile>(() => sessionStorage)
-
-export const proProfileAtom = atomWithStorage<ProProfile>(
-  'profile',
+export const proProfileAtom = atomWithLocalForage<ProProfile>(
+  'dalla:pro:profile',
   {} as ProProfile,
-  storage,
 )
