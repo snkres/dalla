@@ -3,7 +3,7 @@
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
-import { createShowCaseProject, updateProProfile } from '@lib/api/pro/profile'
+import { createShowCaseProject, updateProProfile, updateShowCaseProject } from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
 import ProfileSummary from './components/profile-summary'
 import { ProjectsSection } from './components/projects-section'
@@ -206,39 +206,91 @@ export function ProProfileClient({ username }: { username: string }) {
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={async (updatedProjects) => {
-              Promise.all(
-                updatedProjects.map(async (project) => {
-                  const res = await createShowCaseProject(profile.id, {
+              try {
+                // Create an array to store the final projects
+                const finalProjects: Array<{
+                  id: string;
+                  title: string;
+                  role: string;
+                  description: string;
+                  skills: string[];
+                  thumbnail: string;
+                  link: string;
+                  media: string[];
+                }> = [];
+                
+                // Process each project one by one to handle type safety
+                for (const project of updatedProjects) {
+                  // Ensure all required fields have values to match the expected type
+                  const projectData = {
                     title: project.title,
                     role: project.role,
                     description: project.description,
                     skills: project.skills,
-                    thumbnail:
-                      project.thumbnail ||
-                      'https://avatars.githubusercontent.com/u/122938074?s=400&u=d36b34f35b24138ba8884345fc178ef0f0d7f7e0&v=4', // Provide empty string as default
-                    link: project.link || 'https://github.com', // Provide empty string as default
-                    media: project.media || [], // Provide empty array as default
-                  })
-                  return res.data
-                }),
-              ).then((res) => {
+                    thumbnail: project.thumbnail || '',
+                    link: project.link || '',
+                    media: project.media || [],
+                  };
+                  
+                  if (project.id) {
+                    // Update existing project
+                    await updateShowCaseProject(profile.id, project.id, projectData);
+                    
+                    // Add the updated project to our final array
+                    finalProjects.push({
+                      id: project.id,
+                      ...projectData
+                    });
+                  } else {
+                    try {
+                      // Create new project and get the response
+                      const response = await createShowCaseProject(profile.id, projectData);
+                      
+                      // The response is the axios response object which has a data property
+                      // that contains the response from the server
+                      const newProject = response.data.data;
+                      
+                      finalProjects.push({
+                        id: newProject.id,
+                        title: newProject.title,
+                        role: newProject.role,
+                        description: newProject.description,
+                        skills: newProject.skills,
+                        thumbnail: newProject.thumbnail,
+                        link: newProject.link,
+                        media: newProject.media,
+                      });
+                    } catch (error) {
+                      console.error("Failed to create project:", error);
+                      // Continue with other projects even if one fails
+                    }
+                  }
+                }
+
+                // Update the profile state with the updated projects
                 setProfile({
                   ...profile,
                   UserProfile: {
                     ...profile.UserProfile,
-                    projects: res.map((p) => p.data),
+                    projects: finalProjects,
                   },
-                })
+                });
+
                 toast({
                   title: 'Projects updated successfully',
                   description: 'Your projects have been updated successfully',
-                })
-              })
+                });
+              } catch (error) {
+                console.error('Failed to update projects:', error);
+                toast({
+                  title: 'Update failed',
+                  description: 'There was a problem updating your projects',
+                  variant: 'destructive',
+                });
+              }
             }}
           />
           <ReviewsSection />
-          {/* </>
-          )} */}
           <ExperienceSection
             experiences={profile?.UserProfile?.experience || []}
             onUpdate={(updatedExperiences) => {
@@ -248,7 +300,7 @@ export function ProProfileClient({ username }: { username: string }) {
                   ...profile.UserProfile,
                   experience: updatedExperiences,
                 },
-              })
+              });
 
               handleProfileUpdate({
                 experience: updatedExperiences.map(
@@ -282,7 +334,7 @@ export function ProProfileClient({ username }: { username: string }) {
                   ...profile.UserProfile,
                   education: updatedEducation,
                 },
-              })
+              });
 
               handleProfileUpdate({
                 education: updatedEducation?.map(

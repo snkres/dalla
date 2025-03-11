@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Briefcase,
   Edit,
@@ -24,7 +24,9 @@ import { MediaCarousel } from '@components/shared/media-carousel'
 import {
   deleteShowCaseProject,
   updateShowCaseProject,
+  createShowCaseProject,
 } from '@lib/api/pro/profile'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 interface ProjectsSectionProps {
   projects?: ShowcaseProject[]
@@ -41,31 +43,171 @@ export function ProjectsSection({
   onUpdate = () => {},
   proId,
 }: ProjectsSectionProps) {
+  const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [editingProjectIndex, setEditingProjectIndex] = useState<number | null>(
     null,
   )
-  const [editedProjects, setEditedProjects] =
-    useState<ShowcaseProject[]>(projects)
+  const [editedProjects, setEditedProjects] = useState<ShowcaseProject[]>([])
+  const [projectsToDelete, setProjectsToDelete] = useState<string[]>([])
   const [selectedProject, setSelectedProject] =
     useState<ShowcaseProject | null>(null)
   const [selectedProjectIndex, setSelectedProjectIndex] = useState<
     number | null
   >(null)
+  const [isSaving, setIsSaving] = useState(false)
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: { [field: string]: boolean }
+  }>({})
+
+  // Initialize editedProjects when projects prop changes or editing mode is entered
+  useEffect(() => {
+    if (isEditing) {
+      setEditedProjects([...projects])
+    }
+  }, [projects, isEditing])
 
   const handleEdit = () => {
     setEditedProjects([...projects])
+    setProjectsToDelete([])
     setIsEditing(true)
   }
 
-  const handleSave = () => {
-    setIsEditing(false)
-    setEditingProjectIndex(null)
-    onUpdate(editedProjects)
+  const validateProjects = () => {
+    const errors: { [key: number]: { [field: string]: boolean } } = {}
+    let isValid = true
+
+    editedProjects.forEach((project, index) => {
+      const projectErrors: { [field: string]: boolean } = {}
+
+      // Check required fields
+      if (!project.title.trim()) {
+        projectErrors.title = true
+        isValid = false
+      }
+
+      if (!project.role.trim()) {
+        projectErrors.role = true
+        isValid = false
+      }
+
+      if (!project.description.trim()) {
+        projectErrors.description = true
+        isValid = false
+      }
+
+      if (!project.skills || project.skills.length === 0) {
+        projectErrors.skills = true
+        isValid = false
+      }
+
+      if (!project.thumbnail) {
+        projectErrors.thumbnail = true
+        isValid = false
+      }
+
+      if (!project.link) {
+        projectErrors.link = true
+        isValid = false
+      }
+
+      // Only add to errors if there are any
+      if (Object.keys(projectErrors).length > 0) {
+        errors[index] = projectErrors
+      }
+    })
+
+    toast({
+      title: 'Fields are missing',
+      description: 'Please fill in all required fields.',
+      variant: 'destructive',
+    })
+
+    setValidationErrors(errors)
+    return isValid
+  }
+
+  const handleSave = async () => {
+    // Validate all projects first
+    if (!validateProjects()) {
+      // Show error message
+      return
+    }
+
+    try {
+      setIsSaving(true)
+
+      // First, delete any projects marked for deletion
+      const deletePromises = projectsToDelete.map((id) => {
+        if (id) return deleteShowCaseProject(proId, id)
+        return Promise.resolve()
+      })
+      await Promise.all(deletePromises)
+
+      // Process each project - create new ones or update existing ones
+      const updatedProjects = [...editedProjects]
+
+      // Keep track of projects that were successfully saved
+      const savedProjects: ShowcaseProject[] = []
+
+      // Process each project sequentially
+      for (let i = 0; i < editedProjects.length; i++) {
+        const project = editedProjects[i]
+
+        const projectData = {
+          title: project.title,
+          role: project.role,
+          description: project.description,
+          skills: project.skills,
+          thumbnail: project.thumbnail || '',
+          link: project.link || '',
+          media: project.media || [],
+          contractLink: project.contractLink,
+        }
+
+        try {
+          // If project has an ID, update it, otherwise create a new one
+          if (project.id) {
+            // Update existing project
+            await updateShowCaseProject(proId, project.id, projectData)
+            savedProjects.push({ ...project })
+          } else {
+            // Create new project
+            const response = await createShowCaseProject(proId, projectData)
+            // Update the ID if available from response
+            if (response && response.data) {
+              const newId = response.data.data.id
+              savedProjects.push({ ...project, id: newId })
+            } else {
+              // If no response, still keep the project in UI but without ID
+              savedProjects.push({ ...project })
+            }
+          }
+        } catch (error) {
+          console.error(`Error saving project at index ${i}:`, error)
+          // Still add the project to keep UI consistent
+          savedProjects.push({ ...project })
+        }
+      }
+
+      // Update parent component with the saved projects
+      onUpdate(savedProjects)
+
+      // Reset state
+      setIsEditing(false)
+      setEditingProjectIndex(null)
+      setProjectsToDelete([])
+      setEditedProjects(savedProjects)
+    } catch (error) {
+      console.error('Error saving projects:', error)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleCancel = () => {
     setEditedProjects([...projects])
+    setProjectsToDelete([])
     setIsEditing(false)
     setEditingProjectIndex(null)
   }
@@ -86,14 +228,16 @@ export function ProjectsSection({
     setEditingProjectIndex(editedProjects.length)
   }
 
-  const handleRemoveProject = async (index: number) => {
+  const handleRemoveProject = (index: number) => {
+    const projectToRemove = editedProjects[index]
     const updatedProjects = [...editedProjects]
     updatedProjects.splice(index, 1)
     setEditedProjects(updatedProjects)
-    const res = await deleteShowCaseProject(
-      proId,
-      editedProjects[index].id || '',
-    )
+
+    // If the project has an ID, add it to the list of projects to delete on save
+    if (projectToRemove.id) {
+      setProjectsToDelete([...projectsToDelete, projectToRemove.id])
+    }
   }
 
   const handleProjectChange = (
@@ -107,21 +251,6 @@ export function ProjectsSection({
       [field]: value,
     }
     setEditedProjects(updatedProjects)
-
-    if (!editedProjects[index].id) return
-
-    const projectData = {
-      title: updatedProjects[index].title,
-      role: updatedProjects[index].role,
-      description: updatedProjects[index].description,
-      skills: updatedProjects[index].skills,
-      thumbnail: updatedProjects[index].thumbnail || '',
-      link: updatedProjects[index].link || '',
-      media: updatedProjects[index].media || [],
-      contractLink: updatedProjects[index].contractLink,
-    }
-
-    updateShowCaseProject(proId, editedProjects[index].id, projectData)
   }
 
   const handleSkillsChange = (index: number, skills: string[]) => {
@@ -173,10 +302,17 @@ export function ProjectsSection({
                   variant="ghost"
                   size="sm"
                   onClick={handleSave}
+                  disabled={isSaving}
                   className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
                 >
-                  <Check className="mr-1 !h-4 !w-4" />
-                  Save
+                  {isSaving ? (
+                    <span>Saving...</span>
+                  ) : (
+                    <>
+                      <Check className="mr-1 !h-4 !w-4" />
+                      Save
+                    </>
+                  )}
                 </Button>
               </div>
             )}
@@ -229,9 +365,18 @@ export function ProjectsSection({
                                 e.target.value,
                               )
                             }
-                            className="rounded-lg border border-gray-200 text-sm"
+                            className={`rounded-lg border ${
+                              validationErrors[index]?.title
+                                ? 'border-red-500 focus-visible:ring-red-500'
+                                : 'border-gray-200'
+                            } text-sm`}
                             placeholder="Enter project title"
                           />
+                          {validationErrors[index]?.title && (
+                            <p className="mt-1 text-xs text-red-500">
+                              Project title is required
+                            </p>
+                          )}
                         </div>
 
                         <div>
@@ -243,9 +388,18 @@ export function ProjectsSection({
                             onChange={(e) =>
                               handleProjectChange(index, 'role', e.target.value)
                             }
-                            className="rounded-lg border border-gray-200 text-sm"
+                            className={`rounded-lg border ${
+                              validationErrors[index]?.role
+                                ? 'border-red-500 focus-visible:ring-red-500'
+                                : 'border-gray-200'
+                            } text-sm`}
                             placeholder="Enter your role in the project"
                           />
+                          {validationErrors[index]?.role && (
+                            <p className="mt-1 text-xs text-red-500">
+                              Your role is required
+                            </p>
+                          )}
                         </div>
 
                         <div>
@@ -261,9 +415,18 @@ export function ProjectsSection({
                                 e.target.value,
                               )
                             }
-                            className="min-h-[120px] rounded-lg border border-gray-200 text-sm"
+                            className={`min-h-[120px] rounded-lg border ${
+                              validationErrors[index]?.description
+                                ? 'border-red-500 focus-visible:ring-red-500'
+                                : 'border-gray-200'
+                            } text-sm`}
                             placeholder="Describe the project and your contributions"
                           />
+                          {validationErrors[index]?.description && (
+                            <p className="mt-1 text-xs text-red-500">
+                              Description is required
+                            </p>
+                          )}
                         </div>
 
                         <div>
@@ -277,6 +440,11 @@ export function ProjectsSection({
                             }
                             maxSkills={10}
                           />
+                          {validationErrors[index]?.skills && (
+                            <p className="mt-1 text-xs text-red-500">
+                              Skills are required
+                            </p>
+                          )}
                           <p className="mt-1 text-xs text-gray-400">
                             Add up to 10 relevant skills
                           </p>
@@ -298,6 +466,11 @@ export function ProjectsSection({
                             size="lg"
                             className="mb-2"
                           />
+                          {validationErrors[index]?.thumbnail && (
+                            <p className="mt-1 text-xs text-red-500">
+                              Thumbnail is required
+                            </p>
+                          )}
                           <p className="mt-1 text-xs text-gray-400">
                             Recommended size: 800x400px
                           </p>
@@ -320,10 +493,19 @@ export function ProjectsSection({
                                   e.target.value,
                                 )
                               }
-                              className="flex-1 border-0 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+                              className={`flex-1 border-0 text-sm focus-visible:ring-0 focus-visible:ring-offset-0 ${
+                                validationErrors[index]?.link
+                                  ? 'border-red-500 focus-visible:ring-red-500'
+                                  : ''
+                              }`}
                               placeholder="https://example.com"
                             />
                           </div>
+                          {validationErrors[index]?.link && (
+                            <p className="mt-1 text-xs text-red-500">
+                              Project link is required
+                            </p>
+                          )}
                         </div>
 
                         <div>
