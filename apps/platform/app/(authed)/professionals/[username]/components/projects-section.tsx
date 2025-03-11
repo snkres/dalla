@@ -108,7 +108,6 @@ export function ProjectsSection({
     }
     setEditedProjects(updatedProjects)
 
-    // Skip API call if the project doesn't have an ID yet (new project)
     if (!editedProjects[index].id) return
 
     const projectData = {
