@@ -60,7 +60,6 @@ export function ProjectsSection({
     [key: number]: { [field: string]: boolean }
   }>({})
 
-  // Initialize editedProjects when projects prop changes or editing mode is entered
   useEffect(() => {
     if (isEditing) {
       setEditedProjects([...projects])
@@ -128,29 +127,21 @@ export function ProjectsSection({
   }
 
   const handleSave = async () => {
-    // Validate all projects first
     if (!validateProjects()) {
-      // Show error message
       return
     }
 
     try {
       setIsSaving(true)
 
-      // First, delete any projects marked for deletion
       const deletePromises = projectsToDelete.map((id) => {
         if (id) return deleteShowCaseProject(proId, id)
         return Promise.resolve()
       })
       await Promise.all(deletePromises)
 
-      // Process each project - create new ones or update existing ones
-      const updatedProjects = [...editedProjects]
-
-      // Keep track of projects that were successfully saved
       const savedProjects: ShowcaseProject[] = []
 
-      // Process each project sequentially
       for (let i = 0; i < editedProjects.length; i++) {
         const project = editedProjects[i]
 
@@ -166,34 +157,28 @@ export function ProjectsSection({
         }
 
         try {
-          // If project has an ID, update it, otherwise create a new one
           if (project.id) {
-            // Update existing project
             await updateShowCaseProject(proId, project.id, projectData)
             savedProjects.push({ ...project })
           } else {
-            // Create new project
             const response = await createShowCaseProject(proId, projectData)
-            // Update the ID if available from response
+
             if (response && response.data) {
               const newId = response.data.data.id
               savedProjects.push({ ...project, id: newId })
             } else {
-              // If no response, still keep the project in UI but without ID
               savedProjects.push({ ...project })
             }
           }
         } catch (error) {
           console.error(`Error saving project at index ${i}:`, error)
-          // Still add the project to keep UI consistent
+
           savedProjects.push({ ...project })
         }
       }
 
-      // Update parent component with the saved projects
       onUpdate(savedProjects)
 
-      // Reset state
       setIsEditing(false)
       setEditingProjectIndex(null)
       setProjectsToDelete([])
@@ -234,7 +219,6 @@ export function ProjectsSection({
     updatedProjects.splice(index, 1)
     setEditedProjects(updatedProjects)
 
-    // If the project has an ID, add it to the list of projects to delete on save
     if (projectToRemove.id) {
       setProjectsToDelete([...projectsToDelete, projectToRemove.id])
     }
