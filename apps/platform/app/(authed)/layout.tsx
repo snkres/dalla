@@ -4,62 +4,66 @@ import { getCompanyProfile } from '@lib/api/company/profile'
 import { getProProfile } from '@lib/api/pro/profile'
 import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
 import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
-import { getCookie, setCookie } from 'cookies-next'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@dallah/utils'
 import { useEffect } from 'react'
+import { globalAtom } from '@lib/atoms/global'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const [global, setGlobal] = useAtom(globalAtom)
   const router = useTransitionRouter()
-  const mode = getCookie('mode')
   const [_, setProProfile] = useAtom(proProfileAtom)
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const { data, isFetched } = useQuery({
-    queryKey: [
-      'profile',
-      mode,
-      mode === 'user' ? getCookie('username') : getCookie('name'),
-    ],
+    queryKey: ['profile'],
     staleTime: Infinity,
+    //@ts-ignore
+    cacheTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     queryFn: async () => {
-      if (mode === 'user') {
+      if (global.mode === 'user') {
         const res = await getProProfile()
         return res.data.data
-      } else {
+      } else if (global.mode === 'company') {
         const res = await getCompanyProfile()
         return res.data.data
       }
     },
+    enabled: !!global.mode,
   })
 
   useEffect(() => {
     if (!data) return
 
-    if (mode === 'user') {
+    if (global.mode === 'user') {
+      setGlobal({
+        ...global,
+        email: (data as ProProfile).email,
+        username: (data as ProProfile).username || '',
+        name: (data as ProProfile).name || '',
+        mode: 'user',
+      })
       setProProfile(data as ProProfile)
-      if (!data.onboarded) {
+      if (!(data as ProProfile).onboarded) {
         router.push('/onboard')
       }
-      setCookie('username', (data as ProProfile).username, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 30,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-      })
     } else {
+      setGlobal({
+        ...global,
+        email: (data as CompanyProfile).email,
+        username: '',
+        name: (data as CompanyProfile).name || '',
+        mode: 'company',
+      })
       setCompanyProfile(data as CompanyProfile)
-      if (!data.onboarded) {
+      if (!(data as CompanyProfile).onboarded) {
         router.push('/onboard')
       }
-      setCookie('name', (data as CompanyProfile).name, {
-        httpOnly: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 30,
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-      })
     }
   }, [data, isFetched])
 

@@ -17,6 +17,8 @@ import { login } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { globalAtom } from '@lib/atoms/global'
+import { useAtom } from 'jotai'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -27,6 +29,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
+  const [global, setGlobal] = useAtom(globalAtom)
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
@@ -43,8 +46,12 @@ export default function LoginPage() {
   const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
-    console.log(data)
     try {
+      setGlobal({
+        ...global,
+        mode: mode === 'company' ? 'company' : 'user',
+        email: data.email,
+      })
       const res = await login({
         email: data.email,
         password: data.password,

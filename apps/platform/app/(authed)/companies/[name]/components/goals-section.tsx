@@ -1,37 +1,37 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Target, Edit, Check, X, Plus, Trash2 } from 'lucide-react'
+import { Goal, Edit, Check, X, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { toast } from '@dallah/design-system/ui/toast/use-toast'
 
-interface Industry {
+interface GoalType {
   name: string
   description: string
 }
 
-export function TargetIndustriesSection({
-  industries,
+export function GoalsSection({
+  goals,
   isPublicView,
   isOwner,
   onUpdate,
 }: {
-  industries: Industry[]
+  goals: GoalType[]
   isPublicView?: boolean
   isOwner: boolean
-  onUpdate?: (updatedData: { targetIndustries: Industry[] }) => void
+  onUpdate?: (updatedData: { goals: GoalType[] }) => void
 }) {
   const [isEditing, setIsEditing] = useState(false)
-  const [editedIndustries, setEditedIndustries] = useState<Industry[]>([])
+  const [editedGoals, setEditedGoals] = useState<GoalType[]>([])
   const nameInputRef = useRef<HTMLInputElement>(null)
-  const MAX_INDUSTRIES = 3
+  const MAX_GOALS = 3
 
   const handleEdit = () => {
-    setEditedIndustries(
-      industries.length > 0
-        ? [...industries.slice(0, MAX_INDUSTRIES)]
+    setEditedGoals(
+      goals.length > 0
+        ? [...goals.slice(0, MAX_GOALS)]
         : [{ name: '', description: '' }],
     )
     setIsEditing(true)
@@ -39,20 +39,18 @@ export function TargetIndustriesSection({
   }
 
   const handleSave = () => {
-    const validIndustries = editedIndustries.filter(
-      (industry) => industry.name.trim() !== '',
-    )
+    const validGoals = editedGoals.filter((goal) => goal.name.trim() !== '')
 
-    if (validIndustries.length === 0) {
+    if (validGoals.length === 0) {
       toast({
         title: 'Validation Error',
-        description: 'Please add at least one industry with a name',
+        description: 'Please add at least one goal with a name',
         variant: 'destructive',
       })
       return
     }
 
-    onUpdate?.({ targetIndustries: validIndustries })
+    onUpdate?.({ goals: validGoals })
     setIsEditing(false)
   }
 
@@ -60,12 +58,12 @@ export function TargetIndustriesSection({
     setIsEditing(false)
   }
 
-  const addIndustry = () => {
-    if (editedIndustries.length < MAX_INDUSTRIES) {
-      setEditedIndustries([...editedIndustries, { name: '', description: '' }])
+  const addGoal = () => {
+    if (editedGoals.length < MAX_GOALS) {
+      setEditedGoals([...editedGoals, { name: '', description: '' }])
       setTimeout(() => {
         const inputs = document.querySelectorAll(
-          'input[placeholder="Industry name"]',
+          'input[placeholder="Goal name"]',
         )
         const lastInput = inputs[inputs.length - 1] as HTMLInputElement
         lastInput?.focus()
@@ -73,30 +71,24 @@ export function TargetIndustriesSection({
     }
   }
 
-  const removeIndustry = (index: number) => {
-    setEditedIndustries(editedIndustries.filter((_, i) => i !== index))
+  const removeGoal = (index: number) => {
+    setEditedGoals(editedGoals.filter((_, i) => i !== index))
   }
 
-  const updateIndustry = (
-    index: number,
-    field: keyof Industry,
-    value: string,
-  ) => {
-    const updatedIndustries = [...editedIndustries]
-    updatedIndustries[index] = { ...updatedIndustries[index], [field]: value }
-    setEditedIndustries(updatedIndustries)
+  const updateGoal = (index: number, field: keyof GoalType, value: string) => {
+    const updatedGoals = [...editedGoals]
+    updatedGoals[index] = { ...updatedGoals[index], [field]: value }
+    setEditedGoals(updatedGoals)
   }
 
-  const displayIndustries = isEditing
-    ? editedIndustries
-    : industries.slice(0, MAX_INDUSTRIES)
+  const displayGoals = isEditing ? editedGoals : goals.slice(0, MAX_GOALS)
 
   return (
-    <div className="h-full rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="flex items-center gap-1.5 text-sm font-medium text-gray-800">
-          <Target className="h-4 w-4 text-[#3A97A0]" />
-          Target Industries
+    <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="flex items-center gap-1.5 text-base font-medium text-gray-800">
+          <Goal className="h-4 w-4 text-[#3A97A0]" />
+          Company Goals
         </h3>
 
         {!isPublicView && isOwner && (
@@ -142,23 +134,23 @@ export function TargetIndustriesSection({
       {isEditing ? (
         <div className="space-y-4">
           <p className="text-xs text-gray-500">
-            Add up to {MAX_INDUSTRIES} target industries:
+            Add up to {MAX_GOALS} company goals:
           </p>
 
           <div className="space-y-4">
-            {editedIndustries.map((industry, index) => (
+            {editedGoals.map((goal, index) => (
               <div
                 key={index}
                 className="rounded-lg border border-gray-100 p-4"
               >
                 <div className="mb-3 flex items-center justify-between">
                   <h4 className="text-xs font-medium text-gray-700">
-                    Industry {index + 1}
+                    Goal {index + 1}
                   </h4>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => removeIndustry(index)}
+                    onClick={() => removeGoal(index)}
                     className="h-7 w-7 rounded-full p-0 text-gray-400 hover:bg-red-50 hover:text-red-500"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -169,22 +161,22 @@ export function TargetIndustriesSection({
                   <div>
                     <Input
                       ref={index === 0 ? nameInputRef : undefined}
-                      value={industry.name}
+                      value={goal.name}
                       onChange={(e) =>
-                        updateIndustry(index, 'name', e.target.value)
+                        updateGoal(index, 'name', e.target.value)
                       }
-                      placeholder="Industry name"
+                      placeholder="Goal name"
                       className="h-9 text-xs"
                     />
                   </div>
 
                   <div>
                     <Textarea
-                      value={industry.description}
+                      value={goal.description}
                       onChange={(e) =>
-                        updateIndustry(index, 'description', e.target.value)
+                        updateGoal(index, 'description', e.target.value)
                       }
-                      placeholder="Brief description of this industry"
+                      placeholder="Brief description of this goal"
                       className="min-h-[80px] text-xs"
                     />
                   </div>
@@ -193,34 +185,34 @@ export function TargetIndustriesSection({
             ))}
           </div>
 
-          {editedIndustries.length < MAX_INDUSTRIES && (
+          {editedGoals.length < MAX_GOALS && (
             <Button
               variant="outline"
               size="sm"
-              onClick={addIndustry}
+              onClick={addGoal}
               className="mt-2 w-full border-dashed border-[#3A97A0]/30 text-xs text-[#3A97A0] hover:border-[#3A97A0] hover:bg-[#3A97A0]/5"
             >
               <Plus className="mr-1 h-3.5 w-3.5" />
-              Add Industry {editedIndustries.length + 1}
+              Add Goal {editedGoals.length + 1}
             </Button>
           )}
 
-          {editedIndustries.length === MAX_INDUSTRIES && (
+          {editedGoals.length === MAX_GOALS && (
             <p className="text-center text-xs italic text-gray-500">
-              Maximum of {MAX_INDUSTRIES} industries reached
+              Maximum of {MAX_GOALS} goals reached
             </p>
           )}
         </div>
       ) : (
-        <div className="space-y-3">
-          {displayIndustries.length > 0 ? (
-            displayIndustries.map((industry, index) => (
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+          {displayGoals.length > 0 ? (
+            displayGoals.map((goal, index) => (
               <div
                 key={index}
-                className="rounded-lg bg-[#BEDDF1]/10 p-3 transition-colors duration-200 hover:bg-[#BEDDF1]/25"
+                className="rounded-xl bg-[#BEDDF1]/10 p-4 transition-colors duration-200 hover:bg-[#BEDDF1]/15"
               >
-                <div className="flex items-start gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#BEDDF1]/40">
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#BEDDF1]/30">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -231,28 +223,25 @@ export function TargetIndustriesSection({
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="h-3.5 w-3.5 text-[#3A97A0]"
+                      className="h-4 w-4 text-[#3A97A0]"
                     >
                       <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="8 12 12 16 16 12"></polyline>
-                      <line x1="12" y1="8" x2="12" y2="16"></line>
+                      <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-800">
-                      {industry.name}
-                    </h4>
-                    <p className="mt-1 text-xs text-gray-600">
-                      {industry.description || 'No description provided.'}
-                    </p>
-                  </div>
+                  <h4 className="mb-1 text-xs font-medium text-gray-800">
+                    {goal.name}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    {goal.description || 'No description provided.'}
+                  </p>
                 </div>
               </div>
             ))
           ) : (
-            <div className="flex h-24 items-center justify-center">
+            <div className="col-span-3 flex h-24 items-center justify-center">
               <p className="text-center text-sm text-gray-500">
-                No target industries added yet.
+                No company goals added yet.
               </p>
             </div>
           )}

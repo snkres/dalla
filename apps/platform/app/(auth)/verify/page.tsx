@@ -8,25 +8,24 @@ import { ButtonsContainer } from '@lib/constants/ButtonsContianer'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { verify } from '@lib/api/auth/otp-verify'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { getCookie, setCookie } from 'cookies-next'
+import { globalAtom } from '@lib/atoms/global'
+import { useAtom } from 'jotai'
+
 export default function VerifyPage() {
   const router = useRouter()
+  const [global] = useAtom(globalAtom)
   const { toast } = useToast()
   const [verificationCode, setVerificationCode] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [mode, setMode] = useState('')
-  const [email, setEmail] = useState('')
 
   useEffect(() => {
-    const email = getCookie('email')
-    const mode = getCookie('mode')
+    const email = global.email
+    const mode = global.mode
     if (!email || !mode) {
       router.push('/login')
       return
     }
-    setEmail(email as string)
-    setMode(mode as string)
-  }, [router])
+  }, [router, global])
 
   const handleVerificationSubmit = async () => {
     if (isSubmitting) return
@@ -43,9 +42,9 @@ export default function VerifyPage() {
 
     try {
       const res = await verify({
-        email: email,
+        email: global.email,
         otp: verificationCode,
-        userType: mode === 'company' ? 'company' : 'user',
+        userType: global.mode === 'company' ? 'company' : 'user',
       })
 
       if (res.success) {

@@ -1,4 +1,5 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
+import { atomWithLocalForage } from '../atom-with-localforge'
 
 export interface ProProfile {
   id: string
@@ -62,39 +63,20 @@ export interface ProProfile {
       createdAt: string
       updatedAt: string
     }>
+    projects: Array<{
+      id: string
+      title: string
+      role: string
+      description: string
+      skills: Array<string>
+      thumbnail: string
+      link: string
+      media: Array<string>
+    }>
   }
 }
 
-export const proProfileAtom = atomWithStorage<ProProfile>('profile', {
-  id: '',
-  name: '',
-  username: '',
-  email: '',
-  password: '', // Added missing password property
-  onboarded: false,
-  verified: true,
-  suspended: false,
-  createdAt: '',
-  updatedAt: '',
-  UserProfile: {
-    id: '',
-    userId: '',
-    headline: '',
-    gender: '',
-    bio: '',
-    avatar: '',
-    meta: {
-      phone: '',
-      skills: [],
-      location: '',
-      socialLinks: {},
-      yearsOfExperience: 0,
-    },
-    resume: '',
-    precentage: 0,
-    createdAt: '',
-    updatedAt: '',
-    education: [],
-    experience: [],
-  },
-})
+export const proProfileAtom = atomWithLocalForage<ProProfile>(
+  'dalla:pro:profile',
+  {} as ProProfile,
+)

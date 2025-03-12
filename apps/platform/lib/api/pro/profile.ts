@@ -42,3 +42,45 @@ export async function updateProProfile(
 
   return res
 }
+
+export async function createShowCaseProject(
+  proId: string,
+  payload: Omit<ProProfile['UserProfile']['projects'][number], 'id'>,
+) {
+  let res = await axiosInstance
+    .post<{
+      success: boolean
+      message: string
+      data: ProProfile['UserProfile']['projects'][number]
+    }>(`/professionals/profile/${proId}/projects`, payload)
+    .catch((err) => {
+      throw err
+    })
+
+  return res
+}
+
+export async function deleteShowCaseProject(proId: string, projectId: string) {
+  let res = await axiosInstance
+    .delete<{
+      success: boolean
+      message: string
+      data: ProProfile['UserProfile']['projects'][number]
+    }>(`/professionals/profile/${proId}/projects/${projectId}`)
+    .catch((err) => {
+      throw err
+    })
+
+  return res
+}
+
+export async function updateShowCaseProject(
+  proId: string,
+  projectId: string,
+  payload: Omit<ProProfile['UserProfile']['projects'][number], 'id'>,
+) {
+  let res = await axiosInstance.put(
+    `/professionals/profile/${proId}/projects/${projectId}`,
+    payload,
+  )
+}

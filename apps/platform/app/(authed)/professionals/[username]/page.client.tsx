@@ -3,22 +3,28 @@
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
-import { updateProProfile } from '@lib/api/pro/profile'
+import {
+  createShowCaseProject,
+  updateProProfile,
+  updateShowCaseProject,
+} from '@lib/api/pro/profile'
 import { useQueryState } from 'nuqs'
-import { getCookie } from 'cookies-next'
 import ProfileSummary from './components/profile-summary'
-import ProjectsSection from './components/projects-section'
+import { ProjectsSection } from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
 import { EducationSection } from './components/edu-section'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { LanguagesSection } from './components/langs-section'
 import { SocialsSection } from './components/socials-section'
-import { Language, Social } from '@lib/types/profile'
+import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
+import { globalAtom } from '@lib/atoms/global'
+import { ReviewsSection } from './components/reviews-section'
+import { axiosInstance } from '@lib/api/instance'
 
 export function ProProfileClient({ username }: { username: string }) {
-  const isOwner = getCookie('username') === username
-  console.log(isOwner, username, getCookie('username'))
+  const [global] = useAtom(globalAtom)
+  const isOwner = global.username === username
   const [profile, setProfile] = useAtom(proProfileAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
@@ -79,23 +85,24 @@ export function ProProfileClient({ username }: { username: string }) {
           <ProfileCard
             profile={{
               name: profile?.name,
-              avatar: profile.UserProfile.avatar,
-              title: profile?.UserProfile.headline,
+              avatar: profile?.UserProfile?.avatar,
+              title: profile?.UserProfile?.headline,
               hourlyRate:
-                Number(profile.UserProfile.meta['hourlyRate']) || null,
+                Number(profile?.UserProfile?.meta['hourlyRate']) || null,
               totalEarned:
-                Number(profile.UserProfile.meta['totalEarned']) || null,
+                Number(profile?.UserProfile?.meta['totalEarned']) || null,
               projectsCompleted:
-                Number(profile.UserProfile.meta['projectsCompleted']) || null,
+                Number(profile?.UserProfile?.meta['projectsCompleted']) || null,
               successRate:
-                Number(profile.UserProfile.meta['successRate']) || null,
+                Number(profile?.UserProfile?.meta['successRate']) || null,
               weeklyAvailability:
-                Number(profile.UserProfile.meta['weeklyAvailability']) || null,
-              availability: String(profile.UserProfile.meta['availability']),
-              rating: Number(profile.UserProfile.meta['rating']) || null,
+                Number(profile?.UserProfile?.meta['weeklyAvailability']) ||
+                null,
+              availability: String(profile?.UserProfile?.meta['availability']),
+              rating: Number(profile?.UserProfile?.meta['rating']) || null,
               projectCompletion:
-                String(profile.UserProfile.meta['projectCompletion']) || null,
-              isVerified: profile.verified,
+                String(profile?.UserProfile?.meta['projectCompletion']) || null,
+              isVerified: profile?.verified,
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -120,7 +127,7 @@ export function ProProfileClient({ username }: { username: string }) {
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
               languages={
-                profile?.UserProfile.meta.languages as unknown as Language[]
+                profile?.UserProfile?.meta?.languages as unknown as Language[]
               }
               onUpdate={(languages) => {
                 const languagesObj = languages.reduce(
@@ -133,7 +140,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
                 handleProfileUpdate({
                   meta: {
-                    ...profile?.UserProfile.meta,
+                    ...profile?.UserProfile?.meta,
                     languages: languagesObj,
                   },
                 })
@@ -142,7 +149,7 @@ export function ProProfileClient({ username }: { username: string }) {
               isOwner={isOwner}
             />
             <VerificationsSection
-              isEmailVerified={profile.verified}
+              isEmailVerified={profile?.verified}
               isPublicView={isPublicView}
               isOwner={isOwner}
             />
@@ -165,7 +172,7 @@ export function ProProfileClient({ username }: { username: string }) {
                 handleProfileUpdate(
                   {
                     meta: {
-                      ...profile.UserProfile.meta,
+                      ...profile?.UserProfile?.meta,
                       socialLinks: socialLinksObj,
                     },
                   },
@@ -180,9 +187,9 @@ export function ProProfileClient({ username }: { username: string }) {
         <div className="space-y-6 lg:col-span-8">
           <ProfileSummary
             summary={{
-              title: profile?.UserProfile.headline,
-              content: profile?.UserProfile.bio,
-              skills: profile?.UserProfile.meta.skills,
+              title: profile?.UserProfile?.headline,
+              content: profile?.UserProfile?.bio,
+              skills: profile?.UserProfile?.meta?.skills || [],
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -191,15 +198,102 @@ export function ProProfileClient({ username }: { username: string }) {
                 headline: updatedSummary.title,
                 bio: updatedSummary.content,
                 meta: {
-                  ...profile?.UserProfile.meta,
+                  ...profile?.UserProfile?.meta,
                   skills: updatedSummary.skills,
                 },
               })
             }}
           />
-          {process.env.NODE_ENV === 'development' && <ProjectsSection />}
+          <ProjectsSection
+            projects={profile?.UserProfile?.projects || []}
+            proId={profile?.id || ''}
+            isPublicView={isPublicView}
+            isOwner={isOwner}
+            onUpdate={async (updatedProjects) => {
+              try {
+                const finalProjects: Array<{
+                  id: string
+                  title: string
+                  role: string
+                  description: string
+                  skills: string[]
+                  thumbnail: string
+                  link: string
+                  media: string[]
+                }> = []
+
+                for (const project of updatedProjects) {
+                  const projectData = {
+                    title: project.title,
+                    role: project.role,
+                    description: project.description,
+                    skills: project.skills,
+                    thumbnail: project.thumbnail || '',
+                    link: project.link || '',
+                    media: project.media || [],
+                  }
+
+                  if (project.id) {
+                    await updateShowCaseProject(
+                      profile.id,
+                      project.id,
+                      projectData,
+                    )
+
+                    finalProjects.push({
+                      id: project.id,
+                      ...projectData,
+                    })
+                  } else {
+                    try {
+                      const response = await createShowCaseProject(
+                        profile.id,
+                        projectData,
+                      )
+
+                      const newProject = response.data.data
+
+                      finalProjects.push({
+                        id: newProject.id,
+                        title: newProject.title,
+                        role: newProject.role,
+                        description: newProject.description,
+                        skills: newProject.skills,
+                        thumbnail: newProject.thumbnail,
+                        link: newProject.link,
+                        media: newProject.media,
+                      })
+                    } catch (error) {
+                      console.error('Failed to create project:', error)
+                    }
+                  }
+                }
+
+                setProfile({
+                  ...profile,
+                  UserProfile: {
+                    ...profile.UserProfile,
+                    projects: finalProjects,
+                  },
+                })
+
+                toast({
+                  title: 'Projects updated successfully',
+                  description: 'Your projects have been updated successfully',
+                })
+              } catch (error) {
+                console.error('Failed to update projects:', error)
+                toast({
+                  title: 'Update failed',
+                  description: 'There was a problem updating your projects',
+                  variant: 'destructive',
+                })
+              }
+            }}
+          />
+          <ReviewsSection />
           <ExperienceSection
-            experiences={profile?.UserProfile.experience}
+            experiences={profile?.UserProfile?.experience || []}
             onUpdate={(updatedExperiences) => {
               setProfile({
                 ...profile,
@@ -225,7 +319,7 @@ export function ProProfileClient({ username }: { username: string }) {
             isOwner={isOwner}
           />
           <EducationSection
-            education={profile?.UserProfile.education}
+            education={profile?.UserProfile?.education || []}
             onUpdateEducation={(updatedEducation) => {
               if (!profile) return
 

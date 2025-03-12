@@ -36,6 +36,7 @@ export function CompanyCard({
     location: string
     website: string
     rating: number
+    joinedAt: string
   }
   isOwner: boolean
   isPublicView: boolean
@@ -78,7 +79,14 @@ export function CompanyCard({
     <div className="rounded-xl border border-neutral-100 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-start justify-between">
         <Badge className="!rounded-full !bg-[#BEDDF1]/20 px-3 py-1 text-xs !text-[#3A97A0]">
-          {data.industry}
+          {data.verified ? (
+            <>
+              <BadgeCheck className="mr-1 h-4 w-4" />
+              Verified
+            </>
+          ) : (
+            'Not Verified'
+          )}
         </Badge>
 
         {isOwner && !isEditing && (
@@ -153,9 +161,6 @@ export function CompanyCard({
               priority
             />
           </div>
-          <div className="absolute bottom-0 right-0 rounded-full">
-            <BadgeCheck className="h-4.5 w-4.5 fill-[#3A97A0] text-white" />
-          </div>
         </div>
 
         <h2 className="mb-0.5 text-lg font-semibold text-gray-800">
@@ -196,7 +201,7 @@ export function CompanyCard({
 
         {isOwner && isPublicView && !isEditing && (
           <div className="mb-5 grid w-full grid-cols-2 gap-3">
-            <Button className="h-9 bg-[#3A97A0] text-xs text-white transition-colors duration-200 hover:bg-[#2b7278]">
+            <Button className="h-9 !bg-[#3A97A0] text-xs text-white transition-colors duration-200 hover:!bg-[#2b7278]">
               Contact
             </Button>
             <Button
@@ -256,18 +261,11 @@ export function CompanyCard({
               <Globe className="h-3 w-3 text-[#3A97A0]" />
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="text-xs text-gray-600">Website</span>
-              {isEditing ? (
-                <Input
-                  value={editedCompany.website}
-                  onChange={(e) => handleChange('website', e.target.value)}
-                  className="h-7 !w-48 text-right text-xs"
-                />
-              ) : (
-                <span className="text-xs font-medium text-gray-800">
-                  {data.website}
-                </span>
-              )}
+              <span className="text-xs text-gray-600">Joined Dalla since</span>
+
+              <span className="text-xs font-medium text-gray-800">
+                {data.joinedAt}
+              </span>
             </div>
           </div>
         </div>

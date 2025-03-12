@@ -1,4 +1,4 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithLocalForage } from '../atom-with-localforge'
 
 export interface CompanyProfile {
   id: string
@@ -10,9 +10,18 @@ export interface CompanyProfile {
   verified: boolean
   CompanyProfile: {
     location: string
-    areas: Array<string>
-    goals: Array<string>
-    targetIndustries: Array<string>
+    areas: Array<{
+      name: string
+      description: string
+    }>
+    goals: Array<{
+      name: string
+      description: string
+    }>
+    targetIndustries: Array<{
+      name: string
+      description: string
+    }>
     website: string
     headline: any
     bio: any
@@ -24,14 +33,14 @@ export interface CompanyProfile {
       phone: string
       industry: string
       socialLinks: {
-        url: string
-        name: string
+        [key: string]: string
       }
     }
   }
+  createdAt: string
 }
 
-export const companyProfileAtom = atomWithStorage<CompanyProfile>(
-  'profile',
+export const companyProfileAtom = atomWithLocalForage<CompanyProfile>(
+  'dalla:company:profile',
   {} as CompanyProfile,
 )
