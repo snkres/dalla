@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import { Project } from '@lib/types/project'
+import type { Project } from '@lib/api/pro/projects'
 
 interface ProjectCardProps {
   project: Project
@@ -24,18 +24,7 @@ const CARD_ANIMATION = {
 }
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
-  const {
-    featured,
-    urgent,
-    title,
-    company,
-    description,
-    skills,
-    budget,
-    duration,
-    location,
-    postedDate,
-  } = project
+  const { title, company, description, skills } = project
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -51,13 +40,13 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
       )}
     >
       <div className="flex h-full flex-col p-5">
-        {featured && (
+        {/* {project.meta && (
           <div className="mb-3 flex items-center self-start rounded-full bg-[#63B7B7]/10 px-3 py-1 text-xs font-medium text-[#63B7B7]">
             <Award className="mr-1.5 h-3.5 w-3.5" />
             Featured Project
           </div>
-        )}
-        {urgent && (
+        )} */}
+        {/* {project.urgent && (
           <Badge
             variant="outline"
             className="mb-3 flex items-center self-start rounded-full bg-[#63B7B7]/10 px-3 py-1 text-xs font-medium text-[#63B7B7]"
@@ -65,11 +54,11 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             <Flame className="mr-1 h-3 w-3 text-[#63B7B7]" />
             Urgent
           </Badge>
-        )}
+        )} */}
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <h3 className="text-base font-medium text-gray-900">{title}</h3>
-            <p className="mt-1 text-sm text-gray-500">{company}</p>
+            <p className="mt-1 text-sm text-gray-500">{project.company.name}</p>
           </div>
           <Button
             variant="ghost"
@@ -122,7 +111,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
                     <DollarSign className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{budget}</span>
+                    <span className="truncate">{project.meta.budget}</span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -139,7 +128,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
                     <Clock className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{duration}</span>
+                    <span className="truncate">{project.meta.timeline}</span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -151,12 +140,12 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
               </Tooltip>
             </TooltipProvider>
 
-            <TooltipProvider>
+            {/* <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
                     <MapPin className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{location}</span>
+                    <span className="truncate">{project.location}</span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -166,10 +155,10 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                   <p>Work Location</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
           </div>
           <div className="whitespace-nowrap text-xs text-gray-400">
-            Posted {postedDate}
+            Posted {project.createdAt}
           </div>
         </div>
       </div>

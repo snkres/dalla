@@ -10,10 +10,19 @@ import { useAtom } from 'jotai'
 
 export interface CompanyOnboardingData {
   // Step 1
-  targetIndustries: string[]
+  targetIndustries: {
+    name: string
+    description: string
+  }[]
   // Step 3
-  goals: string[]
-  areas: string[]
+  goals: {
+    name: string
+    description: string
+  }[]
+  areas: {
+    name: string
+    description: string
+  }[]
   website: string
   industry: string
   businessType: string
@@ -127,9 +136,18 @@ export function useOnboarding() {
         const res = await companyOnboarding({
           headline: companyData.headline,
           bio: companyData.bio,
-          areas: companyData.areas,
-          goals: companyData.goals,
-          targetIndustries: companyData.targetIndustries,
+          areas: companyData.areas.map((area) => ({
+            name: area.name,
+            description: area.description,
+          })),
+          goals: companyData.goals.map((goal) => ({
+            name: goal.name,
+            description: goal.description,
+          })),
+          targetIndustries: companyData.targetIndustries.map((ind) => ({
+            name: ind.name,
+            description: ind.description,
+          })),
           website: companyData.website,
           location: companyData.address,
           logo: companyData.logo ?? undefined,

@@ -114,7 +114,7 @@ export default function Page() {
             previousText={step === 1 ? 'Skip' : 'Back'}
             handleSubmit={handleStepAction}
             isSubmitting={isSubmitting}
-            isAbleToProceed={isAbleToProceed}
+            isAbleToProceed={true}
           />
         </div>
       ) : (

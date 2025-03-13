@@ -133,6 +133,7 @@ export default function VerifyPage() {
             previousText="Back"
             continueText="Verify email"
             handleSubmit={handleVerificationSubmit}
+            isAbleToProceed={verificationCode.length === 4}
             isNextDisabled={verificationCode.length !== 4}
           />
         </form>

@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
-import { Project } from '@lib/types/project'
+import type { Project } from '@lib/api/pro/projects'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 interface ProjectDetailProps {
   project: Project
@@ -107,12 +107,12 @@ export function ProjectDetail({
                 <div className="flex flex-wrap gap-3 text-xs text-gray-600 sm:text-sm">
                   <span className="flex items-center">
                     <Clock className="mr-1 h-3.5 w-3.5 text-gray-400" />
-                    Posted {project.postedDate}
+                    Posted {project.createdAt}
                   </span>
-                  <span className="flex items-center">
+                  {/* <span className="flex items-center">
                     <Globe className="mr-1 h-3.5 w-3.5 text-gray-400" />
                     {project.location}
-                  </span>
+                  </span> */}
                   <span className="flex items-center">
                     <Briefcase className="mr-1 h-3.5 w-3.5 text-gray-400" />
                     Project Type
@@ -176,7 +176,7 @@ export function ProjectDetail({
               <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
                 <div className="mb-1 text-xs text-gray-500">Budget</div>
                 <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
-                  {project.budget}
+                  {project.meta.budget}
                 </div>
               </div>
               <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
@@ -196,7 +196,7 @@ export function ProjectDetail({
                 </div>
                 <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
                   <Clock className="mr-1 h-4 w-4 text-gray-500" />
-                  {project.duration}
+                  {project.meta.timeline}
                 </div>
               </div>
             </div>

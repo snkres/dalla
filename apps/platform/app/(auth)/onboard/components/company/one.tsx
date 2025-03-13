@@ -128,7 +128,9 @@ export function CompanyOnboardingOne({
                   <Label>Target Industries</Label>
                   <ExpertiseSelect
                     value={data.targetIndustries}
-                    onChange={(value: string[]) => {
+                    onChange={(
+                      value: { name: string; description: string }[],
+                    ) => {
                       const limitedValue = value.slice(0, 5)
                       updateData({ ...data, targetIndustries: limitedValue })
                     }}
@@ -145,7 +147,7 @@ export function CompanyOnboardingOne({
             </div>
           </motion.div>
 
-          <motion.div variants={fadeInUpVariants} className="space-y-2 pt-2">
+          <motion.div variants={fadeInUpVariants} className="mt-8 space-y-2">
             <Label>Bio</Label>
             <Textarea
               value={data.bio}

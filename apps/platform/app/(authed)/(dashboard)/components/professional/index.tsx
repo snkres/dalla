@@ -9,9 +9,7 @@ import { ProjectCard } from './project/card'
 import { ProjectDetail } from './project/detail'
 import { ProjectApplication } from './application'
 import { ProfileSidebar } from './sidebar'
-import { Project } from '@lib/types/project'
 import {
-  projects,
   filterCategories,
   budgetRanges,
   durationOptions,
@@ -20,11 +18,19 @@ import {
 import { applyFilters } from '@lib/utils/filter-utils'
 import { getAllSkills } from '@lib/utils/skill-utils'
 import FilterChips from './filter-chips'
+import { useQuery } from '@tanstack/react-query'
+import { getAllProjects, type Project } from '@lib/api/pro/projects'
 
 export function ProfessionalHome() {
+  const { data } = useQuery({
+    queryKey: ['all-projects'],
+    queryFn: getAllProjects,
+  })
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects)
+  const [filteredProjects, setFilteredProjects] = useState<Project[] | []>(
+    data?.[0] || [],
+  )
   const [showSearchHelp, setShowSearchHelp] = useState(false)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
@@ -37,11 +43,11 @@ export function ProfessionalHome() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([])
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
-  const allSkills = getAllSkills()
+  const allSkills = getAllSkills(data?.[0] || [])
 
   useEffect(() => {
     const results = applyFilters(
-      projects,
+      data?.[0] || [],
       activeFilter,
       searchQuery,
       showFilterPanel,
@@ -126,7 +132,7 @@ export function ProfessionalHome() {
               budgetRanges={budgetRanges}
               durationOptions={durationOptions}
               locationOptions={locationOptions}
-              allSkills={allSkills}
+              allSkills={allSkills.map((skill) => skill.name)}
             />
             <FilterChips
               activeFilter={activeFilter}

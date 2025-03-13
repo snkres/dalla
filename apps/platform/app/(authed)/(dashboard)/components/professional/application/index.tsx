@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react'
 import { motion } from 'motion/react'
-import { Project } from '@lib/types/project'
+import type { Project } from '@lib/api/pro/projects'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { ApplicationHeader } from './header'
 import { StepOne } from './step-one'
@@ -28,10 +28,12 @@ export function ProjectApplication({
   const [showAiSuggestions, setShowAiSuggestions] = useState(false)
   const [bidType, setBidType] = useState<'fixed' | 'milestone'>('fixed')
   const [bidAmount, setBidAmount] = useState(
-    project.budget ? parseInt(project.budget.replace(/[^0-9]/g, '')) : 500,
+    project.meta.budget
+      ? parseInt(project.meta.budget.replace(/[^0-9]/g, ''))
+      : 500,
   )
   const [estimatedDuration, setEstimatedDuration] = useState(
-    project.duration || '2-3 weeks',
+    project.meta.timeline || '2-3 weeks',
   )
   const defaultMilestones = [
     {

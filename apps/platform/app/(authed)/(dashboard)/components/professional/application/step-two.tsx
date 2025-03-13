@@ -45,7 +45,7 @@ export function StepTwo({
         <div className="absolute left-0 top-0 h-1 w-full bg-[#63B7B7]"></div>
         <div className="p-6">
           <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-800">
-            <span className="mr-3 inline-block flex h-8 w-8 items-center justify-center rounded-full bg-[#63B7B7] text-sm text-white">
+            <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#63B7B7] text-sm text-white">
               2
             </span>
             Pricing Details
@@ -195,14 +195,14 @@ export function StepTwo({
                       </Select>
                     </div>
                   </div>
-                  {(project.budget || project.duration) && (
+                  {(project.meta.budget || project.meta.timeline) && (
                     <div className="mb-6 rounded-xl border border-gray-100 bg-white p-4 shadow-md">
                       <div className="mb-2 flex items-center text-sm text-gray-700">
                         <AlertCircle className="mr-2 h-4 w-4 text-[#63B7B7]" />
                         Client Expectations
                       </div>
                       <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        {project.budget && (
+                        {project.meta.budget && (
                           <div className="flex items-center rounded-lg border border-gray-100 bg-white p-3">
                             <DollarSign className="mr-2 h-4 w-4 text-[#63B7B7]" />
                             <div>
@@ -210,12 +210,12 @@ export function StepTwo({
                                 Budget
                               </span>
                               <span className="text-sm font-medium">
-                                {project.budget}
+                                {project.meta.budget}
                               </span>
                             </div>
                           </div>
                         )}
-                        {project.duration && (
+                        {project.meta.timeline && (
                           <div className="flex items-center rounded-lg border border-gray-100 bg-white p-3">
                             <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
                             <div>
@@ -223,7 +223,7 @@ export function StepTwo({
                                 Timeline
                               </span>
                               <span className="text-sm font-medium">
-                                {project.duration}
+                                {project.meta.timeline}
                               </span>
                             </div>
                           </div>
@@ -324,7 +324,7 @@ export function StepTwo({
                                 <div>
                                   <Label
                                     htmlFor={`milestone-duration-${index}`}
-                                    className="mb-1.5 block flex items-center text-xs text-gray-500"
+                                    className="mb-1.5 flex items-center text-xs text-gray-500"
                                   >
                                     <Clock className="mr-1 h-3.5 w-3.5 text-[#63B7B7]" />
                                     Duration
