@@ -21,7 +21,7 @@ import { getProjectById } from '@lib/api/pro/projects'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getLocalTimeForLocation } from '@dallah/utils'
+import { getLocalTimeForLocation, cn } from '@dallah/utils'
 
 interface ProjectDetailProps {
   projectId: string
@@ -38,12 +38,6 @@ export function ProjectDetail({
     queryKey: ['project', projectId, 'professional'],
     queryFn: () => getProjectById(projectId),
   })
-  const attachments = [
-    { name: 'detail_mockup.html', size: '10 KB' },
-    { name: 'home_mockup.html', size: '9 KB' },
-    { name: 'homepage_experience.md', size: '6 KB' },
-    { name: 'developer_guide.md', size: '8 KB' },
-  ]
 
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow
@@ -221,62 +215,61 @@ export function ProjectDetail({
               </Button>
             </div>
 
-            <div className="mb-5 border-t border-gray-100 pt-4 sm:mb-6 sm:pt-5">
-              <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                <User className="h-4 w-4 text-[#63B7B7]" />
-                <h3 className="text-sm font-medium text-gray-900 sm:text-base">
-                  About the client
-                </h3>
-              </div>
-
-              <div className="space-y-4">
-                {data?.company?.CompanyProfile?.location && (
-                  <div className="flex items-center gap-2 rounded-md bg-[#BEDDF1]/20 p-3">
-                    <MapPin className="h-3.5 w-3.5 text-[#63B7B7] sm:h-4 sm:w-4" />
-                    <div>
-                      <p className="text-xs text-gray-800 sm:text-sm">
-                        {data.company.CompanyProfile.location}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Local time:{' '}
-                        {getLocalTimeForLocation(
-                          data.company.CompanyProfile.location,
-                        )}
-                      </p>
-                    </div>
+            <div className="border-t border-gray-100 px-6 py-4">
+              <h3 className="mb-4 text-lg font-semibold text-gray-800">
+                Company
+              </h3>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="flex items-start gap-3">
+                  <Briefcase className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Company</p>
+                    <p className="text-sm text-gray-500">
+                      {data?.company?.name || 'Not specified'}
+                    </p>
                   </div>
-                )}
+                </div>
 
-                <div className="flex flex-col gap-2">
-                  {data?.company && (
-                    <>
-                      <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600">Company Name</span>
-                        <span className="text-gray-800">
-                          {data.company.name}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600">Member Since</span>
-                        <span className="text-gray-800">
-                          {new Date(data.company.createdAt).toLocaleString(
-                            undefined,
-                            {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric',
-                            },
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600">Total Projects</span>
-                        <span className="text-gray-800">
-                          {data.company._count.projects}
-                        </span>
-                      </div>
-                    </>
-                  )}
+                <div className="flex items-start gap-3">
+                  <MapPin className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">
+                      Location
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {data?.company?.CompanyProfile?.location || 'Remote'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Clock className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">
+                      Local Time
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {data?.company?.CompanyProfile?.location
+                        ? getLocalTimeForLocation(
+                            data.company.CompanyProfile.location,
+                          )
+                        : 'Time zone not available'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Users className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">
+                      Company Size
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {data?.company?._count?.projects
+                        ? `${data.company._count.projects} projects`
+                        : 'Not specified'}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

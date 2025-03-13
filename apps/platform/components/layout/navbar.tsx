@@ -42,6 +42,18 @@ export function Navbar() {
     isNotificationsOpen,
   } = useNavbar()
 
+  // Early return if profile data isn't loaded yet to prevent UI glitches
+  if (!userProfile.email) {
+    return (
+      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-6">
+        <div className="origin-left scale-75">
+          <LogoHorizontal className="[&_path]:fill-slate-blue-100 [&_path]:h-24 [&_path]:w-24" />
+        </div>
+        <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-6">
       <div className="origin-left scale-75">
@@ -49,171 +61,142 @@ export function Navbar() {
       </div>
 
       <div className="hidden items-center gap-1.5 rounded-full p-1 md:flex">
-        {navItems.map((item) => {
-          const isActive = activeItem === item.href
-          const Icon = item.icon
-          return (
-            <Link href={item.href} key={item.href}>
-              <Button
-                variant="ghost"
-                className={cn(
-                  'flex items-center gap-1.5 !rounded-full px-3 py-1.5 text-xs transition-all duration-200',
-                  isActive
-                    ? '!bg-[#63B7B7] text-white shadow-sm hover:!bg-[#63B7B7]/90'
-                    : '!bg-[#BEDDF1]/10 text-gray-700 hover:!bg-[#BEDDF1]/25',
-                )}
-                onClick={() => setActiveItem(item.href)}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span className="font-normal">{item.label}</span>
-              </Button>
-            </Link>
-          )
-        })}
+        {navItems.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className={cn(
+              'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors',
+              activeItem === item.href
+                ? 'bg-slate-blue-100 text-white'
+                : 'text-gray-600 hover:bg-gray-100',
+            )}
+            onClick={() => setActiveItem(item.href)}
+          >
+            <item.icon className="h-4 w-4" />
+            <span>{item.label}</span>
+          </Link>
+        ))}
       </div>
 
-      <div className="relative flex items-center gap-2">
-        <div
-          className={cn(
-            'flex items-center overflow-hidden transition-all duration-300 ease-in-out',
-            isSearchActive
-              ? 'w-48 opacity-100 sm:w-64'
-              : 'w-0 opacity-0 sm:w-auto sm:opacity-100',
-          )}
-        >
-          <form onSubmit={handleSearch} className="w-full">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-              <Input
+      <div className="flex items-center gap-2">
+        <div className="relative hidden md:block">
+          <button
+            onClick={toggleSearch}
+            className={cn(
+              'flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 text-sm text-gray-500 transition-all',
+              isSearchActive ? 'w-64' : 'w-40',
+            )}
+          >
+            {!isSearchActive && (
+              <>
+                <Search className="h-4 w-4" />
+                <span>Search...</span>
+              </>
+            )}
+          </button>
+          {isSearchActive && (
+            <div className="absolute inset-0 flex items-center rounded-full border border-gray-200 bg-white">
+              <Search className="ml-3 h-4 w-4 text-gray-500" />
+              <input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className={cn(
-                  'h-8 rounded-full border-gray-200 py-1 pl-8 pr-3 text-xs',
-                  'focus:border-[#63B7B7]/30 focus:bg-white focus-visible:ring-[#63B7B7]/20',
-                  isSearchActive ? 'bg-white shadow-sm' : 'bg-white/90',
-                )}
+                className="h-full w-full border-none bg-transparent pl-2 pr-8 text-sm focus:outline-none focus:ring-0"
+                autoFocus
               />
-              {isSearchActive && searchQuery && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full"
-                  onClick={() => setSearchQuery('')}
-                >
-                  <X className="h-3 w-3 text-gray-400" />
-                </Button>
-              )}
+              <button
+                onClick={toggleSearch}
+                className="absolute right-3 text-gray-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
-          </form>
+          )}
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-full transition-colors duration-200 hover:bg-[#BEDDF1]/25 sm:hidden"
-          onClick={toggleSearch}
-        >
-          {isSearchActive ? (
-            <X className="h-3.5 w-3.5 text-gray-600" />
-          ) : (
-            <Search className="h-3.5 w-3.5 text-gray-600" />
-          )}
-        </Button>
-
-        <div className="relative" ref={notificationsRef}>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="notifications-button relative h-8 w-8 rounded-full transition-colors duration-200 hover:bg-[#BEDDF1]/25"
+        <div className="relative">
+          <button
             onClick={toggleNotifications}
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
           >
-            <Bell className="h-3.5 w-3.5 text-gray-600" />
+            <Bell className="h-5 w-5" />
             {unreadCount > 0 && (
-              <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-[#63B7B7] text-[10px] font-medium text-white">
+              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
                 {unreadCount}
               </span>
             )}
-          </Button>
+          </button>
 
           <AnimatePresence>
             {isNotificationsOpen && (
               <NotificationsPopup
-                unreadCount={unreadCount}
+                ref={notificationsRef}
                 notifications={notifications}
-                markAllAsRead={markAllAsRead}
                 dismissNotification={dismissNotification}
+                markAllAsRead={markAllAsRead}
                 getNotificationIcon={getNotificationIcon}
               />
             )}
           </AnimatePresence>
         </div>
 
-        <Link href="/settings/account/personal">
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'h-8 w-8 rounded-full transition-colors duration-200',
-              pathname === '/dashboard/settings'
-                ? 'bg-[#63B7B7] text-white'
-                : 'text-gray-600 hover:bg-[#BEDDF1]/25',
-            )}
-          >
-            <Settings className="h-3.5 w-3.5" />
-          </Button>
-        </Link>
-
-        <div className="relative hidden md:block" ref={profileMenuRef}>
-          <div
-            className="h-8 w-8 cursor-pointer overflow-hidden rounded-full bg-[#BEDDF1]/20 shadow-sm ring-2 ring-[#BEDDF1]/30 transition-transform duration-200 hover:scale-105"
+        <div className="relative">
+          <button
             onClick={toggleProfileMenu}
+            className="flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-white px-2 transition-colors hover:bg-gray-50"
           >
-            <Image
-              src={userProfile?.avatar || '/avatar.png'}
-              alt="Profile"
-              width={32}
-              height={32}
-              className="object-cover"
-            />
-          </div>
+            <div className="relative h-6 w-6 overflow-hidden rounded-full">
+              <Image
+                src={userProfile?.avatar}
+                alt="Profile"
+                fill
+                className="object-cover"
+                sizes="24px"
+                // onError={(e) => {
+                //   // Fallback to default avatar if image fails to load
+                //   const target = e.target as HTMLImageElement
+                //   target.src = '/avatar.png'
+                // }}
+              />
+            </div>
+            <span className="hidden text-sm font-medium text-gray-700 md:block">
+              {userProfile.name || 'User'}
+            </span>
+          </button>
 
           <AnimatePresence>
             {isProfileMenuOpen && (
-              <ProfilePopup name={userProfile.name} email={userProfile.email} />
+              <ProfilePopup
+                ref={profileMenuRef}
+                accountItems={accountItems}
+                userProfile={userProfile}
+              />
             )}
           </AnimatePresence>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 rounded-lg border border-[#63B7B7]/30 bg-[#BEDDF1]/10 transition-colors duration-200 hover:bg-[#BEDDF1]/20 md:hidden"
+        <button
           onClick={toggleMobileMenu}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 md:hidden"
         >
-          <Menu className="h-4 w-4 text-[#63B7B7]" />
-        </Button>
-      </div>
+          <Menu className="h-5 w-5" />
+        </button>
 
-      <AnimatePresence mode="wait">
-        {isMobileMenuOpen && (
-          <MobileMenu
-            onClose={toggleMobileMenu}
-            isOpen={isMobileMenuOpen}
-            activeItem={activeItem}
-            navItems={navItems}
-            accountItems={accountItems}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-            userProfile={userProfile}
-          />
-        )}
-      </AnimatePresence>
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <MobileMenu
+              navItems={navItems}
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              toggleMobileMenu={toggleMobileMenu}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

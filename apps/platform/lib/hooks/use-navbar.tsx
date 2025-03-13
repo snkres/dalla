@@ -10,7 +10,7 @@ import {
   Bell,
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
 import { companyProfileAtom } from '@lib/atoms/company/profile'
@@ -49,23 +49,53 @@ export const useNavbar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
 
-  const userProfile = {
-    name: global?.name,
-    email: global?.email,
-    avatar:
-      global?.mode === 'user'
-        ? proProfile?.UserProfile?.avatar
-        : companyProfile?.CompanyProfile?.logo,
-  }
+  const currentNavItems = useMemo(() => {
+    return navItems.filter((item) => {
+      if (global.mode === 'company' && item.label === 'Proposals') {
+        return false
+      }
+      return true
+    })
+  }, [global.mode])
+
+  const currentAccountItems = useMemo(() => {
+    const items = [...accountItems]
+
+    const profileItemIndex = items.findIndex(
+      (item) => item.label === 'View Profile',
+    )
+    if (profileItemIndex !== -1) {
+      items[profileItemIndex] = {
+        ...items[profileItemIndex],
+        href:
+          global.mode === 'company'
+            ? `/companies/${global.name}`
+            : `/professionals/${global.username}`,
+      }
+    }
+
+    return items
+  }, [global.mode])
+
+  const userProfile = useMemo(() => {
+    return {
+      name: global?.name || '',
+      email: global?.email || '',
+      avatar:
+        global?.mode === 'user'
+          ? proProfile?.UserProfile?.avatar || '/avatar.png'
+          : companyProfile?.CompanyProfile?.logo || '/avatar.png',
+    }
+  }, [global, proProfile, companyProfile])
 
   useEffect(() => {
-    const matchingItem = navItems.find(
+    const matchingItem = currentNavItems.find(
       (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
     )
     if (matchingItem) {
       setActiveItem(matchingItem.href)
     }
-  }, [pathname])
+  }, [pathname, currentNavItems])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -157,8 +187,8 @@ export const useNavbar = () => {
   }
 
   return {
-    navItems,
-    accountItems,
+    navItems: currentNavItems,
+    accountItems: currentAccountItems,
     activeItem,
     isProfileMenuOpen,
     isMobileMenuOpen,
