@@ -32,8 +32,6 @@ export interface StepTwoProps {
 }
 
 export interface StepThreeProps {
-  relatedProjects: Array<{ title: string; selected: boolean }>
-  toggleRelatedProject: (index: number) => void
   files: File[]
   setFiles: React.Dispatch<React.SetStateAction<File[]>>
   dragActive: boolean

@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { useState, useRef } from 'react'
 import { Camera, Image as ImageIcon, X, Plus, FileText } from 'lucide-react'
 import Image from 'next/image'
-import { uploadImage } from '@lib/api/shared/upload'
+import { upload } from '@lib/api/shared/upload'
 import { Button } from '@dallah/design-system'
 
 interface MultiImageUploadProps {
@@ -33,15 +33,15 @@ const MultiImageUpload = ({
     const files = event.target.files
     if (files && files.length > 0) {
       setIsUploading(true)
-      
+
       try {
         // Upload each file
         for (let i = 0; i < files.length; i++) {
-          if (images.length >= maxImages) break;
-          
-          const file = files[i];
-          const { data } = await uploadImage(file)
-          onImagesChange([...images, data.fileUrl]);
+          if (images.length >= maxImages) break
+
+          const file = files[i]
+          const { data } = await upload(file)
+          onImagesChange([...images, data.fileUrl])
         }
       } catch (error) {
         console.error('Error uploading files:', error)
@@ -49,21 +49,21 @@ const MultiImageUpload = ({
         setIsUploading(false)
         // Clear the input to allow uploading the same file again
         if (fileInputRef.current) {
-          fileInputRef.current.value = '';
+          fileInputRef.current.value = ''
         }
       }
     }
   }
 
   const handleRemoveImage = (index: number) => {
-    const updatedImages = [...images];
-    updatedImages.splice(index, 1);
-    onImagesChange(updatedImages);
+    const updatedImages = [...images]
+    updatedImages.splice(index, 1)
+    onImagesChange(updatedImages)
   }
 
   // Function to determine if a URL is a PDF
   const isPdf = (url: string): boolean => {
-    return url.toLowerCase().endsWith('.pdf');
+    return url.toLowerCase().endsWith('.pdf')
   }
 
   return (
@@ -71,11 +71,11 @@ const MultiImageUpload = ({
       <label className="mb-1 block text-xs font-medium text-gray-500">
         {label} ({images.length}/{maxImages})
       </label>
-      
+
       <div className="flex flex-wrap gap-3">
         {images.map((fileUrl, index) => (
-          <div 
-            key={`${fileUrl}-${index}`} 
+          <div
+            key={`${fileUrl}-${index}`}
             className="relative h-20 w-20 overflow-hidden rounded-lg border border-gray-200"
           >
             {isPdf(fileUrl) ? (
@@ -90,8 +90,9 @@ const MultiImageUpload = ({
                 fill
                 className="object-cover"
                 onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = 'https://placehold.co/80x80/e6f3f3/63B7B7?text=Media';
+                  const target = e.target as HTMLImageElement
+                  target.src =
+                    'https://placehold.co/80x80/e6f3f3/63B7B7?text=Media'
                 }}
               />
             )}
@@ -104,7 +105,7 @@ const MultiImageUpload = ({
             </button>
           </div>
         ))}
-        
+
         {images.length < maxImages && (
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -126,18 +127,19 @@ const MultiImageUpload = ({
           </motion.div>
         )}
       </div>
-      
+
       <input
         ref={fileInputRef}
         type="file"
-        accept={allowPdf ? "image/*,.pdf" : "image/*"}
+        accept={allowPdf ? 'image/*,.pdf' : 'image/*'}
         multiple
         onChange={handleFileChange}
         className="hidden"
       />
-      
+
       <p className="text-xs text-gray-500">
-        Click to add {allowPdf ? "images or PDFs" : "images"}. Maximum {maxImages} files allowed.
+        Click to add {allowPdf ? 'images or PDFs' : 'images'}. Maximum{' '}
+        {maxImages} files allowed.
       </p>
     </div>
   )

@@ -29,7 +29,7 @@ export function NavigationButtons({
 
       {activeStep < 3 && (
         <Button
-          className="bg-[#1D8489] hover:bg-[#1D8489]/90"
+          className="!bg-[#1D8489] hover:!bg-[#1D8489]/90"
           onClick={() => setActiveStep(activeStep + 1)}
         >
           Continue

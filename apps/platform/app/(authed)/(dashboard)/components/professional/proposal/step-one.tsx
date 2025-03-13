@@ -63,7 +63,7 @@ export function StepOne({
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
               placeholder="Dear client, I'm excited about your project because..."
-              className="min-h-[200px] resize-none rounded-xl border-gray-100 bg-[#BEDDF1]/5 p-4 text-sm transition-colors hover:border-[#63B7B7]/30 focus:border-[#63B7B7] focus:ring-[#63B7B7]"
+              className="h-52 resize-none rounded-xl border-gray-100 bg-[#BEDDF1]/5 p-4 text-sm transition-colors hover:border-[#63B7B7]/30 focus:border-[#63B7B7] focus:ring-[#63B7B7]"
             />
           </div>
 
@@ -183,7 +183,7 @@ export function StepOne({
                         'Explain your process for creating filterable business idea cards',
                       ].map((tip, index) => (
                         <li key={index} className="flex items-start">
-                          <span className="mr-2 mt-0.5 inline-block flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-[#63B7B7]/10">
+                          <span className="mr-2 mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-[#63B7B7]/10">
                             <span className="block h-1.5 w-1.5 rounded-full bg-[#63B7B7]"></span>
                           </span>
                           <span>{tip}</span>

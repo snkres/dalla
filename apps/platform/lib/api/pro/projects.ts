@@ -7,7 +7,7 @@ export type Project = {
   description: string
   skills: Array<string>
   meta: {
-    budget: string
+    budget: number
     status: string
     priority: string
     timeline: string

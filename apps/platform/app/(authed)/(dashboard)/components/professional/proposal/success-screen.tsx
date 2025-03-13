@@ -36,7 +36,7 @@ export function SuccessScreen({ project, onClose }: SuccessScreenProps) {
         >
           Return to project
         </Button>
-        <Button className="bg-[#63B7B7] px-6 hover:bg-[#63B7B7]/90">
+        <Button className="!bg-[#63B7B7] px-6 hover:!bg-[#63B7B7]/90">
           View your proposals
         </Button>
       </div>

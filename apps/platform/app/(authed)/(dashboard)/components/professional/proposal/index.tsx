@@ -1,6 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react'
+'use client'
+
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { motion } from 'motion/react'
 import type { Project } from '@lib/api/pro/projects'
+import { createProjectProposal } from '@lib/api/pro/proposals'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { ApplicationHeader } from './header'
 import { StepOne } from './step-one'
@@ -9,16 +12,15 @@ import { StepThree } from './step-three'
 import { SuccessScreen } from './success-screen'
 import { ApplicationSidebar } from './sidebar'
 import { NavigationButtons } from './navigation-buttons'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 interface ProjectApplicationProps {
   project: Project
   onClose: () => void
 }
 
-export function ProjectApplication({
-  project,
-  onClose,
-}: ProjectApplicationProps) {
+export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
+  const { toast } = useToast()
   const [activeStep, setActiveStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -27,13 +29,10 @@ export function ProjectApplication({
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([])
   const [showAiSuggestions, setShowAiSuggestions] = useState(false)
   const [bidType, setBidType] = useState<'fixed' | 'milestone'>('fixed')
-  const [bidAmount, setBidAmount] = useState(
-    project.meta.budget
-      ? parseInt(project.meta.budget.replace(/[^0-9]/g, ''))
-      : 500,
-  )
+  const [bidAmount, setBidAmount] = useState(project.meta.budget)
+
   const [estimatedDuration, setEstimatedDuration] = useState(
-    project.meta.timeline || '2-3 weeks',
+    project.meta?.timeline || '2-3 weeks',
   )
   const defaultMilestones = [
     {
@@ -60,6 +59,9 @@ export function ProjectApplication({
   ])
   const [files, setFiles] = useState<File[]>([])
   const [dragActive, setDragActive] = useState(false)
+
+  // Store scroll position for restoration
+  const [scrollPosition, setScrollPosition] = useState(0)
 
   const totalMilestonesAmount = useMemo(
     () => milestones.reduce((sum, milestone) => sum + milestone.price, 0),
@@ -110,24 +112,102 @@ export function ProjectApplication({
     files,
   ])
 
-  const canSubmit = useMemo(
-    () =>
-      coverLetter.length > 50 &&
-      (bidType === 'fixed'
-        ? bidAmount > 0 && estimatedDuration
-        : milestones.length > 0 &&
-          milestones.every((m) => m.name && m.price > 0)) &&
-      (relatedProjects.some((p) => p.selected) || files.length > 0),
-    [
-      coverLetter,
-      bidAmount,
-      estimatedDuration,
-      bidType,
-      milestones,
-      relatedProjects,
-      files,
-    ],
-  )
+  const canSubmit = useMemo(() => {
+    // Step 1: Cover letter validation
+    const isCoverLetterValid = coverLetter.length >= 100 // Require at least 100 characters
+
+    // Step 2: Pricing validation
+    let isPricingValid = false
+    if (bidType === 'fixed') {
+      isPricingValid = bidAmount > 0 && !!estimatedDuration
+    } else {
+      isPricingValid =
+        milestones.length > 0 &&
+        milestones.every(
+          (m) =>
+            m.name.trim() !== '' && m.price > 0 && m.duration.trim() !== '',
+        )
+    }
+
+    // Step 3: Portfolio validation
+    const isPortfolioValid =
+      relatedProjects.some((p) => p.selected) || files.length > 0
+
+    // Only allow submission if all steps are valid and we're on the last step
+    return (
+      isCoverLetterValid &&
+      isPricingValid &&
+      isPortfolioValid &&
+      activeStep === 3
+    )
+  }, [
+    coverLetter,
+    bidAmount,
+    estimatedDuration,
+    bidType,
+    milestones,
+    relatedProjects,
+    files,
+    activeStep,
+  ])
+
+  const handleSubmit = useCallback(async () => {
+    if (!canSubmit) {
+      toast({
+        title: 'Cannot Submit Proposal',
+        description: 'Please complete all required fields before submitting.',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setIsSubmitting(true)
+
+    try {
+      // const media = await Promise.all(files.map((file) => upload(file)))
+      // Prepare the proposal data
+      const proposalData = {
+        price: bidType === 'fixed' ? bidAmount : totalMilestonesAmount,
+        timeline:
+          bidType === 'fixed'
+            ? estimatedDuration
+            : milestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
+        description: coverLetter,
+        relevantProjects: [],
+        // media: media.map((m) => m.data.fileUrl),
+        media: ['https://placehold.co/80x80/e6f3f3/63B7B7?text=Media'],
+      }
+
+      // Submit the proposal
+      const response = await createProjectProposal(project.id, proposalData)
+
+      // Handle successful submission
+      setIsSubmitted(true)
+      toast({
+        title: 'Proposal Submitted',
+        description: 'Your proposal has been submitted successfully!',
+      })
+    } catch (error) {
+      console.error('Error submitting proposal:', error)
+      toast({
+        title: 'Error',
+        description: 'Failed to submit proposal. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }, [
+    canSubmit,
+    bidType,
+    bidAmount,
+    totalMilestonesAmount,
+    estimatedDuration,
+    milestones,
+    coverLetter,
+    relatedProjects,
+    project.id,
+  ])
 
   const simulateAiSuggestions = useCallback(() => {
     setShowAiSuggestions(true)
@@ -153,15 +233,6 @@ export function ProjectApplication({
       }),
     )
   }, [])
-
-  const handleSubmit = useCallback(() => {
-    if (!canSubmit) return
-    setIsSubmitting(true)
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setIsSubmitted(true)
-    }, 1500)
-  }, [canSubmit])
 
   const toggleRelatedProject = useCallback((index: number) => {
     setRelatedProjects((projects) =>
@@ -262,8 +333,6 @@ export function ProjectApplication({
                 )}
                 {activeStep === 3 && (
                   <StepThree
-                    relatedProjects={relatedProjects}
-                    toggleRelatedProject={toggleRelatedProject}
                     files={files}
                     setFiles={setFiles}
                     dragActive={dragActive}
@@ -271,11 +340,13 @@ export function ProjectApplication({
                   />
                 )}
 
-                <NavigationButtons
-                  activeStep={activeStep}
-                  setActiveStep={setActiveStep}
-                  onClose={onClose}
-                />
+                <div className="flex justify-end">
+                  <NavigationButtons
+                    activeStep={activeStep}
+                    setActiveStep={setActiveStep}
+                    onClose={onClose}
+                  />
+                </div>
               </div>
             )}
           </div>

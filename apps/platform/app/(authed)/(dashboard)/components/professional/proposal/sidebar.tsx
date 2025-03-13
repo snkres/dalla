@@ -126,7 +126,7 @@ export function ApplicationSidebar({
         <div>
           {isSubmitting ? (
             <Button
-              className="relative w-full overflow-hidden rounded-xl bg-[#63B7B7] py-5 font-medium text-white hover:bg-[#63B7B7]/90"
+              className="relative w-full overflow-hidden rounded-xl !bg-[#63B7B7] py-5 font-medium text-white hover:!bg-[#63B7B7]/90"
               disabled
             >
               <span className="opacity-0">Submit proposal</span>
@@ -140,7 +140,7 @@ export function ApplicationSidebar({
                 className={cn(
                   'w-full rounded-xl py-5 font-medium text-white',
                   canSubmit
-                    ? 'bg-[#63B7B7] hover:bg-[#63B7B7]/90'
+                    ? '!bg-[#63B7B7] hover:!bg-[#63B7B7]/90'
                     : 'cursor-not-allowed bg-gray-100 text-gray-400 hover:bg-gray-100',
                 )}
                 onClick={handleSubmit}
@@ -305,7 +305,12 @@ export function ApplicationSidebar({
             <div className="flex items-center gap-2 border-b border-t border-gray-50 py-2">
               <Clock className="h-3.5 w-3.5 text-gray-400" />
               <p className="text-xs text-gray-500">
-                Posted {project.postedDate}
+                Posted{' '}
+                {new Date(project.createdAt).toLocaleDateString('en-UK', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                })}
               </p>
             </div>
 
@@ -315,7 +320,7 @@ export function ApplicationSidebar({
                 {project.skills.slice(0, 3).map((skill) => (
                   <Badge
                     key={skill}
-                    className="rounded-md border-none bg-[#BEDDF1]/10 px-2 py-0.5 text-xs font-normal text-[#63B7B7] hover:bg-[#BEDDF1]/20"
+                    className="rounded-md border-none !bg-[#BEDDF1]/10 px-2 py-0.5 text-xs font-normal text-[#63B7B7] hover:!bg-[#BEDDF1]/20"
                   >
                     {skill}
                   </Badge>

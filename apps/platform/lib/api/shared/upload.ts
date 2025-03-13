@@ -1,8 +1,8 @@
 import { axiosInstance } from '../instance'
 
-export async function uploadImage(image: File) {
+export async function upload(file: File) {
   const formData = new FormData()
-  formData.append('file', image)
+  formData.append('file', file)
 
   console.log(formData)
 

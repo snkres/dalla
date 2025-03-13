@@ -6,8 +6,6 @@ import {
   Flag,
   Bookmark,
   ExternalLink,
-  FileText,
-  User,
   CheckCircle,
   MapPin,
   Briefcase,
@@ -19,9 +17,9 @@ import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { getProjectById } from '@lib/api/pro/projects'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getLocalTimeForLocation, cn } from '@dallah/utils'
+import { getLocalTimeForLocation } from '@dallah/utils'
 
 interface ProjectDetailProps {
   projectId: string
@@ -40,12 +38,34 @@ export function ProjectDetail({
   })
 
   useEffect(() => {
-    const originalStyle = window.getComputedStyle(document.body).overflow
+    // Store the original scroll position
+    const scrollY = window.scrollY
 
+    // Store original body styles before modifying
+    const originalOverflow = document.body.style.overflow
+    const originalPosition = document.body.style.position
+    const originalWidth = document.body.style.width
+    const originalTop = document.body.style.top
+    const originalHeight = document.body.style.height
+
+    // Apply scroll locking
     document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.width = '100%'
+    document.body.style.top = `-${scrollY}px`
+    document.body.style.height = '100%'
 
+    // Cleanup function to restore original state
     return () => {
-      document.body.style.overflow = originalStyle
+      // First restore original styles
+      document.body.style.overflow = originalOverflow
+      document.body.style.position = originalPosition
+      document.body.style.width = originalWidth
+      document.body.style.top = originalTop
+      document.body.style.height = originalHeight
+
+      // Then restore scroll position
+      window.scrollTo(0, scrollY)
     }
   }, [])
 
@@ -56,7 +76,25 @@ export function ProjectDetail({
     >
       <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
         <button
-          onClick={onClose}
+          onClick={(e) => {
+            // Extract the scroll position from the body's top property
+            const scrollY = document.body.style.top
+              ? Number.parseInt(document.body.style.top.replace('px', '')) * -1
+              : 0
+
+            // Reset all body styles completely
+            document.body.style.removeProperty('overflow')
+            document.body.style.removeProperty('position')
+            document.body.style.removeProperty('width')
+            document.body.style.removeProperty('top')
+            document.body.style.removeProperty('height')
+
+            // Force a small delay before restoring scroll
+            setTimeout(() => {
+              window.scrollTo(0, scrollY)
+              onClose()
+            }, 10)
+          }}
           className="flex items-center text-[#234d64] transition-colors hover:text-[#234d64]/80"
         >
           <ArrowLeft className="mr-1 h-5 w-5" />
