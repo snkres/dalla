@@ -190,7 +190,7 @@ export function ProfessionalHome() {
                 </p>
                 <Button
                   onClick={clearAllFilters}
-                  className="bg-[#234d64] hover:bg-[#234d64]/90"
+                  className="!bg-[#234d64] hover:!bg-[#234d64]/90"
                 >
                   Clear Filters & Search
                 </Button>

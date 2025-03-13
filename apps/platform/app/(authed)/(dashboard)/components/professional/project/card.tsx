@@ -40,21 +40,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
       )}
     >
       <div className="flex h-full flex-col p-5">
-        {/* {project.meta && (
-          <div className="mb-3 flex items-center self-start rounded-full bg-[#63B7B7]/10 px-3 py-1 text-xs font-medium text-[#63B7B7]">
-            <Award className="mr-1.5 h-3.5 w-3.5" />
-            Featured Project
-          </div>
-        )} */}
-        {/* {project.urgent && (
-          <Badge
-            variant="outline"
-            className="mb-3 flex items-center self-start rounded-full bg-[#63B7B7]/10 px-3 py-1 text-xs font-medium text-[#63B7B7]"
-          >
-            <Flame className="mr-1 h-3 w-3 text-[#63B7B7]" />
-            Urgent
-          </Badge>
-        )} */}
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <h3 className="text-base font-medium text-gray-900">{title}</h3>
@@ -123,12 +108,12 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
               </Tooltip>
             </TooltipProvider>
 
-            <TooltipProvider>
+            {/* <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
                     <Clock className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{project.meta.timeline}</span>
+                    <span className="truncate">{project.meta.priority}</span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -138,7 +123,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                   <p>Project Duration</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider>
+            </TooltipProvider> */}
 
             {/* <TooltipProvider>
               <Tooltip>
@@ -158,7 +143,14 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             </TooltipProvider> */}
           </div>
           <div className="whitespace-nowrap text-xs text-gray-400">
-            Posted {project.createdAt}
+            Posted{' '}
+            {new Date(project.createdAt).toLocaleDateString('en-UK', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
           </div>
         </div>
       </div>

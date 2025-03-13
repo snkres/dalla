@@ -33,7 +33,7 @@ export function MonthYearPicker({
         selectedYear,
         selectedMonth !== null ? selectedMonth : 0,
         1,
-      ).toLocaleDateString('en-US', {
+      ).toLocaleDateString('en-UK', {
         month: selectedMonth !== null ? 'short' : undefined,
         year: 'numeric',
       })

@@ -229,7 +229,19 @@ export function ProjectDetail({
                     </p>
                   </div>
                 </div>
-
+                <div className="flex items-start gap-3">
+                  <Users className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">
+                      Total Projects
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {data?.company?._count?.projects
+                        ? `${data.company._count.projects} projects`
+                        : 'Not specified'}
+                    </p>
+                  </div>
+                </div>
                 <div className="flex items-start gap-3">
                   <MapPin className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
                   <div>
@@ -254,20 +266,6 @@ export function ProjectDetail({
                             data.company.CompanyProfile.location,
                           )
                         : 'Time zone not available'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Users className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">
-                      Company Size
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {data?.company?._count?.projects
-                        ? `${data.company._count.projects} projects`
-                        : 'Not specified'}
                     </p>
                   </div>
                 </div>
