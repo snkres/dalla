@@ -8,7 +8,6 @@ import {
 } from '@lib/utils/parse-cv'
 import { ProOnboardingData } from './use-onboarding'
 
-// Form validation helpers
 function validatePhone(phone: string | undefined): boolean {
   if (!phone) return false
   const digitsOnly = phone.replace(/\D/g, '')
@@ -52,28 +51,33 @@ export const useProfessionalOnboarding = ({
   data,
   updateData,
   setIsAbleToProceed,
+  currentStep,
 }: {
   data: ProOnboardingData
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
+  currentStep?: number
 }) => {
   const { toast } = useToast()
 
-  // CV parsing state
   const [uploadedCV, setUploadedCV] = useState<File | null>(null)
   const [cvData, setCVData] = useState<CVParseResponse['data'] | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Form validation state
   const [phoneError, setPhoneError] = useState<string | null>(null)
   const [isAllValid, setIsAllValid] = useState(false)
 
-  // Form dialogs state
   const [isExpOpen, setIsExpOpen] = useState(false)
   const [isEduOpen, setIsEduOpen] = useState(false)
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
 
-  // CV upload and parsing
+  // Add validation state trackers
+  const [isBasicInfoValid, setIsBasicInfoValid] = useState(false)
+  const [isProfessionalDetailsValid, setIsProfessionalDetailsValid] =
+    useState(false)
+  const [isExperienceValid, setIsExperienceValid] = useState(false)
+  const [isEducationValid, setIsEducationValid] = useState(false)
+
   useEffect(() => {
     if (!(uploadedCV instanceof File)) return
 
@@ -101,7 +105,6 @@ export const useProfessionalOnboarding = ({
     parseAndUpdateCV()
   }, [uploadedCV, updateData, toast])
 
-  // Update data with CV parsed information
   const updateCVData = useCallback(
     (cvData: CVParseResponse['data']) => {
       const yoe = calculateYearsOfExperience(cvData.workExperiences)
@@ -111,7 +114,6 @@ export const useProfessionalOnboarding = ({
       const educationEntries = extractEducation(cvData.educations)
       const workExperience = extractWorkExperience(cvData.workExperiences)
 
-      // Enrich work experience with skills
       workExperience.forEach((exp) => {
         exp.meta.skills = extractedSkills.filter(
           (skill) =>
@@ -149,36 +151,24 @@ export const useProfessionalOnboarding = ({
     [updateData],
   )
 
-  // Validation effects
-
-  // Step 1: Basic info validation
+  // Consolidated validation effect that checks all requirements
   useEffect(() => {
-    const isBasicInfoValid = validateBasicInfo(data)
-    setIsAbleToProceed(isBasicInfoValid)
-  }, [
-    data.avatar,
-    data.headline,
-    data.gender,
-    data.meta.location,
-    data.bio,
-    setIsAbleToProceed,
-  ])
+    // Check basic info
+    const basicInfoValid = validateBasicInfo(data)
+    setIsBasicInfoValid(basicInfoValid)
 
-  // Step 2: Professional details validation
-  useEffect(() => {
+    // Check phone and professional details
     const isPhoneValid = validatePhone(data.meta.phone)
-
     if (data.meta.phone && !isPhoneValid) {
       setPhoneError('Please enter a valid phone number')
-      setIsAbleToProceed(false)
-      return
+    } else {
+      setPhoneError(null)
     }
 
-    setPhoneError(null)
-    const isProfessionalDetailsValid = validateProfessionalDetails(data)
-    setIsAbleToProceed(isProfessionalDetailsValid)
+    const professionalDetailsValid = validateProfessionalDetails(data)
+    setIsProfessionalDetailsValid(professionalDetailsValid)
 
-    if (!isProfessionalDetailsValid) {
+    if (!professionalDetailsValid) {
       const missingFields = Object.entries({
         skills: data.meta.skills.length > 0,
         yearsOfExperience: data.meta.yearsOfExperience > 0,
@@ -189,29 +179,65 @@ export const useProfessionalOnboarding = ({
         .map(([key]) => key)
       console.log('Missing fields:', missingFields)
     }
+
+    // Check experience and education
+    const experienceValid = validateEntryDates(data.experience)
+    setIsExperienceValid(experienceValid)
+
+    const educationValid = validateEntryDates(data.education)
+    setIsEducationValid(educationValid)
+
+    // Calculate if all validations pass (for final submission)
+    const allValid =
+      basicInfoValid &&
+      professionalDetailsValid &&
+      experienceValid &&
+      educationValid
+    setIsAllValid(allValid)
+
+    // Determine if user can proceed based on current step
+    let canProceed = false
+
+    // If currentStep is undefined or invalid, default to checking the basic info
+    if (!currentStep) {
+      canProceed = basicInfoValid
+    } else {
+      switch (currentStep) {
+        case 1:
+          canProceed = basicInfoValid
+          break
+        case 2:
+          canProceed = professionalDetailsValid
+          break
+        case 3:
+          canProceed = experienceValid
+          break
+        case 4:
+          canProceed = educationValid
+          break
+        default:
+          // For final submission or unknown step, require all validations
+          canProceed = allValid
+      }
+    }
+
+    setIsAbleToProceed(canProceed)
   }, [
+    data.headline,
+    data.bio,
+    data.gender,
+    data.meta.location,
     data.meta.skills,
     data.meta.yearsOfExperience,
     data.meta.socialLinks?.portfolio,
     data.meta.phone,
+    data.experience,
+    data.education,
+    data.avatar,
     setIsAbleToProceed,
+    currentStep,
   ])
 
-  // Step 3: Experience validation
-  useEffect(() => {
-    const isExperienceValid = validateEntryDates(data.experience)
-    setIsAllValid(isExperienceValid)
-    setIsAbleToProceed(isExperienceValid)
-  }, [data.experience, setIsAbleToProceed])
-
-  // Step 4: Education validation
-  useEffect(() => {
-    const isEducationValid = validateEntryDates(data.education)
-    setIsAllValid(isEducationValid)
-    setIsAbleToProceed(isEducationValid)
-  }, [data.education, setIsAbleToProceed])
-
-  // Form handlers
   const handleSkills = useCallback(
     (skills: string[]) => {
       updateData((prev) => ({ ...prev, meta: { ...prev.meta, skills } }))
@@ -275,6 +301,12 @@ export const useProfessionalOnboarding = ({
     validatePhone,
     isAllValid,
     setIsAllValid,
+
+    // Add validation state for UI feedback
+    isBasicInfoValid,
+    isProfessionalDetailsValid,
+    isExperienceValid,
+    isEducationValid,
 
     // Skill management
     handleSkills,

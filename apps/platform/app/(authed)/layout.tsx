@@ -48,6 +48,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         name: (data as ProProfile).name || '',
         mode: 'user',
       })
+      console.log(data)
       setProProfile(data as ProProfile)
       if (!(data as ProProfile).onboarded) {
         router.push('/onboard')
@@ -66,6 +67,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
     }
   }, [data, isFetched])
+
+  if (!isFetched) return null
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">

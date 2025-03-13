@@ -218,7 +218,7 @@ export function EducationSection({
                       <div className="flex items-center gap-1">
                         <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
                         <MonthYearPicker
-                          value={edu.endDate}
+                          value={edu.endDate || 'Present'}
                           onChange={(value) =>
                             updateEducation(index, 'endDate', value)
                           }
@@ -326,10 +326,15 @@ export function EducationSection({
                             year: 'numeric',
                           })}{' '}
                           -{' '}
-                          {new Date(edu.endDate).toLocaleDateString('en-US', {
-                            month: 'short',
-                            year: 'numeric',
-                          })}
+                          {edu.endDate === 'present'
+                            ? 'Present'
+                            : new Date(edu.endDate).toLocaleDateString(
+                                'en-US',
+                                {
+                                  month: 'short',
+                                  year: 'numeric',
+                                },
+                              )}
                         </span>
                       </div>
                     </div>

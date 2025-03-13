@@ -41,10 +41,11 @@ export default function VerifyPage() {
     setIsSubmitting(true)
 
     try {
+      console.log(global)
       const res = await verify({
         email: global.email,
         otp: verificationCode,
-        userType: global.mode === 'company' ? 'company' : 'user',
+        userType: global.mode,
       })
 
       if (res.success) {

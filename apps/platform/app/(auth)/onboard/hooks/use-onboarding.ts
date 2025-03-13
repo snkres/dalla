@@ -62,11 +62,11 @@ export interface ProOnboardingData {
 }
 
 export function useOnboarding() {
-  const [global] = useAtom(globalAtom)
+  const [global, setGlobal] = useAtom(globalAtom)
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const router = useTransitionRouter()
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
-  const [isAbleToProceed, setIsAbleToProceed] = useState(false)
+  const [isAbleToProceed, setIsAbleToProceed] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const [companyData, setCompanyData] = useState<CompanyOnboardingData>({
@@ -101,19 +101,11 @@ export function useOnboarding() {
     },
   })
 
-  const [mode, setMode] = useState('company')
   const companySteps = [{ id: 1 }, { id: 2 }, { id: 3 }]
   const proSteps = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
   const currentStep = step
 
   const { toast } = useToast()
-
-  useEffect(() => {
-    const mode = global.mode
-    if (mode) {
-      setMode(mode as string)
-    }
-  }, [])
 
   const handlePrevious = () => {
     setStep((prev) =>
@@ -122,7 +114,7 @@ export function useOnboarding() {
   }
 
   const handleNext = () => {
-    const maxStep = mode === 'company' ? 3 : 4
+    const maxStep = global.mode === 'company' ? 3 : 4
     setStep((prev) =>
       prev === maxStep ? maxStep : (((prev as number) + 1) as 1 | 2 | 3 | 4),
     )
@@ -131,8 +123,7 @@ export function useOnboarding() {
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true)
-
-      if (mode === 'company' && 'areas' in companyData!) {
+      if (global.mode === 'company' && 'areas' in companyData!) {
         const res = await companyOnboarding({
           headline: companyData.headline,
           bio: companyData.bio,
@@ -154,38 +145,41 @@ export function useOnboarding() {
           },
         })
         if (res.success) {
+          setGlobal({ ...global, name: res.data.name })
           setShowCompleteDialog(true)
         }
       } else {
+        console.log('proData', proData)
         const submittedData: ProOnboardingData = {
           headline: proData.headline,
           resume: proData.resume,
           bio: proData.bio,
-          education: proData.education.map((edu) => ({
+          education: proData.education.map((edu: any) => ({
             school: edu.school,
             degree: edu.degree,
             field: edu.field,
             startDate:
-              new Date(`${edu.startDate} 01`).toISOString() ||
+              new Date(`${edu.startDate} 01`).toISOString() ??
               new Date().toISOString(),
             endDate:
-              new Date(`${edu.endDate} 01`).toISOString() ||
-              new Date().toISOString(),
+              edu.endDate === 'Present'
+                ? 'present'
+                : new Date(`${edu.endDate} 01`).toISOString(),
             description: edu.description,
           })),
-          // @ts-ignore
           experience: proData.experience.map((exp) => ({
             title: exp.title,
             company: exp.company,
             location: exp.location,
-            skills: exp.meta.skills ?? [],
-            achievements: exp.meta.achievements,
-            responsibilities: exp.meta.responsibilities,
-            employmentType: exp.meta.employmentType,
-
+            meta: {
+              skills: exp.meta.skills ?? [],
+              achievements: exp.meta.achievements,
+              responsibilities: exp.meta.responsibilities,
+              employmentType: exp.meta.employmentType,
+            },
             startDate: new Date(`${exp.startDate} 01`).toISOString(),
             endDate:
-              exp.endDate === 'present'
+              exp.endDate === 'Present'
                 ? 'present'
                 : new Date(`${exp.endDate} 01`).toISOString(),
           })),
@@ -203,6 +197,11 @@ export function useOnboarding() {
         const res = await proOnboarding(submittedData)
 
         if (res.success) {
+          setGlobal({
+            ...global,
+            name: res.data.name,
+            username: res.data.username,
+          })
           setShowCompleteDialog(true)
         }
       }
@@ -219,7 +218,8 @@ export function useOnboarding() {
 
   const handleStepAction = () => {
     const isLastStep =
-      (mode === 'company' && step === 3) || (mode === 'user' && step === 4)
+      (global.mode === 'company' && step === 3) ||
+      (global.mode === 'user' && step === 4)
 
     if (isLastStep) {
       handleSubmit()
@@ -229,12 +229,16 @@ export function useOnboarding() {
   }
 
   const handleComplete = () => {
-    router.push('/companies/meza')
+    router.push(
+      `/${global.mode === 'company' ? 'companies' : 'professionals'}/${
+        global.mode === 'company' ? global.name : global.username
+      }`,
+    )
   }
 
   return {
     step,
-    mode,
+    mode: global.mode,
     companyData,
     proData,
     isAbleToProceed,

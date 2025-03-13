@@ -32,6 +32,7 @@ export function ProOnboardingThree({
     data,
     updateData,
     setIsAbleToProceed,
+    currentStep: 3,
   })
   return (
     <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">

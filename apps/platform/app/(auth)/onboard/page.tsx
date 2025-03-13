@@ -33,6 +33,8 @@ export default function Page() {
     handleComplete,
   } = useOnboarding()
 
+  console.log(isAbleToProceed)
+
   return (
     <AnimatePresence mode="wait">
       {showCompleteDialog ? (
@@ -107,12 +109,12 @@ export default function Page() {
             </AnimatePresence>
           </div>
           <ButtonsContainer
-            // isNextDisabled={!isAbleToProceed}
             continueText={step === 3 ? 'Submit' : 'Proceed'}
             handlePrevious={handlePrevious}
             previousText={step === 1 ? 'Skip' : 'Back'}
             handleSubmit={handleStepAction}
             isSubmitting={isSubmitting}
+            isAbleToProceed={isAbleToProceed}
           />
         </div>
       ) : (
@@ -203,7 +205,7 @@ export default function Page() {
             <ButtonsContainer
               continueText={step === 4 ? 'Submit' : 'Proceed'}
               handlePrevious={handlePrevious}
-              isNextDisabled={!isAbleToProceed}
+              isAbleToProceed={isAbleToProceed}
               previousText={step === 1 ? null : 'Back'}
               handleSubmit={handleStepAction}
               isSubmitting={isSubmitting}

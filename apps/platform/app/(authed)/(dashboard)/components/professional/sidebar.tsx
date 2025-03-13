@@ -104,6 +104,8 @@ export function ProfileSidebar() {
     </div>
   )
 
+  if (!profile) return null
+
   const SidebarHeader = ({ icon, title, action }: SidebarHeaderProps) => (
     <div className="flex items-center justify-between border-b border-gray-100 p-4">
       <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
@@ -126,7 +128,7 @@ export function ProfileSidebar() {
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3 h-20 w-20 rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white ring-offset-1">
               <Image
-                src={profile?.UserProfile.avatar || ''}
+                src={profile?.UserProfile?.avatar || ''}
                 alt="Profile"
                 width={80}
                 height={80}
@@ -142,10 +144,10 @@ export function ProfileSidebar() {
               ></div>
             </div>
             <h3 className="mb-0.5 text-base font-medium text-gray-800">
-              {profile.name}
+              {profile?.name}
             </h3>
             <p className="text-xs text-gray-500">
-              {profile.UserProfile.headline}
+              {profile?.UserProfile?.headline}
             </p>
           </div>
 
@@ -164,12 +166,12 @@ export function ProfileSidebar() {
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600">Profile Completion</span>
               <span className="font-medium text-[#63B7B7]">
-                {profile.UserProfile.precentage}%
+                {profile?.UserProfile?.precentage}%
               </span>
             </div>
             <div className="w-full">
               <Progress
-                value={profile.UserProfile.precentage}
+                value={profile?.UserProfile?.precentage}
                 className="h-1.5 !bg-gray-100"
                 indicatorClassName="!bg-[#63B7B7]"
               />
@@ -180,7 +182,7 @@ export function ProfileSidebar() {
             className="h-9 w-full !bg-[#63B7B7] !text-sm font-normal transition-colors duration-200 hover:!bg-[#63B7B7]/90"
             asChild
           >
-            <Link href={`/professionals/${profile.username}`}>
+            <Link href={`/professionals/${profile?.username}`}>
               View Profile
             </Link>
           </Button>

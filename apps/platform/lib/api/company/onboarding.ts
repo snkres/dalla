@@ -1,3 +1,4 @@
+import { CompanyProfile } from '@lib/atoms/company/profile'
 import { axiosInstance } from '../instance'
 
 export interface CompanyPayload {
@@ -26,6 +27,7 @@ export async function companyOnboarding(payload: CompanyPayload) {
     .post<{
       success: boolean
       message: string
+      data: CompanyProfile
     }>('/company/onboarding', payload)
     .then((res) => res.data)
 
