@@ -174,7 +174,7 @@ export function Navbar() {
             onClick={toggleProfileMenu}
           >
             <Image
-              src={userProfile.avatar}
+              src={userProfile?.avatar || '/avatar.png'}
               alt="Profile"
               width={32}
               height={32}

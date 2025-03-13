@@ -204,7 +204,7 @@ export function ProfessionalHome() {
       <AnimatePresence>
         {showProjectDetail && selectedProject && (
           <ProjectDetail
-            project={selectedProject}
+            projectId={selectedProject.id}
             onClose={handleCloseAll}
             onApplyClick={handleApplyClick}
           />

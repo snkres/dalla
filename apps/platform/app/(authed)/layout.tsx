@@ -22,9 +22,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     staleTime: Infinity,
     //@ts-ignore
     cacheTime: 1000 * 60 * 60 * 24,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
+    // refetchOnWindowFocus: true,
+    // refetchOnMount: true,
+    // refetchOnReconnect: true,
     queryFn: async () => {
       if (global.mode === 'user') {
         const res = await getProProfile()
@@ -33,8 +33,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         const res = await getCompanyProfile()
         return res.data.data
       }
+      return {}
     },
-    enabled: !!global.mode,
+    enabled: Boolean(global.mode),
   })
 
   useEffect(() => {

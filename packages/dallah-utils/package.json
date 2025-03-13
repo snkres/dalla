@@ -53,5 +53,8 @@
     "eslint-config-dallah": "workspace:*",
     "tsup": "^5.12.8",
     "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "date-fns-tz": "^3.2.0"
   }
 }

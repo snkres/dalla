@@ -29,25 +29,8 @@ import { proProfileAtom } from '@lib/atoms/pro/profile'
 
 export function ProfileSidebar() {
   const [profile] = useAtom(proProfileAtom)
+  if (!profile) return null
   const [isWindowFocused, setIsWindowFocused] = useState(true)
-
-  // Add effect to track window focus
-  useEffect(() => {
-    const handleFocus = () => setIsWindowFocused(true)
-    const handleBlur = () => setIsWindowFocused(false)
-
-    window.addEventListener('focus', handleFocus)
-    window.addEventListener('blur', handleBlur)
-
-    // Set initial state based on document.hasFocus()
-    setIsWindowFocused(document.hasFocus())
-
-    // Cleanup event listeners
-    return () => {
-      window.removeEventListener('focus', handleFocus)
-      window.removeEventListener('blur', handleBlur)
-    }
-  }, [])
 
   const projects: ProjectSidebar[] = [
     {
@@ -128,7 +111,7 @@ export function ProfileSidebar() {
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3 h-20 w-20 rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white ring-offset-1">
               <Image
-                src={profile?.UserProfile?.avatar || ''}
+                src={profile?.UserProfile?.avatar || '/avatar.png'}
                 alt="Profile"
                 width={80}
                 height={80}

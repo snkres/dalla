@@ -11,7 +11,12 @@ import {
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
+import { useAtom } from 'jotai'
+import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { companyProfileAtom } from '@lib/atoms/company/profile'
 import type { Notification as NotificationType } from '@lib/types/navbar'
+
+import { globalAtom } from '@lib/atoms/global'
 
 const navItems = [
   { icon: Home, label: 'Dashboard', href: '/' },
@@ -30,49 +35,27 @@ const accountItems = [
 
 export const useNavbar = () => {
   const pathname = usePathname()
-  const [activeItem, setActiveItem] = useState('/dashboard')
+  const [activeItem, setActiveItem] = useState('/')
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-  const [notifications, setNotifications] = useState<NotificationType[]>([
-    {
-      id: '1',
-      type: 'message',
-      title: 'New message from Sarah',
-      description: 'Hi there! I just reviewed the project proposal...',
-      time: '10 min ago',
-      read: false,
-      avatar: 'https://randomuser.me/api/portraits/women/42.jpg',
-    },
-    {
-      id: '2',
-      type: 'project',
-      title: 'Project deadline approaching',
-      description: 'The "Website Redesign" project is due in 2 days',
-      time: '2 hours ago',
-      read: false,
-    },
-    {
-      id: '3',
-      type: 'system',
-      title: 'System maintenance',
-      description: 'Scheduled maintenance will occur tonight at 2 AM',
-      time: 'Yesterday',
-      read: true,
-    },
-  ])
-
+  const [notifications, setNotifications] = useState<NotificationType[]>([])
+  const [global] = useAtom(globalAtom)
+  const [proProfile] = useAtom(proProfileAtom)
+  const [companyProfile] = useAtom(companyProfileAtom)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
 
-  const unreadCount = notifications.filter((n) => !n.read).length
   const userProfile = {
-    name: 'Amr Tamer',
-    email: 'amr.tamer@example.com',
-    avatar: 'https://avatars.githubusercontent.com/u/122938074?v=4',
+    name: global?.name,
+    email: global?.email,
+    avatar:
+      global?.mode === 'user'
+        ? proProfile?.UserProfile?.avatar
+        : companyProfile?.CompanyProfile?.logo,
   }
 
   useEffect(() => {
@@ -182,7 +165,7 @@ export const useNavbar = () => {
     isSearchActive,
     searchQuery,
     notifications,
-    unreadCount,
+    unreadCount: 0,
     userProfile,
     getNotificationIcon,
     toggleProfileMenu,
