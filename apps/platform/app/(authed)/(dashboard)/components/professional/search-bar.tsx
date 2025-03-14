@@ -4,7 +4,7 @@ import { Search, Filter, Info } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
-import { FilterPanel } from './filter-panel'
+import { FilterPanel } from '../../../../../components/shared/filter-panel'
 import { cn } from '@dallah/utils'
 import { SearchBarProps } from '@lib/types/search'
 const HELP_ANIMATION = {

@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@dallah/design-system'
 import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { BudgetRange } from '@lib/types/project'
-import { FilterPanel } from '../dashboard/filter-panel'
+import { FilterPanel } from '@components/shared/filter-panel'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'
 
 interface TabContainerProps {
