@@ -27,157 +27,141 @@ import CoverLetterSection from './cover-letter-section'
 import SkillsSection from './skills-section'
 import InsightsSection from './inisghts-section'
 import { ProposalDetailsProps } from '@lib/types/proposals'
+import { GetAllProposalsRes, getProposalById } from '@lib/api/pro/proposals'
+import { useQuery } from '@tanstack/react-query'
 
-const ProposalDetails: React.FC<ProposalDetailsProps> = ({
-  proposal,
-  isMobile,
-  onClose,
-}) => {
+const ProposalDetails: React.FC<{
+  proposalId: string
+  projectId: string
+  isMobile: boolean
+  onClose?: () => void
+}> = ({ proposalId, projectId, isMobile, onClose }) => {
+  const { data } = useQuery({
+    queryKey: ['proposals', 'professional', proposalId],
+    queryFn: () => getProposalById(proposalId, projectId),
+  })
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
   const toggleSection = (section: string) =>
     setExpandedSection(expandedSection === section ? null : section)
 
-  if (!proposal) return <ProposalDetailsEmpty />
+  if (!data) return <ProposalDetailsEmpty />
+
+  // Safely access nested properties from the API proposal
+  const project = data.project || {}
+  const meta = project.meta || {}
+  const company = project.company || {}
+  const companyProfile = company.CompanyProfile || {}
+  const companyMeta = companyProfile.meta || {}
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={proposal.id}
+        key={data.id}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.3 }}
         className={cn(
           'flex h-full w-full flex-col overflow-hidden rounded-xl bg-white',
-          isMobile ? 'fixed inset-0 z-50' : '',
+          isMobile ? 'shadow-lg' : 'shadow-sm',
         )}
       >
-        {isMobile && (
-          <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white p-4">
+        {isMobile && onClose && (
+          <div className="flex items-center justify-between border-b border-gray-100 p-4">
             <Button
               variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full"
               onClick={onClose}
-              className="flex items-center text-[#63B7B7] transition-colors hover:bg-[#63B7B7]/10 hover:text-[#63B7B7]/80"
             >
-              <ChevronLeft className="mr-1 h-5 w-5" />
-              <span className="font-medium">Back to proposals</span>
+              <ChevronLeft className="h-4 w-4" />
             </Button>
+            <h2 className="text-lg font-semibold">Proposal Details</h2>
+            <div className="w-8" />
           </div>
         )}
-        <div className="flex-1 overflow-auto">
-          <div className="border-b border-gray-100 bg-gradient-to-r from-[#BEDDF1]/10 to-white p-6">
-            <div className="mb-4 flex items-center justify-between">
-              <StatusBadge status={proposal.status} />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 hover:bg-[#63B7B7]/10"
-                  >
-                    <MoreHorizontal className="h-4 w-4 text-gray-500" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-56 rounded-lg border border-gray-100 bg-white p-1 shadow-lg"
+
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="mb-6 flex items-start justify-between">
+            <div>
+              <div className="mb-2 flex items-center gap-2">
+                <StatusBadge status={data.status} />
+                <span className="text-sm text-gray-500">
+                  {data.lastActivity}
+                </span>
+              </div>
+              <h1 className="mb-1 text-xl font-semibold text-gray-800">
+                {data.title}
+              </h1>
+              <div className="flex flex-wrap gap-y-2">
+                <div className="mr-4 flex items-center">
+                  <DollarSign className="mr-1 h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-700">{data.amount}</span>
+                </div>
+                <div className="mr-4 flex items-center">
+                  <Calendar className="mr-1 h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-700">
+                    {data.projectDuration}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <Globe className="mr-1 h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-700">
+                    {data.clientLocation}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full"
                 >
-                  <DropdownMenuItem className="cursor-pointer rounded-md py-2 text-sm hover:bg-[#BEDDF1]/10">
-                    <ExternalLink className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                    View original project
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer rounded-md py-2 text-sm hover:bg-[#BEDDF1]/10">
-                    <Mail className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                    Message client
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="my-1 bg-gray-100" />
-                  <DropdownMenuItem className="cursor-pointer rounded-md py-2 text-sm text-red-500 hover:bg-red-50">
-                    Withdraw proposal
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <h2 className="mb-4 text-xl font-semibold text-gray-800">
-              {proposal.title}
-            </h2>
-            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="flex items-center rounded-lg bg-[#BEDDF1]/10 p-3">
-                <DollarSign className="mr-2 h-5 w-5 text-[#63B7B7]" />
-                <div>
-                  <p className="text-xs text-gray-500">Bid amount</p>
-                  <p className="text-base font-semibold text-gray-800">
-                    {proposal.amount}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center rounded-lg bg-[#BEDDF1]/10 p-3">
-                <Calendar className="mr-2 h-5 w-5 text-[#63B7B7]" />
-                <div>
-                  <p className="text-xs text-gray-500">Duration</p>
-                  <p className="text-base font-semibold text-gray-800">
-                    {proposal.projectDuration}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center rounded-lg bg-[#BEDDF1]/10 p-3">
-                <Globe className="mr-2 h-5 w-5 text-[#63B7B7]" />
-                <div>
-                  <p className="text-xs text-gray-500">Location</p>
-                  <p className="text-base font-semibold text-gray-800">
-                    {proposal.clientLocation}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-lg bg-[#63B7B7]/5 p-4">
-              <div className="mb-2 flex items-center">
-                <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                <h3 className="text-sm font-medium text-gray-800">
-                  Recent Activity
-                </h3>
-              </div>
-              <p className="text-sm text-gray-700">{proposal.lastActivity}</p>
-            </div>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <Mail className="mr-2 h-4 w-4" />
+                  <span>Contact client</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  <span>View project</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-red-500">
+                  Withdraw proposal
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <div className="p-6">
+
+          <div className="space-y-6">
             <ClientSection
-              proposal={proposal}
+              proposal={data}
               isExpanded={expandedSection === 'client'}
               onToggle={() => toggleSection('client')}
             />
             <CoverLetterSection
-              proposal={proposal}
+              proposal={data}
               isExpanded={expandedSection === 'coverLetter'}
               onToggle={() => toggleSection('coverLetter')}
             />
             <SkillsSection
-              proposal={proposal}
+              proposal={data}
               isExpanded={expandedSection === 'skills'}
               onToggle={() => toggleSection('skills')}
             />
             <InsightsSection
-              proposal={proposal}
+              proposal={data}
               isExpanded={expandedSection === 'insights'}
               onToggle={() => toggleSection('insights')}
             />
           </div>
-        </div>
-        <div className="sticky bottom-0 flex justify-between border-t border-gray-100 bg-white p-4">
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-[#63B7B7]/30 px-4 py-2 text-[#63B7B7] hover:bg-[#63B7B7]/5"
-          >
-            <Mail className="mr-2 h-4 w-4" />
-            Message Client
-          </Button>
-          <Button
-            size="sm"
-            className="bg-[#63B7B7] px-4 py-2 text-white hover:bg-[#63B7B7]/90"
-          >
-            <ExternalLink className="mr-2 h-4 w-4" />
-            View Project
-          </Button>
         </div>
       </motion.div>
     </AnimatePresence>

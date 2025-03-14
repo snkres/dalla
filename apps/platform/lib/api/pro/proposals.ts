@@ -86,3 +86,64 @@ export async function createProjectProposal(
 
   return res
 }
+export type GetAllProposalsRes = {
+  statusCode: number
+  success: boolean
+  message: string
+  data: [
+    Array<{
+      id: string
+      status: string
+      createdAt: string
+      project: {
+        title: string
+        meta: {
+          budget: number
+          duration: string
+        }
+        company: {
+          id: string
+          name: string
+          CompanyProfile: {
+            meta: {
+              size: string
+              type: string
+              phone: string
+              industry: string
+              socialLinks: {
+                url: string
+                name: string
+              }
+            }
+          }
+        }
+      }
+    }>,
+    {
+      isFirstPage: boolean
+      isLastPage: boolean
+      currentPage: number
+      previousPage: any
+      nextPage: any
+    },
+  ]
+  error: any
+  path: string
+  timestamp: string
+}
+
+export async function getAllProposals() {
+  const res = await axiosInstance
+    .get<GetAllProposalsRes>('/professionals/proposals')
+    .then((res) => res.data)
+
+  return res
+}
+
+export async function getProposalById(proposalId: string, projectId: string) {
+  const res = await axiosInstance
+    .get(`/professionals/projects/${projectId}/proposals/${proposalId}`)
+    .then((res) => res.data)
+
+  return res
+}

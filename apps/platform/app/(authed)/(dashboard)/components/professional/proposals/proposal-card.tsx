@@ -11,14 +11,39 @@ import {
 } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
-import { ProposalCardProps } from '@lib/types/proposals'
-import StatusBadge from './status-badge'
 
-const ProposalCard: React.FC<ProposalCardProps> = ({
-  proposal,
-  isSelected,
-  onClick,
-}) => {
+import StatusBadge from './status-badge'
+import { GetAllProposalsRes } from '@lib/api/pro/proposals'
+
+const ProposalCard: React.FC<{
+  proposal: GetAllProposalsRes['data']['0'][number]
+  isSelected: boolean
+  onClick: () => void
+}> = ({ proposal, isSelected, onClick }) => {
+  function getTimeAgo(arg0: Date) {
+    const now = new Date()
+    const diffMs = now.getTime() - arg0.getTime()
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+    if (diffDays === 0) {
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+      return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`
+    } else if (diffDays < 7) {
+      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`
+    } else if (diffDays < 30) {
+      const diffWeeks = Math.floor(diffDays / 7)
+      return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`
+    } else {
+      const diffMonths = Math.floor(diffDays / 30)
+      return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`
+    }
+  }
+
+  // Safely access nested properties
+  const project = proposal.project || {}
+  const meta = project.meta || {}
+  const company = project.company || {}
+  const companyName = company.name || 'Unknown Client'
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -32,35 +57,21 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     >
       <div className="mb-3 flex items-start justify-between">
         <StatusBadge status={proposal.status} />
-        <div className="flex items-center gap-2">
-          {proposal.hasBoosted && (
-            <Badge className="border-[#63B7B7]/20 bg-[#63B7B7]/10 text-xs text-[#63B7B7]">
-              <Star className="mr-1 h-3 w-3 fill-[#63B7B7]" />
-              Boosted
-            </Badge>
-          )}
-        </div>
       </div>
       <h3 className="mb-2 line-clamp-1 text-base font-semibold text-gray-800 transition-colors group-hover:text-[#63B7B7]">
-        {proposal.title}
+        {project.title || 'Untitled Project'}
       </h3>
       <div className="mb-3 flex flex-wrap gap-y-3">
         <div className="mr-4 flex items-center">
           <DollarSign className="mr-1 h-4 w-4 text-[#63B7B7]" />
           <span className="text-sm font-medium text-gray-700">
-            {proposal.amount}
+            ${meta.budget?.toLocaleString() || '0'}
           </span>
         </div>
         <div className="mr-4 flex items-center">
           <Calendar className="mr-1 h-4 w-4 text-[#63B7B7]" />
           <span className="text-sm text-gray-700">
-            {proposal.projectDuration}
-          </span>
-        </div>
-        <div className="flex items-center">
-          <Globe className="mr-1 h-4 w-4 text-[#63B7B7]" />
-          <span className="text-sm text-gray-700">
-            {proposal.clientLocation}
+            {meta.duration || 'Not specified'}
           </span>
         </div>
       </div>
@@ -70,17 +81,19 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           {proposal.status === 'Submitted' || proposal.status === 'Viewed'
             ? 'Initiated'
             : 'Received'}{' '}
-          {proposal.timeAgo}
+          {getTimeAgo(new Date(proposal.createdAt))}
         </span>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <Avatar className="mr-2 h-6 w-6">
             <AvatarFallback className="bg-[#63B7B7]/10 text-xs text-[#63B7B7]">
-              {proposal.clientName.charAt(0)}
+              {companyName.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm text-gray-700">{proposal.clientName}</span>
+          <span className="text-sm text-gray-700">
+            {companyName}
+          </span>
         </div>
         <Button
           variant="ghost"

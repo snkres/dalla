@@ -1,13 +1,27 @@
 'use client'
 
-import { TabContainerProps } from '@lib/types/proposals'
 import { motion, AnimatePresence } from 'motion/react'
 import { Tabs, TabsList, TabsTrigger } from '@dallah/design-system'
 import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { BudgetRange } from '@lib/types/project'
 import { FilterPanel } from '../dashboard/filter-panel'
+import { GetAllProposalsRes } from '@lib/api/pro/proposals'
 
+interface TabContainerProps {
+  activeTab: string
+  onTabChange: (tab: string) => void
+  activeProposals: GetAllProposalsRes['data'][0][number][]
+  submittedProposals: GetAllProposalsRes['data'][0][number][]
+  isMobile: boolean
+  isDetailOpen: boolean
+  searchQuery: string
+  onSearchChange: (query: string) => void
+  sortBy: 'date' | 'amount' | 'title'
+  sortOrder: 'asc' | 'desc'
+  onSort: (field: 'date' | 'amount' | 'title') => void
+  viewType: 'professional' | 'company'
+}
 const TabContainer: React.FC<TabContainerProps> = memo(
   ({
     activeTab,
@@ -128,12 +142,12 @@ const TabContainer: React.FC<TabContainerProps> = memo(
           onValueChange={onTabChange}
         >
           <div className="py-4">
-            <TabsList className="grid h-auto w-full grid-cols-4 gap-1.5 rounded-lg bg-[#e6f3f3] p-1.5 shadow-sm">
+            <TabsList className="grid h-auto w-full grid-cols-4 gap-1.5 !rounded-lg bg-[#e6f3f3] p-1.5 shadow-sm">
               {tabItems.map(({ id, label }) => (
                 <TabsTrigger
                   key={id}
                   value={id}
-                  className="duration-250 group relative rounded-md px-3 py-2.5 text-sm font-medium transition-all hover:text-[#4a8a8a] focus:outline-none focus:ring-2 focus:ring-[#63B7B7]/20 focus-visible:ring-offset-2 data-[state=inactive]:text-[#63B7B7]"
+                  className="duration-250 group relative !rounded-md px-3 py-2.5 text-sm font-medium transition-all hover:text-[#4a8a8a] focus:outline-none focus:ring-2 focus:ring-[#63B7B7]/20 focus-visible:ring-offset-2 data-[state=inactive]:text-[#63B7B7]"
                 >
                   {activeTab === id && (
                     <motion.div

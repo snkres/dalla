@@ -37,10 +37,10 @@ const StatCard = ({
   subtext: string
 }) => {
   const badgeStyles = {
-    green: 'bg-green-50 text-green-700 border border-green-100',
-    amber: 'bg-amber-50 text-amber-700 border border-amber-100',
-    blue: 'bg-[#E0F2F2] text-[#1D8489] border border-[#63B7B7]/30',
-    gray: 'bg-gray-100 text-gray-700 border-none',
+    green: '!bg-green-50 !text-green-700 border border-green-100',
+    amber: '!bg-amber-50 !text-amber-700 border border-amber-100',
+    blue: '!bg-[#E0F2F2] !text-[#1D8489] border border-[#63B7B7]/30',
+    gray: '!bg-gray-100 !text-gray-700 border-none',
   }
 
   const getBadgeStyle = () => {
@@ -76,8 +76,8 @@ const PerformanceChart = ({ percentage }: { percentage: number }) => (
   <div className="w-full">
     <Progress
       value={percentage}
-      className="h-3 rounded-full bg-gray-100"
-      indicatorClassName="bg-[#63B7B7] rounded-full"
+      className="h-3 rounded-full !bg-gray-100"
+      indicatorClassName="!bg-[#63B7B7] rounded-full"
     />
     <div className="mt-2 flex justify-between">
       <div className="text-xs text-gray-500">0%</div>
