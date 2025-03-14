@@ -15,7 +15,7 @@ export function CompanyOnboardingThree({
   data: CompanyOnboardingData
   setData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
-  const handleToggle = (pref: string) => {
+  const handleToggle = (pref: { name: string; description: string }) => {
     setData((prev) => {
       if (prev.goals.includes(pref)) {
         return {
@@ -62,14 +62,16 @@ export function CompanyOnboardingThree({
         >
           {goalOptions.map((option, index) => (
             <motion.div
-              key={option.id}
+              key={option.name}
               variants={fadeInUpVariants}
               custom={index}
             >
               <GoalCard
-                option={option as GoalOption}
-                isSelected={data.goals.includes(option.label)}
-                onToggle={handleToggle}
+                option={option}
+                isSelected={data.goals.some(
+                  (goal) => goal.name === option.name,
+                )}
+                onToggle={() => handleToggle(option)}
               />
             </motion.div>
           ))}

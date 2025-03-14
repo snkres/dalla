@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useRef } from 'react'
 import { Camera, Check, UserCircle } from 'lucide-react'
 import Image from 'next/image'
-import { uploadImage } from '@lib/api/shared/upload'
+import { upload } from '@lib/api/shared/upload'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 
 const AvatarUpload = ({
@@ -31,7 +31,7 @@ const AvatarUpload = ({
         setPreviewUrl(reader.result as string)
       }
       reader.readAsDataURL(file)
-      const { data } = await uploadImage(file)
+      const { data } = await upload(file)
       setUploadedURL(data.fileUrl)
       console.log(data.fileUrl)
     }
