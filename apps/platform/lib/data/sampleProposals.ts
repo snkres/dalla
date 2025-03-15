@@ -7,7 +7,7 @@ const sampleProposals: ProposalSample[] = [
       id: 'C001',
       name: 'Alex Morgan',
       role: 'UI/UX Designer',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      avatar: '/avatar.png',
       rating: 4.9,
       location: 'San Francisco, CA',
       completedProjects: 28,

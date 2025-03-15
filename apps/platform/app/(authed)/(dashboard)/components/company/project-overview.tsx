@@ -19,17 +19,20 @@ import {
 import ActiveProjectView from './active-project-view'
 import ProjectProposalsView from './project-proposals-view'
 import EmptyProjectView from './empty-project-view'
-import sampleProjects from '@lib/data/sampleProjects'
+
+import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 
 interface ProjectOverviewProps {
+  projects: GetAllCompanyProjectsRes['data']['0']
   onPostJob: () => void
   onHireConsultant: () => void
 }
 export function ProjectOverview({
+  projects,
   onPostJob,
   onHireConsultant,
 }: ProjectOverviewProps) {
-  const [hasActiveProject, setHasActiveProject] = useState(false)
+  const [hasActiveProject, setHasActiveProject] = useState(projects.length > 0)
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [showProposals, setShowProposals] = useState(false)
   const [selectedProjectForProposals, setSelectedProjectForProposals] =
@@ -72,17 +75,9 @@ export function ProjectOverview({
 
           <div className="flex gap-2">
             <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setHasActiveProject(!hasActiveProject)}
-              className="h-8 border-[#63B7B7]/30 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
-            >
-              Toggle Demo View
-            </Button>
-            <Button
               size="sm"
               onClick={onPostJob}
-              className="h-8 bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]"
+              className="h-8 !bg-[#63B7B7] text-xs !text-white hover:!bg-[#1D8489]"
             >
               <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
               New Project
@@ -94,7 +89,7 @@ export function ProjectOverview({
           {hasActiveProject ? (
             <div key="projects-list">
               <div className="divide-y divide-gray-100">
-                {sampleProjects.map((project) => (
+                {projects.map((project) => (
                   <div
                     key={project.id}
                     className="border-b border-gray-100 last:border-b-0"
@@ -104,14 +99,14 @@ export function ProjectOverview({
                         <div className="flex items-center gap-3">
                           <div
                             className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                              project.hasConsultant
+                              project.proposals.length > 0
                                 ? 'bg-[#E0F2F2]'
                                 : 'bg-amber-50'
                             }`}
                           >
                             <Briefcase
                               className={`h-3.5 w-3.5 ${
-                                project.hasConsultant
+                                project.proposals.length > 0
                                   ? 'text-[#1D8489]'
                                   : 'text-amber-600'
                               }`}
@@ -124,14 +119,18 @@ export function ProjectOverview({
                               </h3>
                               <Badge
                                 className={`py-0.15 px-1.5 text-xs font-normal ${
-                                  project.hasConsultant
-                                    ? 'border-[#63B7B7]/30 bg-[#E0F2F2] text-[#1D8489]'
-                                    : 'border-amber-200 bg-amber-50 text-amber-700'
+                                  project.proposals.length > 0
+                                    ? '!border-[#63B7B7]/30 !bg-[#E0F2F2] !text-[#1D8489]'
+                                    : '!border-amber-200 !bg-amber-50 !text-amber-700'
                                 }`}
                               >
-                                {project.hasConsultant
-                                  ? 'Consultant Hired'
-                                  : 'Seeking Consultant'}
+                                {project.approved
+                                  ? project.professional
+                                    ? 'Consultant Hired'
+                                    : project.proposals.length > 0
+                                      ? 'Recieved Proposals'
+                                      : 'No Proposals Yet'
+                                  : 'Not Approved Yet'}
                               </Badge>
                             </div>
                             <div className="mt-0.5 flex items-center gap-2">
@@ -140,24 +139,32 @@ export function ProjectOverview({
                               </span>
                               <span className="text-xs text-gray-400">•</span>
                               <span className="text-xs text-gray-500">
-                                Posted: {project.date}
+                                Posted:{' '}
+                                {new Date(project.createdAt).toLocaleDateString(
+                                  'en-UK',
+                                  {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                  },
+                                )}
                               </span>
                             </div>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {!project.hasConsultant && (
+                          {project.proposals.length > 0 && (
                             <Badge
                               variant="outline"
-                              className="border-amber-200 bg-white text-xs font-normal text-amber-700"
+                              className="!border-amber-200 !bg-white !text-xs !font-normal !text-amber-700"
                             >
-                              {project.proposalCount} Proposals
+                              {project.proposals.length} Proposals
                             </Badge>
                           )}
 
                           <div className="flex items-center gap-1">
-                            {!project.hasConsultant && (
+                            {project.proposals.length === 0 && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -198,7 +205,7 @@ export function ProjectOverview({
                                 align="end"
                                 className="w-[180px]"
                               >
-                                {!project.hasConsultant && (
+                                {project.proposals.length === 0 && (
                                   <DropdownMenuItem
                                     className="cursor-pointer text-xs"
                                     onClick={() =>
@@ -233,7 +240,7 @@ export function ProjectOverview({
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <ActiveProjectView />
+                          <ActiveProjectView project={project} />
                         </motion.div>
                       )}
                     </AnimatePresence>

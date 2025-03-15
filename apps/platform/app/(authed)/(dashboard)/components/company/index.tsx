@@ -15,17 +15,18 @@ import {
   ArrowUpRight,
 } from 'lucide-react'
 import { Button, Input } from '@dallah/design-system'
-
 import { cn } from '@dallah/utils'
 import { Consultant } from '@lib/types/company'
 import { consultants } from '@lib/data/consultants'
-
 import { ProjectOverview } from './project-overview'
 import { ConsultantCard } from 'app/(authed)/(company-only)/projects/components/consultant-card'
 import { ConsultantDetail } from 'app/(authed)/(company-only)/projects/components/consultant-detail'
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'
+import { useQuery } from '@tanstack/react-query'
+import { getAllProjects } from '@lib/api/company/projects'
 
+const LIMIT = 10
 export default function CompanyHome() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilterPanel, setShowFilterPanel] = useState(false)
@@ -36,6 +37,12 @@ export default function CompanyHome() {
   const [showConsultantDetail, setShowConsultantDetail] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
   const [showAddProject, setShowAddProject] = useState(false)
+  const [page, setPage] = useState(1)
+
+  const { data } = useQuery({
+    queryKey: ['projects', page, 'company'],
+    queryFn: () => getAllProjects(page, LIMIT),
+  })
 
   const filterOptions = [
     {
@@ -125,6 +132,7 @@ export default function CompanyHome() {
           <div className="flex-1">
             <ProjectOverview
               onPostJob={() => setShowAddProject(true)}
+              projects={data?.[0] || []}
               onHireConsultant={() => {
                 /* Scroll to consultant list or navigate */
               }}
