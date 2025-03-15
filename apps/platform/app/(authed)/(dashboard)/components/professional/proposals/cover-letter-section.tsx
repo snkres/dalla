@@ -1,9 +1,16 @@
 import { FileText } from 'lucide-react'
 import ExpandableSection from './expandable-section'
-import { CoverLetterSectionProps } from '@lib/types/proposals'
+
+interface CoverLetterSectionProps {
+  data: {
+    coverLetter: string
+  }
+  isExpanded: boolean
+  onToggle: () => void
+}
 
 const CoverLetterSection: React.FC<CoverLetterSectionProps> = ({
-  proposal,
+  data,
   isExpanded,
   onToggle,
 }) => (
@@ -15,7 +22,7 @@ const CoverLetterSection: React.FC<CoverLetterSectionProps> = ({
   >
     <div className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
       <p className="whitespace-pre-line text-sm leading-relaxed text-gray-700">
-        {proposal.coverLetter}
+        {data.coverLetter}
       </p>
     </div>
   </ExpandableSection>

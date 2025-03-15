@@ -88,6 +88,7 @@ export function ProfessionalProposals() {
     queryKey: ['proposals', 'professional'],
     queryFn: getAllProposals,
   })
+
   const [activeTab, setActiveTab] = useState('active')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedProposal, setSelectedProposal] = useState<
@@ -303,22 +304,22 @@ export function ProfessionalProposals() {
                       isMobile ? 'fixed inset-0 z-50 m-0' : '',
                     )}
                   >
-                    {/* <ProposalDetails
+                    <ProposalDetails
                       proposalId={String(selectedProposal.id)}
-                      projectId={selectedApiProposal?.project?.id}
+                      projectId={selectedProposal?.project?.id}
                       isMobile={isMobile}
                       onClose={() => setIsDetailOpen(false)}
-                    /> */}
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>
             )}
             {/* Desktop layout */}
-            {/* <div className="hidden lg:block">
+            <div className="hidden lg:block">
               {selectedProposal ? (
                 <ProposalDetails
                   proposalId={String(selectedProposal.id)}
-                  projectId={selectedApiProposal?.}
+                  projectId={selectedProposal?.project?.id}
                   isMobile={false}
                   onClose={() => setIsDetailOpen(false)}
                 />
@@ -335,7 +336,7 @@ export function ProfessionalProposals() {
                   </div>
                 </div>
               )}
-            </div> */}
+            </div>
           </motion.div>
         ) : null}
       </div>

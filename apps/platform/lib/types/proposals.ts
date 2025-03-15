@@ -62,30 +62,6 @@ export interface ExpandableSectionProps {
   children: React.ReactNode
 }
 
-export interface ClientSectionProps {
-  proposal: Proposal
-  isExpanded: boolean
-  onToggle: () => void
-}
-
-export interface CoverLetterSectionProps {
-  proposal: Proposal
-  isExpanded: boolean
-  onToggle: () => void
-}
-
-export interface SkillsSectionProps {
-  proposal: Proposal
-  isExpanded: boolean
-  onToggle: () => void
-}
-
-export interface InsightsSectionProps {
-  proposal: Proposal
-  isExpanded: boolean
-  onToggle: () => void
-}
-
 export interface ProposalDetailsProps {
   proposal: Proposal | null
   apiProposal?: any
