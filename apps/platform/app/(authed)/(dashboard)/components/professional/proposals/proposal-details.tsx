@@ -1,5 +1,7 @@
-import ProposalDetailsEmpty from './proposal-details-empty'
+'use client'
 
+import type React from 'react'
+import ProposalDetailsEmpty from './proposal-details-empty'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { cn } from '@dallah/utils'
@@ -8,11 +10,9 @@ import {
   ChevronLeft,
   MoreHorizontal,
   ExternalLink,
-  Mail,
   DollarSign,
   Calendar,
   Globe,
-  Clock,
 } from 'lucide-react'
 import StatusBadge from './status-badge'
 import {
@@ -21,12 +21,16 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from '@dallah/design-system'
 import ClientSection from './client-section'
 import CoverLetterSection from './cover-letter-section'
-import SkillsSection from './skills-section'
 import InsightsSection from './inisghts-section'
-import { ProposalDetailsProps } from '@lib/types/proposals'
 import { getProposalById, deleteProposal } from '@lib/api/pro/proposals'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
@@ -40,6 +44,7 @@ const ProposalDetails: React.FC<{
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const [isDeleting, setIsDeleting] = useState(false)
+  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false)
 
   const { data } = useQuery({
     queryKey: ['proposals', 'professional', proposalId],
@@ -81,13 +86,12 @@ const ProposalDetails: React.FC<{
     setExpandedSection(expandedSection === section ? null : section)
 
   const handleWithdrawProposal = () => {
-    if (
-      window.confirm(
-        'Are you sure you want to withdraw this proposal? This action cannot be undone.',
-      )
-    ) {
-      deleteMutation.mutate()
-    }
+    setShowWithdrawDialog(true)
+  }
+
+  const confirmWithdrawal = () => {
+    deleteMutation.mutate()
+    setShowWithdrawDialog(false)
   }
 
   if (!data) return <ProposalDetailsEmpty />
@@ -231,6 +235,32 @@ const ProposalDetails: React.FC<{
           </div>
         </div>
       </motion.div>
+      <Dialog open={showWithdrawDialog} onOpenChange={setShowWithdrawDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Withdraw Proposal</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to withdraw this proposal? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex gap-2 sm:justify-end">
+            <Button
+              variant="outline"
+              onClick={() => setShowWithdrawDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmWithdrawal}
+              disabled={isDeleting}
+            >
+              {isDeleting ? 'Withdrawing...' : 'Withdraw Proposal'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AnimatePresence>
   )
 }
