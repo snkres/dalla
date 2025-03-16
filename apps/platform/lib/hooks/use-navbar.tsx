@@ -10,8 +10,13 @@ import {
   Bell,
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
+import { useAtom } from 'jotai'
+import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { companyProfileAtom } from '@lib/atoms/company/profile'
 import type { Notification as NotificationType } from '@lib/types/navbar'
+
+import { globalAtom } from '@lib/atoms/global'
 
 const navItems = [
   { icon: Home, label: 'Dashboard', href: '/' },
@@ -30,59 +35,67 @@ const accountItems = [
 
 export const useNavbar = () => {
   const pathname = usePathname()
-  const [activeItem, setActiveItem] = useState('/dashboard')
+  const [activeItem, setActiveItem] = useState('/')
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchActive, setIsSearchActive] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
-  const [notifications, setNotifications] = useState<NotificationType[]>([
-    {
-      id: '1',
-      type: 'message',
-      title: 'New message from Sarah',
-      description: 'Hi there! I just reviewed the project proposal...',
-      time: '10 min ago',
-      read: false,
-      avatar: 'https://randomuser.me/api/portraits/women/42.jpg',
-    },
-    {
-      id: '2',
-      type: 'project',
-      title: 'Project deadline approaching',
-      description: 'The "Website Redesign" project is due in 2 days',
-      time: '2 hours ago',
-      read: false,
-    },
-    {
-      id: '3',
-      type: 'system',
-      title: 'System maintenance',
-      description: 'Scheduled maintenance will occur tonight at 2 AM',
-      time: 'Yesterday',
-      read: true,
-    },
-  ])
-
+  const [notifications, setNotifications] = useState<NotificationType[]>([])
+  const [global] = useAtom(globalAtom)
+  const [proProfile] = useAtom(proProfileAtom)
+  const [companyProfile] = useAtom(companyProfileAtom)
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
 
-  const unreadCount = notifications.filter((n) => !n.read).length
-  const userProfile = {
-    name: 'Amr Tamer',
-    email: 'amr.tamer@example.com',
-    avatar: 'https://avatars.githubusercontent.com/u/122938074?v=4',
-  }
+  const currentNavItems = useMemo(() => {
+    return navItems.filter((item) => {
+      if (global.mode === 'company' && item.label === 'Proposals') {
+        return false
+      }
+      return true
+    })
+  }, [global.mode])
+
+  const currentAccountItems = useMemo(() => {
+    const items = [...accountItems]
+
+    const profileItemIndex = items.findIndex(
+      (item) => item.label === 'View Profile',
+    )
+    if (profileItemIndex !== -1) {
+      items[profileItemIndex] = {
+        ...items[profileItemIndex],
+        href:
+          global.mode === 'company'
+            ? `/companies/${global.name}`
+            : `/professionals/${global.username}`,
+      }
+    }
+
+    return items
+  }, [global.mode])
+
+  const userProfile = useMemo(() => {
+    return {
+      name: global?.name || '',
+      email: global?.email || '',
+      avatar:
+        global?.mode === 'user'
+          ? proProfile?.UserProfile?.avatar || '/avatar.png'
+          : companyProfile?.CompanyProfile?.logo || '/avatar.png',
+    }
+  }, [global, proProfile, companyProfile])
 
   useEffect(() => {
-    const matchingItem = navItems.find(
+    const matchingItem = currentNavItems.find(
       (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
     )
     if (matchingItem) {
       setActiveItem(matchingItem.href)
     }
-  }, [pathname])
+  }, [pathname, currentNavItems])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -174,15 +187,15 @@ export const useNavbar = () => {
   }
 
   return {
-    navItems,
-    accountItems,
+    navItems: currentNavItems,
+    accountItems: currentAccountItems,
     activeItem,
     isProfileMenuOpen,
     isMobileMenuOpen,
     isSearchActive,
     searchQuery,
     notifications,
-    unreadCount,
+    unreadCount: 0,
     userProfile,
     getNotificationIcon,
     toggleProfileMenu,

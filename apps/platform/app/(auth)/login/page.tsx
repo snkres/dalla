@@ -61,7 +61,7 @@ export default function LoginPage() {
         router.push('/')
       }
     } catch (e) {
-      if (e instanceof Error && 'status' in e && e.status === 422) {
+      if (e instanceof Error && 'status' in e) {
         if (e.status === 422) {
           await resendOTP({
             email: data.email,
@@ -69,13 +69,13 @@ export default function LoginPage() {
           })
           router.push('/verify')
         }
-      } else {
-        toast({
-          title: 'Error',
-          description:
-            e instanceof Error ? e.message : 'An unknown error occurred',
-          variant: 'destructive',
-        })
+        if (e.status === 403) {
+          await resendOTP({
+            email: data.email,
+            userType: mode === 'company' ? 'company' : 'user',
+          })
+          router.push('/verify')
+        }
       }
     }
   }

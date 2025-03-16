@@ -4,9 +4,12 @@ import { motion } from 'motion/react'
 import { Plus } from 'lucide-react'
 
 interface GoalCardProps {
-  option: GoalOption
+  option: {
+    name: string
+    description: string
+  }
   isSelected: boolean
-  onToggle: (id: string) => void
+  onToggle: (name: string) => void
 }
 
 export const GoalCard = ({ option, isSelected, onToggle }: GoalCardProps) => {
@@ -14,7 +17,7 @@ export const GoalCard = ({ option, isSelected, onToggle }: GoalCardProps) => {
     <motion.div
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.98 }}
-      onClick={() => onToggle(option.label)}
+      onClick={() => onToggle(option.name)}
       className={cn(
         'relative cursor-pointer rounded-xl transition-all duration-200',
         'bg-white p-6',
@@ -26,7 +29,7 @@ export const GoalCard = ({ option, isSelected, onToggle }: GoalCardProps) => {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-grow">
           <h3 className="mb-2 text-xl font-semibold text-[#234d64]">
-            {option.label}
+            {option.name}
           </h3>
           <p className="text-sm leading-relaxed text-gray-600">
             {option.description}

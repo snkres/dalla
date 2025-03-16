@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { redirect } from 'next/navigation'
 
 export const axiosInstance = axios.create({
   baseURL: 'https://devapi.dalla.app',
@@ -6,9 +7,7 @@ export const axiosInstance = axios.create({
 })
 
 const redirectToLogin = () => {
-  if (typeof window !== 'undefined') {
-    window.location.href = '/'
-  }
+  redirect('/login')
 }
 
 axiosInstance.interceptors.response.use(

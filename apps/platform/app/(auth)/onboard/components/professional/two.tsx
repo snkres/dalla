@@ -24,6 +24,7 @@ export function ProOnboardingTwo({
     data,
     updateData,
     setIsAbleToProceed,
+    currentStep: 2,
   })
 
   return (

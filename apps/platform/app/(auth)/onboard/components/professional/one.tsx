@@ -35,6 +35,7 @@ export function ProOnboardingOne({
       data,
       updateData,
       setIsAbleToProceed,
+      currentStep: 1,
     })
   const [dragActive, setDragActive] = useState(false)
 

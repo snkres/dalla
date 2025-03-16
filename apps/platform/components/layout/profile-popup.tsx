@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { motion } from 'motion/react'
 import Link from 'next/link'
 import {
@@ -19,63 +19,72 @@ type ProfileItem = {
   href: string
 }
 
-type ProfilePopupProps = {
-  name: string
-  email: string
+export type ProfilePopupProps = {
+  accountItems?: ProfileItem[]
+  userProfile: {
+    name: string
+    email: string
+    avatar?: string
+  }
 }
 
-const ProfilePopup = ({ name, email }: ProfilePopupProps) => {
-  const [global] = useAtom(globalAtom)
+const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
+  ({ accountItems, userProfile }, ref) => {
+    const [global] = useAtom(globalAtom)
 
-  const profileItems: ProfileItem[] = [
-    {
-      icon: User,
-      label: 'View Profile',
-      href: `/${global.mode === 'user' ? 'professionals' : 'companies'}/${
-        global.mode === 'user' ? global.username : global.name
-      }`,
-    },
-    { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
-    { icon: HelpCircle, label: 'Help & Support', href: '/support' },
-  ]
+    const profileItems: ProfileItem[] = accountItems || [
+      {
+        icon: User,
+        label: 'View Profile',
+        href: `/${global.mode === 'user' ? 'professionals' : 'companies'}/${
+          global.mode === 'user' ? global.username : global.name
+        }`,
+      },
+      { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
+      { icon: HelpCircle, label: 'Help & Support', href: '/support' },
+    ]
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.2 }}
-      className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
-    >
-      <div className="border-b border-gray-100 px-4 py-3">
-        <p className="text-sm font-medium text-gray-800">{name}</p>
-        <p className="text-xs text-gray-500">{email}</p>
-      </div>
+    return (
+      <motion.div
+        ref={ref}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.2 }}
+        className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
+      >
+        <div className="border-b border-gray-100 px-4 py-3">
+          <p className="text-sm font-medium text-gray-800">
+            {userProfile.name}
+          </p>
+          <p className="text-xs text-gray-500">{userProfile.email}</p>
+        </div>
 
-      <div className="py-1">
-        {profileItems.map((item, index) => (
-          <Link href={item.href} key={index}>
-            <div className="flex items-center justify-between px-4 py-2 text-xs text-gray-700 transition-colors duration-200 hover:bg-[#63B7B7]/5">
-              <div className="flex items-center gap-2">
-                <item.icon className="h-3.5 w-3.5 text-[#63B7B7]" />
+        <div className="p-2">
+          {profileItems.map((item) => (
+            <Link href={item.href} key={item.label}>
+              <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-50">
+                <item.icon className="h-4 w-4 text-gray-500" />
                 <span>{item.label}</span>
+                <ChevronRight className="ml-auto h-3.5 w-3.5 text-gray-400" />
               </div>
-              <ChevronRight className="h-3 w-3 text-gray-400" />
+            </Link>
+          ))}
+        </div>
+
+        {/* <div className="border-t border-gray-100 p-2">
+          <Link href="/api/auth/signout">
+            <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50">
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
             </div>
           </Link>
-        ))}
-      </div>
+        </div> */}
+      </motion.div>
+    )
+  },
+)
 
-      <div className="border-t border-gray-100 py-1">
-        <Link href="/auth/logout">
-          <div className="flex items-center px-4 py-2 text-xs text-gray-700 transition-colors duration-200 hover:bg-[#63B7B7]/5">
-            <LogOut className="mr-2 h-3.5 w-3.5 text-[#63B7B7]" />
-            <span>Sign Out</span>
-          </div>
-        </Link>
-      </div>
-    </motion.div>
-  )
-}
+ProfilePopup.displayName = 'ProfilePopup'
 
 export default ProfilePopup

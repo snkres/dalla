@@ -7,6 +7,7 @@ interface ButtonsContainerProps {
   previousText: string | null
   continueText: string
   isNextDisabled?: boolean
+  isAbleToProceed?: boolean
 }
 
 export function ButtonsContainer({
@@ -15,7 +16,7 @@ export function ButtonsContainer({
   isSubmitting,
   previousText,
   continueText,
-  isNextDisabled,
+  isAbleToProceed,
 }: ButtonsContainerProps) {
   return (
     <div className="flex justify-between gap-4">
@@ -29,9 +30,10 @@ export function ButtonsContainer({
           {previousText}
         </Button>
       )}
+
       <Button
         type="submit"
-        disabled={isSubmitting || isNextDisabled}
+        disabled={isSubmitting || !isAbleToProceed}
         onClick={handleSubmit}
         className="w-full bg-[#234d64] text-white hover:bg-[#1a3b4d]"
       >

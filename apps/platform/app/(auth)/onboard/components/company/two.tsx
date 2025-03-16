@@ -3,7 +3,6 @@
 import { motion } from 'motion/react'
 import { GoalCard } from '../goal-card'
 import { focusAreaOptions } from '@lib/data/focus-options'
-import { GoalOption } from '@lib/types/goals'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { CompanyOnboardingData } from '../../hooks/use-onboarding'
 
@@ -14,19 +13,19 @@ export function CompanyOnboardingTwo({
   data: CompanyOnboardingData
   setData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
-  const handleToggle = (goal: string) => {
+  const handleToggle = (area: { name: string; description: string }) => {
     setData((prev: CompanyOnboardingData) => {
-      if (prev.areas.includes(goal)) {
+      if (prev.areas.includes(area)) {
         return {
           ...prev,
-          areas: prev.areas.filter((area: string) => area !== goal),
+          areas: prev.areas.filter((area) => area !== area),
         }
       }
 
       if (prev.areas.length < 3) {
         return {
           ...prev,
-          areas: [...prev.areas, goal],
+          areas: [...prev.areas, area],
         }
       }
 
@@ -63,14 +62,14 @@ export function CompanyOnboardingTwo({
         >
           {focusAreaOptions.map((option, index) => (
             <motion.div
-              key={option.id}
+              key={option.name}
               variants={fadeInUpVariants}
               custom={index}
             >
               <GoalCard
-                option={option as GoalOption}
-                isSelected={data.areas.includes(option.label)}
-                onToggle={handleToggle}
+                option={option}
+                isSelected={data.areas.includes(option)}
+                onToggle={() => handleToggle(option)}
               />
             </motion.div>
           ))}

@@ -1,13 +1,14 @@
+import { CompanyProfile } from '@lib/atoms/company/profile'
 import { axiosInstance } from '../instance'
 
 export interface CompanyPayload {
-  areas?: string[]
+  areas?: { name: string; description: string }[]
   bio?: string
-  goals?: string[]
+  goals?: { name: string; description: string }[]
   headline?: string
   location?: string
   logo?: string
-  targetIndustries?: string[]
+  targetIndustries?: { name: string; description: string }[]
   website?: string
   meta: {
     phone: string
@@ -26,6 +27,7 @@ export async function companyOnboarding(payload: CompanyPayload) {
     .post<{
       success: boolean
       message: string
+      data: CompanyProfile
     }>('/company/onboarding', payload)
     .then((res) => res.data)
 

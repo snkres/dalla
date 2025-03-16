@@ -135,10 +135,10 @@ export function ExperienceForm({
       location,
       meta: {
         employmentType,
+        responsibilities,
+        achievements,
+        tools: selectedTools,
       },
-      responsibilities,
-      achievements,
-      tools: selectedTools,
       startDate: `${startMonth} ${startYear}`,
       endDate: isCurrentlyWorking ? 'Present' : `${endMonth} ${endYear}`,
     }

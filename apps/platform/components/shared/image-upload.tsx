@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { useState, useRef } from 'react'
 import { Camera, Check, Image as ImageIcon, X, Plus } from 'lucide-react'
 import Image from 'next/image'
-import { uploadImage } from '@lib/api/shared/upload'
+import { upload } from '@lib/api/shared/upload'
 import { Button } from '@dallah/design-system'
 
 interface ImageUploadProps {
@@ -47,10 +47,10 @@ const ImageUpload = ({
         setPreviewUrl(reader.result as string)
       }
       reader.readAsDataURL(file)
-      
+
       try {
         // Upload to server
-        const { data } = await uploadImage(file)
+        const { data } = await upload(file)
         setUploadedURL(data.fileUrl)
         console.log('Uploaded image URL:', data.fileUrl)
       } catch (error) {
@@ -113,12 +113,16 @@ const ImageUpload = ({
               {isUploading ? (
                 <div className="flex flex-col items-center justify-center">
                   <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#234d64] border-t-transparent"></div>
-                  <span className="mt-2 text-xs text-[#234d64]/70">Uploading...</span>
+                  <span className="mt-2 text-xs text-[#234d64]/70">
+                    Uploading...
+                  </span>
                 </div>
               ) : (
                 <>
                   <ImageIcon className="h-8 w-8 text-[#234d64]/40" />
-                  <span className="mt-1 text-xs text-[#234d64]/70">{label}</span>
+                  <span className="mt-1 text-xs text-[#234d64]/70">
+                    {label}
+                  </span>
                 </>
               )}
             </div>

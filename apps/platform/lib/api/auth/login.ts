@@ -18,7 +18,10 @@ export async function login(payload: Payload) {
       }
     }>('/auth/login', payload)
     .then((res) => {
-      return res.data
+      return {
+        ...res.data,
+        status: res.status,
+      }
     })
     .catch((err) => {
       console.log(err)

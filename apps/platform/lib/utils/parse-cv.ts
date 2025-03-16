@@ -3,7 +3,7 @@ import { CVParseResponse } from '@lib/api/pro/parse-cv'
 export const extractDates = (dateStr: string) => {
   const processedDate = dateStr.replace(
     'Present',
-    new Date().toLocaleDateString('en-US', {
+    new Date().toLocaleDateString('en-UK', {
       month: 'short',
       year: 'numeric',
     }),
@@ -41,7 +41,7 @@ export const calculateYearsOfExperience = (
 
     const processedDate = dateStr.replace(
       'Present',
-      new Date().toLocaleDateString('en-US', {
+      new Date().toLocaleDateString('en-UK', {
         month: 'short',
         year: 'numeric',
       }),

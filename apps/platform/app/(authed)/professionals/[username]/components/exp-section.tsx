@@ -438,7 +438,7 @@ export function ExperienceSection({
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
                               <MonthYearPicker
-                                value={exp.endDate}
+                                value={exp.endDate || 'Present'}
                                 onChange={(value) =>
                                   updateExperience(expIndex, 'endDate', value)
                                 }
@@ -635,13 +635,15 @@ export function ExperienceSection({
                                     },
                                   )}{' '}
                                   -{' '}
-                                  {new Date(exp.endDate).toLocaleDateString(
-                                    'en-US',
-                                    {
-                                      month: 'short',
-                                      year: 'numeric',
-                                    },
-                                  )}
+                                  {exp.endDate === 'present'
+                                    ? 'Present'
+                                    : new Date(exp.endDate).toLocaleDateString(
+                                        'en-US',
+                                        {
+                                          month: 'short',
+                                          year: 'numeric',
+                                        },
+                                      )}
                                 </span>
                               </div>
                             </div>
@@ -685,6 +687,7 @@ export function ExperienceSection({
                                   <ul className="space-y-1.5">
                                     {exp.meta.achievements
                                       .split('.')
+                                      .filter(Boolean)
                                       .map((achievement, achIndex) => (
                                         <li
                                           key={achIndex}
@@ -694,9 +697,8 @@ export function ExperienceSection({
                                             •
                                           </span>
                                           <span className="leading-relaxed text-gray-700">
-                                            {achievement}
+                                            {achievement}.
                                           </span>
-                                          .
                                         </li>
                                       ))}
                                   </ul>

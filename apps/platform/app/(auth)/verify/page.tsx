@@ -41,10 +41,11 @@ export default function VerifyPage() {
     setIsSubmitting(true)
 
     try {
+      console.log(global)
       const res = await verify({
         email: global.email,
         otp: verificationCode,
-        userType: global.mode === 'company' ? 'company' : 'user',
+        userType: global.mode,
       })
 
       if (res.success) {
@@ -132,6 +133,7 @@ export default function VerifyPage() {
             previousText="Back"
             continueText="Verify email"
             handleSubmit={handleVerificationSubmit}
+            isAbleToProceed={verificationCode.length === 4}
             isNextDisabled={verificationCode.length !== 4}
           />
         </form>
