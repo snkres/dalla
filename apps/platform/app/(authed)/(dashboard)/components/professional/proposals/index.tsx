@@ -2,16 +2,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'motion/react'
-import {
-  Calendar,
-  Clock,
-  Filter,
-  Search,
-  ArrowUp,
-  ArrowDown,
-  X,
-  FileText as DocumentIcon,
-} from 'lucide-react'
+import { FileText as DocumentIcon } from 'lucide-react'
 
 import { Loader2 } from 'lucide-react'
 import { getAllProposals, GetAllProposalsRes } from '@lib/api/pro/proposals'
@@ -63,7 +54,6 @@ const mapStatus = (
   }
 }
 
-// Helper functions for data transformation
 const formatAmount = (budget: any): string => {
   if (budget === undefined || budget === null) return '$0'
   const numericBudget =
@@ -108,7 +98,6 @@ export function ProfessionalProposals() {
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
-  // Filter proposals based on active tab
   const activeProposals = useMemo(() => {
     if (!proposals) return []
     return proposals?.data[0].filter((proposal) =>
@@ -183,10 +172,6 @@ export function ProfessionalProposals() {
     }
   }
 
-  const closeProposalDetails = () => {
-    setIsDetailOpen(false)
-  }
-
   const handleSort = (field: 'date' | 'amount' | 'title') => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
@@ -253,8 +238,8 @@ export function ProfessionalProposals() {
                 0 / (proposals?.data?.[0]?.length || 0)) * 100
             : 0
         }
-        averageResponseTime={3} // Placeholder value
-        averageConversionTime={7} // Placeholder value
+        averageResponseTime={3}
+        averageConversionTime={7}
       />
 
       <TabContainer
@@ -314,7 +299,7 @@ export function ProfessionalProposals() {
                 )}
               </AnimatePresence>
             )}
-            {/* Desktop layout */}
+
             <div className="hidden lg:block">
               {selectedProposal ? (
                 <ProposalDetails

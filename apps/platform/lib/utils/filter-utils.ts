@@ -9,6 +9,7 @@ export function applyFilters(
   selectedDurations: string[],
   selectedLocations: string[],
   selectedSkills: string[],
+  sortAppliedToBottom = true,
 ): Project[] {
   let results = [...projects]
 
@@ -88,6 +89,14 @@ export function applyFilters(
         ),
       )
     }
+  }
+
+  // Sort applied projects to the bottom if requested
+  if (sortAppliedToBottom) {
+    results.sort((a, b) => {
+      if (a.applied === b.applied) return 0
+      return a.applied ? 1 : -1
+    })
   }
 
   return results
