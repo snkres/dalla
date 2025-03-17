@@ -1,13 +1,8 @@
 import { ProProfile } from '@lib/atoms/pro/profile'
 import { axiosInstance } from '../instance'
-import { Language } from '@lib/types/profile'
 
 export async function getProProfile() {
-  let res = await axiosInstance.get<{
-    success: boolean
-    message: string
-    data: ProProfile
-  }>('/professionals/profile')
+  let res = await axiosInstance.get<ProProfile>('/professionals/profile')
 
   return res
 }
@@ -16,16 +11,16 @@ export async function updateProProfile(
   profile: Partial<{
     bio?: string
     education?: Omit<
-      ProProfile['UserProfile']['education'][number],
+      ProProfile['data']['education'][number],
       'id' | 'profileId' | 'createdAt' | 'updatedAt'
     >[]
     experience?: Omit<
-      ProProfile['UserProfile']['experience'][number],
+      ProProfile['data']['experience'][number],
       'id' | 'profileId' | 'createdAt' | 'updatedAt'
     >[]
     gender?: string
     headline?: string
-    meta?: ProProfile['UserProfile']['meta']
+    meta?: ProProfile['data']['meta']
     resume?: string
 
     [property: string]: any
@@ -45,13 +40,13 @@ export async function updateProProfile(
 
 export async function createShowCaseProject(
   proId: string,
-  payload: Omit<ProProfile['UserProfile']['projects'][number], 'id'>,
+  payload: Omit<ProProfile['data']['User']['projects'][number], 'id'>,
 ) {
   let res = await axiosInstance
     .post<{
       success: boolean
       message: string
-      data: ProProfile['UserProfile']['projects'][number]
+      data: ProProfile['data']['User']['projects'][number]
     }>(`/professionals/profile/${proId}/projects`, payload)
     .catch((err) => {
       throw err
@@ -65,7 +60,7 @@ export async function deleteShowCaseProject(proId: string, projectId: string) {
     .delete<{
       success: boolean
       message: string
-      data: ProProfile['UserProfile']['projects'][number]
+      data: ProProfile['data']['User']['projects'][number]
     }>(`/professionals/profile/${proId}/projects/${projectId}`)
     .catch((err) => {
       throw err
@@ -77,7 +72,7 @@ export async function deleteShowCaseProject(proId: string, projectId: string) {
 export async function updateShowCaseProject(
   proId: string,
   projectId: string,
-  payload: Omit<ProProfile['UserProfile']['projects'][number], 'id'>,
+  payload: Omit<ProProfile['data']['User']['projects'][number], 'id'>,
 ) {
   let res = await axiosInstance.put(
     `/professionals/profile/${proId}/projects/${projectId}`,

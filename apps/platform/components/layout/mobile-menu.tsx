@@ -6,6 +6,8 @@ import { motion } from 'motion/react'
 import { X, LogOut } from 'lucide-react'
 import { cn } from '@dallah/utils'
 import { NavItem } from '@lib/types/navbar'
+import { useRouter } from 'next/navigation'
+import { logout } from '@lib/api/auth/logout'
 
 export interface MobileMenuProps {
   navItems: NavItem[]
@@ -20,6 +22,19 @@ const MobileMenu = ({
   setActiveItem,
   toggleMobileMenu,
 }: MobileMenuProps) => {
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    try {
+      await logout().then(() => {
+        toggleMobileMenu()
+        router.push('/login')
+      })
+    } catch (error) {
+      console.error('Error during sign out:', error)
+    }
+  }
+
   return (
     <>
       <div
@@ -72,12 +87,13 @@ const MobileMenu = ({
         </div>
 
         <div className="absolute bottom-0 w-full border-t border-gray-100 p-4">
-          <Link href="/api/auth/signout">
-            <div className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50">
-              <LogOut className="h-5 w-5" />
-              <span>Sign Out</span>
-            </div>
-          </Link>
+          <button
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Sign Out</span>
+          </button>
         </div>
       </motion.div>
     </>

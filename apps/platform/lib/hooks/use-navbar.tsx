@@ -83,15 +83,36 @@ export const useNavbar = () => {
       email: global?.email || '',
       avatar:
         global?.mode === 'user'
-          ? proProfile?.UserProfile?.avatar || '/avatar.png'
+          ? proProfile?.data?.avatar || '/avatar.png'
           : companyProfile?.CompanyProfile?.logo || '/avatar.png',
     }
   }, [global, proProfile, companyProfile])
 
   useEffect(() => {
-    const matchingItem = currentNavItems.find(
-      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
-    )
+    // Find exact match first
+    let matchingItem = currentNavItems.find((item) => pathname === item.href)
+
+    // If no exact match, look for path that starts with the nav item path
+    // But make sure we're matching at path boundaries (e.g., '/projects/' should match '/projects/123' but not '/projects-archive/')
+    if (!matchingItem) {
+      matchingItem = currentNavItems.find((item) => {
+        // Skip the root path for this check to avoid it matching everything
+        if (item.href === '/') return false
+
+        // Check if pathname starts with item.href and is followed by a slash or end of string
+        return (
+          pathname.startsWith(item.href) &&
+          (pathname.length === item.href.length ||
+            pathname[item.href.length] === '/')
+        )
+      })
+    }
+
+    // If still no match, default to home if we're on a root-level path
+    if (!matchingItem && pathname === '/') {
+      matchingItem = currentNavItems.find((item) => item.href === '/')
+    }
+
     if (matchingItem) {
       setActiveItem(matchingItem.href)
     }

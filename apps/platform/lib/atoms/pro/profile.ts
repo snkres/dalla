@@ -1,18 +1,11 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atomWithLocalForage } from '../atom-with-localforge'
 
-export interface ProProfile {
-  id: string
-  name: string
-  username: string
-  email: string
-  password: string
-  onboarded: boolean
-  verified: boolean
-  suspended: boolean
-  createdAt: string
-  updatedAt: string
-  UserProfile: {
+export type ProProfile = {
+  statusCode: number
+  success: boolean
+  message: string
+  data: {
     id: string
     userId: string
     headline: string
@@ -24,15 +17,22 @@ export interface ProProfile {
       skills: Array<string>
       location: string
       socialLinks: {
-        [key: string]: string
+        portfolio: string
       }
       yearsOfExperience: number
-      [key: string]: string | Array<string> | number | { [key: string]: string }
     }
     resume: string
     precentage: number
     createdAt: string
     updatedAt: string
+    User: {
+      id: string
+      email: string
+      name: string
+      verified: boolean
+      username: string
+      projects: Array<any>
+    }
     education: Array<{
       id: string
       profileId: string
@@ -52,11 +52,10 @@ export interface ProProfile {
       company: string
       location: string
       meta: {
-        skills: Array<string>
+        skills: Array<any>
         achievements: string
         employmentType: string
         responsibilities: string
-        [key: string]: string | Array<string>
       }
       startDate: string
       endDate: string
@@ -65,6 +64,7 @@ export interface ProProfile {
     }>
     projects: Array<{
       id: string
+      profileId: string
       title: string
       role: string
       description: string
@@ -74,6 +74,9 @@ export interface ProProfile {
       media: Array<string>
     }>
   }
+  error: any
+  path: string
+  timestamp: string
 }
 
 export const proProfileAtom = atomWithLocalForage<ProProfile>(

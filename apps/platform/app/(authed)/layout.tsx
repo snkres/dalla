@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
+import localForage from 'localforage'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
@@ -21,26 +22,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { data, isFetched, isError, error } = useQuery({
     queryKey: ['profile'],
     staleTime: Infinity,
-    //@ts-ignore
-    cacheTime: 1000 * 60 * 60 * 24,
-    // refetchOnWindowFocus: true,
-    // refetchOnMount: true,
-    // refetchOnReconnect: true,
     queryFn: async () => {
       try {
         if (global.mode === 'user') {
           const res = await getProProfile()
-          return res.data.data
+          return res.data
         } else if (global.mode === 'company') {
           const res = await getCompanyProfile()
-          return res.data.data
+          return res.data
         }
         return null
-      } catch (err: unknown) {
+      } catch (err) {
         console.error('Error fetching profile:', err)
-        if (err instanceof Error && err.message.includes('401')) {
-          router.push('/login')
-        }
         throw err
       }
     },
@@ -69,29 +62,29 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       if (global.mode === 'user') {
         setGlobal({
           ...global,
-          email: (data as ProProfile).email,
-          username: (data as ProProfile).username || '',
-          name: (data as ProProfile).name || '',
+          email: (data as ProProfile).data.User.email,
+          username: (data as ProProfile).data.User.username,
+          name: (data as ProProfile).data.User.name,
           mode: 'user',
         })
         setProProfile(data as ProProfile)
-        if (!(data as ProProfile).onboarded) {
-          router.push('/onboard')
-        }
       } else {
-        setGlobal({
-          ...global,
-          email: (data as CompanyProfile).email,
-          username: '',
-          name: (data as CompanyProfile).name || '',
-          mode: 'company',
-        })
-        setCompanyProfile(data as CompanyProfile)
-        if (!(data as CompanyProfile).onboarded) {
-          router.push('/onboard')
-        }
+        // setGlobal({
+        //   ...global,
+        //   email: (data as CompanyProfile).email,
+        //   username: '',
+        //   name: (data as CompanyProfile).name,
+        //   mode: 'company',
+        // })
+        // setCompanyProfile(data as CompanyProfile)
+        // if (
+        //   !(data as CompanyProfile).onboarded &&
+        //   process.env.NODE_ENV === 'production'
+        // ) {
+        //   router.push('/onboard')
+        // }
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Error processing profile data:', err)
     } finally {
       setIsLoading(false)

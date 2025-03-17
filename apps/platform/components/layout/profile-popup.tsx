@@ -12,6 +12,8 @@ import {
 } from 'lucide-react'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
+import { useRouter } from 'next/navigation'
+import { logout } from '@lib/api/auth/logout'
 
 type ProfileItem = {
   icon: React.ElementType
@@ -31,6 +33,7 @@ export type ProfilePopupProps = {
 const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
   ({ accountItems, userProfile }, ref) => {
     const [global] = useAtom(globalAtom)
+    const router = useRouter()
 
     const profileItems: ProfileItem[] = accountItems || [
       {
@@ -43,6 +46,15 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
       { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
       { icon: HelpCircle, label: 'Help & Support', href: '/support' },
     ]
+
+    const handleSignOut = async () => {
+      try {
+        await logout()
+        router.push('/login')
+      } catch (error) {
+        console.error('Error during sign out:', error)
+      }
+    }
 
     return (
       <motion.div
@@ -72,14 +84,15 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
           ))}
         </div>
 
-        {/* <div className="border-t border-gray-100 p-2">
-          <Link href="/api/auth/signout">
-            <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50">
-              <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
-            </div>
-          </Link>
-        </div> */}
+        <div className="border-t border-gray-100 p-2">
+          <button
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </motion.div>
     )
   },
