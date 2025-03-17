@@ -20,7 +20,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   const { data, isFetched, isError, error } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', global.mode],
     staleTime: Infinity,
     queryFn: async () => {
       try {
@@ -87,7 +87,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         setCompanyProfile(companyData)
 
         console.log('Company onboarded status:', companyData.data?.onboarded)
-        if (!companyData.data?.onboarded) {
+        if (
+          companyData.data?.onboarded !== undefined &&
+          !companyData.data?.onboarded
+        ) {
           router.push('/onboard')
         }
       }

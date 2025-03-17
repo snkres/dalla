@@ -2,8 +2,8 @@
 
 import Image from 'next/image'
 import { Link } from 'next-view-transitions'
-import { Bell, Search, Settings, Menu, X } from 'lucide-react'
-import { Button, LogoHorizontal } from '@dallah/design-system'
+import { Bell, Search, Menu, X } from 'lucide-react'
+import { LogoHorizontal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { AnimatePresence } from 'motion/react'
 import NotificationsPopup from './notifications-popup'
@@ -11,9 +11,14 @@ import ProfilePopup from './profile-popup'
 import MobileMenu from './mobile-menu'
 import { useNavbar } from '@lib/hooks/use-navbar'
 import { useRouter } from 'next/navigation'
+import { useAtom } from 'jotai'
+import { globalAtom } from '@lib/atoms/global'
 
 export function Navbar() {
   const router = useRouter()
+  const [global] = useAtom(globalAtom)
+  console.log(global)
+
   const {
     navItems,
     accountItems,
@@ -178,7 +183,7 @@ export function Navbar() {
               />
             </div>
             <span className="hidden text-sm font-medium text-gray-700 md:block">
-              {userProfile.name || 'User'}
+              {global.name}
             </span>
           </button>
 

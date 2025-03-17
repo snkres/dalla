@@ -105,16 +105,17 @@ export const useNavbar = () => {
     return items
   }, [global.mode])
 
-  const userProfile = useMemo(() => {
-    return {
+  const userProfile = useMemo(
+    () => ({
       name: global?.name || '',
       email: global?.email || '',
       avatar:
         global?.mode === 'user'
           ? proProfile?.data?.avatar || '/avatar.png'
           : companyProfile?.data?.CompanyProfile?.logo || '/avatar.png',
-    }
-  }, [global, proProfile, companyProfile])
+    }),
+    [global, proProfile?.data, companyProfile?.data],
+  )
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
