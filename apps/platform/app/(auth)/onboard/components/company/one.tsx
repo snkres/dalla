@@ -1,12 +1,34 @@
+'use client'
+
+import type React from 'react'
+
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
-import { Input, Textarea, Label } from '@dallah/design-system'
+import {
+  Input,
+  Textarea,
+  Label,
+  Select,
+  SelectItem,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+} from '@dallah/design-system'
 import { MapPin, Globe2 } from 'lucide-react'
 import { motion } from 'motion/react'
 import AvatarUpload from '@components/shared/avatar-upload'
 import { expertiseOptions } from '../data'
 import ExpertiseSelect from '../expertise-select'
-import { CompanyOnboardingData } from '../../hooks/use-onboarding'
+import type { CompanyOnboardingData } from '../../hooks/use-onboarding'
 import PhoneInput from '@dallah/components/phoneInput'
+
+const companySizeOptions = [
+  { value: '1-10', label: '1-10 employees' },
+  { value: '11-50', label: '11-50 employees' },
+  { value: '51-200', label: '51-200 employees' },
+  { value: '201-500', label: '201-500 employees' },
+  { value: '501-1000', label: '501-1000 employees' },
+  { value: '1001+', label: '1001+ employees' },
+]
 
 export function CompanyOnboardingOne({
   data,
@@ -68,14 +90,23 @@ export function CompanyOnboardingOne({
                   placeholder="Industry"
                   className="h-11"
                 />
-                <Input
+                <Select
                   value={data.companySize}
-                  onChange={(e) =>
-                    updateData({ ...data, companySize: e.target.value })
+                  onValueChange={(value) =>
+                    updateData({ ...data, companySize: value })
                   }
-                  placeholder="Company size"
-                  className="h-11"
-                />
+                >
+                  <SelectTrigger className="!h-11">
+                    <SelectValue placeholder="Company size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {companySizeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </motion.div>

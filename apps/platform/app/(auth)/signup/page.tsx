@@ -218,7 +218,7 @@ export default function SignupPage() {
       <p className="text-center text-xs text-gray-500">
         Already have an account?{' '}
         <Link
-          href="/login"
+          href={`/login?mode=${mode}`}
           className="font-medium text-[#234d64] hover:text-[#1a3b4d]"
         >
           Sign in

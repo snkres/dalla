@@ -191,40 +191,10 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-200" />
-        </div>
-        <div className="relative flex justify-center text-xs lowercase">
-          <span className="bg-white px-2 text-gray-400">Or continue with</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-3">
-        {[
-          { icon: FaGoogle, label: 'Google' },
-          { icon: RiAppleFill, label: 'Apple' },
-          { icon: FaFacebookF, label: 'Facebook' },
-          { icon: FaXTwitter, label: 'Twitter' },
-        ].map(({ icon: Icon, label }) => (
-          <Button
-            key={label}
-            type="button"
-            variant="outline"
-            className="h-11"
-            onClick={() => {
-              /* Handle social login */
-            }}
-          >
-            <Icon className="h-5 w-5" />
-          </Button>
-        ))}
-      </div>
-
       <p className="text-center text-xs text-gray-500">
         Don&apos;t have an account?{' '}
         <Link
-          href="/signup"
+          href={`/signup?mode=${mode}`}
           className="font-medium text-[#234d64] hover:text-[#1a3b4d]"
         >
           Sign up

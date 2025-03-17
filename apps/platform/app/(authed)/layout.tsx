@@ -68,6 +68,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           mode: 'user',
         })
         setProProfile(data as ProProfile)
+        // if (!(data as ProProfile).data.onboarded) {
+        //   router.push('/onboard')
+        // }
       } else {
         // setGlobal({
         //   ...global,
