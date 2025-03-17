@@ -4,15 +4,16 @@ import Image from 'next/image'
 import { Link } from 'next-view-transitions'
 import { Bell, Search, Settings, Menu, X } from 'lucide-react'
 import { Button, LogoHorizontal } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { AnimatePresence } from 'motion/react'
 import NotificationsPopup from './notifications-popup'
 import ProfilePopup from './profile-popup'
 import MobileMenu from './mobile-menu'
 import { useNavbar } from '@lib/hooks/use-navbar'
+import { useRouter } from 'next/navigation'
 
 export function Navbar() {
+  const router = useRouter()
   const {
     navItems,
     accountItems,
@@ -54,6 +55,14 @@ export function Navbar() {
     )
   }
 
+  const onSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
+      toggleSearch() // Close search after submission
+    }
+  }
+
   return (
     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-6">
       <div className="origin-left scale-75">
@@ -67,7 +76,7 @@ export function Navbar() {
             href={item.href}
             className={cn(
               'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors',
-              activeItem === item.href
+              pathname === item.href
                 ? 'bg-slate-blue-100 text-white'
                 : 'text-gray-600 hover:bg-gray-100',
             )}
@@ -96,32 +105,36 @@ export function Navbar() {
             )}
           </button>
           {isSearchActive && (
-            <div className="absolute inset-0 flex items-center rounded-full border border-gray-200 bg-white">
-              <Search className="ml-3 h-4 w-4 text-gray-500" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="h-full w-full border-none bg-transparent pl-2 pr-8 text-sm focus:outline-none focus:ring-0"
-                autoFocus
-              />
-              <button
-                onClick={toggleSearch}
-                className="absolute right-3 text-gray-500"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
+            <form onSubmit={onSearchSubmit} className="absolute inset-0">
+              <div className="flex h-full items-center rounded-full border border-gray-200 bg-white">
+                <Search className="ml-3 h-4 w-4 text-gray-500" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="h-full w-full border-none bg-transparent pl-2 pr-8 text-sm focus:outline-none focus:ring-0"
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  onClick={toggleSearch}
+                  className="absolute right-3 text-gray-500"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </form>
           )}
         </div>
 
         <div className="relative">
           <button
             onClick={toggleNotifications}
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
+            className="notifications-button relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
+            aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
             {unreadCount > 0 && (
@@ -148,19 +161,20 @@ export function Navbar() {
           <button
             onClick={toggleProfileMenu}
             className="flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-white px-2 transition-colors hover:bg-gray-50"
+            aria-label="Profile menu"
           >
             <div className="relative h-6 w-6 overflow-hidden rounded-full">
               <Image
-                src={userProfile?.avatar}
+                src={userProfile?.avatar || '/avatar.png'}
                 alt="Profile"
                 fill
                 className="object-cover"
                 sizes="24px"
-                // onError={(e) => {
-                //   // Fallback to default avatar if image fails to load
-                //   const target = e.target as HTMLImageElement
-                //   target.src = '/avatar.png'
-                // }}
+                onError={(e) => {
+                  // Fallback to default avatar if image fails to load
+                  const target = e.target as HTMLImageElement
+                  target.src = '/avatar.png'
+                }}
               />
             </div>
             <span className="hidden text-sm font-medium text-gray-700 md:block">
@@ -182,6 +196,7 @@ export function Navbar() {
         <button
           onClick={toggleMobileMenu}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 md:hidden"
+          aria-label="Mobile menu"
         >
           <Menu className="h-5 w-5" />
         </button>

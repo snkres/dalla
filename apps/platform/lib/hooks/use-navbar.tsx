@@ -49,6 +49,34 @@ export const useNavbar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
 
+  // // Set active item based on current pathname when component mounts
+  // useEffect(() => {
+  //   // Find the nav item that matches the current path
+  //   // For exact matches
+  //   const exactMatch = currentNavItems.find((item) => item.href === pathname)
+  //   if (exactMatch) {
+  //     setActiveItem(exactMatch.href)
+  //     return
+  //   }
+
+  //   // For partial matches (e.g., /professionals/username should match nothing)
+  //   // Reset to no active item if we're on a page that doesn't match any nav item
+  //   setActiveItem('')
+
+  //   // Alternatively, if you want specific path patterns to match certain nav items:
+  //   if (pathname.startsWith('/proposals')) {
+  //     setActiveItem('/proposals')
+  //   } else if (pathname.startsWith('/settings')) {
+  //     setActiveItem('/settings')
+  //   } else if (pathname.startsWith('/projects')) {
+  //     setActiveItem('/projects')
+  //   } else if (pathname.startsWith('/messages')) {
+  //     setActiveItem('/messages')
+  //   } else if (pathname === '/') {
+  //     setActiveItem('/')
+  //   }
+  // }, [pathname])
+
   const currentNavItems = useMemo(() => {
     return navItems.filter((item) => {
       if (global.mode === 'company' && item.label === 'Proposals') {
@@ -83,19 +111,10 @@ export const useNavbar = () => {
       email: global?.email || '',
       avatar:
         global?.mode === 'user'
-          ? proProfile?.UserProfile?.avatar || '/avatar.png'
+          ? proProfile?.data?.avatar || '/avatar.png'
           : companyProfile?.CompanyProfile?.logo || '/avatar.png',
     }
   }, [global, proProfile, companyProfile])
-
-  useEffect(() => {
-    const matchingItem = currentNavItems.find(
-      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
-    )
-    if (matchingItem) {
-      setActiveItem(matchingItem.href)
-    }
-  }, [pathname, currentNavItems])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

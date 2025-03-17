@@ -24,21 +24,29 @@ export function ExperienceSection({
   isPublicView,
   isOwner,
 }: {
-  experiences: ProProfile['UserProfile']['experience']
-  onUpdate?: (
-    updatedExperiences: ProProfile['UserProfile']['experience'],
-  ) => void
+  experiences: ProProfile['data']['experience']
+  onUpdate?: (updatedExperiences: ProProfile['data']['experience']) => void
   isPublicView: boolean
   isOwner: boolean
 }) {
   const [editedExperiences, setEditedExperiences] =
-    useState<ProProfile['UserProfile']['experience']>(experiences)
+    useState<
+      Omit<
+        ProProfile['data']['experience'],
+        'id' | 'profileId' | 'createdAt' | 'updatedAt'
+      >
+    >(experiences)
   const [isEditing, setIsEditing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const [skillsInput, setSkillsInput] = useState<string[]>(
     experiences.map((exp) => exp.meta.skills.join(', ')),
   )
+
+  // Add validation state at the top of the component, after other state declarations
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: { [field: string]: boolean }
+  }>({})
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640)
@@ -60,7 +68,42 @@ export function ExperienceSection({
     }, 0)
   }
 
+  // Replace the handleSave function with this version that includes validation
   const handleSave = () => {
+    // Validate required fields
+    const errors: { [key: number]: { [field: string]: boolean } } = {}
+    let hasErrors = false
+
+    editedExperiences.forEach((exp, index) => {
+      const indexErrors: { [field: string]: boolean } = {}
+
+      if (!exp.company.trim()) {
+        indexErrors.company = true
+        hasErrors = true
+      }
+
+      if (!exp.title.trim()) {
+        indexErrors.title = true
+        hasErrors = true
+      }
+
+      if (!exp.startDate) {
+        indexErrors.startDate = true
+        hasErrors = true
+      }
+
+      if (Object.keys(indexErrors).length > 0) {
+        errors[index] = indexErrors
+      }
+    })
+
+    setValidationErrors(errors)
+
+    if (hasErrors) {
+      // Don't save if there are validation errors
+      return
+    }
+
     const validExperiences = editedExperiences.map((exp) => ({
       ...exp,
       startDate: exp.startDate || new Date().toISOString(),
@@ -92,6 +135,7 @@ export function ExperienceSection({
           achievements: '',
           responsibilities: '',
           employmentType: '',
+          industry: '',
         },
         id: '',
         profileId: '',
@@ -105,6 +149,7 @@ export function ExperienceSection({
     setEditedExperiences(editedExperiences.filter((_, i) => i !== index))
   }
 
+  // Modify the updateExperience function to clear validation errors
   const updateExperience = (
     index: number,
     field: string,
@@ -116,6 +161,16 @@ export function ExperienceSection({
       [field]: value,
     }
     setEditedExperiences(updatedExperiences)
+
+    // Clear validation error for this field if it exists
+    if (validationErrors[index]?.[field]) {
+      const updatedErrors = { ...validationErrors }
+      delete updatedErrors[index][field]
+      if (Object.keys(updatedErrors[index]).length === 0) {
+        delete updatedErrors[index]
+      }
+      setValidationErrors(updatedErrors)
+    }
   }
 
   const updateSkills = (index: number, skillsString: string) => {
@@ -216,7 +271,15 @@ export function ExperienceSection({
       },
     ]
 
-    setEditedExperiences(newExperiences)
+    setEditedExperiences(
+      newExperiences.map((exp) => ({
+        ...exp,
+        meta: {
+          ...exp.meta,
+          industry: companyExperience.meta.industry || '',
+        },
+      })),
+    )
 
     setSkillsInput((prev) => [...prev, ''])
   }
@@ -275,6 +338,11 @@ export function ExperienceSection({
       <div className="p-4">
         {isEditing && (
           <div className="space-y-8">
+            {Object.keys(validationErrors).length > 0 && (
+              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
+                Please fill in all required fields before saving.
+              </div>
+            )}
             {Object.entries(groupedExperiences()).map(
               ([company, companyExps], groupIndex) => (
                 <div
@@ -302,9 +370,37 @@ export function ExperienceSection({
                             }
                           })
                           setEditedExperiences(updatedExperiences)
+
+                          // Clear validation errors for company field
+                          const firstExpIndex = editedExperiences.findIndex(
+                            (exp) => exp.company === company,
+                          )
+                          if (
+                            firstExpIndex >= 0 &&
+                            validationErrors[firstExpIndex]?.company
+                          ) {
+                            const updatedErrors = { ...validationErrors }
+                            delete updatedErrors[firstExpIndex].company
+                            if (
+                              Object.keys(updatedErrors[firstExpIndex])
+                                .length === 0
+                            ) {
+                              delete updatedErrors[firstExpIndex]
+                            }
+                            setValidationErrors(updatedErrors)
+                          }
                         }}
                         placeholder="Company name"
-                        className="h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto"
+                        className={cn(
+                          'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                          validationErrors[
+                            editedExperiences.findIndex(
+                              (exp) => exp.company === company,
+                            )
+                          ]?.company
+                            ? 'border-b-2 border-red-500'
+                            : '',
+                        )}
                       />
                       <Button
                         variant="ghost"
@@ -411,7 +507,12 @@ export function ExperienceSection({
                                 )
                               }
                               placeholder="Position title"
-                              className="h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto"
+                              className={cn(
+                                'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                                validationErrors[expIndex]?.title
+                                  ? 'border-b-2 border-red-500'
+                                  : '',
+                              )}
                             />
                             <Button
                               variant="ghost"
@@ -432,6 +533,11 @@ export function ExperienceSection({
                                   updateExperience(expIndex, 'startDate', value)
                                 }
                                 placeholder="Start date"
+                                className={
+                                  validationErrors[expIndex]?.startDate
+                                    ? 'border-red-500'
+                                    : ''
+                                }
                               />
                             </div>
 
@@ -559,7 +665,7 @@ export function ExperienceSection({
           <div className="space-y-8">
             {(() => {
               const grouped: {
-                [company: string]: ProProfile['UserProfile']['experience']
+                [company: string]: ProProfile['data']['experience']
               } = {}
               ;[...experiences]
                 .sort(
@@ -600,10 +706,10 @@ export function ExperienceSection({
                                 </span>
                               </div>
                             )}
-                            {companyExps[0].meta['industry'] && (
+                            {companyExps[0].meta && (
                               <div className="flex items-center">
                                 <Building className="mr-1 h-3 w-3" />
-                                <span>{companyExps[0].meta['industry']}</span>
+                                <span>{companyExps[0].meta.industry}</span>
                               </div>
                             )}
                           </div>

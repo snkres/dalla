@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@dallah/design-system'
 import {
   Edit,
@@ -21,18 +23,19 @@ export function EducationSection({
   isPublicView,
   isOwner,
 }: {
-  education: ProProfile['UserProfile']['education']
-  onUpdateEducation: (
-    updatedEducation: ProProfile['UserProfile']['education'],
-  ) => void
+  education: ProProfile['data']['education']
+  onUpdateEducation: (updatedEducation: ProProfile['data']['education']) => void
   isPublicView: boolean
   isOwner: boolean
 }) {
   const [editedEducation, setEditedEducation] =
-    useState<ProProfile['UserProfile']['education']>(education)
+    useState<ProProfile['data']['education']>(education)
   const [isEditing, setIsEditing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: { [field: string]: boolean }
+  }>({})
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640)
@@ -48,6 +51,40 @@ export function EducationSection({
   }
 
   const handleSave = () => {
+    // Validate required fields
+    const errors: { [key: number]: { [field: string]: boolean } } = {}
+    let hasErrors = false
+
+    editedEducation.forEach((edu, index) => {
+      const indexErrors: { [field: string]: boolean } = {}
+
+      if (!edu.degree.trim()) {
+        indexErrors.degree = true
+        hasErrors = true
+      }
+
+      if (!edu.school.trim()) {
+        indexErrors.school = true
+        hasErrors = true
+      }
+
+      if (!edu.startDate) {
+        indexErrors.startDate = true
+        hasErrors = true
+      }
+
+      if (Object.keys(indexErrors).length > 0) {
+        errors[index] = indexErrors
+      }
+    })
+
+    setValidationErrors(errors)
+
+    if (hasErrors) {
+      // Don't save if there are validation errors
+      return
+    }
+
     onUpdateEducation(editedEducation)
     setIsEditing(false)
   }
@@ -88,6 +125,16 @@ export function EducationSection({
       [field]: value,
     }
     setEditedEducation(updatedEducation)
+
+    // Clear validation error for this field if it exists
+    if (validationErrors[index]?.[field]) {
+      const updatedErrors = { ...validationErrors }
+      delete updatedErrors[index][field]
+      if (Object.keys(updatedErrors[index]).length === 0) {
+        delete updatedErrors[index]
+      }
+      setValidationErrors(updatedErrors)
+    }
   }
 
   const padding = isMobile ? 'pl-5' : 'pl-7'
@@ -139,6 +186,11 @@ export function EducationSection({
       <div className="p-4">
         {isEditing ? (
           <div className="space-y-8">
+            {Object.keys(validationErrors).length > 0 && (
+              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
+                Please fill in all required fields before saving.
+              </div>
+            )}
             {editedEducation
               .sort(
                 (a, b) =>
@@ -167,7 +219,12 @@ export function EducationSection({
                           updateEducation(index, 'degree', e.target.value)
                         }
                         placeholder="Degree or certification"
-                        className="h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto"
+                        className={cn(
+                          'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                          validationErrors[index]?.degree
+                            ? 'border-b-2 border-red-500'
+                            : '',
+                        )}
                       />
                     </div>
                     <Button
@@ -200,7 +257,12 @@ export function EducationSection({
                             updateEducation(index, 'school', e.target.value)
                           }
                           placeholder="Institution name"
-                          className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
+                          className={cn(
+                            'h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0',
+                            validationErrors[index]?.school
+                              ? 'border-b-2 border-red-500'
+                              : '',
+                          )}
                         />
                       </div>
 
@@ -212,6 +274,11 @@ export function EducationSection({
                             updateEducation(index, 'startDate', value)
                           }
                           placeholder="Start date"
+                          className={
+                            validationErrors[index]?.startDate
+                              ? 'border-red-500'
+                              : ''
+                          }
                         />
                       </div>
 

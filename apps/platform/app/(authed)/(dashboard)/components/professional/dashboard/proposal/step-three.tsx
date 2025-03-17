@@ -80,7 +80,7 @@ export function StepThree({
                 </h4>
               </div>
               <div className="p-4">
-                {profile.UserProfile.projects.length > 0 ? (
+                {profile.data.projects.length > 0 ? (
                   <p className="mb-4 text-sm text-gray-700">
                     Select projects from your portfolio that showcase your
                     skills for this job.
@@ -92,7 +92,7 @@ export function StepThree({
                 )}
 
                 <div className="mb-4 space-y-3">
-                  {profile.UserProfile.projects.map((project, index) => (
+                  {profile.data.projects.map((project, index) => (
                     <motion.div
                       key={index}
                       className={cn(
