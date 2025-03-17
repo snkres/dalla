@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+
 import { motion } from 'motion/react'
 import { Button, Badge } from '@dallah/design-system'
 import {
@@ -17,21 +18,22 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
-import { ProposalSample } from '@lib/types/proposals'
+import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
+import { Link } from 'next-view-transitions'
 
 interface ProposalDetailsProps {
   handleCloseProposal: () => void
   selectedProposal: string | null
-  sampleProposals: ProposalSample[]
+  proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
 }
 
 const ProposalDetails = ({
   handleCloseProposal,
   selectedProposal,
-  sampleProposals,
+  proposals,
 }: ProposalDetailsProps) => {
   const selectedProposalData = selectedProposal
-    ? sampleProposals.find((p) => p.id === selectedProposal)
+    ? proposals.find((p) => p.id === selectedProposal)
     : null
 
   return (
@@ -62,10 +64,13 @@ const ProposalDetails = ({
             <div className="mb-4 flex items-start gap-4">
               <div className="relative">
                 <div className="h-16 w-16 overflow-hidden rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white">
-                  {selectedProposalData?.consultant.avatar && (
+                  {selectedProposalData?.professional.UserProfile?.avatar && (
                     <Image
-                      src={selectedProposalData.consultant.avatar}
-                      alt={selectedProposalData.consultant.name}
+                      src={
+                        selectedProposalData.professional.UserProfile.avatar ||
+                        '/placeholder.svg'
+                      }
+                      alt={selectedProposalData.professional.name}
                       width={64}
                       height={64}
                       className="object-cover"
@@ -77,31 +82,38 @@ const ProposalDetails = ({
               <div className="flex-1">
                 <div className="mb-1 flex items-start justify-between">
                   <h1 className="text-lg font-medium text-gray-800">
-                    {selectedProposalData?.consultant.name}
+                    {selectedProposalData?.professional.name}
                   </h1>
-                  <Badge className="border-amber-200 bg-amber-50 text-amber-700">
-                    {selectedProposalData?.matchScore}% Match
+                  <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
+                    {Math.floor(Math.random() * 100)}% Match
                   </Badge>
                 </div>
                 <p className="text-sm text-gray-600">
-                  {selectedProposalData?.consultant.role}
+                  {selectedProposalData?.professional.UserProfile?.headline ||
+                    'N/A'}
                 </p>
 
                 <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
                   <div className="flex items-center">
                     <Star className="mr-1 h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     <span className="font-medium text-gray-700">
-                      {selectedProposalData?.consultant.rating}
+                      {selectedProposalData?.professional?.UserProfile?.meta
+                        ?.rating || 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center">
                     <MapPin className="mr-1 h-3.5 w-3.5" />
-                    <span>{selectedProposalData?.consultant.location}</span>
+                    <span>
+                      {selectedProposalData?.professional?.UserProfile?.meta
+                        ?.location || 'N/A'}
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <Briefcase className="mr-1 h-3.5 w-3.5" />
                     <span>
-                      {selectedProposalData?.consultant.experience} yrs
+                      {selectedProposalData?.professional?.UserProfile?.meta
+                        ?.yearsOfExperience || 'N/A'}{' '}
+                      yrs
                     </span>
                   </div>
                 </div>
@@ -109,11 +121,11 @@ const ProposalDetails = ({
             </div>
 
             <div className="mb-1 flex flex-wrap gap-1.5">
-              {selectedProposalData?.consultant.skills.map(
+              {selectedProposalData?.professional?.UserProfile?.meta?.skills?.map(
                 (skill: string, index: number) => (
                   <Badge
                     key={index}
-                    className="rounded-md border-none bg-[#63B7B7]/5 px-2 py-0.5 text-xs font-normal text-[#63B7B7]"
+                    className="!rounded-md !border-none !bg-[#63B7B7]/5 !px-2 !py-0.5 !text-xs !font-normal !text-[#63B7B7]"
                   >
                     {skill}
                   </Badge>
@@ -133,7 +145,8 @@ const ProposalDetails = ({
             </div>
             <div className="p-5">
               <p className="text-sm leading-relaxed text-gray-600">
-                {selectedProposalData?.coverLetter}
+                {selectedProposalData?.description ||
+                  'No cover letter provided.'}
               </p>
             </div>
           </div>
@@ -157,7 +170,9 @@ const ProposalDetails = ({
                     </span>
                   </div>
                   <p className="ml-5 text-sm font-medium text-gray-900">
-                    {selectedProposalData?.consultant.experience} years
+                    {selectedProposalData?.professional?.UserProfile?.meta
+                      ?.yearsOfExperience || 'N/A'}{' '}
+                    years
                   </p>
                 </div>
 
@@ -165,11 +180,12 @@ const ProposalDetails = ({
                   <div className="mb-2 flex items-center gap-2">
                     <CheckCircle className="h-3.5 w-3.5 text-gray-500" />
                     <span className="text-xs font-medium text-gray-700">
-                      Completed Projects
+                      Projects Completed
                     </span>
                   </div>
                   <p className="ml-5 text-sm font-medium text-gray-900">
-                    {selectedProposalData?.consultant.completedProjects}{' '}
+                    {selectedProposalData?.professional?.UserProfile?.meta
+                      ?.projectsCompleted || '0'}{' '}
                     projects
                   </p>
                 </div>
@@ -193,25 +209,33 @@ const ProposalDetails = ({
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Price</span>
                   <span className="font-semibold text-gray-800">
-                    {selectedProposalData?.price}
+                    $ {selectedProposalData?.price}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Delivery Time</span>
                   <span className="font-normal text-gray-800">
-                    {selectedProposalData?.deliveryTime}
+                    {selectedProposalData?.timeline || 'N/A'}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Submitted</span>
                   <span className="font-normal text-gray-800">
-                    {selectedProposalData?.proposalDate}
+                    {selectedProposalData?.createdAt
+                      ? new Date(
+                          selectedProposalData.createdAt,
+                        ).toLocaleDateString('en-UK', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="my-2 h-1.5 w-full bg-gray-200" />
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Status</span>
-                  <Badge className="border-amber-200 bg-amber-50 text-amber-700">
+                  <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
                     {selectedProposalData?.status === 'pending'
                       ? 'Pending Review'
                       : selectedProposalData?.status}
@@ -221,7 +245,7 @@ const ProposalDetails = ({
             </div>
 
             <div className="border-b border-gray-200 p-4">
-              <Button className="mb-2 h-9 w-full bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90">
+              <Button className="mb-2 h-9 w-full !bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90">
                 Hire Consultant
               </Button>
 
@@ -234,14 +258,6 @@ const ProposalDetails = ({
               </Button>
 
               <div className="mt-3 flex gap-2">
-                <Button
-                  variant="ghost"
-                  className="h-9 flex-1 text-gray-700 hover:bg-gray-100"
-                >
-                  <ThumbsUp className="mr-1.5 h-3.5 w-3.5" />
-                  Shortlist
-                </Button>
-
                 <Button
                   variant="ghost"
                   className="h-9 flex-1 text-gray-700 hover:bg-gray-100"
@@ -265,8 +281,13 @@ const ProposalDetails = ({
                   variant="outline"
                   size="sm"
                   className="h-8 w-full text-xs"
+                  asChild
                 >
-                  View Profile
+                  <Link
+                    href={`/professionals/${selectedProposalData?.professional.username}`}
+                  >
+                    View Profile
+                  </Link>
                 </Button>
               </div>
             </div>

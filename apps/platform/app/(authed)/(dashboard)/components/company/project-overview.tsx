@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react'
+'use client'
+
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Button,
@@ -19,8 +21,7 @@ import {
 import ActiveProjectView from './active-project-view'
 import ProjectProposalsView from './project-proposals-view'
 import EmptyProjectView from './empty-project-view'
-
-import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
+import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 
 interface ProjectOverviewProps {
   projects: GetAllCompanyProjectsRes['data']['0']
@@ -32,13 +33,15 @@ export function ProjectOverview({
   onPostJob,
   onHireConsultant,
 }: ProjectOverviewProps) {
-  console.log(projects.length)
   const [hasActiveProject, setHasActiveProject] = useState(projects.length > 0)
-  console.log(hasActiveProject)
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [showProposals, setShowProposals] = useState(false)
   const [selectedProjectForProposals, setSelectedProjectForProposals] =
-    useState<{ id: string; title: string } | null>(null)
+    useState<{
+      id: string
+      title: string
+      proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
+    } | null>(null)
 
   useEffect(() => {
     setHasActiveProject(projects.length > 0)
@@ -53,7 +56,11 @@ export function ProjectOverview({
   }
 
   const handleViewProposals = (projectId: string, projectTitle: string) => {
-    setSelectedProjectForProposals({ id: projectId, title: projectTitle })
+    setSelectedProjectForProposals({
+      id: projectId,
+      title: projectTitle,
+      proposals: projects.find((p) => p.id === projectId)?.proposals || [],
+    })
     setShowProposals(true)
   }
 
@@ -61,8 +68,6 @@ export function ProjectOverview({
     setShowProposals(false)
     setSelectedProjectForProposals(null)
   }
-
-  console.log(projects)
 
   return (
     <>
@@ -172,19 +177,17 @@ export function ProjectOverview({
                           )}
 
                           <div className="flex items-center gap-1">
-                            {project.proposals.length === 0 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 border-[#63B7B7]/30 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
-                                onClick={() =>
-                                  handleViewProposals(project.id, project.title)
-                                }
-                              >
-                                <MessageCircleMore className="h-3.5 w-3.5" />
-                                View Proposals
-                              </Button>
-                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 border-[#63B7B7]/30 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
+                              onClick={() =>
+                                handleViewProposals(project.id, project.title)
+                              }
+                            >
+                              <MessageCircleMore className="h-3.5 w-3.5" />
+                              View Proposals
+                            </Button>
 
                             <Button
                               variant="ghost"
@@ -271,6 +274,7 @@ export function ProjectOverview({
           <ProjectProposalsView
             projectTitle={selectedProjectForProposals.title}
             onBack={closeProposals}
+            proposals={selectedProjectForProposals.proposals}
           />
         )}
       </AnimatePresence>

@@ -1,20 +1,22 @@
 'use client'
 
-import React, { useState } from 'react'
-
+import { useState } from 'react'
 import { motion } from 'motion/react'
-import sampleProposals from '@lib/data/sampleProposals'
+
 import ProposalsOverivewModal from './proposals-overivew'
 import ProposalDetails from './proposal-details'
+import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 
 interface ProjectProposalsViewProps {
   projectTitle: string
   onBack: () => void
+  proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
 }
 
 export default function ProjectProposalsView({
   projectTitle,
   onBack,
+  proposals,
 }: ProjectProposalsViewProps) {
   const [selectedProposal, setSelectedProposal] = useState<string | null>(null)
   const [showDetailView, setShowDetailView] = useState(false)
@@ -28,17 +30,13 @@ export default function ProjectProposalsView({
     setShowDetailView(false)
   }
 
-  const selectedProposalData = selectedProposal
-    ? sampleProposals.find((p) => p.id === selectedProposal)
-    : null
-
   return (
     <div className="flex h-full flex-col">
-      {showDetailView && selectedProposalData && (
+      {showDetailView && selectedProposal && (
         <ProposalDetails
           handleCloseProposal={handleCloseProposal}
           selectedProposal={selectedProposal}
-          sampleProposals={sampleProposals}
+          proposals={proposals || []}
         />
       )}
       {!showDetailView && (
@@ -46,17 +44,15 @@ export default function ProjectProposalsView({
           projectTitle={projectTitle}
           onBack={onBack}
           handleViewProposal={handleViewProposal}
-          sampleProposals={sampleProposals}
+          proposals={proposals || []}
         />
       )}
-      {(showDetailView || !showDetailView) && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed left-0 top-0 h-full w-full bg-black/10 backdrop-blur-sm"
-        />
-      )}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed left-0 top-0 h-full w-full bg-black/10 backdrop-blur-sm"
+      />
     </div>
   )
 }

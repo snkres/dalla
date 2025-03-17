@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+'use client'
+
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
@@ -20,51 +22,48 @@ import {
 } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
-import { ProposalSample } from '@lib/types/proposals'
+import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 
 interface ProposalsOverivewProps {
   projectTitle: string
   onBack: () => void
   handleViewProposal: (proposalId: string) => void
-  sampleProposals: ProposalSample[]
+  proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
 }
 
 const ProposalsOverivewModal = ({
   projectTitle,
   onBack,
   handleViewProposal,
-  sampleProposals,
+  proposals,
 }: ProposalsOverivewProps) => {
   const [sortBy, setSortBy] = useState<'match' | 'date' | 'price'>('match')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredAndSortedProposals = [...sampleProposals]
+  const filteredAndSortedProposals = [...proposals]
     .filter(
       (proposal) =>
         searchQuery === '' ||
-        proposal.consultant.name
+        proposal.professional.name
           .toLowerCase()
           .includes(searchQuery.toLowerCase()) ||
-        proposal.consultant.skills.some((skill: string) =>
+        proposal.professional.UserProfile?.meta?.skills?.some((skill: string) =>
           skill.toLowerCase().includes(searchQuery.toLowerCase()),
         ) ||
-        proposal.consultant.role
-          .toLowerCase()
+        proposal.professional.UserProfile?.headline
+          ?.toLowerCase()
           .includes(searchQuery.toLowerCase()),
     )
     .sort((a, b) => {
       if (sortBy === 'match') {
-        return b.matchScore - a.matchScore
+        return (
+          (b.professional.UserProfile?.meta?.yearsOfExperience || 0) -
+          (a.professional.UserProfile?.meta?.yearsOfExperience || 0)
+        )
       } else if (sortBy === 'date') {
-        return (
-          new Date(b.proposalDate).getTime() -
-          new Date(a.proposalDate).getTime()
-        )
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       } else {
-        return (
-          parseInt(a.price.replace('$', '').replace(',', '')) -
-          parseInt(b.price.replace('$', '').replace(',', ''))
-        )
+        return a.price - b.price
       }
     })
   return (
@@ -83,7 +82,7 @@ const ProposalsOverivewModal = ({
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 px-4 py-3">
           <button
             onClick={onBack}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
+            className="flex h-8 w-8 items-center justify-center !rounded-full text-gray-500 transition-colors hover:bg-gray-100"
           >
             <X className="h-4 w-4" />
           </button>
@@ -93,7 +92,7 @@ const ProposalsOverivewModal = ({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 rounded-full text-[#63B7B7]"
+            className="h-8 w-8 !rounded-full text-[#63B7B7]"
           >
             <ExternalLink className="h-4 w-4" />
           </Button>
@@ -102,8 +101,8 @@ const ProposalsOverivewModal = ({
         <div className="sticky top-[49px] z-10 border-b border-gray-100 bg-white p-4">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge className="border-amber-200 bg-amber-50 text-amber-700">
-                {filteredAndSortedProposals.length} Proposals
+              <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
+                {proposals.length} Proposals
               </Badge>
               <span className="text-xs text-gray-500">for {projectTitle}</span>
             </div>
@@ -170,10 +169,14 @@ const ProposalsOverivewModal = ({
                 >
                   <div className="p-4">
                     <div className="flex items-start gap-3">
-                      <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border-2 border-gray-100">
+                      <div className="h-12 w-12 flex-shrink-0 overflow-hidden !rounded-full border-2 border-gray-100">
                         <Image
-                          src={proposal.consultant.avatar}
-                          alt={proposal.consultant.name}
+                          src={
+                            proposal.professional.UserProfile?.avatar ||
+                            '/avatar.png' ||
+                            '/placeholder.svg'
+                          }
+                          alt={'avatar'}
                           width={48}
                           height={48}
                           className="object-cover"
@@ -185,44 +188,48 @@ const ProposalsOverivewModal = ({
                           <div className="flex flex-col gap-0.5">
                             <div className="flex flex-wrap items-center gap-2">
                               <h4 className="text-sm font-medium text-gray-900">
-                                {proposal.consultant.name}
+                                {proposal.professional.name}
                               </h4>
-                              <div className="flex items-center rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
+                              <div className="flex items-center !rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
                                 <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
                                 <span className="ml-0.5 text-xs font-medium text-amber-700">
-                                  {proposal.consultant.rating}
+                                  {proposal.professional.UserProfile?.meta
+                                    ?.rating || 5}
                                 </span>
                               </div>
-                              <Badge className="rounded-full border-[#63B7B7]/20 bg-[#63B7B7]/10 text-xs text-[#63B7B7]">
-                                {proposal.matchScore}% Match
+                              <Badge className="!rounded-full !border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-xs !text-[#63B7B7]">
+                                {Math.floor(70 + Math.random() * 30)}% Match
                               </Badge>
                             </div>
                             <p className="mt-0.5 text-xs text-gray-500">
-                              {proposal.consultant.role} •{' '}
-                              {proposal.consultant.location}
+                              {proposal.professional.UserProfile?.headline ||
+                                'Consultant'}{' '}
+                              •{' '}
+                              {proposal.professional.UserProfile?.meta
+                                ?.location || 'Remote'}
                             </p>
                           </div>
 
                           <div className="flex flex-col items-end gap-1">
-                            <Badge className="border-[#63B7B7]/20 bg-[#63B7B7]/10 text-sm font-semibold text-[#63B7B7]">
-                              {proposal.price}
+                            <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-sm font-semibold !text-[#63B7B7]">
+                              $ {proposal.price}
                             </Badge>
                             <div className="mt-0.5 flex items-center text-xs text-gray-500">
                               <Clock className="mr-1 h-3 w-3" />
-                              {proposal.deliveryTime}
+                              {proposal.timeline}
                             </div>
                           </div>
                         </div>
 
                         <div className="mt-2">
                           <p className="line-clamp-2 text-xs text-gray-600">
-                            {proposal.coverLetter}
+                            {proposal.description}
                           </p>
                         </div>
 
                         <div className="mt-2 flex flex-wrap gap-1">
-                          {proposal.consultant.skills
-                            .slice(0, 3)
+                          {proposal.professional.UserProfile?.meta?.skills
+                            ?.slice(0, 3)
                             .map((skill, index) => (
                               <Badge
                                 key={index}
@@ -232,12 +239,15 @@ const ProposalsOverivewModal = ({
                                 {skill}
                               </Badge>
                             ))}
-                          {proposal.consultant.skills.length > 3 && (
+                          {proposal.professional.UserProfile?.meta?.skills
+                            ?.length > 3 && (
                             <Badge
                               variant="outline"
                               className="border-[#1D8489]/20 bg-[#1D8489]/10 px-1.5 py-0 text-[10px] font-normal text-[#1D8489]"
                             >
-                              +{proposal.consultant.skills.length - 3}
+                              +
+                              {proposal.professional.UserProfile?.meta?.skills
+                                ?.length - 3}
                             </Badge>
                           )}
                         </div>
@@ -249,7 +259,7 @@ const ProposalsOverivewModal = ({
             ) : (
               <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
                 <div className="mb-4 flex justify-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                  <div className="flex h-12 w-12 items-center justify-center !rounded-full bg-gray-100">
                     <Search className="h-6 w-6 text-gray-400" />
                   </div>
                 </div>

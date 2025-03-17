@@ -1,3 +1,4 @@
+import { ProProfile } from '@lib/atoms/pro/profile'
 import { axiosInstance } from '../instance'
 
 export type GetAllCompanyProjectsRes = {
@@ -35,7 +36,18 @@ export type GetAllCompanyProjectsRes = {
         createdAt: string
         updatedAt: string
       }
-      professional: any
+      professional: {
+        id: string
+        name: string
+        email: string
+        domain: any
+        password: string
+        onboarded: boolean
+        suspended: boolean
+        verified: boolean
+        createdAt: string
+        updatedAt: string
+      }
       proposals: Array<{
         id: string
         projectId: string
@@ -47,6 +59,19 @@ export type GetAllCompanyProjectsRes = {
         status: string
         createdAt: string
         updatedAt: string
+        professional: {
+          id: string
+          name: string
+          username: string
+          email: string
+          domain: any
+          password: string
+          UserProfile: {
+            avatar: string
+            headline: string
+            meta: ProProfile['data']['meta']
+          }
+        }
       }>
     }>,
     {
