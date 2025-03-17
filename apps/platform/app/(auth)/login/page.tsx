@@ -3,8 +3,6 @@
 import { motion } from 'motion/react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
-import { FaXTwitter, FaFacebookF, FaGoogle } from 'react-icons/fa6'
-import { RiAppleFill } from 'react-icons/ri'
 import Link from 'next/link'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { useQueryState } from 'nuqs'
@@ -16,7 +14,6 @@ import { useForm } from 'react-hook-form'
 import { login } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
 import { useTransitionRouter } from 'next-view-transitions'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 
@@ -43,12 +40,12 @@ export default function LoginPage() {
   })
 
   const router = useTransitionRouter()
-  const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
     try {
       setGlobal({
         ...global,
+        id: '',
         mode: mode === 'company' ? 'company' : 'user',
         email: data.email,
       })

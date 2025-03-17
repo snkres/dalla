@@ -57,6 +57,7 @@ export default function SignupPage() {
       })
       if (res.success) {
         setGlobal({
+          id: '',
           mode: mode === 'company' ? 'company' : 'user',
           email: data.email,
           name: data.name,

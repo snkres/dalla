@@ -40,6 +40,7 @@ export type ProProfile = {
       email: string
       name: string
       verified: boolean
+      onboarded: boolean
       username: string
       projects: Array<any>
     }

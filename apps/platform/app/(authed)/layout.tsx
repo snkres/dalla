@@ -62,30 +62,34 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       if (global.mode === 'user') {
         setGlobal({
           ...global,
+          id: (data as ProProfile).data.User.id,
           email: (data as ProProfile).data.User.email,
           username: (data as ProProfile).data.User.username,
           name: (data as ProProfile).data.User.name,
           mode: 'user',
         })
         setProProfile(data as ProProfile)
-        // if (!(data as ProProfile).data.onboarded) {
-        //   router.push('/onboard')
-        // }
+        if (!(data as ProProfile).data.User.onboarded) {
+          router.push('/onboard')
+        }
       } else {
-        // setGlobal({
-        //   ...global,
-        //   email: (data as CompanyProfile).email,
-        //   username: '',
-        //   name: (data as CompanyProfile).name,
-        //   mode: 'company',
-        // })
-        // setCompanyProfile(data as CompanyProfile)
-        // if (
-        //   !(data as CompanyProfile).onboarded &&
-        //   process.env.NODE_ENV === 'production'
-        // ) {
-        //   router.push('/onboard')
-        // }
+        const companyData = data as CompanyProfile
+
+        setGlobal({
+          ...global,
+          id: companyData.data?.id || '',
+          email: companyData.data?.email || '',
+          username: '',
+          name: companyData.data?.name || 'Company',
+          mode: 'company',
+        })
+
+        setCompanyProfile(companyData)
+
+        console.log('Company onboarded status:', companyData.data?.onboarded)
+        if (!companyData.data?.onboarded) {
+          router.push('/onboard')
+        }
       }
     } catch (err) {
       console.error('Error processing profile data:', err)

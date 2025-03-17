@@ -184,7 +184,6 @@ export const useProfessionalOnboarding = ({
       })
         .filter(([_, value]) => !value)
         .map(([key]) => key)
-      console.log('Missing fields:', missingFields)
     }
 
     // Check experience and education

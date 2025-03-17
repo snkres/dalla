@@ -97,7 +97,7 @@ export const useNavbar = () => {
         ...items[profileItemIndex],
         href:
           global.mode === 'company'
-            ? `/companies/${global.name}`
+            ? `/companies/${global.id}`
             : `/professionals/${global.username}`,
       }
     }
@@ -112,7 +112,7 @@ export const useNavbar = () => {
       avatar:
         global?.mode === 'user'
           ? proProfile?.data?.avatar || '/avatar.png'
-          : companyProfile?.CompanyProfile?.logo || '/avatar.png',
+          : companyProfile?.data?.CompanyProfile?.logo || '/avatar.png',
     }
   }, [global, proProfile, companyProfile])
 
