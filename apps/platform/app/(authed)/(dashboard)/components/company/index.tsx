@@ -19,13 +19,14 @@ import { cn } from '@dallah/utils'
 import { Consultant } from '@lib/types/company'
 import { consultants } from '@lib/data/consultants'
 import { ProjectOverview } from './project-overview'
-import { ConsultantCard } from 'app/(authed)/(company-only)/projects/components/consultant-card'
-import { ConsultantDetail } from 'app/(authed)/(company-only)/projects/components/consultant-detail'
+
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'
 import { useQuery } from '@tanstack/react-query'
 import { getAllProjects } from '@lib/api/company/projects'
 import { useQueryClient } from '@tanstack/react-query'
+import { ConsultantCard } from 'app/(authed)/(company-only)/project/components/consultant-card'
+import { ConsultantDetail } from 'app/(authed)/(company-only)/project/components/consultant-detail'
 
 const LIMIT = 10
 export default function CompanyHome() {
