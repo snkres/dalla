@@ -217,8 +217,8 @@ export function useOnboarding() {
         if (res.success) {
           setGlobal({
             ...global,
-            name: res.data.name,
-            username: res.data.username,
+            name: res.data.data.User.name,
+            username: res.data.data.User.username,
           })
           setShowCompleteDialog(true)
         }
@@ -247,11 +247,7 @@ export function useOnboarding() {
   }
 
   const handleComplete = () => {
-    router.push(
-      `/${global.mode === 'company' ? 'companies' : 'professionals'}/${
-        global.mode === 'company' ? global.name : global.username
-      }`,
-    )
+    router.push('/')
   }
 
   return {

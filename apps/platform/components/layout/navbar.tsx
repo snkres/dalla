@@ -76,7 +76,7 @@ export function Navbar() {
             href={item.href}
             className={cn(
               'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors',
-              activeItem === item.href
+              pathname === item.href
                 ? 'bg-slate-blue-100 text-white'
                 : 'text-gray-600 hover:bg-gray-100',
             )}

@@ -49,6 +49,34 @@ export const useNavbar = () => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
 
+  // // Set active item based on current pathname when component mounts
+  // useEffect(() => {
+  //   // Find the nav item that matches the current path
+  //   // For exact matches
+  //   const exactMatch = currentNavItems.find((item) => item.href === pathname)
+  //   if (exactMatch) {
+  //     setActiveItem(exactMatch.href)
+  //     return
+  //   }
+
+  //   // For partial matches (e.g., /professionals/username should match nothing)
+  //   // Reset to no active item if we're on a page that doesn't match any nav item
+  //   setActiveItem('')
+
+  //   // Alternatively, if you want specific path patterns to match certain nav items:
+  //   if (pathname.startsWith('/proposals')) {
+  //     setActiveItem('/proposals')
+  //   } else if (pathname.startsWith('/settings')) {
+  //     setActiveItem('/settings')
+  //   } else if (pathname.startsWith('/projects')) {
+  //     setActiveItem('/projects')
+  //   } else if (pathname.startsWith('/messages')) {
+  //     setActiveItem('/messages')
+  //   } else if (pathname === '/') {
+  //     setActiveItem('/')
+  //   }
+  // }, [pathname])
+
   const currentNavItems = useMemo(() => {
     return navItems.filter((item) => {
       if (global.mode === 'company' && item.label === 'Proposals') {
@@ -87,36 +115,6 @@ export const useNavbar = () => {
           : companyProfile?.CompanyProfile?.logo || '/avatar.png',
     }
   }, [global, proProfile, companyProfile])
-
-  useEffect(() => {
-    // Find exact match first
-    let matchingItem = currentNavItems.find((item) => pathname === item.href)
-
-    // If no exact match, look for path that starts with the nav item path
-    // But make sure we're matching at path boundaries (e.g., '/projects/' should match '/projects/123' but not '/projects-archive/')
-    if (!matchingItem) {
-      matchingItem = currentNavItems.find((item) => {
-        // Skip the root path for this check to avoid it matching everything
-        if (item.href === '/') return false
-
-        // Check if pathname starts with item.href and is followed by a slash or end of string
-        return (
-          pathname.startsWith(item.href) &&
-          (pathname.length === item.href.length ||
-            pathname[item.href.length] === '/')
-        )
-      })
-    }
-
-    // If still no match, default to home if we're on a root-level path
-    if (!matchingItem && pathname === '/') {
-      matchingItem = currentNavItems.find((item) => item.href === '/')
-    }
-
-    if (matchingItem) {
-      setActiveItem(matchingItem.href)
-    }
-  }, [pathname, currentNavItems])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

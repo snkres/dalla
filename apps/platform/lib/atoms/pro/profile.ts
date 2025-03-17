@@ -17,9 +17,20 @@ export type ProProfile = {
       skills: Array<string>
       location: string
       socialLinks: {
-        portfolio: string
+        [key: string]: string
       }
       yearsOfExperience: number
+      hourlyRate: number
+      totalEarned: number
+      projectsCompleted: number
+      successRate: number
+      weeklyAvailability: number
+      availability: string
+      rating: number
+      projectCompletion: string
+      languages: {
+        [key: string]: string
+      }
     }
     resume: string
     precentage: number
