@@ -37,6 +37,7 @@ interface ProposalDetailsProps {
   handleCloseProposal: () => void
   selectedProposal: string | null
   proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
+  onStatusChange?: (proposalId: string, status: string) => void
 }
 
 const ProposalDetails = ({
@@ -71,7 +72,10 @@ const ProposalDetails = ({
         variant: 'default',
       })
       queryClient.invalidateQueries({ queryKey: ['company', 'projects'] })
-      handleCloseProposal()
+
+      setTimeout(() => {
+        handleCloseProposal()
+      }, 1500)
     },
     onError: (error) => {
       toast({
@@ -100,8 +104,12 @@ const ProposalDetails = ({
         description: 'You have declined this proposal.',
         variant: 'default',
       })
+
       queryClient.invalidateQueries({ queryKey: ['company', 'projects'] })
-      handleCloseProposal()
+
+      setTimeout(() => {
+        handleCloseProposal()
+      }, 1500)
     },
     onError: (error) => {
       toast({
@@ -330,10 +338,22 @@ const ProposalDetails = ({
                 <div className="my-2 !h-0.5 !w-full !bg-gray-200" />
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Status</span>
-                  <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
-                    {selectedProposalData?.status === 'pending'
-                      ? 'Pending Review'
-                      : selectedProposalData?.status}
+                  <Badge
+                    className={
+                      selectedProposalData?.status === 'Rejected'
+                        ? '!border-red-200 !bg-red-50 !text-red-700'
+                        : selectedProposalData?.status === 'Accepted'
+                          ? '!border-green-200 !bg-green-50 !text-green-700'
+                          : '!border-amber-200 !bg-amber-50 !text-amber-700'
+                    }
+                  >
+                    {selectedProposalData?.status === 'Rejected'
+                      ? 'Rejected'
+                      : selectedProposalData?.status === 'Accepted'
+                        ? 'Accepted'
+                        : selectedProposalData?.status === 'Pending'
+                          ? 'Pending Review'
+                          : selectedProposalData?.status}
                   </Badge>
                 </div>
               </div>
@@ -345,7 +365,9 @@ const ProposalDetails = ({
                 onClick={handleHire}
                 disabled={
                   hireProposalMutation.isPending ||
-                  declineProposalMutation.isPending
+                  declineProposalMutation.isPending ||
+                  selectedProposalData?.status === 'Rejected' ||
+                  selectedProposalData?.status === 'Accepted'
                 }
               >
                 {hireProposalMutation.isPending ? 'Processing...' : 'Hire'}
@@ -366,7 +388,9 @@ const ProposalDetails = ({
                   onClick={handleDecline}
                   disabled={
                     hireProposalMutation.isPending ||
-                    declineProposalMutation.isPending
+                    declineProposalMutation.isPending ||
+                    selectedProposalData?.status === 'Rejected' ||
+                    selectedProposalData?.status === 'Accepted'
                   }
                 >
                   <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />

@@ -64,7 +64,7 @@ export type GetAllCompanyProjectsRes = {
         price: number
         timeline: string
         media: Array<string>
-        status: string
+        status: 'Rejected' | 'Accepted' | 'Pending'
         createdAt: string
         updatedAt: string
         professional: {

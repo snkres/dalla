@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 
 import ProposalsOverivewModal from './proposals-overivew'
@@ -16,7 +16,7 @@ interface ProjectProposalsViewProps {
 export default function ProjectProposalsView({
   projectTitle,
   onBack,
-  proposals,
+  proposals: initialProposals,
 }: ProjectProposalsViewProps) {
   const [selectedProposal, setSelectedProposal] = useState<string | null>(null)
   const [showDetailView, setShowDetailView] = useState(false)
@@ -36,7 +36,7 @@ export default function ProjectProposalsView({
         <ProposalDetails
           handleCloseProposal={handleCloseProposal}
           selectedProposal={selectedProposal}
-          proposals={proposals || []}
+          proposals={initialProposals || []}
         />
       )}
       {!showDetailView && (
@@ -44,7 +44,7 @@ export default function ProjectProposalsView({
           projectTitle={projectTitle}
           onBack={onBack}
           handleViewProposal={handleViewProposal}
-          proposals={proposals || []}
+          proposals={initialProposals || []}
         />
       )}
       <motion.div
