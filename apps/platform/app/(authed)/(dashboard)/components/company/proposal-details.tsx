@@ -232,7 +232,7 @@ const ProposalDetails = ({
                       : 'N/A'}
                   </span>
                 </div>
-                <div className="my-2 h-1.5 w-full bg-gray-200" />
+                <div className="my-2 !h-0.5 !w-full !bg-gray-200" />
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Status</span>
                   <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
@@ -246,7 +246,7 @@ const ProposalDetails = ({
 
             <div className="border-b border-gray-200 p-4">
               <Button className="mb-2 h-9 w-full !bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90">
-                Hire Consultant
+                Hire
               </Button>
 
               <Button

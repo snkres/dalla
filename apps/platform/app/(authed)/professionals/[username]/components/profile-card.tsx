@@ -401,7 +401,7 @@ export function ProfileCard({
             </span>
           </div>
 
-          {isOwner && isPublicView && (
+          {(!isOwner || isPublicView) && (
             <div className="mb-5 grid w-full grid-cols-2 gap-3">
               <Button className="h-9 !bg-[#63B7B7] text-xs text-white transition-colors duration-200 hover:!bg-[#63B7B7]/90">
                 Contact
