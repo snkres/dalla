@@ -25,6 +25,7 @@ import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'
 import { useQuery } from '@tanstack/react-query'
 import { getAllProjects } from '@lib/api/company/projects'
+import { useQueryClient } from '@tanstack/react-query'
 
 const LIMIT = 10
 export default function CompanyHome() {
@@ -43,6 +44,8 @@ export default function CompanyHome() {
     queryKey: ['projects', page, 'company'],
     queryFn: () => getAllProjects(page, LIMIT),
   })
+
+  const queryClient = useQueryClient()
 
   const filterOptions = [
     {
@@ -287,7 +290,16 @@ export default function CompanyHome() {
           />
         )}
         {showAddProject && (
-          <AddProject onClose={() => setShowAddProject(false)} />
+          <AddProject
+            key="add-project-modal"
+            onClose={() => setShowAddProject(false)}
+            onProjectCreated={() => {
+              // Refetch projects when a new one is created
+              queryClient.invalidateQueries({
+                queryKey: ['projects', page, 'company'],
+              })
+            }}
+          />
         )}
       </AnimatePresence>
     </div>

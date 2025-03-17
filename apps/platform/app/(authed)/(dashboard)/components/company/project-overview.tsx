@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Button,
@@ -32,11 +32,17 @@ export function ProjectOverview({
   onPostJob,
   onHireConsultant,
 }: ProjectOverviewProps) {
+  console.log(projects.length)
   const [hasActiveProject, setHasActiveProject] = useState(projects.length > 0)
+  console.log(hasActiveProject)
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [showProposals, setShowProposals] = useState(false)
   const [selectedProjectForProposals, setSelectedProjectForProposals] =
     useState<{ id: string; title: string } | null>(null)
+
+  useEffect(() => {
+    setHasActiveProject(projects.length > 0)
+  }, [projects])
 
   const toggleProject = (projectId: string) => {
     if (expandedProject === projectId) {
@@ -55,6 +61,8 @@ export function ProjectOverview({
     setShowProposals(false)
     setSelectedProjectForProposals(null)
   }
+
+  console.log(projects)
 
   return (
     <>
@@ -91,7 +99,7 @@ export function ProjectOverview({
               <div className="divide-y divide-gray-100">
                 {projects.map((project) => (
                   <div
-                    key={project.id}
+                    key={project.id + project.title}
                     className="border-b border-gray-100 last:border-b-0"
                   >
                     <div className="p-4 transition-colors hover:bg-gray-50">

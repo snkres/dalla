@@ -1,11 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'motion/react'
 import {
   ArrowLeft,
   Save,
-  X,
-  FileText,
-  PlusCircle,
   DollarSign,
   Calendar,
   Briefcase,
@@ -15,6 +12,9 @@ import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
+import { createProject, CreateProjectReq } from '@lib/api/company/projects'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { SkillSelector } from '@components/shared/skill-selector'
 
 const SLIDE_ANIMATION = {
   initial: { x: '100%' },
@@ -31,7 +31,143 @@ const SELECTED_SKILLS = [
   'Testing',
 ]
 
-export function AddProject({ onClose }: { onClose: () => void }) {
+export function AddProject({
+  onClose,
+  onProjectCreated,
+}: {
+  onClose: () => void
+  onProjectCreated?: () => void
+}) {
+  const { toast } = useToast()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formData, setFormData] = useState({
+    title: '',
+    jobTitle: '',
+    description: '',
+    scope: '',
+    deliverables: '',
+    skills: [] as string[],
+    meta: {
+      budget: '',
+      timeline: '',
+      priority: 'medium',
+    },
+  })
+
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    const { id, value } = e.target
+
+    if (id.includes('meta.')) {
+      const metaField = id.split('.')[1]
+      setFormData({
+        ...formData,
+        meta: {
+          ...formData.meta,
+          [metaField]: value,
+        },
+      })
+    } else {
+      setFormData({
+        ...formData,
+        [id]: value,
+      })
+    }
+  }
+
+  const handleSkillsChange = (skills: string[]) => {
+    setFormData({
+      ...formData,
+      skills,
+    })
+  }
+
+  const validateForm = () => {
+    const requiredFields = ['title', 'description']
+    const requiredMetaFields = ['budget', 'timeline']
+
+    for (const field of requiredFields) {
+      if (!formData[field as keyof typeof formData]) {
+        toast({
+          title: 'Missing required field',
+          description: `Please fill in the ${field} field.`,
+          variant: 'destructive',
+        })
+        return false
+      }
+    }
+
+    for (const field of requiredMetaFields) {
+      if (!formData.meta[field as keyof typeof formData.meta]) {
+        toast({
+          title: 'Missing required field',
+          description: `Please fill in the ${field} field.`,
+          variant: 'destructive',
+        })
+        return false
+      }
+    }
+
+    if (formData.skills.length === 0) {
+      toast({
+        title: 'Skills required',
+        description: 'Please add at least one skill for the project.',
+        variant: 'destructive',
+      })
+      return false
+    }
+
+    return true
+  }
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+
+    setIsSubmitting(true)
+
+    try {
+      const projectData: CreateProjectReq = {
+        title: formData.title,
+        jobTitle: formData.jobTitle || formData.title,
+        description: formData.description,
+        scope: formData.scope || formData.description,
+        deliverables: formData.deliverables || 'To be determined',
+        skills: formData.skills,
+        meta: {
+          budget: Number(formData.meta.budget),
+          duration: formData.meta.timeline,
+          // priority: formData.meta.priority,
+        },
+      }
+
+      const response = await createProject(projectData)
+
+      toast({
+        title: 'Project created successfully',
+        description: 'Your new project has been created.',
+      })
+
+      if (onProjectCreated) {
+        onProjectCreated()
+      }
+
+      onClose()
+    } catch (error) {
+      console.error('Error creating project:', error)
+      toast({
+        title: 'Error creating project',
+        description:
+          'There was an error creating your project. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <motion.div
       {...SLIDE_ANIMATION}
@@ -53,15 +189,18 @@ export function AddProject({ onClose }: { onClose: () => void }) {
             size="sm"
             className="border-gray-300 text-gray-500 hover:bg-gray-50"
             onClick={onClose}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button
             size="sm"
             className="bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
           >
             <Save className="mr-1 h-4 w-4" />
-            Save Project
+            {isSubmitting ? 'Saving...' : 'Save Project'}
           </Button>
         </div>
       </div>
@@ -88,7 +227,8 @@ export function AddProject({ onClose }: { onClose: () => void }) {
                 <Input
                   id="title"
                   placeholder="Enter project title"
-                  defaultValue="Website Redesign Project"
+                  value={formData.title}
+                  onChange={handleInputChange}
                   className="w-full"
                 />
               </div>
@@ -105,7 +245,8 @@ export function AddProject({ onClose }: { onClose: () => void }) {
                   <Input
                     id="jobTitle"
                     placeholder="e.g. Frontend Developer"
-                    defaultValue="Senior Web Developer"
+                    value={formData.jobTitle}
+                    onChange={handleInputChange}
                     className="pl-9"
                   />
                 </div>
@@ -122,7 +263,8 @@ export function AddProject({ onClose }: { onClose: () => void }) {
               <Textarea
                 id="description"
                 placeholder="Describe the project in detail"
-                defaultValue="Complete overhaul of company website with modern UI/UX"
+                value={formData.description}
+                onChange={handleInputChange}
                 rows={3}
                 className="w-full"
               />
@@ -138,7 +280,8 @@ export function AddProject({ onClose }: { onClose: () => void }) {
               <Textarea
                 id="scope"
                 placeholder="Define the scope of work"
-                defaultValue="Redesign and implement new responsive website across all pages"
+                value={formData.scope}
+                onChange={handleInputChange}
                 rows={3}
                 className="w-full"
               />
@@ -157,8 +300,10 @@ export function AddProject({ onClose }: { onClose: () => void }) {
                   <Input
                     id="meta.budget"
                     placeholder="e.g. 5000"
-                    defaultValue="15000"
+                    value={formData.meta.budget}
+                    onChange={handleInputChange}
                     className="pl-9"
+                    type="number"
                   />
                 </div>
               </div>
@@ -175,7 +320,8 @@ export function AddProject({ onClose }: { onClose: () => void }) {
                   <Input
                     id="meta.timeline"
                     placeholder="e.g. 3 months"
-                    defaultValue="3 months"
+                    value={formData.meta.timeline}
+                    onChange={handleInputChange}
                     className="pl-9"
                   />
                 </div>
@@ -192,140 +338,43 @@ export function AddProject({ onClose }: { onClose: () => void }) {
               <Textarea
                 id="deliverables"
                 placeholder="List expected deliverables"
-                defaultValue="Fully functional website, documentation, and testing reports"
+                value={formData.deliverables}
+                onChange={handleInputChange}
                 rows={3}
                 className="w-full"
               />
             </div>
 
             <div>
-              <div className="mb-1 flex items-center justify-between">
-                <label className="block text-sm font-medium text-gray-700">
-                  Required Skills*
-                </label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 text-[#63B7B7] hover:bg-[#BEDDF1]/20 hover:text-[#63B7B7]/80"
-                >
-                  <PlusCircle className="mr-1 h-3.5 w-3.5" />
-                  Add Skill
-                </Button>
-              </div>
-              <div className="min-h-[80px] rounded-md border border-gray-200 p-3">
-                <div className="flex flex-wrap gap-2">
-                  {SELECTED_SKILLS.map((skill) => (
-                    <Badge
-                      key={skill}
-                      className="border-1 rounded-md bg-[#edecea]/30 py-1.5 text-xs text-[#234d64]/80 shadow-none hover:bg-[#BEDDF1]/60"
-                    >
-                      {skill}
-                      <button
-                        type="button"
-                        className="ml-1 text-gray-500 hover:text-gray-700"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Skills Required*
+              </label>
+              <SkillSelector
+                skills={formData.skills}
+                handleSkills={handleSkillsChange}
+                maxSkills={10}
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Add up to 10 skills that are required for this project
+              </p>
             </div>
 
-            <div>
-              <div className="mb-3 flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#63B7B7]" />
-                <h2 className="text-sm font-medium text-gray-900">
-                  Attachments (2)
-                </h2>
-              </div>
-
-              <div className="mb-3">
-                <label
-                  htmlFor="file-upload"
-                  className="inline-flex cursor-pointer items-center rounded-md border border-[#63B7B7] bg-white px-4 py-2 text-sm font-medium text-[#63B7B7] hover:bg-[#BEDDF1]/20"
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Add Files
-                </label>
-                <input
-                  id="file-upload"
-                  type="file"
-                  multiple
-                  className="sr-only"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div className="flex items-center rounded-lg bg-[#BEDDF1]/20 px-3 py-2 text-xs sm:text-sm">
-                  <div className="mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-white">
-                    <FileText className="h-4 w-4 text-[#63B7B7]" />
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <p className="truncate font-medium text-gray-800">
-                      website_requirements.pdf
-                    </p>
-                    <p className="text-xs text-gray-500">245 KB</p>
-                  </div>
-                  <button
-                    type="button"
-                    className="ml-2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-                <div className="flex items-center rounded-lg bg-[#BEDDF1]/20 px-3 py-2 text-xs sm:text-sm">
-                  <div className="mr-3 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-white">
-                    <FileText className="h-4 w-4 text-[#63B7B7]" />
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <p className="truncate font-medium text-gray-800">
-                      mockups.zip
-                    </p>
-                    <p className="text-xs text-gray-500">1.2 MB</p>
-                  </div>
-                  <button
-                    type="button"
-                    className="ml-2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="meta.priority"
-                  className="mb-1 block text-sm font-medium text-gray-700"
-                >
-                  Priority
-                </label>
-                <div className="relative">
-                  <AlertCircle className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                  <select
-                    id="meta.priority"
-                    className="h-10 w-full rounded-md border border-gray-300 bg-white py-2 pl-9 text-sm placeholder:text-gray-400 focus:border-[#63B7B7] focus:outline-none focus:ring-2 focus:ring-[#63B7B7]"
-                    defaultValue="high"
-                  >
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                  </select>
-                </div>
-              </div>
-            </div>
             <div className="flex justify-end gap-3 pt-4">
               <Button
                 variant="outline"
                 className="border-gray-300 text-gray-600"
+                onClick={onClose}
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button className="bg-[#63B7B7] px-6 text-white hover:bg-[#63B7B7]/90">
+              <Button
+                className="bg-[#63B7B7] px-6 text-white hover:bg-[#63B7B7]/90"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+              >
                 <Save className="mr-2 h-4 w-4" />
-                Save Project
+                {isSubmitting ? 'Saving...' : 'Save Project'}
               </Button>
             </div>
           </div>
