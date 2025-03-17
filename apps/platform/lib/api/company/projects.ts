@@ -47,6 +47,11 @@ export type GetAllCompanyProjectsRes = {
         verified: boolean
         createdAt: string
         updatedAt: string
+        UserProfile: {
+          avatar: string
+          headline: string
+          meta: ProProfile['data']['meta']
+        }
       }
       proposals: Array<{
         id: string

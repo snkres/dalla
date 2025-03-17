@@ -18,7 +18,7 @@ import { Button, Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { Consultant } from '@lib/types/company'
 import { consultants } from '@lib/data/consultants'
-import { ProjectOverview } from './project-overview'
+import { ProjectOverview } from './projects-overview'
 
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'

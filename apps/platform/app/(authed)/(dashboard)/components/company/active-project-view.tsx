@@ -1,5 +1,4 @@
 import React from 'react'
-import { useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { Badge } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
@@ -10,26 +9,19 @@ import {
   DollarSign,
   BarChart,
   Users,
-  CheckCircle,
   ChevronRight,
-  Clock,
   MessageSquare,
-  Plus,
 } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
 import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 const ActiveProjectView = ({
   project,
 }: {
   project: GetAllCompanyProjectsRes['data'][0][number]
 }) => {
-  const router = useRouter()
-
-  const handleViewDetails = () => {
-    router.push(`/company/projects/${project.id}`)
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -53,21 +45,15 @@ const ActiveProjectView = ({
 
           <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-0">
             <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-            >
-              <FileText className="mr-1.5 h-3.5 w-3.5" />
-              View Details
-            </Button>
-            <Button
               variant="outline"
               size="sm"
               className="h-8 !border-[#63B7B7]/30 !text-xs !text-[#1D8489] hover:bg-[#E0F2F2]"
-              onClick={handleViewDetails}
+              asChild
             >
-              <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />
-              Project Dashboard
+              <Link href={`/projects/${project.id}`}>
+                <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />
+                Project Dashboard
+              </Link>
             </Button>
           </div>
         </div>
@@ -89,12 +75,14 @@ const ActiveProjectView = ({
                   {project.meta.duration}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Remaining</span>
-                <span className="text-sm font-medium text-[#1D8489]">
-                  45 days
-                </span>
-              </div>
+              {project.assignedProfessionalId && (
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Remaining</span>
+                  <span className="text-sm font-medium text-[#1D8489]">
+                    45 days
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -109,15 +97,17 @@ const ActiveProjectView = ({
               <div className="mb-1 flex items-center justify-between">
                 <span className="text-xs text-gray-500">Total</span>
                 <span className="text-sm font-medium text-gray-700">
-                  {project.meta.budget}
+                  {formatCurrency(Number(project.meta.budget))}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Spent</span>
-                <span className="text-sm font-medium text-green-600">
-                  $7,800
-                </span>
-              </div>
+              {project.assignedProfessionalId && (
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-500">Spent</span>
+                  <span className="text-sm font-medium text-green-600">
+                    $7,800
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -176,7 +166,7 @@ const ActiveProjectView = ({
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-purple-100">
                   <Image
-                    src={project.professional.avatar}
+                    src={project.professional.UserProfile.avatar}
                     alt={project.professional.name}
                     width={56}
                     height={56}
@@ -201,12 +191,12 @@ const ActiveProjectView = ({
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                       </svg>
                       <span className="ml-0.5 text-xs font-medium text-amber-700">
-                        {project.professional.rating}
+                        {project.professional.UserProfile.meta.rating}
                       </span>
                     </div>
                   </div>
                   <p className="text-sm text-gray-500">
-                    {project.professional.role}
+                    {project.professional.UserProfile.headline}
                   </p>
 
                   <div className="mt-3 flex gap-2">
