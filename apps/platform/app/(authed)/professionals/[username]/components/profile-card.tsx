@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@dallah/design-system'
 import {
   Edit,
@@ -17,6 +17,7 @@ import {
   Check,
   Eye,
   EyeOff,
+  Loader2,
 } from 'lucide-react'
 import Image from 'next/image'
 import { Input } from '@dallah/design-system'
@@ -28,6 +29,7 @@ import {
   SelectValue,
 } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 export function ProfileCard({
   profile,
@@ -55,23 +57,114 @@ export function ProfileCard({
   onTogglePublicView?: () => void
   onUpdate?: (updatedProfile: typeof profile) => void
 }) {
+  const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
-  const [editedProfile, setEditedProfile] = useState({ ...profile })
+  const [editedProfile, setEditedProfile] = useState<Partial<typeof profile>>({
+    ...profile,
+    name: profile.name || '',
+    title: profile.title || '',
+    availability: profile.availability || '',
+    projectCompletion: profile.projectCompletion || '',
+    weeklyAvailability: profile.weeklyAvailability || 0,
+    hourlyRate: profile.hourlyRate || 0,
+    totalEarned: profile.totalEarned || 0,
+    projectsCompleted: profile.projectsCompleted || 0,
+    successRate: profile.successRate || 0,
+    rating: profile.rating || 0,
+  })
+  console.log(editedProfile)
+  const [isSaving, setIsSaving] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    // Track if user has made changes
+    if (isEditing) {
+      const profileChanged =
+        JSON.stringify(profile) !== JSON.stringify(editedProfile)
+      setHasChanges(profileChanged)
+    }
+  }, [editedProfile, profile, isEditing])
 
   const handleEdit = () => {
     setEditedProfile({ ...profile })
     setIsEditing(true)
+    setErrors({})
   }
 
-  const handleSave = () => {
-    if (onUpdate) {
-      onUpdate(editedProfile)
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    if (!editedProfile.name?.trim()) {
+      newErrors.name = 'Name is required'
     }
-    setIsEditing(false)
+
+    if (!editedProfile.title?.trim()) {
+      newErrors.title = 'Professional title is required'
+    }
+
+    if (
+      editedProfile.hourlyRate !== null &&
+      editedProfile.hourlyRate !== undefined &&
+      editedProfile.hourlyRate < 0
+    ) {
+      newErrors.hourlyRate = 'Hourly rate cannot be negative'
+    }
+
+    if (
+      editedProfile.weeklyAvailability !== null &&
+      editedProfile.weeklyAvailability !== undefined &&
+      editedProfile.weeklyAvailability < 0
+    ) {
+      newErrors.weeklyAvailability = 'Weekly availability cannot be negative'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSave = async () => {
+    if (!validateForm()) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fix the errors before saving',
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setIsSaving(true)
+
+    try {
+      if (onUpdate) {
+        await onUpdate(editedProfile as any)
+      }
+      setIsEditing(false)
+      toast({
+        title: 'Profile Updated',
+        description: 'Your profile has been successfully updated',
+      })
+    } catch (error) {
+      toast({
+        title: 'Update Failed',
+        description: 'There was an error updating your profile',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleCancel = () => {
-    setIsEditing(false)
+    if (hasChanges) {
+      if (
+        confirm('You have unsaved changes. Are you sure you want to cancel?')
+      ) {
+        setIsEditing(false)
+      }
+    } else {
+      setIsEditing(false)
+    }
   }
 
   const handleChange = (field: string, value: string | number) => {
@@ -79,11 +172,15 @@ export function ProfileCard({
       ...prev,
       [field]: value,
     }))
-  }
 
-  console.log(profile)
-  console.log(isPublicView)
-  console.log(isOwner)
+    if (errors[field]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev }
+        delete newErrors[field]
+        return newErrors
+      })
+    }
+  }
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
@@ -134,6 +231,7 @@ export function ProfileCard({
                 variant="ghost"
                 size="sm"
                 onClick={handleCancel}
+                disabled={isSaving}
                 className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
               >
                 <X className="mr-1 h-3 w-3" />
@@ -143,10 +241,25 @@ export function ProfileCard({
                 variant="ghost"
                 size="sm"
                 onClick={handleSave}
-                className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+                disabled={isSaving || !hasChanges}
+                className={cn(
+                  'h-7 rounded-full px-3 text-xs',
+                  hasChanges
+                    ? 'text-[#63B7B7] hover:bg-[#63B7B7]/10'
+                    : 'cursor-not-allowed text-gray-400',
+                )}
               >
-                <Check className="mr-1 h-3 w-3" />
-                Save
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                    Saving
+                  </>
+                ) : (
+                  <>
+                    <Check className="mr-1 h-3 w-3" />
+                    Save
+                  </>
+                )}
               </Button>
             </div>
           ))}
@@ -160,7 +273,7 @@ export function ProfileCard({
               onValueChange={(value) => handleChange('availability', value)}
             >
               <SelectTrigger className="h-7 w-36 rounded-full text-xs">
-                <SelectValue placeholder="Availability" />
+                <SelectValue placeholder="Select availability" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="available">Available Now</SelectItem>
@@ -186,14 +299,18 @@ export function ProfileCard({
                     ? 'bg-[#00A58C]'
                     : profile.availability === 'limited'
                       ? 'bg-amber-500'
-                      : 'bg-gray-500',
+                      : profile.availability === 'unavailable'
+                        ? 'bg-gray-500'
+                        : 'bg-gray-500',
                 )}
               ></div>
               {profile.availability === 'available'
                 ? 'Available now'
                 : profile.availability === 'limited'
                   ? 'Limited Availability'
-                  : 'Not Available'}
+                  : profile.availability === 'unavailable'
+                    ? 'Not Available'
+                    : 'Not Determined'}
             </div>
           )}
         </div>
@@ -202,7 +319,7 @@ export function ProfileCard({
           <div className="relative mb-4 h-24 w-24">
             <div className="h-24 w-24 overflow-hidden rounded-full bg-[#63B7B7]/10 shadow-sm ring-4 ring-[#63B7B7]/20">
               <Image
-                src={profile.avatar}
+                src={profile.avatar || '/placeholder.svg'}
                 alt="Profile"
                 width={96}
                 height={96}
@@ -222,18 +339,38 @@ export function ProfileCard({
 
           {isEditing ? (
             <div className="mb-2 w-full space-y-2">
-              <Input
-                value={editedProfile.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                className="h-8 text-center text-base font-medium"
-                placeholder="Your name"
-              />
-              <Input
-                value={editedProfile.title}
-                onChange={(e) => handleChange('title', e.target.value)}
-                className="h-7 text-center text-sm"
-                placeholder="Your professional title"
-              />
+              <div>
+                <Input
+                  value={editedProfile.name || ''}
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  className={cn(
+                    'h-8 text-center text-base font-medium',
+                    errors.name && 'border-red-500 focus:ring-red-500',
+                  )}
+                  placeholder="Your name"
+                />
+                {errors.name && (
+                  <p className="mt-1 text-center text-xs text-red-500">
+                    {errors.name}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Input
+                  value={editedProfile.title || ''}
+                  onChange={(e) => handleChange('title', e.target.value)}
+                  className={cn(
+                    'h-7 text-center text-sm',
+                    errors.title && 'border-red-500 focus:ring-red-500',
+                  )}
+                  placeholder="Your professional title"
+                />
+                {errors.title && (
+                  <p className="mt-1 text-center text-xs text-red-500">
+                    {errors.title}
+                  </p>
+                )}
+              </div>
             </div>
           ) : (
             <>
@@ -284,14 +421,28 @@ export function ProfileCard({
                 <DollarSign className="h-4 w-4 text-[#63B7B7]" />
               </div>
               {isEditing ? (
-                <Input
-                  type="number"
-                  value={editedProfile.hourlyRate || ''}
-                  onChange={(e) =>
-                    handleChange('hourlyRate', parseInt(e.target.value))
-                  }
-                  className="h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]"
-                />
+                <div>
+                  <Input
+                    type="number"
+                    value={editedProfile.hourlyRate ?? ''}
+                    onChange={(e) =>
+                      handleChange(
+                        'hourlyRate',
+                        Number.parseInt(e.target.value) || 0,
+                      )
+                    }
+                    className={cn(
+                      'h-7 border-none bg-transparent text-center text-base font-medium text-[#63B7B7]',
+                      errors.hourlyRate && 'border-red-500 focus:ring-red-500',
+                    )}
+                    placeholder="Enter hourly rate"
+                  />
+                  {errors.hourlyRate && (
+                    <p className="mt-1 text-center text-xs text-red-500">
+                      {errors.hourlyRate}
+                    </p>
+                  )}
+                </div>
               ) : (
                 <div className="text-base font-medium text-[#63B7B7]">
                   ${profile.hourlyRate || '0'}/hr
@@ -353,16 +504,26 @@ export function ProfileCard({
                   <div className="flex w-1/2 items-center">
                     <Input
                       type="number"
-                      value={editedProfile.weeklyAvailability || ''}
+                      value={editedProfile.weeklyAvailability ?? ''}
                       onChange={(e) =>
                         handleChange(
                           'weeklyAvailability',
-                          parseInt(e.target.value),
+                          Number.parseInt(e.target.value) || 0,
                         )
                       }
-                      className="h-9 text-right !text-xs"
+                      className={cn(
+                        'h-9 text-right !text-xs',
+                        errors.weeklyAvailability &&
+                          'border-red-500 focus:ring-red-500',
+                      )}
+                      placeholder="0"
                     />
                     <span className="ml-1 text-xs">hrs/week</span>
+                    {errors.weeklyAvailability && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.weeklyAvailability}
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <span className="text-xs font-medium text-gray-800">
@@ -382,19 +543,22 @@ export function ProfileCard({
 
             {isEditing ? (
               <Select
-                value={editedProfile.projectCompletion || ''}
+                value={editedProfile.projectCompletion ?? ''}
                 onValueChange={(value) =>
                   handleChange('projectCompletion', value)
                 }
               >
                 <SelectTrigger className="h-8 w-full text-xs">
-                  <SelectValue placeholder="Project Completion Time" />
+                  <SelectValue placeholder="Select completion time" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="1 week">1 Week</SelectItem>
                   <SelectItem value="2-3 weeks">2-3 Weeks</SelectItem>
                   <SelectItem value="1 month">1 Month</SelectItem>
                   <SelectItem value="1-2 months">1-2 Months</SelectItem>
+                  <SelectItem value="undefined" disabled>
+                    Not Determined
+                  </SelectItem>
                 </SelectContent>
               </Select>
             ) : (
@@ -402,7 +566,9 @@ export function ProfileCard({
                 <span className="text-sm font-medium capitalize text-[#63B7B7]">
                   {profile.projectCompletion
                     ? profile.projectCompletion
-                    : 'N/A'}
+                    : profile.projectCompletion === 'undefined'
+                      ? 'Not Determined'
+                      : 'N/A'}
                 </span>
               </div>
             )}

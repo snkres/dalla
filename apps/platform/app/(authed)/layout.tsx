@@ -1,7 +1,7 @@
 'use client'
 import { Navbar } from '@components/layout/navbar'
 import { getCompanyProfile } from '@lib/api/company/profile'
-import { getProProfile } from '@lib/api/pro/profile'
+import { getOwnProProfile } from '@lib/api/pro/profile'
 import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
 import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
 import { useAtom } from 'jotai'
@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     queryFn: async () => {
       try {
         if (global.mode === 'user') {
-          const res = await getProProfile()
+          const res = await getOwnProProfile()
           return res.data
         } else if (global.mode === 'company') {
           const res = await getCompanyProfile()

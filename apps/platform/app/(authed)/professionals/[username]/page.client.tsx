@@ -93,10 +93,10 @@ export function ProProfileClient({ username }: { username: string }) {
               successRate: Number(profile?.data?.meta['successRate']) || null,
               weeklyAvailability:
                 Number(profile?.data?.meta['weeklyAvailability']) || null,
-              availability: String(profile?.data?.meta['availability']),
+              availability: profile?.data?.meta['availability'],
               rating: Number(profile?.data?.meta['rating']) || null,
               projectCompletion:
-                String(profile?.data?.meta['projectCompletion']) || null,
+                profile?.data?.meta['projectCompletion'] || null,
               isVerified: profile?.data?.User.verified,
             }}
             isPublicView={isPublicView}
@@ -121,9 +121,7 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
-              languages={
-                profile?.data?.meta['languages'] as unknown as Language[]
-              }
+              languages={profile?.data?.meta?.['languages'] ?? []}
               onUpdate={(languages) => {
                 const languagesObj = languages.reduce(
                   (acc, { language, proficiency }) => ({
@@ -201,7 +199,7 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <ProjectsSection
             projects={profile?.data?.projects || []}
-            proId={profile?.data.id || ''}
+            proId={profile?.data?.id || ''}
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={async (updatedProjects) => {
@@ -341,9 +339,14 @@ export function ProProfileClient({ username }: { username: string }) {
                   }: {
                     id: string
                     profileId: string
-                    createdAt: Date
-                    updatedAt: Date
-                    [key: string]: any
+                    createdAt: string
+                    updatedAt: string
+                    school: string
+                    degree: string
+                    field: string
+                    startDate: string
+                    endDate: string
+                    description: string
                   }) => edu,
                 ),
               })

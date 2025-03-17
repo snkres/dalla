@@ -6,10 +6,12 @@ export function MonthYearPicker({
   value,
   onChange,
   placeholder,
+  className,
 }: {
   value: string
   onChange: (value: string) => void
   placeholder: string
+  className?: string
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedYear, setSelectedYear] = useState<number | null>(null)
@@ -117,6 +119,7 @@ export function MonthYearPicker({
                     selectedYear === year
                       ? 'bg-[#63B7B7]/10 font-medium text-[#63B7B7]'
                       : '',
+                    className,
                   )}
                   onClick={() => handleYearSelect(year)}
                 >
@@ -134,6 +137,7 @@ export function MonthYearPicker({
                     selectedMonth === index
                       ? 'bg-[#63B7B7]/10 font-medium text-[#63B7B7]'
                       : '',
+                    className,
                   )}
                   onClick={() => handleMonthSelect(index)}
                 >

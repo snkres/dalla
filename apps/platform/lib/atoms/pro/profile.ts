@@ -1,5 +1,6 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atomWithLocalForage } from '../atom-with-localforge'
+import { Language } from '@lib/types/profile'
 
 export type ProProfile = {
   statusCode: number
@@ -28,9 +29,7 @@ export type ProProfile = {
       availability: string
       rating: number
       projectCompletion: string
-      languages: {
-        [key: string]: string
-      }
+      languages: Language[]
     }
     resume: string
     precentage: number
@@ -67,6 +66,7 @@ export type ProProfile = {
         achievements: string
         employmentType: string
         responsibilities: string
+        industry: string
       }
       startDate: string
       endDate: string

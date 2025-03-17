@@ -1,8 +1,16 @@
 import { ProProfile } from '@lib/atoms/pro/profile'
 import { axiosInstance } from '../instance'
 
-export async function getProProfile() {
+export async function getOwnProProfile() {
   let res = await axiosInstance.get<ProProfile>('/professionals/profile')
+
+  return res
+}
+
+export async function getProProfile(username: string) {
+  let res = await axiosInstance.get<ProProfile>(
+    `/company/professional/${username}`,
+  )
 
   return res
 }
