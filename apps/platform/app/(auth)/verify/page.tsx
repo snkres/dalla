@@ -18,14 +18,14 @@ export default function VerifyPage() {
   const [verificationCode, setVerificationCode] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  useEffect(() => {
-    const email = global.email
-    const mode = global.mode
-    if (!email || !mode) {
-      router.push('/login')
-      return
-    }
-  }, [router, global])
+  // useEffect(() => {
+  //   const email = global.email
+  //   const mode = global.mode
+  //   if (!email || !mode) {
+  //     router.push('/login')
+  //     return
+  //   }
+  // }, [router, global])
 
   const handleVerificationSubmit = async () => {
     if (isSubmitting) return

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { redirect } from 'next/navigation'
 import localForage from 'localforage'
+import { resendOTP } from './auth/otp-verify'
 
 export const axiosInstance = axios.create({
   baseURL: 'https://devapi.dalla.app',
@@ -29,10 +30,8 @@ const handleAuthFailure = async () => {
   }
 }
 
-// Request interceptor to add auth headers if needed
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // You can add token from localStorage/cookies here if needed
     return config
   },
   (error) => {
@@ -40,23 +39,15 @@ axiosInstance.interceptors.request.use(
   },
 )
 
-// Response interceptor to handle auth errors
 axiosInstance.interceptors.response.use(
   (response) => {
     return response
   },
   async (error) => {
-    // Handle 401 Unauthorized errors
     if (error.response?.status === 401) {
       await handleAuthFailure()
-      // Return a rejected promise to stop the request chain
-      return Promise.reject(new Error('Authentication failed'))
-    }
 
-    // Handle 403 Forbidden errors (optional)
-    if (error.response?.status === 403) {
-      console.error('Access forbidden:', error)
-      // You can handle this differently if needed
+      return Promise.reject(new Error('Authentication failed'))
     }
 
     return Promise.reject(error)

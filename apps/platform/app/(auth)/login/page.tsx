@@ -62,14 +62,13 @@ export default function LoginPage() {
       }
     } catch (e) {
       if (e instanceof Error && 'status' in e) {
-        if (e.status === 422) {
+        if (e.status === 403) {
           await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',
           })
           router.push('/verify')
-        }
-        if (e.status === 403) {
+        } else if (e.status === 422) {
           await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',
