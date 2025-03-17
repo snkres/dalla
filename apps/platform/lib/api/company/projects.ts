@@ -102,27 +102,52 @@ export const getAllProjects = async (page: number, limit: number) => {
   return res
 }
 
-export interface GetProjectRes {
+export type GetProjectRes = {
+  statusCode: number
+  success: boolean
+  message: string
   data: {
     id: string
     title: string
     description: string
-    deliverables: string
-    scope: string
-    jobTitle: string
-    skills: string[]
-    meta: Meta
-    status: string
-    approved: boolean
-    companyId: string
-    assignedProfessionalId: string | null
+    skills: Array<string>
+    meta: {
+      budget: number
+      duration: string
+    }
     createdAt: string
-    updatedAt: string
+    deliverables: string
+    jobTitle: string
+    scope: string
+    status: 'Open' | 'Closed' | 'InProgress' | 'Completed'
+    _count: {
+      proposals: number
+    }
+    company: {
+      id: string
+      name: string
+      createdAt: string
+      _count: {
+        projects: number
+      }
+      CompanyProfile: {
+        location: string
+      }
+    }
+    proposals: Array<{
+      id: string
+      projectId: string
+      professionalId: string
+      description: string
+      price: number
+      timeline: string
+      media: Array<string>
+      status: string
+      createdAt: string
+      updatedAt: string
+      deletedAt: any
+    }>
   }
-
-  success: boolean
-  statusCode: number
-  message: string
   error: any
   path: string
   timestamp: string

@@ -9,10 +9,17 @@ import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
 import { ProfessionalProjectView } from './components/professional-view'
 import { getProject } from '@lib/api/company/projects'
+import { Tabs, TabsList, TabsTrigger } from '@dallah/design-system'
+import { useState } from 'react'
+
+const companyTabs = ['overview', 'milestones', 'team', 'files', 'budget']
+const professionalTabs = ['overview', 'milestones', 'team', 'files', 'budget']
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
   const router = useRouter()
+  const [activeTab, setActiveTab] =
+    useState<(typeof companyTabs)[number]>('overview')
   const isCompany = global.mode === 'company'
   const isProfessional = global.mode === 'user'
 
@@ -62,12 +69,48 @@ export function ProjectPageClient({ id }: { id: string }) {
         >
           ← Back
         </button>
-        <ProjectSharedDetails project={data} />
-      </div>
-
-      <div className="mt-8">
-        {isCompany && <CompanyProjectView project={data} />}
-        {isProfessional && <ProfessionalProjectView project={data} />}
+        <div className="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+          <ProjectSharedDetails project={data} />
+          <div className="w-full border-t border-gray-200">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="h-12 w-full !justify-start rounded-none border-b border-gray-200 bg-transparent p-0">
+                {isCompany
+                  ? companyTabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab}
+                        value={tab}
+                        className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
+                      >
+                        {tab}
+                      </TabsTrigger>
+                    ))
+                  : professionalTabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab}
+                        value={tab}
+                        className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
+                      >
+                        {tab}
+                      </TabsTrigger>
+                    ))}
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+        {isCompany && (
+          <CompanyProjectView
+            project={data}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )}
+        {/* {isProfessional && (
+          <ProfessionalProjectView
+            project={data}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )} */}
       </div>
     </div>
   )
