@@ -1,10 +1,17 @@
 import { Award } from 'lucide-react'
 import ExpandableSection from './expandable-section'
 import { Badge } from '@dallah/design-system'
-import { SkillsSectionProps } from '@lib/types/proposals'
+
+interface SkillsSectionProps {
+  data: {
+    skills: string[]
+  }
+  isExpanded: boolean
+  onToggle: () => void
+}
 
 const SkillsSection: React.FC<SkillsSectionProps> = ({
-  proposal,
+  data,
   isExpanded,
   onToggle,
 }) => (
@@ -15,7 +22,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     onToggle={onToggle}
   >
     <div className="flex flex-wrap gap-2">
-      {proposal.skills.map((skill, index) => (
+      {data.skills.map((skill, index) => (
         <Badge
           key={index}
           className="border-[#63B7B7]/20 bg-[#63B7B7]/10 px-3 py-1.5 text-[#63B7B7] hover:bg-[#63B7B7]/20"

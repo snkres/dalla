@@ -1,6 +1,13 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import { Award, Flame, DollarSign, Clock, MapPin } from 'lucide-react'
+import {
+  Award,
+  Flame,
+  DollarSign,
+  Clock,
+  MapPin,
+  CheckCircle,
+} from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import {
@@ -24,7 +31,7 @@ const CARD_ANIMATION = {
 }
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
-  const { title, company, description, skills } = project
+  const { title, company, description, skills, applied } = project
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -37,13 +44,20 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
       onClick={(e) => onClick(project, e)}
       className={cn(
         'overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md',
+        applied ? 'border-l-4 border-l-[#63B7B7]' : '',
       )}
     >
       <div className="flex h-full flex-col p-5">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
             <h3 className="text-base font-medium text-gray-900">{title}</h3>
-            <p className="mt-1 text-sm text-gray-500">{project.company.name}</p>
+            <p className="mt-1 text-sm text-gray-500">{company.name}</p>
+            {applied && (
+              <Badge className="mt-2 rounded-md border-none !bg-[#BEDDF1]/20 px-2 py-0.5 text-xs font-normal text-[#63B7B7]">
+                <CheckCircle className="mr-1 h-3 w-3" />
+                Applied
+              </Badge>
+            )}
           </div>
           <Button
             variant="ghost"

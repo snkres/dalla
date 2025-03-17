@@ -38,33 +38,27 @@ export function ProjectDetail({
   })
 
   useEffect(() => {
-    // Store the original scroll position
     const scrollY = window.scrollY
 
-    // Store original body styles before modifying
     const originalOverflow = document.body.style.overflow
     const originalPosition = document.body.style.position
     const originalWidth = document.body.style.width
     const originalTop = document.body.style.top
     const originalHeight = document.body.style.height
 
-    // Apply scroll locking
     document.body.style.overflow = 'hidden'
     document.body.style.position = 'fixed'
     document.body.style.width = '100%'
     document.body.style.top = `-${scrollY}px`
     document.body.style.height = '100%'
 
-    // Cleanup function to restore original state
     return () => {
-      // First restore original styles
       document.body.style.overflow = originalOverflow
       document.body.style.position = originalPosition
       document.body.style.width = originalWidth
       document.body.style.top = originalTop
       document.body.style.height = originalHeight
 
-      // Then restore scroll position
       window.scrollTo(0, scrollY)
     }
   }, [])
@@ -77,19 +71,16 @@ export function ProjectDetail({
       <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
         <button
           onClick={(e) => {
-            // Extract the scroll position from the body's top property
             const scrollY = document.body.style.top
               ? Number.parseInt(document.body.style.top.replace('px', '')) * -1
               : 0
 
-            // Reset all body styles completely
             document.body.style.removeProperty('overflow')
             document.body.style.removeProperty('position')
             document.body.style.removeProperty('width')
             document.body.style.removeProperty('top')
             document.body.style.removeProperty('height')
 
-            // Force a small delay before restoring scroll
             setTimeout(() => {
               window.scrollTo(0, scrollY)
               onClose()
@@ -229,12 +220,24 @@ export function ProjectDetail({
 
         <div className="w-full border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
           <div className="sticky top-[73px] p-4 sm:p-5">
-            <Button
-              className="mb-3 w-full !bg-[#63B7B7] py-5 text-sm font-medium text-white hover:!bg-[#63B7B7]/90 sm:py-6 sm:text-base"
-              onClick={onApplyClick}
-            >
-              Apply now
-            </Button>
+            {data?.applied ? (
+              <div className="mb-4 rounded-lg bg-[#BEDDF1]/10 p-4 text-center">
+                <CheckCircle className="mx-auto mb-2 h-6 w-6 text-[#63B7B7]" />
+                <p className="text-sm font-medium text-gray-800">
+                  You've already applied to this project
+                </p>
+                <p className="mt-1 text-xs text-gray-600">
+                  Check your proposals section for status updates
+                </p>
+              </div>
+            ) : (
+              <Button
+                className="mb-3 w-full !bg-[#63B7B7] py-5 text-sm font-medium text-white hover:!bg-[#63B7B7]/90 sm:py-6 sm:text-base"
+                onClick={onApplyClick}
+              >
+                Apply now
+              </Button>
+            )}
 
             <div className="mb-5 flex gap-2 sm:mb-6">
               <Button

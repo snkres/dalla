@@ -97,6 +97,7 @@ export type GetAllProposalsRes = {
       createdAt: string
       project: {
         title: string
+        id: string
         meta: {
           budget: number
           duration: string
@@ -139,10 +140,72 @@ export async function getAllProposals() {
 
   return res
 }
+export type GetProposalByIdRes = {
+  statusCode: number
+  success: boolean
+  message: string
+  data: {
+    id: string
+    projectId: string
+    professionalId: string
+    description: string
+    price: number
+    timeline: string
+    media: Array<string>
+    status: string
+    createdAt: string
+    updatedAt: string
+    professional: {
+      id: string
+      name: string
+      username: string
+      email: string
+      password: string
+      onboarded: boolean
+      verified: boolean
+      suspended: boolean
+      createdAt: string
+      updatedAt: string
+    }
+    project: {
+      id: string
+      title: string
+      description: string
+      scope: string
+      jobTitle: string
+      skills: Array<string>
+      deliverables: string
+      meta: {
+        budget: number
+        duration: string
+      }
+      approved: boolean
+      status: string
+      companyId: string
+      assignedProfessionalId: any
+      createdAt: string
+      updatedAt: string
+    }
+    relevantProjects: Array<any>
+  }
+  error: any
+  path: string
+  timestamp: string
+}
 
 export async function getProposalById(proposalId: string, projectId: string) {
   const res = await axiosInstance
-    .get(`/professionals/projects/${projectId}/proposals/${proposalId}`)
+    .get<GetProposalByIdRes>(
+      `/professionals/projects/${projectId}/proposals/${proposalId}`,
+    )
+    .then((res) => res.data)
+
+  return res
+}
+
+export async function deleteProposal(proposalId: string, projectId: string) {
+  const res = await axiosInstance
+    .delete(`/professionals/projects/${projectId}/proposals/${proposalId}`)
     .then((res) => res.data)
 
   return res

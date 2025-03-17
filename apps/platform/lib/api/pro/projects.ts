@@ -17,22 +17,14 @@ export type Project = {
     id: string
     name: string
   }
+  applied: boolean
 }
 
 export type AllProjectsRes = {
   statusCode: number
   success: boolean
   message: string
-  data: [
-    Array<Project>,
-    {
-      isFirstPage: boolean
-      isLastPage: boolean
-      currentPage: number
-      previousPage: any
-      nextPage: any
-    },
-  ]
+  data: Array<Project>
   error: any
   path: string
   timestamp: string
@@ -78,6 +70,7 @@ export type GetProjectByIdRes = {
         location: string
       }
     }
+    applied: boolean
   }
   error: any
   path: string

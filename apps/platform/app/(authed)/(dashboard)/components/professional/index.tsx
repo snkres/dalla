@@ -1,7 +1,8 @@
 'use client'
 
 import type React from 'react'
-import { useState, useEffect, useCallback } from 'react'
+
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { AlertCircle } from 'lucide-react'
 import { Button } from '@dallah/design-system'
@@ -21,8 +22,10 @@ import { getAllSkills } from '@lib/utils/skill-utils'
 import FilterChips from './filter-chips'
 import { useQuery } from '@tanstack/react-query'
 import { getAllProjects, type Project } from '@lib/api/pro/projects'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 export function ProfessionalHome() {
+  const { toast } = useToast()
   const { data } = useQuery({
     queryKey: ['all-projects'],
     queryFn: getAllProjects,
@@ -30,7 +33,7 @@ export function ProfessionalHome() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredProjects, setFilteredProjects] = useState<Project[] | []>(
-    data?.[0] || [],
+    data || [],
   )
   const [showSearchHelp, setShowSearchHelp] = useState(false)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
@@ -43,14 +46,13 @@ export function ProfessionalHome() {
   const [selectedDurations, setSelectedDurations] = useState<string[]>([])
   const [selectedLocations, setSelectedLocations] = useState<string[]>([])
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-  // Store scroll position for restoration
   const [scrollPosition, setScrollPosition] = useState(0)
 
-  const allSkills = getAllSkills(data?.[0] || [])
+  const allSkills = getAllSkills(data || [])
 
   useEffect(() => {
     const results = applyFilters(
-      data?.[0] || [],
+      data || [],
       activeFilter,
       searchQuery,
       showFilterPanel,
@@ -71,21 +73,17 @@ export function ProfessionalHome() {
     data,
   ])
 
-  // Lock scroll when a modal is open
   useEffect(() => {
     if (showProjectDetail || showProjectApplication) {
-      // Store current scroll position
       const currentScrollY = window.scrollY
       setScrollPosition(currentScrollY)
 
-      // Store original body styles before modifying
       const originalOverflow = document.body.style.overflow
       const originalPosition = document.body.style.position
       const originalWidth = document.body.style.width
       const originalTop = document.body.style.top
       const originalHeight = document.body.style.height
 
-      // Apply scroll locking
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'
       document.body.style.width = '100%'
@@ -93,16 +91,13 @@ export function ProfessionalHome() {
       document.body.style.height = '100%'
 
       return () => {
-        // Only restore if no modals are open
         if (!showProjectDetail && !showProjectApplication) {
-          // First restore original styles
           document.body.style.overflow = originalOverflow
           document.body.style.position = originalPosition
           document.body.style.width = originalWidth
           document.body.style.top = originalTop
           document.body.style.height = originalHeight
 
-          // Then restore scroll position
           window.scrollTo(0, currentScrollY)
         }
       }
@@ -120,9 +115,18 @@ export function ProfessionalHome() {
   )
 
   const handleApplyClick = useCallback(() => {
+    if (selectedProject?.applied) {
+      toast({
+        title: 'Already Applied',
+        description: "You've already submitted a proposal for this project.",
+        variant: 'default',
+      })
+      return
+    }
+
     setShowProjectDetail(false)
     setShowProjectApplication(true)
-  }, [])
+  }, [selectedProject, toast])
 
   const handleBackToDetails = useCallback(() => {
     setShowProjectApplication(false)
@@ -130,24 +134,20 @@ export function ProfessionalHome() {
   }, [])
 
   const handleCloseAll = useCallback(() => {
-    // Extract the scroll position from the body's top property
     const scrollY = document.body.style.top
       ? Number.parseInt(document.body.style.top.replace('px', '')) * -1
       : scrollPosition
 
-    // Reset all body styles completely
     document.body.style.removeProperty('overflow')
     document.body.style.removeProperty('position')
     document.body.style.removeProperty('width')
     document.body.style.removeProperty('top')
     document.body.style.removeProperty('height')
 
-    // Close all modals
     setShowProjectDetail(false)
     setShowProjectApplication(false)
     setSelectedProject(null)
 
-    // Force a small delay before restoring scroll
     setTimeout(() => {
       window.scrollTo(0, scrollY)
     }, 10)
@@ -165,6 +165,16 @@ export function ProfessionalHome() {
     setSearchQuery('')
     handleResetFilters()
   }, [handleResetFilters])
+
+  const displayedProjects = useMemo(() => {
+    return filteredProjects.map((project) => (
+      <ProjectCard
+        key={project.id}
+        project={project}
+        onClick={handleProjectClick}
+      />
+    ))
+  }, [filteredProjects, handleProjectClick])
 
   return (
     <div className="w-full py-6">
@@ -231,13 +241,7 @@ export function ProfessionalHome() {
 
             {filteredProjects.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {filteredProjects.map((project) => (
-                  <ProjectCard
-                    key={project.id}
-                    project={project}
-                    onClick={handleProjectClick}
-                  />
-                ))}
+                {displayedProjects}
               </div>
             ) : (
               <div className="rounded-xl bg-gray-50 p-8 text-center">
