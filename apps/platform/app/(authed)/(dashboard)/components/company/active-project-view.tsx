@@ -36,9 +36,9 @@ const ActiveProjectView = ({
               <h3 className="text-xl font-semibold text-gray-900">
                 {project.title}
               </h3>
-              <Badge className="!border !border-[#63B7B7]/30 !bg-[#E0F2F2] !px-2 !py-0.5 !text-xs !text-[#1D8489]">
+              {/* <Badge className="!border !border-[#63B7B7]/30 !bg-[#E0F2F2] !px-2 !py-0.5 !text-xs !text-[#1D8489]">
                 {project.status}
-              </Badge>
+              </Badge> */}
             </div>
             <p className="text-xs text-gray-500">Project ID: {project.id}</p>
           </div>
@@ -72,17 +72,17 @@ const ActiveProjectView = ({
               <div className="mb-1 flex items-center justify-between">
                 <span className="text-xs text-gray-500">Duration</span>
                 <span className="text-xs font-medium text-gray-700">
-                  {project.meta.duration}
+                  {project.meta.timeline ?? project.meta.duration}
                 </span>
               </div>
-              {project.assignedProfessionalId && (
+              {/* {project.assignedProfessionalId && (
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500">Remaining</span>
                   <span className="text-sm font-medium text-[#1D8489]">
                     45 days
                   </span>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -104,7 +104,19 @@ const ActiveProjectView = ({
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-500">Spent</span>
                   <span className="text-sm font-medium text-green-600">
-                    $7,800
+                    {formatCurrency(
+                      Number(project.meta.budget) -
+                        Number(
+                          project.proposals.find(
+                            (proposal) =>
+                              proposal.professionalId ===
+                              project.assignedProfessionalId,
+                          )?.professional.UserProfile?.meta?.totalEarned || 0,
+                        ),
+                    )}{' '}
+                    {project.status === 'InProgress' && (
+                      <span className="text-xs text-gray-500">(In Escrow)</span>
+                    )}
                   </span>
                 </div>
               )}
@@ -156,9 +168,20 @@ const ActiveProjectView = ({
                 variant="ghost"
                 size="sm"
                 className="h-7 px-2 text-xs text-purple-600 hover:bg-purple-100"
+                asChild
               >
-                View Profile
-                <ChevronRight className="ml-1 h-3 w-3" />
+                <Link
+                  href={`/professionals/${
+                    project.proposals.find(
+                      (proposal) =>
+                        proposal.professionalId ===
+                        project.assignedProfessionalId,
+                    )?.professional.username
+                  }`}
+                >
+                  View Profile
+                  <ChevronRight className="ml-1 h-3 w-3" />
+                </Link>
               </Button>
             </div>
 
@@ -166,8 +189,20 @@ const ActiveProjectView = ({
               <div className="flex items-center gap-4">
                 <div className="h-14 w-14 overflow-hidden rounded-full border-2 border-purple-100">
                   <Image
-                    src={project.professional.UserProfile.avatar}
-                    alt={project.professional.name}
+                    src={
+                      project?.proposals.find(
+                        (proposal) =>
+                          proposal.professionalId ===
+                          project.assignedProfessionalId,
+                      )?.professional.UserProfile?.avatar || ''
+                    }
+                    alt={
+                      project?.proposals.find(
+                        (proposal) =>
+                          proposal.professionalId ===
+                          project.assignedProfessionalId,
+                      )?.professional.name || ''
+                    }
                     width={56}
                     height={56}
                     className="object-cover"
@@ -177,7 +212,11 @@ const ActiveProjectView = ({
                 <div className="flex-1">
                   <div className="mb-1 flex flex-wrap items-center gap-2">
                     <h5 className="text-base font-medium text-gray-900">
-                      {project.professional.name}
+                      {project?.proposals.find(
+                        (proposal) =>
+                          proposal.professionalId ===
+                          project.assignedProfessionalId,
+                      )?.professional.name || ''}
                     </h5>
                     <div className="flex items-center rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
                       <svg
@@ -191,18 +230,26 @@ const ActiveProjectView = ({
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                       </svg>
                       <span className="ml-0.5 text-xs font-medium text-amber-700">
-                        {project.professional.UserProfile.meta.rating}
+                        {project?.proposals.find(
+                          (proposal) =>
+                            proposal.professionalId ===
+                            project.assignedProfessionalId,
+                        )?.professional.UserProfile?.meta?.rating || 5}
                       </span>
                     </div>
                   </div>
                   <p className="text-sm text-gray-500">
-                    {project.professional.UserProfile.headline}
+                    {project?.proposals.find(
+                      (proposal) =>
+                        proposal.professionalId ===
+                        project.assignedProfessionalId,
+                    )?.professional.UserProfile.headline || ''}
                   </p>
 
                   <div className="mt-3 flex gap-2">
                     <Button
                       size="sm"
-                      className="h-8 bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]"
+                      className="h-8 !bg-[#63B7B7] text-xs text-white hover:!bg-[#1D8489]"
                     >
                       <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
                       Message

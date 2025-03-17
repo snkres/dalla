@@ -28,7 +28,7 @@ interface ProjectOverviewProps {
   onPostJob: () => void
   onHireConsultant: () => void
 }
-export function ProjectOverview({
+export function ProjectsOverview({
   projects,
   onPostJob,
   onHireConsultant,
@@ -82,20 +82,20 @@ export function ProjectOverview({
               <Briefcase className="h-4 w-4 text-[#1D8489]" />
             </div>
             <h2 className="text-base font-medium text-gray-900">
-              Project Overview
+              Projects Overview
             </h2>
           </div>
 
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <Button
               size="sm"
               onClick={onPostJob}
               className="h-8 !bg-[#63B7B7] text-xs !text-white hover:!bg-[#1D8489]"
             >
               <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
-              New Project
+              Start a Project
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <AnimatePresence mode="wait">
@@ -167,28 +167,35 @@ export function ProjectOverview({
                         </div>
 
                         <div className="flex items-center gap-2">
-                          {project.proposals.length > 0 && (
-                            <Badge
-                              variant="outline"
-                              className="!border-amber-200 !bg-white !text-xs !font-normal !text-amber-700"
-                            >
-                              {project.proposals.length} Proposals
-                            </Badge>
-                          )}
+                          {project.proposals.length > 0 &&
+                            project.status !== 'InProgress' && (
+                              <Badge
+                                variant="outline"
+                                className="!border-amber-200 !bg-white !text-xs !font-normal !text-amber-700"
+                              >
+                                {project.proposals.length} Proposals
+                              </Badge>
+                            )}
 
                           <div className="flex items-center gap-1">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-8 border-[#63B7B7]/30 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
-                              onClick={() =>
-                                handleViewProposals(project.id, project.title)
-                              }
-                            >
-                              <MessageCircleMore className="h-3.5 w-3.5" />
-                              View Proposals
-                            </Button>
-
+                            {project.status === 'Open' && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 border-[#63B7B7]/30 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
+                                  onClick={() =>
+                                    handleViewProposals(
+                                      project.id,
+                                      project.title,
+                                    )
+                                  }
+                                >
+                                  <MessageCircleMore className="h-3.5 w-3.5" />
+                                  View Proposals
+                                </Button>
+                              </>
+                            )}
                             <Button
                               variant="ghost"
                               size="sm"
@@ -201,42 +208,6 @@ export function ProjectOverview({
                                 <ChevronDown className="h-4 w-4 text-gray-400" />
                               )}
                             </Button>
-
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <MoreHorizontal className="h-4 w-4 text-gray-500" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="w-[180px]"
-                              >
-                                {project.proposals.length === 0 && (
-                                  <DropdownMenuItem
-                                    className="cursor-pointer text-xs"
-                                    onClick={() =>
-                                      handleViewProposals(
-                                        project.id,
-                                        project.title,
-                                      )
-                                    }
-                                  >
-                                    View Proposals
-                                  </DropdownMenuItem>
-                                )}
-                                <DropdownMenuItem className="cursor-pointer text-xs">
-                                  Edit Project
-                                </DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer text-xs">
-                                  Project Dashboard
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
                           </div>
                         </div>
                       </div>

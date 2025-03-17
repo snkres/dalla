@@ -24,21 +24,25 @@ export function ConsultantCard({
   }
 
   const getMatchColor = (rating: number) => {
-    if (rating >= 4.8) return 'text-[#63B7B7]'
-    if (rating >= 4.0) return 'text-[#FFB650]'
-    return 'text-gray-600'
+    if (rating >= 4.8) return '!text-[#63B7B7]'
+    if (rating >= 4.0) return '!text-[#FFB650]'
+    return '!text-gray-600'
   }
 
   const getStatusColors = (status: string) => {
     if (status === 'Available')
       return {
-        bg: 'bg-emerald-50',
-        text: 'text-emerald-700',
-        dot: 'bg-emerald-500',
+        bg: '!bg-emerald-50',
+        text: '!text-emerald-700',
+        dot: '!bg-emerald-500',
       }
     if (status === 'Busy')
-      return { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' }
-    return { bg: 'bg-gray-100', text: 'text-gray-600', dot: 'bg-gray-400' }
+      return {
+        bg: '!bg-amber-50',
+        text: '!text-amber-700',
+        dot: '!bg-amber-500',
+      }
+    return { bg: '!bg-gray-100', text: '!text-gray-600', dot: '!bg-gray-400' }
   }
 
   const statusColors = getStatusColors(consultant.availability)
@@ -116,13 +120,13 @@ export function ConsultantCard({
           {consultant.skills.slice(0, 2).map((skill, index) => (
             <Badge
               key={index}
-              className="rounded-md border-none bg-[#63B7B7]/5 px-1.5 py-0.5 text-[10px] font-normal text-[#63B7B7]"
+              className="!rounded-md !border-none !bg-[#63B7B7]/5 !px-1.5 !py-0.5 !text-[10px] !font-normal !text-[#63B7B7]"
             >
               {skill}
             </Badge>
           ))}
           {consultant.skills.length > 2 && (
-            <Badge className="rounded-md border-none bg-gray-50 px-1.5 py-0.5 text-[10px] font-normal text-gray-600">
+            <Badge className="!rounded-md !border-none !bg-gray-50 !px-1.5 !py-0.5 !text-[10px] !font-normal !text-gray-600">
               +{consultant.skills.length - 2}
             </Badge>
           )}
@@ -149,7 +153,7 @@ export function ConsultantCard({
         <Button
           size="sm"
           onClick={handleHireClick}
-          className="mt-1 h-7 w-full bg-[#63B7B7] text-xs text-white hover:bg-[#63B7B7]/90"
+          className="mt-1 h-7 w-full !bg-[#63B7B7] !text-xs !text-white hover:!bg-[#63B7B7]/90"
         >
           Hire Consultant
         </Button>

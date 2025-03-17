@@ -4,9 +4,8 @@ import { Badge, Button, Tabs, TabsContent } from '@dallah/design-system'
 import { createdFromNow } from '@dallah/utils'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
-import { formatDate } from '@lib/utils/format-date'
+
 import {
-  BarChart,
   Briefcase,
   Calendar,
   Clock,
@@ -19,8 +18,12 @@ import { Link } from 'next-view-transitions'
 
 export function ProjectSharedDetails({
   project,
+  isCompany,
+  setShowEditModal,
 }: {
   project: GetProjectRes['data']
+  isCompany: boolean
+  setShowEditModal: (show: boolean) => void
 }) {
   const getStatusBadge = () => {
     switch (project.status) {
@@ -91,7 +94,7 @@ export function ProjectSharedDetails({
               ) : (
                 <div className="flex items-center">
                   <Calendar className="mr-1.5 h-3.5 w-3.5 text-[#1D8489]" />
-                  {project.meta.duration}
+                  {project.meta.timeline}
                 </div>
               )}
             </div>
@@ -122,15 +125,13 @@ export function ProjectSharedDetails({
                   </Link>
                 </Button>
               )}
-              {project.status === 'Open' && (
+              {project.status === 'Open' && isCompany && (
                 <Button
                   className="!bg-[#63B7B7] !text-sm font-normal hover:!bg-[#63B7B7]/90"
-                  asChild
+                  onClick={() => setShowEditModal(true)}
                 >
-                  <Link href={`/projects/${project.id}/edit`}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit Project
-                  </Link>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit Project
                 </Button>
               )}
             </div>

@@ -1,6 +1,8 @@
 import { ProProfile } from '@lib/atoms/pro/profile'
 import { axiosInstance } from '../instance'
 
+export type ProjectStatus = 'Open' | 'Closed' | 'InProgress' | 'Completed'
+
 export type GetAllCompanyProjectsRes = {
   statusCode: number
   success: boolean
@@ -16,10 +18,11 @@ export type GetAllCompanyProjectsRes = {
       deliverables: string
       meta: {
         budget: number
+        timeline: string
         duration: string
       }
       approved: boolean
-      status: string
+      status: ProjectStatus
       companyId: string
       assignedProfessionalId: any
       createdAt: string
@@ -113,13 +116,13 @@ export type GetProjectRes = {
     skills: Array<string>
     meta: {
       budget: number
-      duration: string
+      timeline: string
     }
     createdAt: string
     deliverables: string
     jobTitle: string
     scope: string
-    status: 'Open' | 'Closed' | 'InProgress' | 'Completed'
+    status: ProjectStatus
     _count: {
       proposals: number
     }
@@ -176,6 +179,7 @@ export interface Meta {
   budget: number
   // priority: string
   duration: string
+
   [property: string]: any
 }
 
@@ -234,6 +238,17 @@ export interface CreateProjectResponseMeta {
 export const createProject = async (data: CreateProjectReq) => {
   const res = await axiosInstance
     .post<CreateProjectRes>('/company/projects', data)
+    .then((res) => res.data.data)
+
+  return res
+}
+
+export const updateProject = async (
+  projectId: string,
+  data: CreateProjectReq,
+) => {
+  const res = await axiosInstance
+    .put<CreateProjectRes>(`/company/projects/${projectId}`, data)
     .then((res) => res.data.data)
 
   return res

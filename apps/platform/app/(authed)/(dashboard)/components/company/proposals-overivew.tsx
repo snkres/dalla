@@ -23,6 +23,7 @@ import {
 import { Input } from '@dallah/design-system'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ProposalsOverivewProps {
   projectTitle: string
@@ -212,7 +213,7 @@ const ProposalsOverivewModal = ({
 
                           <div className="flex flex-col items-end gap-1">
                             <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-sm font-semibold !text-[#63B7B7]">
-                              $ {proposal.price}
+                              {formatCurrency(proposal.price || 0)}
                             </Badge>
                             <div className="mt-0.5 flex items-center text-xs text-gray-500">
                               <Clock className="mr-1 h-3 w-3" />

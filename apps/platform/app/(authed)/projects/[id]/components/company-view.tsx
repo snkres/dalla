@@ -52,16 +52,16 @@ export function CompanyProjectView({
                   </div>
                   <h2 className="font-medium text-gray-900">Budget Overview</h2>
                 </div>
-
+                {/* 
                 <Button
                   variant="ghost"
                   size="sm"
                   className="h-8 px-2 text-xs text-[#1D8489] hover:bg-[#E0F2F2] hover:text-[#1D8489]/80"
-                  onClick={() => setActiveTab('budget')}
+
                 >
                   View Details
                   <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
-                </Button>
+                </Button> */}
               </div>
 
               <div className="p-5">
@@ -153,7 +153,8 @@ export function CompanyProjectView({
                 {project.status === 'InProgress' ? (
                   <ProfessionalProjectView project={project} />
                 ) : project.proposals && project.proposals.length > 0 ? (
-                  <ProjectProposals proposals={project.proposals} />
+                  // <ProjectProposals proposals={project.proposals} />
+                  <></>
                 ) : (
                   <div className="flex h-56 items-center justify-center p-5 text-sm text-gray-500">
                     No professional assigned yet

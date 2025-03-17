@@ -16,10 +16,22 @@ import {
   FileText,
   ExternalLink,
 } from 'lucide-react'
+import { useState } from 'react'
 import Image from 'next/image'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
+import { updateProposalStatus } from '@lib/api/company/proposals'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { Link } from 'next-view-transitions'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@dallah/design-system'
 
 interface ProposalDetailsProps {
   handleCloseProposal: () => void
@@ -32,9 +44,92 @@ const ProposalDetails = ({
   selectedProposal,
   proposals,
 }: ProposalDetailsProps) => {
+  const { toast } = useToast()
+  const queryClient = useQueryClient()
+  const [showHireDialog, setShowHireDialog] = useState(false)
+  const [showDeclineDialog, setShowDeclineDialog] = useState(false)
+
   const selectedProposalData = selectedProposal
     ? proposals.find((p) => p.id === selectedProposal)
     : null
+
+  const hireProposalMutation = useMutation({
+    mutationFn: () => {
+      if (!selectedProposal || !selectedProposalData?.projectId) {
+        throw new Error('Missing proposal or project ID')
+      }
+      return updateProposalStatus(
+        selectedProposalData.projectId,
+        selectedProposal,
+        'Accepted',
+      )
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Proposal accepted',
+        description: 'You have successfully hired this professional.',
+        variant: 'default',
+      })
+      queryClient.invalidateQueries({ queryKey: ['company', 'projects'] })
+      handleCloseProposal()
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error accepting proposal',
+        description:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const declineProposalMutation = useMutation({
+    mutationFn: () => {
+      if (!selectedProposal || !selectedProposalData?.projectId) {
+        throw new Error('Missing proposal or project ID')
+      }
+      return updateProposalStatus(
+        selectedProposalData.projectId,
+        selectedProposal,
+        'Rejected',
+      )
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Proposal declined',
+        description: 'You have declined this proposal.',
+        variant: 'default',
+      })
+      queryClient.invalidateQueries({ queryKey: ['company', 'projects'] })
+      handleCloseProposal()
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error declining proposal',
+        description:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const handleHire = () => {
+    setShowHireDialog(true)
+  }
+
+  const confirmHire = () => {
+    hireProposalMutation.mutate()
+    setShowHireDialog(false)
+  }
+
+  const handleDecline = () => {
+    setShowDeclineDialog(true)
+  }
+
+  const confirmDecline = () => {
+    declineProposalMutation.mutate()
+    setShowDeclineDialog(false)
+  }
 
   return (
     <motion.div
@@ -245,8 +340,15 @@ const ProposalDetails = ({
             </div>
 
             <div className="border-b border-gray-200 p-4">
-              <Button className="mb-2 h-9 w-full !bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90">
-                Hire
+              <Button
+                className="mb-2 h-9 w-full !bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90"
+                onClick={handleHire}
+                disabled={
+                  hireProposalMutation.isPending ||
+                  declineProposalMutation.isPending
+                }
+              >
+                {hireProposalMutation.isPending ? 'Processing...' : 'Hire'}
               </Button>
 
               <Button
@@ -261,9 +363,16 @@ const ProposalDetails = ({
                 <Button
                   variant="ghost"
                   className="h-9 flex-1 text-gray-700 hover:bg-gray-100"
+                  onClick={handleDecline}
+                  disabled={
+                    hireProposalMutation.isPending ||
+                    declineProposalMutation.isPending
+                  }
                 >
                   <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
-                  Decline
+                  {declineProposalMutation.isPending
+                    ? 'Processing...'
+                    : 'Decline'}
                 </Button>
               </div>
             </div>
@@ -294,6 +403,69 @@ const ProposalDetails = ({
           </div>
         </div>
       </div>
+
+      {/* Hire Confirmation Dialog */}
+      <Dialog open={showHireDialog} onOpenChange={setShowHireDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Hiring</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to hire{' '}
+              {selectedProposalData?.professional.name}? This will accept their
+              proposal and notify them to begin the project.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowHireDialog(false)}
+              disabled={hireProposalMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={confirmHire}
+              disabled={hireProposalMutation.isPending}
+            >
+              {hireProposalMutation.isPending
+                ? 'Processing...'
+                : 'Confirm Hire'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Decline Confirmation Dialog */}
+      <Dialog open={showDeclineDialog} onOpenChange={setShowDeclineDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Decline</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to decline this proposal from{' '}
+              {selectedProposalData?.professional.name}? This action cannot be
+              undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeclineDialog(false)}
+              disabled={declineProposalMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDecline}
+              disabled={declineProposalMutation.isPending}
+            >
+              {declineProposalMutation.isPending
+                ? 'Processing...'
+                : 'Confirm Decline'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }

@@ -4,13 +4,14 @@ import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Edit } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
 import { ProfessionalProjectView } from './components/professional-view'
 import { getProject } from '@lib/api/company/projects'
-import { Tabs, TabsList, TabsTrigger } from '@dallah/design-system'
+import { Tabs, TabsList, TabsTrigger, Button } from '@dallah/design-system'
 import { useState } from 'react'
+import { EditProject } from './components/edit-project'
 
 const companyTabs = ['overview', 'milestones', 'team', 'files', 'budget']
 const professionalTabs = ['overview', 'milestones', 'team', 'files', 'budget']
@@ -20,11 +21,12 @@ export function ProjectPageClient({ id }: { id: string }) {
   const router = useRouter()
   const [activeTab, setActiveTab] =
     useState<(typeof companyTabs)[number]>('overview')
+  const [showEditModal, setShowEditModal] = useState(false)
   const isCompany = global.mode === 'company'
   const isProfessional = global.mode === 'user'
 
   // Fetch project data using the appropriate API based on user role
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
       return getProject(id)
@@ -70,7 +72,11 @@ export function ProjectPageClient({ id }: { id: string }) {
           ← Back
         </button>
         <div className="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <ProjectSharedDetails project={data} />
+          <ProjectSharedDetails
+            project={data}
+            isCompany={isCompany}
+            setShowEditModal={setShowEditModal}
+          />
           <div className="w-full border-t border-gray-200">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="h-12 w-full !justify-start rounded-none border-b border-gray-200 bg-transparent p-0">
@@ -112,6 +118,17 @@ export function ProjectPageClient({ id }: { id: string }) {
           />
         )} */}
       </div>
+
+      {showEditModal && (
+        <EditProject
+          project={data}
+          onClose={() => setShowEditModal(false)}
+          onProjectUpdated={() => {
+            refetch()
+            setShowEditModal(false)
+          }}
+        />
+      )}
     </div>
   )
 }

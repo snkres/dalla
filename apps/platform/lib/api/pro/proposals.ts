@@ -61,8 +61,6 @@ interface Project {
 
 interface Meta {
   budget: number
-  duration: string
-  priority: string
   timeline: string
   [property: string]: any
 }

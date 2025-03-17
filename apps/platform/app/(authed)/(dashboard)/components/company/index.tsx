@@ -18,7 +18,7 @@ import { Button, Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { Consultant } from '@lib/types/company'
 import { consultants } from '@lib/data/consultants'
-import { ProjectOverview } from './projects-overview'
+import { ProjectsOverview } from './projects-overview'
 
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'
@@ -134,7 +134,7 @@ export default function CompanyHome() {
       <div className="mx-auto max-w-[1200px] px-4 py-6 lg:max-w-[1350px]">
         <div className="flex flex-col gap-6 lg:flex-row">
           <div className="flex-1">
-            <ProjectOverview
+            <ProjectsOverview
               onPostJob={() => setShowAddProject(true)}
               projects={data?.[0] || []}
               onHireConsultant={() => {
@@ -153,11 +153,11 @@ export default function CompanyHome() {
                   </p>
                 </div>
                 <Button
-                  className="h-9 bg-[#63B7B7] text-sm hover:bg-[#63B7B7]/90"
+                  className="h-9 !bg-[#63B7B7] !text-sm hover:!bg-[#63B7B7]/90"
                   onClick={() => setShowAddProject(true)}
                 >
                   <Users className="mr-1.5 h-4 w-4" />
-                  Post a Job
+                  Start a Project
                 </Button>
               </div>
               <div className="relative">
@@ -178,8 +178,8 @@ export default function CompanyHome() {
                     className={cn(
                       'mx-1 my-1 h-8 rounded-md px-3 text-xs',
                       showFilterPanel
-                        ? 'bg-[#63B7B7]/10 text-[#63B7B7]'
-                        : 'bg-gray-50 text-gray-600',
+                        ? '!bg-[#63B7B7]/10 !text-[#63B7B7]'
+                        : '!bg-gray-50 !text-gray-600',
                     )}
                     onClick={() => setShowFilterPanel(!showFilterPanel)}
                   >
@@ -280,7 +280,7 @@ export default function CompanyHome() {
             />
           </>
         )}
-        {(showConsultantDetail || showAddProject) && (
+        {showConsultantDetail && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
