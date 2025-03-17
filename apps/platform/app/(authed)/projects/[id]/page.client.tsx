@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
 import { ProfessionalProjectView } from './components/professional-view'
+import { getProject } from '@lib/api/company/projects'
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -19,18 +20,11 @@ export function ProjectPageClient({ id }: { id: string }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
-      // Different endpoints for different roles
-      const endpoint = isCompany
-        ? `/api/company/projects/${id}`
-        : `/api/projects/${id}`
-
-      const response = await fetch(endpoint)
-      if (!response.ok) {
-        throw new Error('Failed to fetch project')
-      }
-      return response.json()
+      return getProject(id)
     },
   })
+
+  console.log(data)
 
   if (isLoading) {
     return (

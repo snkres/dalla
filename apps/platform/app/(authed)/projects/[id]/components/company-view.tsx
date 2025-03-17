@@ -87,8 +87,8 @@ export function CompanyProjectView({ project }: { project: any }) {
             onClick={() => setActiveTab('proposals')}
             className={`border-b-2 px-1 py-4 text-sm font-medium ${
               activeTab === 'proposals'
-                ? 'border-[#63B7B7] text-[#63B7B7]'
-                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                ? '!border-[#63B7B7] !text-[#63B7B7]'
+                : '!border-transparent !text-gray-500 hover:!border-gray-300 hover:!text-gray-700'
             }`}
           >
             Proposals ({project.proposals?.length || 0})
@@ -98,8 +98,8 @@ export function CompanyProjectView({ project }: { project: any }) {
               onClick={() => setActiveTab('progress')}
               className={`border-b-2 px-1 py-4 text-sm font-medium ${
                 activeTab === 'progress'
-                  ? 'border-[#63B7B7] text-[#63B7B7]'
-                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  ? '!border-[#63B7B7] !text-[#63B7B7]'
+                  : '!border-transparent !text-gray-500 hover:!border-gray-300 hover:!text-gray-700'
               }`}
             >
               Project Progress
@@ -118,7 +118,7 @@ export function CompanyProjectView({ project }: { project: any }) {
                   key={proposal.id}
                   className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
                 >
-                  <div className="flex items-start gap-4">
+                  {/* <div className="flex items-start gap-4">
                     <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
                       <Image
                         src={
@@ -172,7 +172,7 @@ export function CompanyProjectView({ project }: { project: any }) {
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               ))
             ) : (

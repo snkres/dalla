@@ -97,6 +97,40 @@ export const getAllProjects = async (page: number, limit: number) => {
   return res
 }
 
+export interface GetProjectRes {
+  data: {
+    id: string
+    title: string
+    description: string
+    deliverables: string
+    scope: string
+    jobTitle: string
+    skills: string[]
+    meta: Meta
+    status: string
+    approved: boolean
+    companyId: string
+    assignedProfessionalId: string | null
+    createdAt: string
+    updatedAt: string
+  }
+
+  success: boolean
+  statusCode: number
+  message: string
+  error: any
+  path: string
+  timestamp: string
+}
+
+export const getProject = async (id: string) => {
+  const res = await axiosInstance
+    .get<GetProjectRes>(`/company/projects/${id}`)
+    .then((res) => res.data.data)
+
+  return res
+}
+
 export interface CreateProjectReq {
   deliverables: string
   description: string
@@ -162,10 +196,8 @@ export interface CreateProjectDataMeta {
 export interface CreateProjectResponseMeta {
   budget: string
   priority: string
-  /**
-   * Open | Closed | InProgress | Completed
-   */
-  status: string
+
+  status: 'Open' | 'Closed' | 'InProgress' | 'Completed'
   timeline: string
   [property: string]: any
 }
