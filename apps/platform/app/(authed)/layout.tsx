@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
-import localForage from 'localforage'
+import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
@@ -18,6 +18,46 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [_, setProProfile] = useAtom(proProfileAtom)
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
   const [isLoading, setIsLoading] = useState(true)
+  const [isDbReady, setIsDbReady] = useState(false)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const initializeApp = async () => {
+      try {
+        await getDbReadyPromise()
+
+        if (isMounted) {
+          setIsDbReady(true)
+
+          console.log('Auth state after DB ready:', {
+            mode: global.mode,
+            id: global.id,
+            email: global.email,
+          })
+        }
+      } catch (err) {
+        console.error('Error initializing app:', err)
+      }
+    }
+
+    initializeApp()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isDbReady) return
+
+    if (!global.mode) {
+      console.log('No auth mode detected, redirecting to login')
+      router.push('/login')
+    } else {
+      console.log('Auth mode detected:', global.mode)
+    }
+  }, [isDbReady, global.mode, router])
 
   const { data, isFetched, isError, error } = useQuery({
     queryKey: ['profile', global.mode],
@@ -37,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         throw err
       }
     },
-    enabled: Boolean(global.mode),
+    enabled: Boolean(global.mode) && isDbReady,
     retry: 1,
   })
 
@@ -101,7 +141,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [data, isFetched, isError, global.mode])
 
-  if (isLoading && Boolean(global.mode)) {
+  // Show loading state either when waiting for DB or profile data
+  if ((isLoading && Boolean(global.mode)) || !isDbReady) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center space-y-4">

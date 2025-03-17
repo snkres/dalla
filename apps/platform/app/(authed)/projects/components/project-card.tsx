@@ -53,22 +53,22 @@ export function ProjectCard({
     isCompany && project.proposals && project.proposals.length > 0
 
   const getStatusBadge = () => {
-    if (project.status === 'completed') {
+    if (project.status === 'Completed') {
       return (
         <Badge className="!rounded-md !bg-green-50 !px-2 !py-0.5 !text-xs !font-normal !text-green-700">
           Completed
         </Badge>
       )
-    } else if (project.status === 'ongoing') {
+    } else if (project.status === 'InProgress') {
       return (
         <Badge className="!rounded-md !bg-blue-50 !px-2 !py-0.5 !text-xs !font-normal !text-blue-700">
-          Ongoing
+          In Progress
         </Badge>
       )
     } else if (project.approved) {
       return (
         <Badge className="!rounded-md !bg-[#edecea]/30 !px-2 !py-0.5 !text-xs !font-normal !text-[#234d64]/80">
-          Active
+          Open
         </Badge>
       )
     } else {

@@ -27,9 +27,14 @@ import { getAllProjects } from '@lib/api/company/projects'
 import { useQueryClient } from '@tanstack/react-query'
 import { ConsultantCard } from 'app/(authed)/(company-only)/project/components/consultant-card'
 import { ConsultantDetail } from 'app/(authed)/(company-only)/project/components/consultant-detail'
+import { parseAsBoolean, useQueryState } from 'nuqs'
 
 const LIMIT = 10
 export default function CompanyHome() {
+  const [showAddProject, setShowAddProject] = useQueryState(
+    'startProject',
+    parseAsBoolean,
+  )
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilterPanel, setShowFilterPanel] = useState(false)
   const [filteredConsultants, setFilteredConsultants] =
@@ -38,7 +43,6 @@ export default function CompanyHome() {
     useState<Consultant | null>(null)
   const [showConsultantDetail, setShowConsultantDetail] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
-  const [showAddProject, setShowAddProject] = useState(false)
   const [page, setPage] = useState(1)
 
   const { data } = useQuery({
@@ -232,7 +236,8 @@ export default function CompanyHome() {
               </div>
             )}
 
-            {filteredConsultants.length > 0 ? (
+            {process.env.NODE_ENV === 'development' &&
+            filteredConsultants.length > 0 ? (
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {filteredConsultants.map((consultant) => (
                   <ConsultantCard

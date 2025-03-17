@@ -20,8 +20,8 @@ export function Sidebar() {
   const quickLinks = [
     {
       icon: <FileText />,
-      label: 'Create a Project',
-      href: '#/post-job',
+      label: 'Start a Project',
+      href: '/?startProject=true',
       highlight: true,
     },
     { icon: <Bell />, label: 'Notifications', href: '#/notifications' },
@@ -35,7 +35,7 @@ export function Sidebar() {
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3 h-20 w-20 rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white ring-offset-1">
               <Image
-                src={profile?.CompanyProfile?.logo || '/logo.svg'}
+                src={profile?.data?.CompanyProfile?.logo || '/logo.svg'}
                 alt="Company"
                 width={80}
                 height={80}
@@ -64,7 +64,7 @@ export function Sidebar() {
             className="h-9 w-full !bg-[#63B7B7] text-sm font-normal transition-colors duration-200 hover:!bg-[#63B7B7]/90"
             asChild
           >
-            <Link href={`/companies/${profile?.name}`}>Company Profile</Link>
+            <Link href={`/companies/${profile?.data?.id}`}>View Profile</Link>
           </Button>
         </div>
       </div>
@@ -116,7 +116,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+      {/* <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
           <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
             {React.isValidElement(<Star />) ? (
@@ -171,7 +171,7 @@ export function Sidebar() {
             View All Recommendations
           </Button>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
