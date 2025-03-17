@@ -5,6 +5,7 @@ import { useAtom } from 'jotai'
 import { proProfileAtom } from '@lib/atoms/pro/profile'
 import {
   createShowCaseProject,
+  getProProfile,
   updateProProfile,
   updateShowCaseProject,
 } from '@lib/api/pro/profile'
@@ -20,29 +21,46 @@ import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
   const isOwner = global.username === username
-  const [profile, setProfile] = useAtom(proProfileAtom)
+  const { data: proProfile, isLoading } = useQuery({
+    queryKey: ['pro-profile', username],
+    queryFn: () => getProProfile(username),
+    enabled: !isOwner,
+  })
+  const [ownProfile, setOwnProfile] = useAtom(proProfileAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
   })
 
+  const profile = isOwner ? ownProfile : proProfile?.data
+
+  useEffect(() => {
+    if (isOwner && proProfile && !ownProfile) {
+      setOwnProfile(proProfile.data)
+    }
+  }, [isOwner, proProfile, ownProfile, setOwnProfile])
+
   const handleProfileUpdate = async (
     updateData: any,
     successMessage = 'Profile updated successfully',
   ) => {
+    if (!isOwner) return
+
     try {
       console.log('updateData', updateData)
       await updateProProfile({
         ...updateData,
-        education: profile?.data?.education?.map(
+        education: ownProfile?.data?.education?.map(
           ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
         ),
-        experience: profile?.data?.experience?.map(
+        experience: ownProfile?.data?.experience?.map(
           ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
             ...exp,
             meta: {
@@ -53,10 +71,10 @@ export function ProProfileClient({ username }: { username: string }) {
         ),
       })
 
-      setProfile({
-        ...profile,
+      setOwnProfile({
+        ...ownProfile,
         data: {
-          ...profile.data,
+          ...ownProfile.data,
           ...updateData,
         },
       })
@@ -75,6 +93,7 @@ export function ProProfileClient({ username }: { username: string }) {
     }
   }
 
+  if (isLoading) return <div>Loading profile...</div>
   if (!profile) return null
 
   return (
@@ -253,10 +272,10 @@ export function ProProfileClient({ username }: { username: string }) {
                   }
                 }
 
-                setProfile({
-                  ...profile,
+                setOwnProfile({
+                  ...ownProfile,
                   data: {
-                    ...profile.data,
+                    ...ownProfile.data,
                     projects: finalProjects,
                   },
                 })
@@ -279,10 +298,10 @@ export function ProProfileClient({ username }: { username: string }) {
           <ExperienceSection
             experiences={profile?.data?.experience || []}
             onUpdate={(updatedExperiences) => {
-              setProfile({
-                ...profile,
+              setOwnProfile({
+                ...ownProfile,
                 data: {
-                  ...profile.data,
+                  ...ownProfile.data,
                   experience: updatedExperiences,
                 },
               })
@@ -298,9 +317,14 @@ export function ProProfileClient({ username }: { username: string }) {
                   }: {
                     id: string
                     profileId: string
-                    createdAt: Date
-                    updatedAt: Date
-                    meta: { skills: any }
+                    createdAt: string
+                    updatedAt: string
+                    meta: { skills: any[] }
+                    title: string
+                    company: string
+                    location: string
+                    startDate: string
+                    endDate: string
                     [key: string]: any
                   }) => ({
                     ...exp,
@@ -320,10 +344,10 @@ export function ProProfileClient({ username }: { username: string }) {
             onUpdateEducation={(updatedEducation) => {
               if (!profile) return
 
-              setProfile({
-                ...profile,
+              setOwnProfile({
+                ...ownProfile,
                 data: {
-                  ...profile.data,
+                  ...ownProfile.data,
                   education: updatedEducation,
                 },
               })

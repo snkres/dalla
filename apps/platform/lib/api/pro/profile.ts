@@ -8,9 +8,12 @@ export async function getOwnProProfile() {
 }
 
 export async function getProProfile(username: string) {
-  let res = await axiosInstance.get<ProProfile>(
-    `/company/professional/${username}`,
-  )
+  let res = await axiosInstance
+    .get<ProProfile>(`/company/professional/${username}`)
+    .then((res) => res)
+    .catch((err) => {
+      throw err
+    })
 
   return res
 }
