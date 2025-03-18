@@ -39,7 +39,6 @@ export function ProProfileClient({ username }: { username: string }) {
     queryFn: () => getOwnProProfile(),
     enabled: isOwner,
   })
-  const [meta, setMeta] = useAtom(proMetaAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
@@ -104,6 +103,11 @@ export function ProProfileClient({ username }: { username: string }) {
 
     const formattedData = {
       ...updateData,
+      meta: {
+        ...ownProfile?.data?.data.meta,
+        ...updateData.meta,
+        weeklyAvailability: String(updateData.meta.weeklyAvailability),
+      },
       education: ownProfile?.data?.data.education?.map(
         ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
       ),
