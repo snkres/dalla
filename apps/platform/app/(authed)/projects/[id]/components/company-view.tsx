@@ -21,6 +21,7 @@ import {
   DollarSign,
   BarChart,
   ChevronRight,
+  Star,
   MessageSquare,
   Clock,
   Loader2,
@@ -28,7 +29,6 @@ import {
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { ProfessionalProjectView } from './professional-view'
-import { ProjectProposals } from './project-proposals'
 
 export function CompanyProjectView({
   project,
@@ -104,9 +104,7 @@ export function CompanyProjectView({
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between text-xs">
                     <span className="text-gray-500">Budget Usage</span>
-                    <span>
-                      {project.status === 'Open' ? 30 : project.meta.budget}%
-                    </span>
+                    <span>{project.status === 'Open' ? 30 : 100}%</span>
                   </div>
                   <Progress
                     value={project.status === 'Open' ? 30 : 100}
@@ -151,7 +149,7 @@ export function CompanyProjectView({
 
               <ScrollArea className="h-56">
                 {project.status === 'InProgress' ? (
-                  <ProfessionalProjectView project={project} />
+                  <ProjectAssignedProfessional project={project} />
                 ) : project.proposals && project.proposals.length > 0 ? (
                   // <ProjectProposals proposals={project.proposals} />
                   <></>
@@ -162,7 +160,8 @@ export function CompanyProjectView({
                 )}
               </ScrollArea>
             </div>
-            {project.status === 'InProgress' ? (
+            {project.status === 'InProgress' &&
+            process.env.NODE_ENV === 'development' ? (
               <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                 <div className="flex items-center justify-between border-b border-gray-200 p-5">
                   <div className="flex items-center gap-3">
@@ -218,87 +217,7 @@ export function CompanyProjectView({
           </div>
         </div>
       </TabsContent>
-
-      <TabsContent value="milestones" className="m-0 p-0 outline-none">
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-gray-200 p-5">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
-                <CheckCircle className="h-4 w-4 text-[#1D8489]" />
-              </div>
-              <h2 className="font-medium text-gray-900">Project Milestones</h2>
-            </div>
-
-            <Button className="h-9 gap-1.5 bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]">
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
-              Add Milestone
-            </Button>
-          </div>
-
-          <div className="p-0">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Milestone
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Due Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Progress
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200 bg-white">
-                {/* {project.milestones.map((milestone) => (
-                  <tr key={milestone.id} className="hover:bg-gray-50">
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                      {milestone.title}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      {milestone.dueDate}
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <StatusBadge status={milestone.status} />
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <div className="w-32">
-                        <Progress value={milestone.progress} height="h-1.5" />
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-[#1D8489] hover:bg-[#E0F2F2]"
-                        >
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))} */}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </TabsContent>
-      <TabsContent value="team" className="m-0 p-0 outline-none">
+      <TabsContent value="professional" className="m-0 p-0 outline-none">
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-200 p-5">
             <div className="flex items-center gap-3">
@@ -524,5 +443,95 @@ export function CompanyProjectView({
         </div>
       </TabsContent> */}
     </Tabs>
+  )
+}
+
+function ProjectAssignedProfessional({
+  project,
+}: {
+  project: GetProjectRes['data']
+}) {
+  const assignedProposal = project.proposals?.find(
+    (proposal) => proposal.professionalId === project?.professional?.id,
+  )
+
+  const professional = assignedProposal?.professional
+
+  if (!professional) {
+    return (
+      <div className="flex h-56 items-center justify-center p-5 text-sm text-gray-500">
+        No professional information available
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-5">
+      <div className="flex items-start gap-4">
+        <Avatar className="h-14 w-14 border border-gray-200">
+          <AvatarImage
+            src={professional.UserProfile?.avatar}
+            alt={professional.name}
+          />
+          <AvatarFallback>{professional.name?.charAt(0)}</AvatarFallback>
+        </Avatar>
+
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <div className="text-base font-medium text-gray-900">
+              {professional.name}
+            </div>
+            {professional.UserProfile?.meta?.rating && (
+              <div className="flex items-center gap-1 rounded border border-amber-100 bg-amber-50 px-1.5 py-0.5">
+                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                <span className="text-xs font-medium text-amber-700">
+                  {professional.UserProfile.meta.rating}
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-0.5 text-sm text-gray-500">
+            {professional.UserProfile?.headline}
+          </div>
+
+          <div className="mt-3 flex gap-2">
+            <Button
+              size="sm"
+              className="h-8 bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]"
+            >
+              <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
+              Message
+            </Button>
+
+            <Button variant="outline" size="sm" className="h-8 text-xs">
+              View Profile
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {assignedProposal && (
+        <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <div className="mb-2 text-xs font-medium text-gray-500">
+            Proposal Details
+          </div>
+          <div className="flex justify-between text-sm">
+            <div>
+              Bid Amount:{' '}
+              <span className="font-medium">
+                {formatCurrency(assignedProposal.price)}
+              </span>
+            </div>
+            <div>
+              Timeline:{' '}
+              <span className="font-medium">
+                {assignedProposal.timeline} days
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

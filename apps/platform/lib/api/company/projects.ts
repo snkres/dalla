@@ -163,6 +163,19 @@ export type GetProjectRes = {
         }
       }
     }>
+    professional: {
+      id: string
+      name: string
+      username: string
+      email: string
+      domain: any
+      password: string
+      UserProfile: {
+        avatar: string
+        headline: string
+        meta: ProProfile['data']['meta']
+      }
+    }
   }
   error: any
   path: string
