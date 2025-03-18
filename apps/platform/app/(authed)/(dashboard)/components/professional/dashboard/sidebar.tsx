@@ -149,12 +149,12 @@ export function ProfileSidebar() {
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600">Profile Completion</span>
               <span className="font-medium text-[#63B7B7]">
-                {profile?.data?.UserProfile?.precentage}%
+                {profile?.data?.UserProfile?.percentage}%
               </span>
             </div>
             <div className="w-full">
               <Progress
-                value={profile?.data?.UserProfile?.precentage}
+                value={profile?.data?.UserProfile?.percentage}
                 className="h-1.5 !bg-gray-100"
                 indicatorClassName="!bg-[#63B7B7]"
               />
