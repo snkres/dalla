@@ -11,6 +11,9 @@ import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
+import { fadeInVariants } from '@components/aniamtion/animate'
+import { motion } from 'motion/react'
+import { LogomarkFilled } from '@dallah/design-system'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
@@ -145,14 +148,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [data, isFetched, isError, global.mode])
 
-  // Show loading state either when waiting for DB or profile data
   if ((isLoading && Boolean(global.mode)) || !isDbReady) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-4 border-gray-200 border-t-[#63B7B7]"></div>
-          <p className="text-lg text-gray-600">Loading your dashboard...</p>
-        </div>
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-50">
+        <motion.div
+          variants={fadeInVariants}
+          initial="initial"
+          animate="animate"
+          className="flex flex-col items-center justify-center gap-8"
+        >
+          <div className="relative">
+            <LogomarkFilled className="h-24 w-24" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="h-16 w-16 animate-ping rounded-full bg-white opacity-75"></div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-2xl font-semibold text-[#234d64]">Loading</h1>
+            <p className="text-sm text-gray-500">
+              Please wait while we prepare your dashboard
+            </p>
+            <div className="mt-4 h-1.5 w-48 overflow-hidden rounded-full bg-gray-100">
+              <motion.div
+                className="h-full bg-[#63B7B7]"
+                initial={{ width: '0%' }}
+                animate={{
+                  width: '100%',
+                  transition: { duration: 2, repeat: Infinity },
+                }}
+              />
+            </div>
+          </div>
+        </motion.div>
       </div>
     )
   }
