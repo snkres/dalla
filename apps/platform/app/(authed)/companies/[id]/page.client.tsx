@@ -16,10 +16,10 @@ import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
 
-export function CompanyProfileClient({ name }: { name: string }) {
+export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
-  const isOwner = global.name?.replace(/\s+/g, '') === name?.replace(/\s+/g, '')
-
+  const isOwner = global.id === id
+  console.log(id, global.id)
   const [profile, setProfile] = useAtom(companyProfileAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
@@ -28,7 +28,7 @@ export function CompanyProfileClient({ name }: { name: string }) {
   })
 
   const handleProfileUpdate = async (
-    updateData: Partial<CompanyProfile['CompanyProfile']>,
+    updateData: Partial<CompanyProfile['data']['CompanyProfile']>,
     successMessage = 'Profile updated successfully',
   ) => {
     try {
@@ -47,7 +47,7 @@ export function CompanyProfileClient({ name }: { name: string }) {
 
       if (Object.keys(metaUpdates).length > 0) {
         apiPayload.meta = {
-          ...(profile?.CompanyProfile?.meta || {}),
+          ...(profile?.data?.CompanyProfile?.meta || {}),
           ...metaUpdates,
         }
       }
@@ -56,12 +56,15 @@ export function CompanyProfileClient({ name }: { name: string }) {
 
       setProfile({
         ...profile,
-        CompanyProfile: {
-          ...profile.CompanyProfile,
-          ...directFields,
-          meta: {
-            ...(profile?.CompanyProfile?.meta || {}),
-            ...metaUpdates,
+        data: {
+          ...profile.data,
+          CompanyProfile: {
+            ...profile.data.CompanyProfile,
+            ...directFields,
+            meta: {
+              ...(profile?.data?.CompanyProfile?.meta || {}),
+              ...metaUpdates,
+            },
           },
         },
       })
@@ -88,15 +91,15 @@ export function CompanyProfileClient({ name }: { name: string }) {
         <aside className="space-y-6 self-start lg:sticky lg:top-6 lg:col-span-1">
           <CompanyCard
             data={{
-              industry: profile?.CompanyProfile?.meta?.industry,
-              verified: profile?.verified,
-              logo: profile?.CompanyProfile?.logo,
-              name: profile?.name,
-              size: profile?.CompanyProfile?.meta?.size,
-              location: profile?.CompanyProfile?.location,
-              website: profile?.CompanyProfile?.website,
-              rating: profile?.CompanyProfile?.meta?.rating,
-              joinedAt: new Date(profile.createdAt).toLocaleDateString(),
+              industry: profile?.data.CompanyProfile.meta?.industry,
+              verified: profile?.data.verified,
+              logo: profile?.data.CompanyProfile.logo,
+              name: profile?.data.name,
+              size: profile?.data.CompanyProfile.meta?.size,
+              location: profile?.data.CompanyProfile.location,
+              website: profile?.data.CompanyProfile.website,
+              rating: 5,
+              joinedAt: new Date(profile.data.createdAt).toLocaleDateString(),
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
@@ -105,10 +108,10 @@ export function CompanyProfileClient({ name }: { name: string }) {
           />
           <ContactInfoCard
             data={{
-              email: profile?.email,
-              website: profile?.CompanyProfile?.website,
-              location: profile?.CompanyProfile?.location,
-              socialLinks: profile?.CompanyProfile?.meta?.socialLinks,
+              email: profile?.data.email,
+              website: profile?.data.CompanyProfile.website,
+              location: profile?.data.CompanyProfile.location,
+              socialLinks: profile?.data.CompanyProfile.meta?.socialLinks,
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
@@ -118,36 +121,57 @@ export function CompanyProfileClient({ name }: { name: string }) {
         <main className="space-y-6 lg:col-span-2">
           <AboutSection
             data={{
-              name: profile?.name,
-              size: profile?.CompanyProfile?.meta?.size,
-              industry: profile?.CompanyProfile?.meta?.industry,
-              headline: profile?.CompanyProfile?.headline,
-              bio: profile?.CompanyProfile?.bio,
-              areas: profile?.CompanyProfile?.areas || [],
+              name: profile?.data.name,
+              size: profile?.data.CompanyProfile.meta?.size,
+              industry: profile?.data.CompanyProfile.meta?.industry,
+              headline: profile?.data.CompanyProfile.headline,
+              bio: profile?.data.CompanyProfile.bio,
+              areas: profile?.data.CompanyProfile.areas || [],
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
-            onUpdate={handleProfileUpdate}
+            onUpdate={(data) => {
+              handleProfileUpdate({
+                // ...profile?.data.CompanyProfile,
+                headline: data.headline,
+                bio: data.bio,
+                areas: data.areas,
+              })
+            }}
           />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <AreasSection
-              areas={profile?.CompanyProfile?.areas || []}
+              areas={profile?.data.CompanyProfile.areas || []}
               isPublicView={isPublicView}
               isOwner={isOwner}
-              onUpdate={handleProfileUpdate}
+              onUpdate={(data) => {
+                handleProfileUpdate({
+                  // ...profile?.data.CompanyProfile,
+                  areas: data.areas,
+                })
+              }}
             />
             <TargetIndustriesSection
-              industries={profile?.CompanyProfile?.targetIndustries || []}
+              industries={profile?.data.CompanyProfile.targetIndustries || []}
               isPublicView={isPublicView}
               isOwner={isOwner}
-              onUpdate={handleProfileUpdate}
+              onUpdate={(data) => {
+                handleProfileUpdate({
+                  // ...profile?.data.CompanyProfile,
+                  targetIndustries: data.targetIndustries,
+                })
+              }}
             />
           </div>
           <GoalsSection
-            goals={profile?.CompanyProfile?.goals || []}
+            goals={profile?.data.CompanyProfile.goals || []}
             isPublicView={isPublicView}
             isOwner={isOwner}
-            onUpdate={handleProfileUpdate}
+            onUpdate={(data) => {
+              handleProfileUpdate({
+                goals: data.goals,
+              })
+            }}
           />
         </main>
       </div>

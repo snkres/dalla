@@ -39,17 +39,17 @@ axiosInstance.interceptors.request.use(
   },
 )
 
-axiosInstance.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  async (error) => {
-    if (error.response?.status === 401) {
-      await handleAuthFailure()
+// axiosInstance.interceptors.response.use(
+//   (response) => {
+//     return response
+//   },
+//   async (error) => {
+//     if (error.response?.status === 401) {
+//       await handleAuthFailure()
 
-      return Promise.reject(new Error('Authentication failed'))
-    }
+//       return Promise.reject(new Error('Authentication failed'))
+//     }
 
-    return Promise.reject(error)
-  },
-)
+//     return Promise.reject(error)
+//   },
+// )

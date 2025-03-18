@@ -4,10 +4,20 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Provider } from 'jotai'
-
-const queryClient = new QueryClient()
+import { useAtom } from 'jotai'
+import { globalAtom } from '@lib/atoms/global'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+  const [global] = useAtom(globalAtom)
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        enabled: Boolean(global.mode),
+      },
+    },
+  })
+
   return (
     <Provider>
       <QueryClientProvider client={queryClient}>

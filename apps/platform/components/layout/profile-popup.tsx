@@ -40,7 +40,7 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
         icon: User,
         label: 'View Profile',
         href: `/${global.mode === 'user' ? 'professionals' : 'companies'}/${
-          global.mode === 'user' ? global.username : global.name
+          global.mode === 'user' ? global.username : global.id
         }`,
       },
       { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },

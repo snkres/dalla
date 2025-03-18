@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
-import localForage from 'localforage'
+import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
@@ -18,9 +18,49 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [_, setProProfile] = useAtom(proProfileAtom)
   const [__, setCompanyProfile] = useAtom(companyProfileAtom)
   const [isLoading, setIsLoading] = useState(true)
+  const [isDbReady, setIsDbReady] = useState(false)
+
+  useEffect(() => {
+    let isMounted = true
+
+    const initializeApp = async () => {
+      try {
+        await getDbReadyPromise()
+
+        if (isMounted) {
+          setIsDbReady(true)
+
+          console.log('Auth state after DB ready:', {
+            mode: global.mode,
+            id: global.id,
+            email: global.email,
+          })
+        }
+      } catch (err) {
+        console.error('Error initializing app:', err)
+      }
+    }
+
+    initializeApp()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isDbReady) return
+
+    if (!global.mode) {
+      console.log('No auth mode detected, redirecting to login')
+      router.push('/login')
+    } else {
+      console.log('Auth mode detected:', global.mode)
+    }
+  }, [isDbReady, global.mode, router])
 
   const { data, isFetched, isError, error } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', global.mode],
     staleTime: Infinity,
     queryFn: async () => {
       try {
@@ -37,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         throw err
       }
     },
-    enabled: Boolean(global.mode),
+    enabled: Boolean(global.mode) && isDbReady,
     retry: 1,
   })
 
@@ -62,30 +102,37 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       if (global.mode === 'user') {
         setGlobal({
           ...global,
+          id: (data as ProProfile).data.User.id,
           email: (data as ProProfile).data.User.email,
           username: (data as ProProfile).data.User.username,
           name: (data as ProProfile).data.User.name,
           mode: 'user',
         })
         setProProfile(data as ProProfile)
-        // if (!(data as ProProfile).data.onboarded) {
-        //   router.push('/onboard')
-        // }
+        if (!(data as ProProfile).data.User.onboarded) {
+          router.push('/onboard')
+        }
       } else {
-        // setGlobal({
-        //   ...global,
-        //   email: (data as CompanyProfile).email,
-        //   username: '',
-        //   name: (data as CompanyProfile).name,
-        //   mode: 'company',
-        // })
-        // setCompanyProfile(data as CompanyProfile)
-        // if (
-        //   !(data as CompanyProfile).onboarded &&
-        //   process.env.NODE_ENV === 'production'
-        // ) {
-        //   router.push('/onboard')
-        // }
+        const companyData = data as CompanyProfile
+
+        setGlobal({
+          ...global,
+          id: companyData.data?.id || '',
+          email: companyData.data?.email || '',
+          username: '',
+          name: companyData.data?.name || 'Company',
+          mode: 'company',
+        })
+
+        setCompanyProfile(companyData)
+
+        console.log('Company onboarded status:', companyData.data?.onboarded)
+        if (
+          companyData.data?.onboarded !== undefined &&
+          !companyData.data?.onboarded
+        ) {
+          router.push('/onboard')
+        }
       }
     } catch (err) {
       console.error('Error processing profile data:', err)
@@ -94,7 +141,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [data, isFetched, isError, global.mode])
 
-  if (isLoading && Boolean(global.mode)) {
+  // Show loading state either when waiting for DB or profile data
+  if ((isLoading && Boolean(global.mode)) || !isDbReady) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <div className="flex flex-col items-center space-y-4">

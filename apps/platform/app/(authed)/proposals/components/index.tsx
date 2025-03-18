@@ -61,14 +61,6 @@ const formatAmount = (budget: any): string => {
   return isNaN(numericBudget) ? '$0' : `$${numericBudget.toLocaleString()}`
 }
 
-const formatDate = (date: Date): string => {
-  return date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
 export function ProfessionalProposals() {
   const {
     data: proposals,

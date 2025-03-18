@@ -1,4 +1,4 @@
-import { ProfessionalProposals } from '../components/professional/proposals'
+import { ProfessionalProposals } from './components'
 
 export default function ProposalsPage() {
   return (

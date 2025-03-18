@@ -97,7 +97,7 @@ export const useNavbar = () => {
         ...items[profileItemIndex],
         href:
           global.mode === 'company'
-            ? `/companies/${global.name}`
+            ? `/companies/${global.id}`
             : `/professionals/${global.username}`,
       }
     }
@@ -105,16 +105,17 @@ export const useNavbar = () => {
     return items
   }, [global.mode])
 
-  const userProfile = useMemo(() => {
-    return {
+  const userProfile = useMemo(
+    () => ({
       name: global?.name || '',
       email: global?.email || '',
       avatar:
         global?.mode === 'user'
           ? proProfile?.data?.avatar || '/avatar.png'
-          : companyProfile?.CompanyProfile?.logo || '/avatar.png',
-    }
-  }, [global, proProfile, companyProfile])
+          : companyProfile?.data?.CompanyProfile?.logo || '/avatar.png',
+    }),
+    [global, proProfile?.data, companyProfile?.data],
+  )
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
