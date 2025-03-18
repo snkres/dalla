@@ -97,11 +97,9 @@ export type GetAllCompanyProjectsRes = {
 }
 
 export const getAllProjects = async (page: number, limit: number) => {
-  const res = await axiosInstance
-    .get<GetAllCompanyProjectsRes>(
-      `/company/projects?page=${page}&limit=${limit}`,
-    )
-    .then((res) => res.data.data)
+  const res = await axiosInstance.get<GetAllCompanyProjectsRes>(
+    `/company/projects?page=${page}&limit=${limit}`,
+  )
 
   return res
 }

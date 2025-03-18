@@ -1,7 +1,7 @@
 import { GetProjectRes } from '../company/projects'
 import { axiosInstance } from '../instance'
 
-export type GetAllProjectsRes = {
+export type GetAllProjectsProfessionalViewRes = {
   statusCode: number
   success: boolean
   message: string
@@ -41,9 +41,12 @@ export type GetAllProjectsRes = {
   timestamp: string
 }
 
-export async function getAllProjects(page: number, limit: number) {
+export async function getAllProjectsProfessionalView(
+  page: number,
+  limit: number,
+) {
   const res = await axiosInstance
-    .get<GetAllProjectsRes>(
+    .get<GetAllProjectsProfessionalViewRes>(
       `/professionals/projects?page=${page}&limit=${limit}`,
     )
     .then((res) => res.data)

@@ -27,9 +27,13 @@ import { applyFilters } from '@lib/utils/filter-utils'
 
 import FilterChips from './filter-chips'
 import { useQuery } from '@tanstack/react-query'
-import { getAllProjects, GetAllProjectsRes } from '@lib/api/pro/projects'
+import {
+  getAllProjectsProfessionalView,
+  GetAllProjectsProfessionalViewRes,
+} from '@lib/api/pro/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { getAllSkills } from '@lib/utils/skill-utils'
+import { useQueryState } from 'nuqs'
 
 const LIMIT = 4
 
@@ -40,10 +44,10 @@ export function ProfessionalHome() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
-  // Enhanced query with loading state and refetch capability
+
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ['all-projects', page],
-    queryFn: () => getAllProjects(page, LIMIT),
+    queryFn: () => getAllProjectsProfessionalView(page, LIMIT),
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   })
@@ -51,13 +55,11 @@ export function ProfessionalHome() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredProjects, setFilteredProjects] = useState<
-    GetAllProjectsRes['data'][0] | []
+    GetAllProjectsProfessionalViewRes['data'][0] | []
   >([])
   const [showSearchHelp, setShowSearchHelp] = useState(false)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<
-    GetAllProjectsRes['data'][0][number] | null
-  >(null)
+
   const [showProjectDetail, setShowProjectDetail] = useState(false)
   const [showProjectApplication, setShowProjectApplication] = useState(false)
   const [selectedBudgetRange, setSelectedBudgetRange] = useState<
@@ -70,6 +72,26 @@ export function ProfessionalHome() {
   const [sortBy, setSortBy] = useState<'newest' | 'budget-high' | 'budget-low'>(
     'newest',
   )
+
+  const [selectedProjectId, setSelectedProjectId] = useQueryState('projectId', {
+    defaultValue: null,
+    parse: (value) => value || null,
+  })
+  const [selectedProject, setSelectedProject] = useState<
+    GetAllProjectsProfessionalViewRes['data'][0][number] | null
+  >(data?.data[0].find((project) => project.id === selectedProjectId) || null)
+
+  useEffect(() => {
+    setSelectedProject(
+      data?.data[0].find((project) => project.id === selectedProjectId) || null,
+    )
+  }, [selectedProjectId])
+
+  useEffect(() => {
+    if (selectedProjectId && data?.data?.[0]?.length) {
+      setShowProjectDetail(true)
+    }
+  }, [selectedProjectId, data])
 
   const allSkills = useMemo(() => {
     return getAllSkills(data?.data?.[0] || []) || []
@@ -95,7 +117,7 @@ export function ProfessionalHome() {
   )
 
   const sortProjects = useCallback(
-    (projects: GetAllProjectsRes['data'][0]) => {
+    (projects: GetAllProjectsProfessionalViewRes['data'][0]) => {
       if (sortBy === 'newest') {
         return [...projects].sort(
           (a, b) =>
@@ -187,9 +209,13 @@ export function ProfessionalHome() {
   }, [])
 
   const handleProjectClick = useCallback(
-    (project: GetAllProjectsRes['data'][0][number], e: React.MouseEvent) => {
+    (
+      project: GetAllProjectsProfessionalViewRes['data'][0][number],
+      e: React.MouseEvent,
+    ) => {
       e.preventDefault()
       setSelectedProject(project)
+      setSelectedProjectId(project.id)
       setShowProjectDetail(true)
       setShowProjectApplication(false)
     },
@@ -229,11 +255,12 @@ export function ProfessionalHome() {
     setShowProjectDetail(false)
     setShowProjectApplication(false)
     setSelectedProject(null)
+    setSelectedProjectId(null)
 
     setTimeout(() => {
       window.scrollTo(0, scrollY)
     }, 10)
-  }, [scrollPosition])
+  }, [scrollPosition, setSelectedProjectId])
 
   const handleResetFilters = useCallback(() => {
     setSelectedBudgetRange([0, 100000])
@@ -287,7 +314,10 @@ export function ProfessionalHome() {
   )
 
   const getProjectKey = useCallback(
-    (project: GetAllProjectsRes['data'][0][number], index: number) => {
+    (
+      project: GetAllProjectsProfessionalViewRes['data'][0][number],
+      index: number,
+    ) => {
       return project.id
         ? `project-${project.id}`
         : `project-${instanceId}-${index}`
@@ -411,13 +441,18 @@ export function ProfessionalHome() {
               </div>
             ) : filteredProjects.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {filteredProjects.map((project, index) => (
-                  <ProjectCard
-                    key={getProjectKey(project, index)}
-                    project={project}
-                    onClick={handleProjectClick}
-                  />
-                ))}
+                {filteredProjects.map(
+                  (
+                    project: GetAllProjectsProfessionalViewRes['data'][0][number],
+                    index: number,
+                  ) => (
+                    <ProjectCard
+                      key={getProjectKey(project, index)}
+                      project={project}
+                      onClick={handleProjectClick}
+                    />
+                  ),
+                )}
               </div>
             ) : (
               <div className="rounded-xl bg-gray-50 p-8 text-center">

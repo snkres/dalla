@@ -127,6 +127,7 @@ export type GetAllProposalsRes = {
       currentPage: number
       previousPage: any
       nextPage: any
+      totalCount: number
     },
   ]
   error: any
@@ -134,9 +135,11 @@ export type GetAllProposalsRes = {
   timestamp: string
 }
 
-export async function getAllProposals() {
+export async function getAllProposals(page: number, limit: number) {
   const res = await axiosInstance
-    .get<GetAllProposalsRes>('/professionals/proposals')
+    .get<GetAllProposalsRes>(
+      `/professionals/proposals?page=${page}&limit=${limit}`,
+    )
     .then((res) => res.data)
 
   return res

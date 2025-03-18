@@ -19,13 +19,13 @@ import {
   TooltipTrigger,
 } from '@dallah/design-system'
 import { calculateDaysSince, cn } from '@dallah/utils'
-import type { GetAllProjectsRes } from '@lib/api/pro/projects'
+import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ProjectCardProps {
-  project: GetAllProjectsRes['data'][0][number]
+  project: GetAllProjectsProfessionalViewRes['data'][0][number]
   onClick: (
-    project: GetAllProjectsRes['data'][0][number],
+    project: GetAllProjectsProfessionalViewRes['data'][0][number],
     e: React.MouseEvent,
   ) => void
 }

@@ -88,7 +88,7 @@ export function ProfessionalProposals() {
     error,
   } = useQuery({
     queryKey: ['proposals', 'professional'],
-    queryFn: getAllProposals,
+    queryFn: () => getAllProposals(1, 10),
   })
 
   const [activeTab, setActiveTab] = useState<ProposalStatus>('Accepted')
