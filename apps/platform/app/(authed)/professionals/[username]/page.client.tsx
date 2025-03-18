@@ -2,9 +2,10 @@
 
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 import {
   createShowCaseProject,
+  getOwnProProfile,
   getProProfile,
   updateProProfile,
   updateShowCaseProject,
@@ -22,7 +23,6 @@ import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
@@ -32,20 +32,19 @@ export function ProProfileClient({ username }: { username: string }) {
     queryFn: () => getProProfile(username),
     enabled: !isOwner,
   })
-  const [ownProfile, setOwnProfile] = useAtom(proProfileAtom)
+  const { data: ownProfile } = useQuery({
+    queryKey: ['own-pro-profile', username],
+    queryFn: () => getOwnProProfile(),
+    enabled: isOwner,
+  })
+  const [meta, setMeta] = useAtom(proMetaAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
   })
 
-  const profile = isOwner ? ownProfile : proProfile?.data
-
-  useEffect(() => {
-    if (isOwner && proProfile && !ownProfile) {
-      setOwnProfile(proProfile.data)
-    }
-  }, [isOwner, proProfile, ownProfile, setOwnProfile])
+  const profile = isOwner ? ownProfile?.data : proProfile?.data
 
   const handleProfileUpdate = async (
     updateData: any,
@@ -57,10 +56,10 @@ export function ProProfileClient({ username }: { username: string }) {
       console.log('updateData', updateData)
       await updateProProfile({
         ...updateData,
-        education: ownProfile?.data?.education?.map(
+        education: ownProfile?.data?.data.education?.map(
           ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
         ),
-        experience: ownProfile?.data?.experience?.map(
+        experience: ownProfile?.data?.data.experience?.map(
           ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
             ...exp,
             meta: {
@@ -69,14 +68,6 @@ export function ProProfileClient({ username }: { username: string }) {
             },
           }),
         ),
-      })
-
-      setOwnProfile({
-        ...ownProfile,
-        data: {
-          ...ownProfile.data,
-          ...updateData,
-        },
       })
 
       toast({
@@ -272,14 +263,6 @@ export function ProProfileClient({ username }: { username: string }) {
                   }
                 }
 
-                setOwnProfile({
-                  ...ownProfile,
-                  data: {
-                    ...ownProfile.data,
-                    projects: finalProjects,
-                  },
-                })
-
                 toast({
                   title: 'Projects updated successfully',
                   description: 'Your projects have been updated successfully',
@@ -298,14 +281,6 @@ export function ProProfileClient({ username }: { username: string }) {
           <ExperienceSection
             experiences={profile?.data?.experience || []}
             onUpdate={(updatedExperiences) => {
-              setOwnProfile({
-                ...ownProfile,
-                data: {
-                  ...ownProfile.data,
-                  experience: updatedExperiences,
-                },
-              })
-
               handleProfileUpdate({
                 experience: updatedExperiences.map(
                   ({
@@ -343,14 +318,6 @@ export function ProProfileClient({ username }: { username: string }) {
             education={profile?.data?.education || []}
             onUpdateEducation={(updatedEducation) => {
               if (!profile) return
-
-              setOwnProfile({
-                ...ownProfile,
-                data: {
-                  ...ownProfile.data,
-                  education: updatedEducation,
-                },
-              })
 
               handleProfileUpdate({
                 education: updatedEducation?.map(

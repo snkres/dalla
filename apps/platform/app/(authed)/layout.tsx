@@ -1,12 +1,8 @@
 'use client'
 import { Navbar } from '@components/layout/navbar'
-import { getCompanyMeta, getCompanyProfile } from '@lib/api/company/profile'
+import { getCompanyMeta } from '@lib/api/company/profile'
 import { getProMeta } from '@lib/api/pro/profile'
-import {
-  CompanyMeta,
-  companyMetaAtom,
-  CompanyProfile,
-} from '@lib/atoms/company/meta'
+import { CompanyMeta, companyMetaAtom } from '@lib/atoms/company/meta'
 import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'

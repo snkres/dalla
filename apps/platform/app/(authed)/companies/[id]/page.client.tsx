@@ -3,24 +3,36 @@
 import { useAtom } from 'jotai'
 import { useQueryState } from 'nuqs'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import {
-  type CompanyProfile,
-  companyProfileAtom,
-} from '@lib/atoms/company/profile'
+import { type CompanyProfile, companyMetaAtom } from '@lib/atoms/company/meta'
 import { CompanyCard } from './components/company-card'
-import { updateCompanyProfile } from '@lib/api/company/profile'
+import {
+  getCompanyProfile,
+  getOwnCompanyProfile,
+  updateCompanyProfile,
+} from '@lib/api/company/profile'
 import { AboutSection } from './components/about-section'
 import { AreasSection } from './components/areas-section'
 import { TargetIndustriesSection } from './components/target-section'
 import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
+import { useQuery } from '@tanstack/react-query'
 
 export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
   const isOwner = global.id === id
-  console.log(id, global.id)
-  const [profile, setProfile] = useAtom(companyProfileAtom)
+  const { data } = useQuery({
+    queryKey: ['company-profile', id],
+    queryFn: () => getCompanyProfile(id),
+    enabled: !isOwner,
+  })
+  const { data: ownProfile, refetch: refetchOwnProfile } = useQuery({
+    queryKey: ['own-company-profile', id],
+    queryFn: () => getOwnCompanyProfile(),
+    enabled: isOwner,
+  })
+  const profile = isOwner ? ownProfile : data
+  const [meta, setMeta] = useAtom(companyMetaAtom)
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
@@ -32,8 +44,15 @@ export function CompanyProfileClient({ id }: { id: string }) {
     successMessage = 'Profile updated successfully',
   ) => {
     try {
-      const { industry, size, type, phone, socialLinks, ...directFields } =
-        updateData as any
+      const {
+        industry,
+        size,
+        type,
+        phone,
+        socialLinks,
+        name,
+        ...directFields
+      } = updateData as any
 
       const metaUpdates = {
         ...(industry && { industry }),
@@ -43,32 +62,10 @@ export function CompanyProfileClient({ id }: { id: string }) {
         ...(socialLinks && { socialLinks }),
       }
 
-      const apiPayload: any = { ...directFields }
-
-      if (Object.keys(metaUpdates).length > 0) {
-        apiPayload.meta = {
-          ...(profile?.data?.CompanyProfile?.meta || {}),
-          ...metaUpdates,
-        }
-      }
+      const apiPayload: any = { ...directFields, meta: metaUpdates }
 
       await updateCompanyProfile(apiPayload)
-
-      setProfile({
-        ...profile,
-        data: {
-          ...profile.data,
-          CompanyProfile: {
-            ...profile.data.CompanyProfile,
-            ...directFields,
-            meta: {
-              ...(profile?.data?.CompanyProfile?.meta || {}),
-              ...metaUpdates,
-            },
-          },
-        },
-      })
-
+      refetchOwnProfile()
       toast({
         title: successMessage,
         description: 'Your profile has been updated successfully',
@@ -91,15 +88,17 @@ export function CompanyProfileClient({ id }: { id: string }) {
         <aside className="space-y-6 self-start lg:sticky lg:top-6 lg:col-span-1">
           <CompanyCard
             data={{
-              industry: profile?.data.CompanyProfile.meta?.industry,
-              verified: profile?.data.verified,
-              logo: profile?.data.CompanyProfile.logo,
-              name: profile?.data.name,
-              size: profile?.data.CompanyProfile.meta?.size,
-              location: profile?.data.CompanyProfile.location,
-              website: profile?.data.CompanyProfile.website,
+              industry: profile.data.data.CompanyProfile.meta?.industry,
+              verified: profile.data.data.verified,
+              logo: profile.data.data.CompanyProfile.logo,
+              name: profile.data.data.name,
+              size: profile.data.data.CompanyProfile.meta?.size,
+              location: profile.data.data.CompanyProfile.location,
+              website: profile.data.data.CompanyProfile.website,
               rating: 5,
-              joinedAt: new Date(profile.data.createdAt).toLocaleDateString(),
+              joinedAt: new Date(
+                profile.data.data.createdAt,
+              ).toLocaleDateString(),
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
@@ -108,10 +107,10 @@ export function CompanyProfileClient({ id }: { id: string }) {
           />
           <ContactInfoCard
             data={{
-              email: profile?.data.email,
-              website: profile?.data.CompanyProfile.website,
-              location: profile?.data.CompanyProfile.location,
-              socialLinks: profile?.data.CompanyProfile.meta?.socialLinks,
+              email: profile.data.data.email,
+              website: profile.data.data.CompanyProfile.website,
+              location: profile.data.data.CompanyProfile.location,
+              socialLinks: profile.data.data.CompanyProfile.meta?.socialLinks,
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
@@ -121,12 +120,12 @@ export function CompanyProfileClient({ id }: { id: string }) {
         <main className="space-y-6 lg:col-span-2">
           <AboutSection
             data={{
-              name: profile?.data.name,
-              size: profile?.data.CompanyProfile.meta?.size,
-              industry: profile?.data.CompanyProfile.meta?.industry,
-              headline: profile?.data.CompanyProfile.headline,
-              bio: profile?.data.CompanyProfile.bio,
-              areas: profile?.data.CompanyProfile.areas || [],
+              name: profile?.data.data.name,
+              size: profile?.data.data.CompanyProfile.meta?.size,
+              industry: profile?.data.data.CompanyProfile.meta?.industry,
+              headline: profile?.data.data.CompanyProfile.headline,
+              bio: profile?.data.data.CompanyProfile.bio,
+              areas: profile?.data.data.CompanyProfile.areas || [],
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -141,7 +140,7 @@ export function CompanyProfileClient({ id }: { id: string }) {
           />
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <AreasSection
-              areas={profile?.data.CompanyProfile.areas || []}
+              areas={profile?.data.data.CompanyProfile.areas || []}
               isPublicView={isPublicView}
               isOwner={isOwner}
               onUpdate={(data) => {
@@ -152,7 +151,9 @@ export function CompanyProfileClient({ id }: { id: string }) {
               }}
             />
             <TargetIndustriesSection
-              industries={profile?.data.CompanyProfile.targetIndustries || []}
+              industries={
+                profile?.data.data.CompanyProfile.targetIndustries || []
+              }
               isPublicView={isPublicView}
               isOwner={isOwner}
               onUpdate={(data) => {
@@ -164,7 +165,7 @@ export function CompanyProfileClient({ id }: { id: string }) {
             />
           </div>
           <GoalsSection
-            goals={profile?.data.CompanyProfile.goals || []}
+            goals={profile?.data.data.CompanyProfile.goals || []}
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={(data) => {
