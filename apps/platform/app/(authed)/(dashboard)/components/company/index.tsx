@@ -160,7 +160,7 @@ export default function CompanyHome() {
           <div className="flex-1">
             <ProjectsOverview
               onPostJob={() => setShowAddProject(true)}
-              projects={projectsOverviewData?.[0] || []}
+              projects={projectsOverviewData?.data.data[0] || []}
               isLoading={projectsOverviewLoading}
               onHireConsultant={() => {
                 /* Scroll to consultant list or navigate */
