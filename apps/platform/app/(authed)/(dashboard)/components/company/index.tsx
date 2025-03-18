@@ -16,41 +16,52 @@ import {
 } from 'lucide-react'
 import { Button, Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import { Consultant } from '@lib/types/company'
-import { consultants } from '@lib/data/consultants'
 import { ProjectsOverview } from './projects-overview'
-
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'
 import { useQuery } from '@tanstack/react-query'
 import { getAllProjects } from '@lib/api/company/projects'
-import { useQueryClient } from '@tanstack/react-query'
-import { ConsultantCard } from 'app/(authed)/(company-only)/project/components/consultant-card'
-import { ConsultantDetail } from 'app/(authed)/(company-only)/project/components/consultant-detail'
-import { parseAsBoolean, useQueryState } from 'nuqs'
 
-const LIMIT = 10
+import { ConsultantDetail } from 'app/(authed)/(dashboard)/components/company/professional-detail'
+import { parseAsBoolean, useQueryState } from 'nuqs'
+import {
+  getAllProfessionals,
+  GetAllProfessionalsRes,
+} from '@lib/api/company/professionals'
+import { ProfessionalCard } from './professional-card'
+
+const LIMIT = 6
 export default function CompanyHome() {
+  const [page, setPage] = useState(1)
+  const [filteredProfessionals, setFilteredProfessionals] = useState<
+    GetAllProfessionalsRes['data'][0]
+  >([])
+  const [selectedProfessional, setSelectedProfessional] = useState<
+    GetAllProfessionalsRes['data'][0][number] | null
+  >(null)
+  const { data: professionals, isLoading: professionalsLoading } = useQuery({
+    queryKey: ['professionals', page],
+    queryFn: () => getAllProfessionals(page, LIMIT),
+  })
   const [showAddProject, setShowAddProject] = useQueryState(
     'startProject',
     parseAsBoolean,
   )
   const [searchQuery, setSearchQuery] = useState('')
   const [showFilterPanel, setShowFilterPanel] = useState(false)
-  const [filteredConsultants, setFilteredConsultants] =
-    useState<Consultant[]>(consultants)
-  const [selectedConsultant, setSelectedConsultant] =
-    useState<Consultant | null>(null)
-  const [showConsultantDetail, setShowConsultantDetail] = useState(false)
+  const [showProfessionalDetail, setShowProfessionalDetail] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
-  const [page, setPage] = useState(1)
 
   const { data, refetch } = useQuery({
     queryKey: ['projects', page, 'company'],
-    queryFn: () => getAllProjects(page, LIMIT),
+    queryFn: () => getAllProjects(page, 5),
   })
 
-  const queryClient = useQueryClient()
+  useEffect(() => {
+    if (professionals?.data[0]) {
+      setFilteredProfessionals(professionals.data[0])
+    }
+  }, [professionals])
 
   const filterOptions = [
     {
@@ -81,29 +92,32 @@ export default function CompanyHome() {
   ]
 
   useEffect(() => {
-    let results = [...consultants]
+    if (!professionals?.data[0]) return
+
+    let results = [...(professionals.data[0] || [])]
 
     if (searchQuery) {
       results = results.filter(
         (consultant) =>
-          consultant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          consultant.skills.some((skill) =>
-            skill.toLowerCase().includes(searchQuery.toLowerCase()),
-          ) ||
-          consultant.expertise
+          consultant.User.name
             .toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
-          consultant.location.toLowerCase().includes(searchQuery.toLowerCase()),
+          consultant.meta.skills.some((skill) =>
+            skill.toLowerCase().includes(searchQuery.toLowerCase()),
+          ) ||
+          consultant.meta.location
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
       )
     }
 
     if (activeFilter !== 'all') {
       switch (activeFilter) {
         case 'available':
-          results = results.filter((c) => c.availability === 'Available')
+          results = results.filter((c) => c.meta.availability === 'Available')
           break
         case 'topRated':
-          results = results.filter((c) => c.rating >= 4.8)
+          results = results.filter((c) => c.meta.successRate >= 4.8)
           break
         case 'recent':
           // In a real app, you'd filter by last active date
@@ -116,16 +130,18 @@ export default function CompanyHome() {
       }
     }
 
-    setFilteredConsultants(results)
-  }, [searchQuery, activeFilter])
+    setFilteredProfessionals(results as GetAllProfessionalsRes['data'][0])
+  }, [searchQuery, activeFilter, professionals])
 
-  const handleConsultantClick = (consultant: Consultant) => {
-    setSelectedConsultant(consultant)
-    setShowConsultantDetail(true)
+  const handleProfessionalClick = (
+    professional: GetAllProfessionalsRes['data'][0][number],
+  ) => {
+    setSelectedProfessional(professional)
+    setShowProfessionalDetail(true)
   }
 
   const handleCloseDetail = () => {
-    setShowConsultantDetail(false)
+    setShowProfessionalDetail(false)
   }
 
   const clearFilters = () => {
@@ -134,7 +150,7 @@ export default function CompanyHome() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div>
       <div className="mx-auto max-w-[1200px] px-4 py-6 lg:max-w-[1350px]">
         <div className="flex flex-col gap-6 lg:flex-row">
           <div className="flex-1">
@@ -236,17 +252,126 @@ export default function CompanyHome() {
               </div>
             )}
 
-            {process.env.NODE_ENV === 'development' &&
-            filteredConsultants.length > 0 ? (
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                {filteredConsultants.map((consultant) => (
-                  <ConsultantCard
-                    key={consultant.id}
-                    consultant={consultant}
-                    onClick={() => handleConsultantClick(consultant)}
-                  />
-                ))}
-              </div>
+            {filteredProfessionals.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                  {filteredProfessionals.map((professional) => (
+                    <ProfessionalCard
+                      key={professional.userId}
+                      professional={professional}
+                      onClick={() => handleProfessionalClick(professional)}
+                    />
+                  ))}
+                </div>
+
+                <div className="mt-4 flex w-full items-center justify-between gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setPage(Math.max(1, page - 1))}
+                    disabled={page === 1}
+                    className="flex items-center gap-1"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-chevron-left"
+                    >
+                      <path d="m15 18-6-6 6-6" />
+                    </svg>
+                    Previous
+                  </Button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from(
+                      {
+                        length: Math.ceil(
+                          (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
+                        ),
+                      },
+                      (_, i) => {
+                        // Show pages around current page
+                        let pageNum = page
+                        if (page <= 3) {
+                          pageNum = i + 1
+                        } else if (
+                          page >=
+                          Math.ceil(
+                            (professionals?.data[1]?.totalCount ?? 0) / LIMIT -
+                              2,
+                          )
+                        ) {
+                          pageNum =
+                            Math.ceil(
+                              (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
+                            ) -
+                            4 +
+                            i
+                        } else {
+                          pageNum = page - 2 + i
+                        }
+
+                        // Ensure page numbers are within valid range
+                        if (
+                          pageNum > 0 &&
+                          pageNum <=
+                            Math.ceil(
+                              (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
+                            )
+                        ) {
+                          return (
+                            <Button
+                              key={pageNum}
+                              variant={page === pageNum ? 'default' : 'outline'}
+                              onClick={() => setPage(pageNum)}
+                              className={`h-10 w-10 ${page === pageNum ? '!bg-[#63B7B7] text-white' : ''}`}
+                            >
+                              {pageNum}
+                            </Button>
+                          )
+                        }
+                        return null
+                      },
+                    )}
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setPage(
+                        Math.min(
+                          professionals?.data[1]?.totalCount ?? 0,
+                          page + 1,
+                        ),
+                      )
+                    }
+                    disabled={page === professionals?.data[1]?.totalCount ?? 0}
+                    className="flex items-center gap-1"
+                  >
+                    Next
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-chevron-right"
+                    >
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </Button>
+                </div>
+              </>
             ) : (
               <div className="rounded-xl bg-white p-8 text-center shadow-sm">
                 <div className="mb-4 flex justify-center">
@@ -276,17 +401,18 @@ export default function CompanyHome() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {showConsultantDetail && selectedConsultant && (
-          <>
+      {showProfessionalDetail && selectedProfessional && (
+        <>
+          <AnimatePresence mode="wait">
             <ConsultantDetail
-              consultant={selectedConsultant}
+              key={`consultant-detail-${selectedProfessional.userId}`}
+              username={selectedProfessional.User.username}
               onClose={handleCloseDetail}
             />
-          </>
-        )}
-        {showConsultantDetail && (
+          </AnimatePresence>
+
           <motion.div
+            key="consultant-detail-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
@@ -294,7 +420,10 @@ export default function CompanyHome() {
             className="fixed inset-0 z-40 bg-black"
             onClick={handleCloseDetail}
           />
-        )}
+        </>
+      )}
+
+      <AnimatePresence mode="wait">
         {showAddProject && (
           <AddProject
             key="add-project-modal"

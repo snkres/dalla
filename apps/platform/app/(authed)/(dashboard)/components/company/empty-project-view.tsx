@@ -68,11 +68,11 @@ const EmptyProjectView = ({
               <Users className="h-4 w-4 text-[#1D8489]" />
             </div>
             <h4 className="text-sm font-medium text-gray-900">
-              Hire Consultant
+              Hire Professionals
             </h4>
           </div>
           <p className="mb-4 text-xs text-gray-600">
-            Browse our talent pool and hire consultants directly for your
+            Browse our talent pool and hire professionals directly for your
             projects.
           </p>
           <Button
@@ -80,7 +80,7 @@ const EmptyProjectView = ({
             onClick={onHireConsultant}
             className="w-full bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]"
           >
-            Find Consultants
+            Find Professionals
             <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
           </Button>
         </div>

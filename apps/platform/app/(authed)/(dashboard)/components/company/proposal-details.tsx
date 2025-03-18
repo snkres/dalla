@@ -428,7 +428,6 @@ const ProposalDetails = ({
         </div>
       </div>
 
-      {/* Hire Confirmation Dialog */}
       <Dialog open={showHireDialog} onOpenChange={setShowHireDialog}>
         <DialogContent>
           <DialogHeader>
