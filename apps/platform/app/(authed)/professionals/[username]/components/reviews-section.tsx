@@ -42,7 +42,7 @@ export function ReviewsSection({
 
       <div className="px-5 pb-4 pt-6">
         <div className="flex max-w-fit rounded-lg bg-[#e6f3f3] p-0.5">
-          {(['completed', 'ongoing'] as const).map((tab) => (
+          {(['completed'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}

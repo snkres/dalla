@@ -72,6 +72,8 @@ export function ProfileSidebar() {
     </div>
   )
 
+  console.log(profile?.data?.UserProfile)
+
   return (
     <div className="space-y-5 lg:sticky lg:top-6 lg:self-start">
       <SidebarCard>
@@ -104,12 +106,16 @@ export function ProfileSidebar() {
 
           <div className="mb-4 grid grid-cols-2 gap-3">
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
-              <div className="text-base font-medium text-[#63B7B7]">15</div>
+              <div className="text-base font-medium text-[#63B7B7]">
+                {profile?.data?._count?.proposals}
+              </div>
               <div className="text-xs text-gray-600">Active Proposals</div>
             </div>
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
-              <div className="text-base font-medium text-[#63B7B7]">3</div>
-              <div className="text-xs text-gray-600">Interviews</div>
+              <div className="text-base font-medium text-[#63B7B7]">
+                {profile?.data?.UserProfile?.meta?.skills?.length}
+              </div>
+              <div className="text-xs text-gray-600">Skills</div>
             </div>
           </div>
 
@@ -117,12 +123,12 @@ export function ProfileSidebar() {
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600">Profile Completion</span>
               <span className="font-medium text-[#63B7B7]">
-                {profile?.data?.UserProfile?.precentage}%
+                {profile?.data?.UserProfile?.percentage}%
               </span>
             </div>
             <div className="w-full">
               <Progress
-                value={profile?.data?.UserProfile?.precentage}
+                value={profile?.data?.UserProfile?.percentage}
                 className="h-1.5 !bg-gray-100"
                 indicatorClassName="!bg-[#63B7B7]"
               />
@@ -141,7 +147,7 @@ export function ProfileSidebar() {
       </SidebarCard>
 
       {/* TODO: EndPoint not ready */}
-      <SidebarCard>
+      {/* <SidebarCard>
         <SidebarHeader
           icon={<Briefcase />}
           title="Recommended Projects"
@@ -207,8 +213,8 @@ export function ProfileSidebar() {
               </div>
             </Link>
           ))} */}
-        </div>
-      </SidebarCard>
+      {/* </div> */}
+      {/* </SidebarCard>  */}
 
       {/* <SidebarCard>
         <SidebarHeader

@@ -117,7 +117,7 @@ export type ProMeta = {
         }
         yearsOfExperience: number
       }
-      precentage: number
+      percentage: number
     }
     _count: {
       proposals: number
