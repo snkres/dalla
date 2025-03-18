@@ -14,13 +14,13 @@ import {
 import { SkillSelector } from '@components/shared/skill-selector'
 
 interface ProjectFiltersProps {
-  skillFilter: string
-  setSkillFilter: (value: string) => void
-  budgetFilter: string
-  setBudgetFilter: (value: string) => void
-  statusFilter: string
-  setStatusFilter: (value: string) => void
-  clearAllFilters: () => void
+  skillFilter?: string
+  setSkillFilter?: (value: string) => void
+  budgetFilter?: string
+  setBudgetFilter?: (value: string) => void
+  statusFilter?: string
+  setStatusFilter?: (value: string) => void
+  clearAllFilters?: () => void
 }
 
 export function ProjectFilters({
@@ -47,7 +47,7 @@ export function ProjectFilters({
   }
 
   const handleSkillChange = (skills: string[]) => {
-    setSkillFilter(skills.join(','))
+    setSkillFilter?.(skills.join(','))
   }
 
   const hasActiveFilters = skillFilter || budgetFilter || statusFilter
@@ -118,7 +118,7 @@ export function ProjectFilters({
             <div className="space-y-3">
               <SkillSelector
                 skills={skillFilter ? skillFilter.split(',') : []}
-                onSkillsChange={(s) => setSkillFilter(s.join(','))}
+                onSkillsChange={(s) => setSkillFilter?.(s.join(','))}
               />
             </div>
           )}
@@ -145,7 +145,7 @@ export function ProjectFilters({
                   id="budget-1"
                   checked={budgetFilter === 'less-1000'}
                   onCheckedChange={() =>
-                    setBudgetFilter(
+                    setBudgetFilter?.(
                       budgetFilter === 'less-1000' ? '' : 'less-1000',
                     )
                   }
@@ -162,7 +162,7 @@ export function ProjectFilters({
                   id="budget-2"
                   checked={budgetFilter === '1000-3000'}
                   onCheckedChange={() =>
-                    setBudgetFilter(
+                    setBudgetFilter?.(
                       budgetFilter === '1000-3000' ? '' : '1000-3000',
                     )
                   }
@@ -179,7 +179,7 @@ export function ProjectFilters({
                   id="budget-3"
                   checked={budgetFilter === '3000-5000'}
                   onCheckedChange={() =>
-                    setBudgetFilter(
+                    setBudgetFilter?.(
                       budgetFilter === '3000-5000' ? '' : '3000-5000',
                     )
                   }
@@ -196,7 +196,7 @@ export function ProjectFilters({
                   id="budget-4"
                   checked={budgetFilter === 'more-5000'}
                   onCheckedChange={() =>
-                    setBudgetFilter(
+                    setBudgetFilter?.(
                       budgetFilter === 'more-5000' ? '' : 'more-5000',
                     )
                   }
@@ -233,7 +233,7 @@ export function ProjectFilters({
                   id="status-1"
                   checked={statusFilter === 'open'}
                   onCheckedChange={() =>
-                    setStatusFilter(statusFilter === 'open' ? '' : 'open')
+                    setStatusFilter?.(statusFilter === 'open' ? '' : 'open')
                   }
                 />
                 <label
@@ -248,7 +248,9 @@ export function ProjectFilters({
                   id="status-2"
                   checked={statusFilter === 'ongoing'}
                   onCheckedChange={() =>
-                    setStatusFilter(statusFilter === 'ongoing' ? '' : 'ongoing')
+                    setStatusFilter?.(
+                      statusFilter === 'ongoing' ? '' : 'ongoing',
+                    )
                   }
                 />
                 <label
@@ -263,7 +265,7 @@ export function ProjectFilters({
                   id="status-3"
                   checked={statusFilter === 'completed'}
                   onCheckedChange={() =>
-                    setStatusFilter(
+                    setStatusFilter?.(
                       statusFilter === 'completed' ? '' : 'completed',
                     )
                   }

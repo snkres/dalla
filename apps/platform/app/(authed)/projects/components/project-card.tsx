@@ -14,11 +14,12 @@ import {
   Star,
   ArrowUpRight,
 } from 'lucide-react'
-import { cn } from '@dallah/utils'
+import { calculateDaysSince, cn } from '@dallah/utils'
 import Image from 'next/image'
 import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ProjectCardProps {
   project: GetAllCompanyProjectsRes['data'][0][number]
@@ -65,7 +66,7 @@ export function ProjectCard({
           In Progress
         </Badge>
       )
-    } else if (project.approved) {
+    } else if (project.approved && project.status === 'Open') {
       return (
         <Badge className="!rounded-md !bg-[#edecea]/30 !px-2 !py-0.5 !text-xs !font-normal !text-[#234d64]/80">
           Open
@@ -74,7 +75,7 @@ export function ProjectCard({
     } else {
       return (
         <Badge className="!rounded-md !bg-yellow-50 !px-2 !py-0.5 !text-xs !font-normal !text-yellow-700">
-          Draft
+          Not Approved Yet
         </Badge>
       )
     }
@@ -108,7 +109,7 @@ export function ProjectCard({
                       day: 'numeric',
                       month: 'short',
                     },
-                  )}`
+                  )} - ${calculateDaysSince(new Date(project.createdAt))}`
                 : project.company?.name || 'Company Name'}
             </p>
           </div>
@@ -139,7 +140,7 @@ export function ProjectCard({
         <div className="mb-4 grid grid-cols-2 gap-3 text-sm text-gray-600">
           <div className="flex items-center">
             <DollarSign className="mr-1 h-4 w-4 text-gray-400" />
-            <span>${project.meta?.budget || 0}</span>
+            <span>{formatCurrency(project.meta?.budget || 0)}</span>
           </div>
           <div className="flex items-center">
             <Calendar className="mr-1 h-4 w-4 text-gray-400" />

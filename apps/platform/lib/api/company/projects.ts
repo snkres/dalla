@@ -88,6 +88,7 @@ export type GetAllCompanyProjectsRes = {
       currentPage: number
       previousPage: any
       nextPage: any
+      total: number
     },
   ]
   error: any

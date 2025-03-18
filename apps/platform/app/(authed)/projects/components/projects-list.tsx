@@ -55,7 +55,6 @@ export function ProjectsList({
     )
   }
 
-  // Sort projects based on current sort selection
   const sortedProjects = [...projects].sort((a, b) => {
     switch (sortBy) {
       case 'newest':

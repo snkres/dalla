@@ -17,7 +17,12 @@ import { getAllProjects } from '@lib/api/company/projects'
 const LIMIT = 10
 export function ProjectsPageClient() {
   const [global] = useAtom(globalAtom)
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useQueryState('page', {
+    defaultValue: 1,
+    parse: (value) => parseInt(value, 10),
+    serialize: (value) => value.toString(),
+  })
+
   const router = useRouter()
 
   const isCompany = global.mode === 'company'
@@ -25,48 +30,30 @@ export function ProjectsPageClient() {
 
   // Search and filter states
   const [searchQuery, setSearchQuery] = useQueryState('q', { defaultValue: '' })
-  const [skillFilter, setSkillFilter] = useQueryState('skills', {
-    defaultValue: '',
-  })
-  const [budgetFilter, setBudgetFilter] = useQueryState('budget', {
-    defaultValue: '',
-  })
-  const [statusFilter, setStatusFilter] = useQueryState('status', {
-    defaultValue: '',
-  })
 
   // Fetch projects data
   const { data, isLoading, error } = useQuery({
-    queryKey: [
-      'projects',
-      searchQuery,
-      skillFilter,
-      budgetFilter,
-      statusFilter,
-    ],
+    queryKey: ['projects', searchQuery, page],
     queryFn: async () => {
-      // Build query string from filters
-
-      // Different endpoints based on user role
       return getAllProjects(page, LIMIT)
     },
   })
 
+  const totalPages = Math.ceil((data?.[1]?.total || 0) / LIMIT)
+
   const clearAllFilters = () => {
     setSearchQuery('')
-    setSkillFilter('')
-    setBudgetFilter('')
-    setStatusFilter('')
+    setPage(1)
   }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
-    // Search is already handled by the query state
+    setPage(1) // Reset to first page on new search
   }
   console.log(data)
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="bg-gray-50 pb-12">
       <div className="bg-white pb-6 pt-8 shadow-sm">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -120,12 +107,12 @@ export function ProjectsPageClient() {
           {/* Filters sidebar */}
           <div className="lg:col-span-1">
             <ProjectFilters
-              skillFilter={skillFilter}
-              setSkillFilter={setSkillFilter}
-              budgetFilter={budgetFilter}
-              setBudgetFilter={setBudgetFilter}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
+              // skillFilter={skillFilter}
+              // setSkillFilter={setSkillFilter}
+              // budgetFilter={budgetFilter}
+              // setBudgetFilter={setBudgetFilter}
+              // statusFilter={statusFilter}
+              // setStatusFilter={setStatusFilter}
               clearAllFilters={clearAllFilters}
             />
           </div>
@@ -152,11 +139,98 @@ export function ProjectsPageClient() {
                 </Button>
               </div>
             ) : (
-              <ProjectsList
-                projects={data?.[0] || []}
-                isCompany={isCompany}
-                isProfessional={isProfessional}
-              />
+              <>
+                <ProjectsList
+                  projects={data?.[0] || []}
+                  isCompany={isCompany}
+                  isProfessional={isProfessional}
+                />
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8 flex items-center justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setPage(Math.max(1, page - 1))}
+                      disabled={page === 1}
+                      className="flex items-center gap-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-chevron-left"
+                      >
+                        <path d="m15 18-6-6 6-6" />
+                      </svg>
+                      Previous
+                    </Button>
+
+                    <div className="flex items-center gap-1">
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          // Show pages around current page
+                          let pageNum = page
+                          if (page <= 3) {
+                            pageNum = i + 1
+                          } else if (page >= totalPages - 2) {
+                            pageNum = totalPages - 4 + i
+                          } else {
+                            pageNum = page - 2 + i
+                          }
+
+                          // Ensure page numbers are within valid range
+                          if (pageNum > 0 && pageNum <= totalPages) {
+                            return (
+                              <Button
+                                key={pageNum}
+                                variant={
+                                  page === pageNum ? 'default' : 'outline'
+                                }
+                                onClick={() => setPage(pageNum)}
+                                className={`h-10 w-10 ${page === pageNum ? '!bg-[#63B7B7] text-white' : ''}`}
+                              >
+                                {pageNum}
+                              </Button>
+                            )
+                          }
+                          return null
+                        },
+                      )}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => setPage(Math.min(totalPages, page + 1))}
+                      disabled={page === totalPages}
+                      className="flex items-center gap-1"
+                    >
+                      Next
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-chevron-right"
+                      >
+                        <path d="m9 18 6-6-6-6" />
+                      </svg>
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
