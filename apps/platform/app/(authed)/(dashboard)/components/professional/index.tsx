@@ -272,17 +272,18 @@ export function ProfessionalHome() {
     option: 'newest' | 'budget-high' | 'budget-low',
     label: string,
   ) => (
-    <button
+    <Button
       key={`sort-${option}`}
-      className={`rounded-md px-3 py-1 text-sm ${
+      size="sm"
+      className={`!rounded-md px-3 py-1 text-sm ${
         sortBy === option
-          ? 'bg-[#234d64] text-white'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ? '!bg-[#234d64] text-white'
+          : '!bg-gray-100 !text-gray-700 hover:!bg-gray-200'
       }`}
       onClick={() => setSortBy(option)}
     >
       {label}
-    </button>
+    </Button>
   )
 
   const getProjectKey = useCallback(

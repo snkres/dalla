@@ -39,8 +39,8 @@ export default function FilterChips({
                   className={cn(
                     'flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-xs transition-all duration-200',
                     activeFilter === category.key
-                      ? 'bg-[#1D8489]/90 text-white shadow-sm'
-                      : 'bg-[#BEDDF1]/10 text-gray-700 hover:bg-[#1D8489]/25',
+                      ? '!bg-[#1D8489]/90 text-white shadow-sm'
+                      : '!bg-[#BEDDF1]/10 text-gray-700 hover:!bg-[#1D8489]/25',
                   )}
                   onClick={() => setActiveFilter(category.key)}
                 >
