@@ -117,6 +117,7 @@ export type GetProjectRes = {
     meta: {
       budget: number
       timeline: string
+      duration: string
     }
     createdAt: string
     deliverables: string

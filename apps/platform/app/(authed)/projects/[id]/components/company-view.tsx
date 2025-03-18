@@ -136,15 +136,17 @@ export function CompanyProjectView({
                   </h2>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 px-2 text-xs text-[#1D8489] hover:bg-[#E0F2F2] hover:text-[#1D8489]/80"
-                  onClick={() => setActiveTab('team')}
-                >
-                  View Details
-                  <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
-                </Button>
+                {project.status === 'InProgress' ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2 text-xs text-[#1D8489] hover:bg-[#E0F2F2] hover:text-[#1D8489]/80"
+                    onClick={() => setActiveTab('team')}
+                  >
+                    View Details
+                    <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
+                  </Button>
+                ) : null}
               </div>
 
               <ScrollArea className="h-56">

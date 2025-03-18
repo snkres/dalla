@@ -97,7 +97,7 @@ export function ProjectSharedDetails({
               ) : (
                 <div className="flex items-center">
                   <Calendar className="mr-1.5 h-3.5 w-3.5 text-[#1D8489]" />
-                  {project.meta.timeline}
+                  {project.meta.duration ?? project.meta.timeline}
                 </div>
               )}
             </div>
@@ -111,7 +111,7 @@ export function ProjectSharedDetails({
                   className="border-gray-300 text-gray-700 hover:bg-gray-50"
                   asChild
                 >
-                  <Link href="/professionals">
+                  <Link href="/">
                     <Users className="mr-2 h-4 w-4" />
                     Find Professionals
                   </Link>
