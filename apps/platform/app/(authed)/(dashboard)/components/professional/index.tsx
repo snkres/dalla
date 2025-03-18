@@ -4,7 +4,13 @@ import type React from 'react'
 
 import { useState, useEffect, useCallback, useMemo, useId } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { AlertCircle, Filter, RefreshCw } from 'lucide-react'
+import {
+  AlertCircle,
+  Filter,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { SearchBar } from './search-bar'
 import { ProjectCard } from './project/card'
@@ -18,21 +24,26 @@ import {
   locationOptions,
 } from '@lib/data/projects'
 import { applyFilters } from '@lib/utils/filter-utils'
-import { getAllSkills } from '@lib/utils/skill-utils'
+
 import FilterChips from './filter-chips'
 import { useQuery } from '@tanstack/react-query'
 import { getAllProjects, GetAllProjectsRes } from '@lib/api/pro/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { Project } from '@lib/types/project'
+import { getAllSkills } from '@lib/utils/skill-utils'
+
+const LIMIT = 4
 
 export function ProfessionalHome() {
   const { toast } = useToast()
   const instanceId = useId()
 
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
   // Enhanced query with loading state and refetch capability
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['all-projects'],
-    queryFn: getAllProjects,
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+    queryKey: ['all-projects', page],
+    queryFn: () => getAllProjects(page, LIMIT),
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   })
@@ -41,7 +52,7 @@ export function ProfessionalHome() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredProjects, setFilteredProjects] = useState<
     GetAllProjectsRes['data'][0] | []
-  >(data?.data?.[0] || [])
+  >([])
   const [showSearchHelp, setShowSearchHelp] = useState(false)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
   const [selectedProject, setSelectedProject] = useState<
@@ -60,10 +71,10 @@ export function ProfessionalHome() {
     'newest',
   )
 
-  // Get all unique skills from projects
-  const allSkills = useMemo(() => ['JS', 'React', 'Next.js', 'Tailwind'], [])
+  const allSkills = useMemo(() => {
+    return getAllSkills(data?.data?.[0] || []) || []
+  }, [data])
 
-  // Check if any filters are applied
   const hasActiveFilters = useMemo(
     () =>
       activeFilter !== 'all' ||
@@ -83,7 +94,6 @@ export function ProfessionalHome() {
     ],
   )
 
-  // Sort projects based on selected criteria
   const sortProjects = useCallback(
     (projects: GetAllProjectsRes['data'][0]) => {
       if (sortBy === 'newest') {
@@ -118,7 +128,6 @@ export function ProfessionalHome() {
       selectedSkills,
     )
 
-    // Apply sorting
     results = sortProjects(results)
 
     setFilteredProjects(results)
@@ -165,6 +174,17 @@ export function ProfessionalHome() {
       }
     }
   }, [showProjectDetail, showProjectApplication])
+
+  useEffect(() => {
+    if (data?.data?.[1]?.totalCount) {
+      setTotalCount(data.data[1].totalCount)
+    }
+  }, [data])
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   const handleProjectClick = useCallback(
     (project: GetAllProjectsRes['data'][0][number], e: React.MouseEvent) => {
@@ -228,13 +248,24 @@ export function ProfessionalHome() {
     handleResetFilters()
   }, [handleResetFilters])
 
-  const handleRefresh = useCallback(() => {
-    refetch()
-    toast({
-      title: 'Refreshing Projects',
-      description: 'Looking for the latest available projects.',
-      variant: 'default',
-    })
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    try {
+      await refetch()
+      toast({
+        title: 'Projects Updated',
+        description: 'Successfully refreshed the latest projects.',
+        variant: 'default',
+      })
+    } catch (error) {
+      toast({
+        title: 'Refresh Failed',
+        description: 'Unable to load the latest projects. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsRefreshing(false)
+    }
   }, [refetch, toast])
 
   const renderSortOption = (
@@ -254,16 +285,16 @@ export function ProfessionalHome() {
     </button>
   )
 
-  // Function to generate unique keys for projects
   const getProjectKey = useCallback(
     (project: GetAllProjectsRes['data'][0][number], index: number) => {
-      // Use project ID if available, otherwise use index + instanceId
       return project.id
         ? `project-${project.id}`
         : `project-${instanceId}-${index}`
     },
     [instanceId],
   )
+
+  const totalPages = Math.ceil(totalCount / LIMIT)
 
   return (
     <div className="w-full py-6">
@@ -279,12 +310,12 @@ export function ProfessionalHome() {
                 size="sm"
                 className="flex items-center gap-1"
                 onClick={handleRefresh}
-                disabled={isLoading}
+                disabled={isLoading || isRefreshing || isFetching}
               >
                 <RefreshCw
-                  className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
+                  className={`h-4 w-4 ${isLoading || isRefreshing || isFetching ? 'animate-spin text-[#234d64]' : ''}`}
                 />
-                <span>Refresh</span>
+                <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
               </Button>
             </div>
             <SearchBar
@@ -306,7 +337,7 @@ export function ProfessionalHome() {
               budgetRanges={budgetRanges}
               durationOptions={durationOptions}
               locationOptions={locationOptions}
-              allSkills={allSkills}
+              allSkills={allSkills.map((skill) => skill.name)}
             />
             <FilterChips
               activeFilter={activeFilter}
@@ -349,7 +380,7 @@ export function ProfessionalHome() {
               </div>
             </div>
 
-            {isLoading ? (
+            {isLoading || isRefreshing ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
@@ -408,14 +439,56 @@ export function ProfessionalHome() {
               </div>
             )}
 
-            {filteredProjects.length > 6 && (
-              <div className="mt-8 flex justify-center">
+            {filteredProjects.length > 0 && totalPages > 1 && (
+              <div className="mt-8 flex w-full items-center justify-between gap-2">
                 <Button
                   variant="outline"
-                  className="border-[#234d64] text-[#234d64]"
-                  onClick={handleRefresh}
+                  onClick={() => handlePageChange(Math.max(1, page - 1))}
+                  disabled={page === 1 || isLoading || isRefreshing}
+                  className="flex items-center gap-1"
                 >
-                  Load More Projects
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum = page
+                    if (page <= 3) {
+                      pageNum = i + 1
+                    } else if (page >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i
+                    } else {
+                      pageNum = page - 2 + i
+                    }
+
+                    if (pageNum > 0 && pageNum <= totalPages) {
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={page === pageNum ? 'default' : 'outline'}
+                          onClick={() => handlePageChange(pageNum)}
+                          disabled={isLoading || isRefreshing}
+                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#234d64] text-white' : ''}`}
+                        >
+                          {pageNum}
+                        </Button>
+                      )
+                    }
+                    return null
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    handlePageChange(Math.min(totalPages, page + 1))
+                  }
+                  disabled={page === totalPages || isLoading || isRefreshing}
+                  className="flex items-center gap-1"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             )}

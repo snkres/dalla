@@ -32,38 +32,6 @@ export function ProfileSidebar() {
   if (!profile) return null
   const [isWindowFocused, setIsWindowFocused] = useState(true)
 
-  const projects: ProjectSidebar[] = [
-    {
-      id: 'p1',
-      title: 'Brand Identity Redesign',
-      budget: '$4,200',
-      match: 95,
-      category: 'Branding',
-      isNew: true,
-    },
-    {
-      id: 'p2',
-      title: 'Digital Marketing Campaign',
-      budget: '$2,800',
-      match: 88,
-      category: 'Marketing',
-    },
-    {
-      id: 'p3',
-      title: 'E-commerce Website Optimization',
-      budget: '$3,500',
-      match: 82,
-      category: 'E-commerce',
-    },
-  ]
-
-  const skillData: SkillItem[] = [
-    { skill: 'SEO', strength: 90, demand: 'High', endorsed: 24 },
-    { skill: 'Content Marketing', strength: 85, demand: 'High', endorsed: 18 },
-    { skill: 'Social Media', strength: 78, demand: 'High', endorsed: 15 },
-    { skill: 'Email Marketing', strength: 65, demand: 'Medium', endorsed: 9 },
-  ]
-
   const quickLinks: QuickLink[] = [
     {
       icon: <DollarSign />,
@@ -188,7 +156,7 @@ export function ProfileSidebar() {
           }
         />
         <div className="divide-y divide-gray-100">
-          {projects.map((project) => (
+          {/* {projects.map((project) => (
             <Link
               key={`project-${project.id}`}
               href={`#project-${project.id}`}
@@ -238,7 +206,7 @@ export function ProfileSidebar() {
                 </Button>
               </div>
             </Link>
-          ))}
+          ))} */}
         </div>
       </SidebarCard>
 

@@ -40,9 +40,11 @@ export type GetAllProjectsRes = {
   timestamp: string
 }
 
-export async function getAllProjects() {
+export async function getAllProjects(page: number, limit: number) {
   const res = await axiosInstance
-    .get<GetAllProjectsRes>('/professionals/projects')
+    .get<GetAllProjectsRes>(
+      `/professionals/projects?page=${page}&limit=${limit}`,
+    )
     .then((res) => res.data)
 
   return res
