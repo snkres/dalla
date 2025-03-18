@@ -27,34 +27,6 @@ export function ProjectsList({
   const router = useRouter()
   const [sortBy, setSortBy] = useState('newest')
 
-  if (!projects || projects.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-xl bg-gray-50 p-8 text-center">
-        <div className="mb-4 rounded-full bg-gray-100 p-4">
-          <Briefcase className="h-8 w-8 text-gray-400" />
-        </div>
-        <h3 className="mb-2 text-lg font-medium text-gray-900">
-          No projects found
-        </h3>
-        <p className="mb-4 text-sm text-gray-500">
-          {isCompany
-            ? "You haven't posted any projects yet. Create your first project to find professionals."
-            : 'No projects match your current filters. Try adjusting your search criteria.'}
-        </p>
-        <Button
-          onClick={() =>
-            isCompany
-              ? router.push('/dashboard?addProject=true')
-              : router.back()
-          }
-          className="bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
-        >
-          {isCompany ? 'Post Your First Project' : 'Reset Filters'}
-        </Button>
-      </div>
-    )
-  }
-
   const sortedProjects = [...projects].sort((a, b) => {
     switch (sortBy) {
       case 'newest':

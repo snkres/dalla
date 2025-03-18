@@ -43,13 +43,8 @@ export function ProjectCard({
   const [global] = useAtom(globalAtom)
   const hasApplied =
     isProfessional &&
-    project.proposals?.some(
-      (p: any) => p.professionalId === global.id, //
-    )
+    project.proposals?.some((p: any) => p.professionalId === global.id)
 
-  console.log(project)
-
-  // For company view, check if project has proposals
   const hasProposals =
     isCompany && project.proposals && project.proposals.length > 0
 
@@ -87,10 +82,10 @@ export function ProjectCard({
       className={cn(
         'cursor-pointer overflow-hidden rounded-xl border bg-white shadow-sm transition-all duration-300 hover:shadow-md',
         hasApplied
-          ? 'border-l-4 border-gray-100 border-l-[#63B7B7]'
+          ? 'border-l-4 border-gray-100 !border-l-[#63B7B7]'
           : 'border-gray-200',
         isCompany && hasProposals
-          ? 'border-l-4 border-gray-100 border-l-blue-400'
+          ? 'border-l-4 border-gray-100 !border-l-[#63B7B7]'
           : '',
       )}
       onClick={onClick}
