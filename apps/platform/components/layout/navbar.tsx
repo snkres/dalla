@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Link } from 'next-view-transitions'
+import { Link, useTransitionRouter } from 'next-view-transitions'
 import { Bell, Search, Menu, X } from 'lucide-react'
 import { LogoHorizontal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
@@ -10,12 +10,12 @@ import NotificationsPopup from './notifications-popup'
 import ProfilePopup from './profile-popup'
 import MobileMenu from './mobile-menu'
 import { useNavbar } from '@lib/hooks/use-navbar'
-import { useRouter } from 'next/navigation'
+
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 
 export function Navbar() {
-  const router = useRouter()
+  const router = useTransitionRouter()
   const [global] = useAtom(globalAtom)
   console.log(global)
 
@@ -86,6 +86,7 @@ export function Navbar() {
                 : 'text-gray-600 hover:bg-gray-100',
             )}
             onClick={() => setActiveItem(item.href)}
+            prefetch
           >
             <item.icon className="h-4 w-4" />
             <span>{item.label}</span>
