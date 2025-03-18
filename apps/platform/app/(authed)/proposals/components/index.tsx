@@ -16,6 +16,7 @@ import ProposalList from './proposal-list'
 import ProposalDetails from './proposal-details'
 import FloatingButtons from './floating-buttons'
 import { cn } from '@dallah/utils'
+import { getProfessionalAnalytics } from '@lib/api/pro/analytics'
 
 const getTimeAgo = (date: Date): string => {
   const now = new Date()
@@ -82,6 +83,14 @@ const getStatusDisplayText = (status: ProposalStatus): string => {
 }
 
 export function ProfessionalProposals() {
+  const { data: analytics } = useQuery({
+    queryKey: ['analytics', 'professional'],
+    queryFn: () =>
+      getProfessionalAnalytics({
+        from: '2022-09-27T18:00:00.000',
+        to: '"2025-09-27T18:00:00.000",',
+      }),
+  })
   const {
     data: proposals,
     isLoading,

@@ -12,10 +12,7 @@ import {
 import { usePathname } from 'next/navigation'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useAtom } from 'jotai'
-import { proMetaAtom } from '@lib/atoms/pro/meta'
-import { companyMetaAtom } from '@lib/atoms/company/meta'
 import type { Notification as NotificationType } from '@lib/types/navbar'
-
 import { globalAtom } from '@lib/atoms/global'
 
 const navItems = [

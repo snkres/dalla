@@ -37,7 +37,8 @@ export function CompanyProjectsView() {
   })
 
   const totalPages = Math.ceil(
-    ((data as unknown as GetAllCompanyProjectsRes)?.data[1].total || 0) / LIMIT,
+    ((data as unknown as GetAllCompanyProjectsRes)?.data[1]?.totalCount ?? 0) /
+      LIMIT,
   )
 
   const clearAllFilters = () => {
