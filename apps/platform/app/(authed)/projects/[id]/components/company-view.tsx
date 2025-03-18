@@ -10,25 +10,18 @@ import {
   AvatarImage,
   AvatarFallback,
 } from '@dallah/design-system'
-import { AnimatePresence, motion } from 'motion/react'
 import {
   Users,
   FileText,
-  CheckCircle,
-  ArrowRight,
   Plus,
-  Settings,
   DollarSign,
-  BarChart,
   ChevronRight,
   Star,
   MessageSquare,
-  Clock,
-  Loader2,
 } from 'lucide-react'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
-import { ProfessionalProjectView } from './professional-view'
+import { Link } from 'next-view-transitions'
 
 export function CompanyProjectView({
   project,
@@ -135,87 +128,21 @@ export function CompanyProjectView({
                     Professional Assigned
                   </h2>
                 </div>
-
-                {project.status === 'InProgress' ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2 text-xs text-[#1D8489] hover:bg-[#E0F2F2] hover:text-[#1D8489]/80"
-                    onClick={() => setActiveTab('team')}
-                  >
-                    View Details
-                    <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
-                  </Button>
-                ) : null}
               </div>
 
-              <ScrollArea className="h-56">
+              <ScrollArea className="h-64">
                 {project.status === 'InProgress' ? (
                   <ProjectAssignedProfessional project={project} />
                 ) : project.proposals && project.proposals.length > 0 ? (
                   // <ProjectProposals proposals={project.proposals} />
                   <></>
                 ) : (
-                  <div className="flex h-56 items-center justify-center p-5 text-sm text-gray-500">
+                  <div className="flex h-64 items-center justify-center p-5 text-sm text-gray-500">
                     No professional assigned yet
                   </div>
                 )}
               </ScrollArea>
             </div>
-            {project.status === 'InProgress' &&
-            process.env.NODE_ENV === 'development' ? (
-              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                <div className="flex items-center justify-between border-b border-gray-200 p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
-                      <Clock className="h-4 w-4 text-[#1D8489]" />
-                    </div>
-                    <h2 className="font-medium text-gray-900">Activity</h2>
-                  </div>
-                </div>
-
-                <ScrollArea className="h-[320px]">
-                  <div className="space-y-5 p-5">
-                    {/* {project.activities.map((activity) => (
-                    <div key={activity.id} className="flex gap-3">
-                      <ActivityIcon type={activity.type} />
-                      <div>
-                        <p className="text-sm text-gray-900">
-                          {activity.message}
-                        </p>
-                        <div className="mt-1 flex items-center text-xs text-gray-500">
-                          <Avatar className="mr-1 h-3.5 w-3.5">
-                            <AvatarImage
-                              src={activity.avatar}
-                              alt={activity.user}
-                            />
-                          </Avatar>
-                          <span>{activity.user}</span>
-                          <span className="mx-1.5">•</span>
-                          <span>{activity.time}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))} */}
-                  </div>
-                </ScrollArea>
-
-                <div className="border-t border-gray-200 p-4">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8 border border-gray-200">
-                      <AvatarImage
-                        src="https://randomuser.me/api/portraits/men/40.jpg"
-                        alt="You"
-                      />
-                      <AvatarFallback>Y</AvatarFallback>
-                    </Avatar>
-                    <Button className="h-9 flex-1 justify-start border border-gray-200 bg-gray-50 text-xs text-gray-500 hover:bg-gray-100">
-                      Add a comment...
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
       </TabsContent>
@@ -500,25 +427,32 @@ function ProjectAssignedProfessional({
           <div className="mt-3 flex gap-2">
             <Button
               size="sm"
-              className="h-8 bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]"
+              className="h-8 !bg-[#63B7B7] text-xs !text-white hover:!bg-[#1D8489]"
             >
               <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
               Message
             </Button>
 
-            <Button variant="outline" size="sm" className="h-8 text-xs">
-              View Profile
+            <Button
+              variant="outline"
+              size="sm"
+              className="!h-8 text-xs"
+              asChild
+            >
+              <Link href={`/professionals/${professional.username}`} prefetch>
+                View Profile
+              </Link>
             </Button>
           </div>
         </div>
       </div>
 
       {assignedProposal && (
-        <div className="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <div className="mt-4 flex flex-col rounded-lg border border-gray-200 bg-gray-50 p-4">
           <div className="mb-2 text-xs font-medium text-gray-500">
             Proposal Details
           </div>
-          <div className="flex justify-between text-sm">
+          <div className="flex flex-col justify-between text-sm">
             <div>
               Bid Amount:{' '}
               <span className="font-medium">
@@ -528,7 +462,7 @@ function ProjectAssignedProfessional({
             <div>
               Timeline:{' '}
               <span className="font-medium">
-                {assignedProposal.timeline} days
+                {assignedProposal.timeline ?? project.meta.duration}
               </span>
             </div>
           </div>

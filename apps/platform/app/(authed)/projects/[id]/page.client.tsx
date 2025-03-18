@@ -3,22 +3,21 @@
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 import { useQuery } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
-import { Loader2, Edit } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
-import { ProfessionalProjectView } from './components/professional-view'
 import { getProject } from '@lib/api/company/projects'
 import { Tabs, TabsList, TabsTrigger, Button } from '@dallah/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
+import { useTransitionRouter } from 'next-view-transitions'
 
 const companyTabs = ['overview', 'professional', 'files', 'budget']
 const professionalTabs = ['overview', 'company', 'team', 'files', 'budget']
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
-  const router = useRouter()
+  const router = useTransitionRouter()
   const [activeTab, setActiveTab] =
     useState<(typeof companyTabs)[number]>('overview')
   const [showEditModal, setShowEditModal] = useState(false)
