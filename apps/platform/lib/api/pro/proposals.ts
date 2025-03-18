@@ -1,4 +1,7 @@
+import { ProjectStatus } from '../company/projects'
 import { axiosInstance } from '../instance'
+
+export type ProposalStatus = 'Accepted' | 'Rejected' | 'Pending'
 
 interface CreateProjectProposalRes {
   data: Data
@@ -150,7 +153,8 @@ export type GetProposalByIdRes = {
     price: number
     timeline: string
     media: Array<string>
-    status: string
+    status: ProposalStatus
+
     createdAt: string
     updatedAt: string
     professional: {
@@ -178,7 +182,7 @@ export type GetProposalByIdRes = {
         duration: string
       }
       approved: boolean
-      status: string
+      status: ProjectStatus
       companyId: string
       assignedProfessionalId: any
       createdAt: string

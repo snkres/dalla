@@ -3,21 +3,19 @@ import ProposalCard from './proposal-card'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'
 interface ProposalListProps {
   proposals: GetAllProposalsRes['data'][0]
+  selectedTab: string
   selectedProposal: GetAllProposalsRes['data'][0][number] | null
   onSelectProposal: (proposal: GetAllProposalsRes['data'][0][number]) => void
-  searchQuery: string
-  onSearchChange: (query: string) => void
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({
   proposals,
+  selectedTab,
   selectedProposal,
   onSelectProposal,
-  onSearchChange,
-  searchQuery,
 }) => {
   return (
-    <div className="w-full overflow-hidden rounded-xl bg-white shadow-sm lg:col-span-2">
+    <div className="w-full overflow-hidden rounded-xl bg-white lg:col-span-2">
       <div className="w-full p-4">
         {Array.isArray(proposals) && proposals.length > 0 ? (
           <div className="space-y-4">
@@ -34,17 +32,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
           </div>
         ) : (
           <div className="rounded-lg bg-[#BEDDF1]/5 px-4 py-10 text-center">
-            <p className="text-gray-500">
-              No proposals match your search criteria.
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-4 border-[#63B7B7] text-[#63B7B7] hover:bg-[#63B7B7]/10"
-              onClick={() => onSearchChange('')}
-            >
-              Clear filters
-            </Button>
+            <p className="text-gray-500">No proposals is {selectedTab}.</p>
           </div>
         )}
       </div>

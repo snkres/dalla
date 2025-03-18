@@ -1,23 +1,36 @@
 import { Badge } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import { GetAllProposalsRes } from '@lib/api/pro/proposals'
-import { StatusBadgeProps } from '@lib/types/proposals'
+import { GetAllProposalsRes, ProposalStatus } from '@lib/api/pro/proposals'
+
+// Function to map API statuses to user-friendly display text
+const getStatusDisplayText = (status: string): string => {
+  switch (status) {
+    case 'Accepted':
+      return 'Accepted'
+    case 'Rejected':
+      return 'Rejected'
+    case 'Pending':
+      return 'Pending'
+    default:
+      return status
+  }
+}
 
 const StatusBadge: React.FC<{
   status: GetAllProposalsRes['data']['0'][number]['status']
 }> = ({ status }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Interviewing':
+      case 'Accepted':
         return '!bg-green-50 !text-green-600 !border-green-200'
-      case 'In review':
-        return '!bg-amber-50 !text-amber-600 !border-amber-200'
-      case 'Viewed':
-        return '!bg-blue-50 !text-blue-600 !border-blue-200'
+      case 'Rejected':
+        return '!bg-red-50 !text-red-600 !border-red-200'
+      case 'Pending':
       default:
-        return '!bg-gray-100 !text-gray-600 !border-gray-200'
+        return '!bg-amber-50 !text-amber-600 !border-amber-200'
     }
   }
+
   return (
     <Badge
       className={cn(
@@ -25,7 +38,7 @@ const StatusBadge: React.FC<{
         getStatusColor(status),
       )}
     >
-      {status}
+      {getStatusDisplayText(status)}
     </Badge>
   )
 }
