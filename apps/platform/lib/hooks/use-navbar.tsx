@@ -20,10 +20,10 @@ import { globalAtom } from '@lib/atoms/global'
 
 const navItems = [
   { icon: Home, label: 'Dashboard', href: '/' },
-  { icon: PencilLine, label: 'Proposals', href: '/proposals' },
-  { icon: Settings, label: 'Settings', href: '/settings' },
   { icon: Briefcase, label: 'Projects', href: '/projects' },
+  { icon: PencilLine, label: 'Proposals', href: '/proposals' },
   { icon: MessageCircle, label: 'Messages', href: '/messages' },
+  { icon: Settings, label: 'Settings', href: '/settings' },
 ]
 
 const accountItems = [
