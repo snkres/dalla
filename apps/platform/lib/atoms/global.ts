@@ -6,6 +6,7 @@ interface GlobalAtom {
   email: string
   username?: string
   name: string
+  avatar?: string
 }
 
 export const globalAtom = atomWithLocalForage<GlobalAtom>(

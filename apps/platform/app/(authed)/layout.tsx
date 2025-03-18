@@ -1,9 +1,13 @@
 'use client'
 import { Navbar } from '@components/layout/navbar'
-import { getCompanyProfile } from '@lib/api/company/profile'
-import { getOwnProProfile } from '@lib/api/pro/profile'
-import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
-import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
+import { getCompanyMeta, getCompanyProfile } from '@lib/api/company/profile'
+import { getProMeta } from '@lib/api/pro/profile'
+import {
+  CompanyMeta,
+  companyMetaAtom,
+  CompanyProfile,
+} from '@lib/atoms/company/meta'
+import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
@@ -15,8 +19,8 @@ import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
   const router = useTransitionRouter()
-  const [_, setProProfile] = useAtom(proProfileAtom)
-  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
+  const [_, setProMeta] = useAtom(proMetaAtom)
+  const [__, setCompanyMeta] = useAtom(companyMetaAtom)
   const [isLoading, setIsLoading] = useState(true)
   const [isDbReady, setIsDbReady] = useState(false)
 
@@ -60,15 +64,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [isDbReady, global.mode, router])
 
   const { data, isFetched, isError, error } = useQuery({
-    queryKey: ['profile', global.mode],
+    queryKey: ['meta', global.mode],
     staleTime: Infinity,
     queryFn: async () => {
       try {
         if (global.mode === 'user') {
-          const res = await getOwnProProfile()
+          const res = await getProMeta()
           return res.data
         } else if (global.mode === 'company') {
-          const res = await getCompanyProfile()
+          const res = await getCompanyMeta()
           return res.data
         }
         return null
@@ -100,20 +104,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     try {
       if (global.mode === 'user') {
+        const proData = data as ProMeta
         setGlobal({
           ...global,
-          id: (data as ProProfile).data.User.id,
-          email: (data as ProProfile).data.User.email,
-          username: (data as ProProfile).data.User.username,
-          name: (data as ProProfile).data.User.name,
+          id: proData.data.id,
+          email: proData.data.email,
+          username: proData.data.username,
+          name: proData.data.name,
           mode: 'user',
+          avatar: proData.data.UserProfile.avatar,
         })
-        setProProfile(data as ProProfile)
-        if (!(data as ProProfile).data.User.onboarded) {
+        setProMeta(proData)
+        if (!proData.data.onboarded) {
           router.push('/onboard')
         }
       } else {
-        const companyData = data as CompanyProfile
+        const companyData = data as CompanyMeta
 
         setGlobal({
           ...global,
@@ -122,11 +128,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           username: '',
           name: companyData.data?.name || 'Company',
           mode: 'company',
+          avatar: companyData.data?.CompanyProfile.logo || '',
         })
 
-        setCompanyProfile(companyData)
+        setCompanyMeta(companyData)
 
         console.log('Company onboarded status:', companyData.data?.onboarded)
+        console.log('Company data:', companyData.data)
         if (
           companyData.data?.onboarded !== undefined &&
           !companyData.data?.onboarded

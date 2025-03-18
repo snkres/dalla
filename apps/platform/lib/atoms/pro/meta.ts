@@ -1,4 +1,3 @@
-import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { atomWithLocalForage } from '../atom-with-localforge'
 import { Language } from '@lib/types/profile'
 
@@ -91,7 +90,40 @@ export type ProProfile = {
   timestamp: string
 }
 
-export const proProfileAtom = atomWithLocalForage<ProProfile>(
-  'dalla:pro:profile',
-  {} as ProProfile,
+export const proMetaAtom = atomWithLocalForage<ProMeta>(
+  'dalla:pro:meta',
+  {} as ProMeta,
 )
+export type ProMeta = {
+  statusCode: number
+  success: boolean
+  message: string
+  data: {
+    id: string
+    username: string
+    name: string
+    onboarded: boolean
+    email: string
+    UserProfile: {
+      headline: string
+      avatar: string
+      meta: {
+        phone: string
+        skills: Array<string>
+        location: string
+        socialLinks: {
+          github: string
+          linkedin: string
+        }
+        yearsOfExperience: number
+      }
+      precentage: number
+    }
+    _count: {
+      proposals: number
+    }
+  }
+  error: any
+  path: string
+  timestamp: string
+}

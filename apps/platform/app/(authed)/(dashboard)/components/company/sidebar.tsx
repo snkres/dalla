@@ -12,11 +12,11 @@ import {
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
-import { companyProfileAtom } from '@lib/atoms/company/profile'
+import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { useAtom } from 'jotai'
 
 export function Sidebar() {
-  const [profile] = useAtom(companyProfileAtom)
+  const [profile] = useAtom(companyMetaAtom)
   const quickLinks = [
     {
       icon: <FileText />,
@@ -53,12 +53,16 @@ export function Sidebar() {
 
           <div className="mb-4 grid grid-cols-2 gap-3">
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
-              <div className="text-base font-medium text-[#63B7B7]">8</div>
+              <div className="text-base font-medium text-[#63B7B7]">
+                {profile?.data?._count?.projects}
+              </div>
               <div className="text-xs text-gray-600">Active Projects</div>
             </div>
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
-              <div className="text-base font-medium text-[#63B7B7]">24</div>
-              <div className="text-xs text-gray-600">Hired Consultants</div>
+              <div className="text-base font-medium text-[#63B7B7]">
+                {profile?.data?._count?.projects}
+              </div>
+              <div className="text-xs text-gray-600">Hired Professionals</div>
             </div>
           </div>
 
