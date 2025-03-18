@@ -1,21 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import {
-  Button,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  Badge,
-} from '@dallah/design-system'
+import { Button, Badge, Skeleton } from '@dallah/design-system'
 import {
   Briefcase,
-  PlusCircle,
   ChevronDown,
   ChevronUp,
-  MoreHorizontal,
+  Loader2,
   MessageCircleMore,
 } from 'lucide-react'
 import ActiveProjectView from './active-project-view'
@@ -25,15 +17,16 @@ import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 
 interface ProjectOverviewProps {
   projects: GetAllCompanyProjectsRes['data']['0']
+  isLoading: boolean
   onPostJob: () => void
   onHireConsultant: () => void
 }
 export function ProjectsOverview({
   projects,
+  isLoading,
   onPostJob,
   onHireConsultant,
 }: ProjectOverviewProps) {
-  const [hasActiveProject, setHasActiveProject] = useState(projects.length > 0)
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [showProposals, setShowProposals] = useState(false)
   const [selectedProjectForProposals, setSelectedProjectForProposals] =
@@ -42,10 +35,6 @@ export function ProjectsOverview({
       title: string
       proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
     } | null>(null)
-
-  useEffect(() => {
-    setHasActiveProject(projects.length > 0)
-  }, [projects])
 
   const toggleProject = (projectId: string) => {
     if (expandedProject === projectId) {
@@ -99,7 +88,45 @@ export function ProjectsOverview({
         </div>
 
         <AnimatePresence mode="wait">
-          {hasActiveProject ? (
+          {isLoading ? (
+            <motion.div
+              key="loading-skeleton"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="divide-y divide-gray-100"
+            >
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={`skeleton-${item}`}
+                  className="border-b border-gray-100 last:border-b-0"
+                >
+                  <div className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-8 w-8 rounded-full" />
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Skeleton className="h-4 w-32" />
+                            <Skeleton className="h-4 w-24" />
+                          </div>
+                          <div className="mt-1.5 flex items-center gap-2">
+                            <Skeleton className="h-3 w-16" />
+                            <span className="text-xs text-gray-400">•</span>
+                            <Skeleton className="h-3 w-24" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-8 w-24" />
+                        <Skeleton className="h-8 w-8 rounded-md" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          ) : projects.length > 0 ? (
             <div key="projects-list">
               <div className="divide-y divide-gray-100">
                 {projects.map((project) => (

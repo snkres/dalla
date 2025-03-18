@@ -39,7 +39,7 @@ export default function CompanyHome() {
   const [selectedProfessional, setSelectedProfessional] = useState<
     GetAllProfessionalsRes['data'][0][number] | null
   >(null)
-  const { data: professionals, isLoading: professionalsLoading } = useQuery({
+  const { data: professionals, isFetched: professionalsFetched } = useQuery({
     queryKey: ['professionals', page],
     queryFn: () => getAllProfessionals(page, LIMIT),
   })
@@ -52,7 +52,11 @@ export default function CompanyHome() {
   const [showProfessionalDetail, setShowProfessionalDetail] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
 
-  const { data, refetch } = useQuery({
+  const {
+    data: projectsOverviewData,
+    refetch: refetchProjectsOverview,
+    isLoading: projectsOverviewLoading,
+  } = useQuery({
     queryKey: ['projects', page, 'company'],
     queryFn: () => getAllProjects(page, 5),
   })
@@ -61,7 +65,7 @@ export default function CompanyHome() {
     if (professionals?.data[0]) {
       setFilteredProfessionals(professionals.data[0])
     }
-  }, [professionals])
+  }, [professionalsFetched])
 
   const filterOptions = [
     {
@@ -156,7 +160,8 @@ export default function CompanyHome() {
           <div className="flex-1">
             <ProjectsOverview
               onPostJob={() => setShowAddProject(true)}
-              projects={data?.[0] || []}
+              projects={projectsOverviewData?.[0] || []}
+              isLoading={projectsOverviewLoading}
               onHireConsultant={() => {
                 /* Scroll to consultant list or navigate */
               }}
@@ -429,7 +434,7 @@ export default function CompanyHome() {
             key="add-project-modal"
             onClose={() => setShowAddProject(false)}
             onProjectCreated={() => {
-              refetch()
+              refetchProjectsOverview()
             }}
           />
         )}
