@@ -50,7 +50,7 @@ const ActiveProjectView = ({
               className="h-8 !border-[#63B7B7]/30 !text-xs !text-[#1D8489] hover:bg-[#E0F2F2]"
               asChild
             >
-              <Link href={`/projects/${project.id}`}>
+              <Link href={`/projects/${project.id}`} prefetch={true}>
                 <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />
                 Project Dashboard
               </Link>
@@ -122,35 +122,6 @@ const ActiveProjectView = ({
               )}
             </div>
           </div>
-
-          {project.assignedProfessionalId && (
-            <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
-              <div className="border-b border-amber-100 bg-amber-50 px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <BarChart className="h-4 w-4 text-amber-600" />
-                  <h4 className="text-sm font-medium text-amber-700">
-                    Progress
-                  </h4>
-                </div>
-              </div>
-              <div className="bg-white p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Completion</span>
-                  <span className="text-sm font-medium text-amber-600">
-                    {/* {project.meta.completion}% */}
-                  </span>
-                </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `100%` }}
-                    transition={{ duration: 0.5 }}
-                    className="h-full rounded-full bg-amber-500"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
@@ -178,6 +149,7 @@ const ActiveProjectView = ({
                         project.assignedProfessionalId,
                     )?.professional.username
                   }`}
+                  prefetch={true}
                 >
                   View Profile
                   <ChevronRight className="ml-1 h-3 w-3" />
@@ -253,9 +225,6 @@ const ActiveProjectView = ({
                     >
                       <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
                       Message
-                    </Button>
-                    <Button variant="outline" size="sm" className="h-8 text-xs">
-                      Schedule Call
                     </Button>
                   </div>
                 </div>
