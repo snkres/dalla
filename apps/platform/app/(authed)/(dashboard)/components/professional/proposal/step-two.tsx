@@ -195,7 +195,7 @@ export function StepTwo({
                       </Select>
                     </div>
                   </div>
-                  {(project.meta.budget || project.meta.timeline) && (
+                  {(project.meta.budget || project.meta.duration) && (
                     <div className="mb-6 rounded-xl border border-gray-100 bg-white p-4 shadow-md">
                       <div className="mb-2 flex items-center text-sm text-gray-700">
                         <AlertCircle className="mr-2 h-4 w-4 text-[#63B7B7]" />
@@ -215,7 +215,7 @@ export function StepTwo({
                             </div>
                           </div>
                         )}
-                        {project.meta.timeline && (
+                        {project.meta.duration && (
                           <div className="flex items-center rounded-lg border border-gray-100 bg-white p-3">
                             <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
                             <div>
@@ -223,7 +223,7 @@ export function StepTwo({
                                 Timeline
                               </span>
                               <span className="text-sm font-medium">
-                                {project.meta.timeline}
+                                {project.meta.duration}
                               </span>
                             </div>
                           </div>

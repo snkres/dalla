@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { motion } from 'motion/react'
-import type { Project } from '@lib/api/pro/projects'
 import { createProjectProposal } from '@lib/api/pro/proposals'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { ApplicationHeader } from './header'
@@ -13,9 +12,10 @@ import { SuccessScreen } from './success-screen'
 import { ApplicationSidebar } from './sidebar'
 import { NavigationButtons } from './navigation-buttons'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 
 interface ProjectApplicationProps {
-  project: Project
+  project: GetAllProjectsProfessionalViewRes['data'][0][number]
   onClose: () => void
 }
 
@@ -32,7 +32,7 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   const [bidAmount, setBidAmount] = useState(project.meta.budget)
 
   const [estimatedDuration, setEstimatedDuration] = useState(
-    project.meta?.timeline || '2-3 weeks',
+    project.meta?.duration || '2 weeks',
   )
   const defaultMilestones = [
     {

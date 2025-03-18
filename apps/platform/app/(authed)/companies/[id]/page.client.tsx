@@ -17,18 +17,19 @@ import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loading } from '@components/shared/dalla-loading'
 
 export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
   const isOwner = global.id === id
   const queryClient = useQueryClient()
   const { toast } = useToast()
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['company-profile', id],
     queryFn: () => getCompanyProfile(id),
     enabled: !isOwner,
   })
-  const { data: ownProfile } = useQuery({
+  const { data: ownProfile, isLoading: ownProfileLoading } = useQuery({
     queryKey: ['own-company-profile', id],
     queryFn: () => getOwnCompanyProfile(),
     enabled: isOwner,
@@ -95,6 +96,14 @@ export function CompanyProfileClient({ id }: { id: string }) {
 
     updateProfileMutation.mutate(apiPayload)
   }
+
+  if (isLoading || ownProfileLoading)
+    return (
+      <Loading
+        title="Loading profile..."
+        description="Please wait while we prepare the profile"
+      />
+    )
 
   if (!profile) return null
 

@@ -23,6 +23,7 @@ import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loading } from '@components/shared/dalla-loading'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
@@ -33,7 +34,7 @@ export function ProProfileClient({ username }: { username: string }) {
     queryFn: () => getProProfile(username),
     enabled: !isOwner,
   })
-  const { data: ownProfile } = useQuery({
+  const { data: ownProfile, isLoading: ownProfileLoading } = useQuery({
     queryKey: ['own-pro-profile', username],
     queryFn: () => getOwnProProfile(),
     enabled: isOwner,
@@ -120,7 +121,13 @@ export function ProProfileClient({ username }: { username: string }) {
     profileMutation.mutate(formattedData)
   }
 
-  if (isLoading) return <div>Loading profile...</div>
+  if (isLoading || ownProfileLoading)
+    return (
+      <Loading
+        title="Loading profile..."
+        description="Please wait while we prepare the profile"
+      />
+    )
   if (!profile) return null
 
   return (

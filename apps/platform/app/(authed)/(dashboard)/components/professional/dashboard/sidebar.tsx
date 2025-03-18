@@ -25,10 +25,10 @@ import {
   SidebarHeaderProps,
 } from '@lib/types/profile'
 import { useAtom } from 'jotai'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 
 export function ProfileSidebar() {
-  const [profile] = useAtom(proProfileAtom)
+  const [profile] = useAtom(proMetaAtom)
   if (!profile) return null
   const [isWindowFocused, setIsWindowFocused] = useState(true)
 
@@ -111,7 +111,7 @@ export function ProfileSidebar() {
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3 h-20 w-20 rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white ring-offset-1">
               <Image
-                src={profile?.data?.avatar || '/avatar.png'}
+                src={profile?.data?.UserProfile?.avatar || '/avatar.png'}
                 alt="Profile"
                 width={80}
                 height={80}
@@ -127,9 +127,11 @@ export function ProfileSidebar() {
               ></div>
             </div>
             <h3 className="mb-0.5 text-base font-medium text-gray-800">
-              {profile?.data?.User.name}
+              {profile?.data?.UserProfile?.headline}
             </h3>
-            <p className="text-xs text-gray-500">{profile?.data?.headline}</p>
+            <p className="text-xs text-gray-500">
+              {profile?.data?.UserProfile?.meta?.location}
+            </p>
           </div>
 
           <div className="mb-4 grid grid-cols-2 gap-3">
@@ -147,12 +149,12 @@ export function ProfileSidebar() {
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-600">Profile Completion</span>
               <span className="font-medium text-[#63B7B7]">
-                {profile?.data?.precentage}%
+                {profile?.data?.UserProfile?.precentage}%
               </span>
             </div>
             <div className="w-full">
               <Progress
-                value={profile?.data?.precentage}
+                value={profile?.data?.UserProfile?.precentage}
                 className="h-1.5 !bg-gray-100"
                 indicatorClassName="!bg-[#63B7B7]"
               />
@@ -163,7 +165,7 @@ export function ProfileSidebar() {
             className="h-9 w-full !bg-[#63B7B7] !text-sm font-normal transition-colors duration-200 hover:!bg-[#63B7B7]/90"
             asChild
           >
-            <Link href={`/professionals/${profile?.data?.User.username}`}>
+            <Link href={`/professionals/${profile?.data?.username}`}>
               View Profile
             </Link>
           </Button>

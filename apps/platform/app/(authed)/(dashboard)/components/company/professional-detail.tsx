@@ -13,9 +13,9 @@ import {
   Shield,
   X,
   FileText,
-  Award,
   Boxes,
 } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { useQuery } from '@tanstack/react-query'
@@ -63,8 +63,11 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8 rounded-full text-[#63B7B7]"
+          asChild
         >
-          <ExternalLink className="h-4 w-4" />
+          <Link href={`/professionals/${username}`} prefetch>
+            <ExternalLink className="h-4 w-4" />
+          </Link>
         </Button>
       </div>
 

@@ -2,11 +2,11 @@ import React from 'react'
 import { motion } from 'motion/react'
 import { CheckCircle } from 'lucide-react'
 import { Button } from '@dallah/design-system'
-import type { Project } from '@lib/api/pro/projects'
+import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { scaleIn } from '@components/aniamtion/animate'
 
 interface SuccessScreenProps {
-  project: Project
+  project: GetAllProjectsProfessionalViewRes['data'][0][number]
   onClose: () => void
 }
 
