@@ -22,11 +22,12 @@ import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
   const isOwner = global.username === username
+  const queryClient = useQueryClient()
   const { data: proProfile, isLoading } = useQuery({
     queryKey: ['pro-profile', username],
     queryFn: () => getProProfile(username),
@@ -46,42 +47,77 @@ export function ProProfileClient({ username }: { username: string }) {
 
   const profile = isOwner ? ownProfile?.data : proProfile?.data
 
-  const handleProfileUpdate = async (
-    updateData: any,
-    successMessage = 'Profile updated successfully',
-  ) => {
-    if (!isOwner) return
-
-    try {
-      console.log('updateData', updateData)
-      await updateProProfile({
-        ...updateData,
-        education: ownProfile?.data?.data.education?.map(
-          ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
-        ),
-        experience: ownProfile?.data?.data.experience?.map(
-          ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
-            ...exp,
-            meta: {
-              ...exp.meta,
-              skills: exp.meta.skills,
-            },
-          }),
-        ),
-      })
-
+  const profileMutation = useMutation({
+    mutationFn: updateProProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
       toast({
-        title: successMessage,
+        title: 'Profile updated successfully',
         description: 'Your profile has been updated successfully',
       })
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Failed to update profile:', error)
       toast({
         title: 'Update failed',
         description: 'There was a problem updating your profile',
         variant: 'destructive',
       })
+    },
+  })
+
+  const createProjectMutation = useMutation({
+    mutationFn: ({ proId, projectData }: { proId: string; projectData: any }) =>
+      createShowCaseProject(proId, projectData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
+    },
+    onError: (error) => {
+      console.error('Failed to create project:', error)
+    },
+  })
+
+  const updateProjectMutation = useMutation({
+    mutationFn: ({
+      proId,
+      projectId,
+      projectData,
+    }: {
+      proId: string
+      projectId: string
+      projectData: any
+    }) => updateShowCaseProject(proId, projectId, projectData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
+    },
+    onError: (error) => {
+      console.error('Failed to update project:', error)
+    },
+  })
+
+  const handleProfileUpdate = async (
+    updateData: any,
+    successMessage = 'Profile updated successfully',
+  ) => {
+    if (!isOwner) return
+
+    const formattedData = {
+      ...updateData,
+      education: ownProfile?.data?.data.education?.map(
+        ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+      ),
+      experience: ownProfile?.data?.data.experience?.map(
+        ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
+          ...exp,
+          meta: {
+            ...exp.meta,
+            skills: exp.meta.skills,
+          },
+        }),
+      ),
     }
+
+    profileMutation.mutate(formattedData)
   }
 
   if (isLoading) return <div>Loading profile...</div>
@@ -228,11 +264,11 @@ export function ProProfileClient({ username }: { username: string }) {
                   }
 
                   if (project.id) {
-                    await updateShowCaseProject(
-                      profile?.data?.id,
-                      project.id,
+                    await updateProjectMutation.mutateAsync({
+                      proId: profile?.data?.id,
+                      projectId: project.id,
                       projectData,
-                    )
+                    })
 
                     finalProjects.push({
                       id: project.id,
@@ -240,10 +276,10 @@ export function ProProfileClient({ username }: { username: string }) {
                     })
                   } else {
                     try {
-                      const response = await createShowCaseProject(
-                        profile?.data?.id,
+                      const response = await createProjectMutation.mutateAsync({
+                        proId: profile?.data?.id,
                         projectData,
-                      )
+                      })
 
                       const newProject = response.data.data
 

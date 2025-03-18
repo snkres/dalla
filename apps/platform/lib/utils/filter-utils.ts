@@ -8,7 +8,7 @@ export function applyFilters(
   selectedBudgetRange: [number, number],
   selectedDurations: string[],
   selectedLocations: string[],
-  selectedSkills: string[],
+  selectedSkills?: string[],
   sortAppliedToBottom = true,
 ): Project[] {
   let results = [...projects]
@@ -80,7 +80,7 @@ export function applyFilters(
       })
     }
 
-    if (selectedSkills.length > 0) {
+    if (selectedSkills && selectedSkills.length > 0) {
       results = results.filter((project) =>
         selectedSkills.some((skill) =>
           project.skills

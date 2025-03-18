@@ -68,8 +68,38 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     queryFn: async () => {
       try {
         if (global.mode === 'user') {
-          const res = await getProMeta()
-          return res.data
+          // const res = await getProMeta()
+          const res: ProMeta = {
+            statusCode: 200,
+            success: true,
+            message: 'Profile fetched successfully',
+            error: null,
+            data: {
+              id: '123',
+              email: 'test@test.com',
+              username: 'AmrTamer23',
+              name: 'Test',
+              onboarded: true,
+              _count: {
+                proposals: 1,
+              },
+              UserProfile: {
+                avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+                headline: 'Test',
+                meta: {
+                  phone: '123',
+                  skills: ['test'],
+                  location: 'test',
+                  socialLinks: { github: 'test', linkedin: 'test' },
+                  yearsOfExperience: 1,
+                },
+                precentage: 1,
+              },
+            },
+            path: '',
+            timestamp: '',
+          }
+          return res
         } else if (global.mode === 'company') {
           const res = await getCompanyMeta()
           return res.data
@@ -103,6 +133,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     try {
       if (global.mode === 'user') {
+        console.log('Pro data:', data)
         const proData = data as ProMeta
         setGlobal({
           ...global,

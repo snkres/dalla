@@ -17,11 +17,14 @@ import {
   TooltipTrigger,
 } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import type { Project } from '@lib/api/pro/projects'
+import type { GetAllProjectsRes } from '@lib/api/pro/projects'
 
 interface ProjectCardProps {
-  project: Project
-  onClick: (project: Project, e: React.MouseEvent) => void
+  project: GetAllProjectsRes['data'][0][number]
+  onClick: (
+    project: GetAllProjectsRes['data'][0][number],
+    e: React.MouseEvent,
+  ) => void
 }
 
 const CARD_ANIMATION = {
@@ -31,6 +34,7 @@ const CARD_ANIMATION = {
 }
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
+  console.log(project)
   const { title, company, description, skills, applied } = project
 
   const handleBookmark = (e: React.MouseEvent) => {

@@ -1,30 +1,40 @@
 import { axiosInstance } from '../instance'
 
-export type Project = {
-  id: string
-  title: string
-  jobTitle: string
-  description: string
-  skills: Array<string>
-  meta: {
-    budget: number
-    status: string
-    priority: string
-    timeline: string
-  }
-  createdAt: string
-  company: {
-    id: string
-    name: string
-  }
-  applied: boolean
-}
-
-export type AllProjectsRes = {
+export type GetAllProjectsRes = {
   statusCode: number
   success: boolean
   message: string
-  data: Array<Project>
+  data: [
+    Array<{
+      id: string
+      title: string
+      jobTitle: string
+      description: string
+      skills: Array<string>
+      meta: {
+        budget: number
+        duration: string
+      }
+      createdAt: string
+      company: {
+        id: string
+        name: string
+      }
+      _count: {
+        proposals: number
+      }
+      applied: boolean
+    }>,
+    {
+      isFirstPage: boolean
+      isLastPage: boolean
+      currentPage: number
+      previousPage: any
+      nextPage: any
+      pageCount: number
+      totalCount: number
+    },
+  ]
   error: any
   path: string
   timestamp: string
@@ -32,8 +42,8 @@ export type AllProjectsRes = {
 
 export async function getAllProjects() {
   const res = await axiosInstance
-    .get<AllProjectsRes>('/professionals/projects')
-    .then((res) => res.data.data)
+    .get<GetAllProjectsRes>('/professionals/projects')
+    .then((res) => res.data)
 
   return res
 }

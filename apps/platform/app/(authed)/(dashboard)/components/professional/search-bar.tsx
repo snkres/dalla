@@ -42,7 +42,7 @@ export function SearchBar({
       : 0) +
     selectedDurations.length +
     selectedLocations.length +
-    selectedSkills.length
+    (selectedSkills?.length || 0)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -110,9 +110,9 @@ export function SearchBar({
               selectedLocations={selectedLocations}
               setSelectedLocations={setSelectedLocations}
               locationOptions={locationOptions}
-              selectedSkills={selectedSkills}
-              setSelectedSkills={setSelectedSkills}
-              allSkills={allSkills}
+              // selectedSkills={selectedSkills || []}
+              // setSelectedSkills={setSelectedSkills}
+              // allSkills={allSkills}
             />
           )}
         </AnimatePresence>
