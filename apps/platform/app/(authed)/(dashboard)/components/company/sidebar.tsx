@@ -44,9 +44,11 @@ export function Sidebar() {
               <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white bg-green-500"></div>
             </div>
             <h3 className="mb-0.5 text-base font-medium text-gray-800">
-              TechSolutions Inc.
+              {profile?.data?.name}
             </h3>
-            <p className="text-xs text-gray-500">Technology & Software</p>
+            <p className="text-xs text-gray-500">
+              {profile?.data?.CompanyProfile?.headline}
+            </p>
           </div>
 
           <div className="mb-4 grid grid-cols-2 gap-3">
