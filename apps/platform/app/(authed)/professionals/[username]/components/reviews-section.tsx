@@ -22,73 +22,14 @@ import {
 import { motion, AnimatePresence } from 'motion/react'
 import { cn } from '@dallah/utils'
 import { Project, ProjectStatus } from '@lib/types/profile'
+import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 
-export function ReviewsSection() {
+export function ReviewsSection({
+  projects,
+}: {
+  projects: GetAllProjectsProfessionalViewRes['data'][0][number][]
+}) {
   const [activeTab, setActiveTab] = useState<ProjectStatus>('completed')
-
-  const projects: Project[] = [
-    {
-      date: 'March 05, 2024',
-      title: 'Digital Marketing Strategy',
-      subtask: 'Campaign Development',
-      progress: 60,
-      daysLeft: 2,
-      status: 'ongoing',
-      price: '$2,800',
-    },
-    {
-      date: 'March 08, 2024',
-      title: 'Social Media Campaign',
-      subtask: 'Content Creation',
-      progress: 80,
-      daysLeft: 5,
-      status: 'ongoing',
-      price: '$3,400',
-    },
-    {
-      date: 'Jan 15, 2024',
-      title: 'SEO Optimization',
-      subtask: 'Keyword Research',
-      progress: 100,
-      daysLeft: 0,
-      status: 'completed',
-      price: '$1,950',
-      testimonial: {
-        text: 'Outstanding SEO work that significantly improved our search rankings.',
-        author: 'Michael Chen',
-        company: 'GlobalReach Solutions',
-        rating: 5,
-      },
-    },
-    {
-      date: 'Feb 20, 2024',
-      title: 'Brand Identity Redesign',
-      subtask: 'Visual Identity',
-      progress: 100,
-      daysLeft: 0,
-      status: 'completed',
-      price: '$4,200',
-      testimonial: {
-        text: 'Exceptional strategy that transformed our online presence. The new brand looks amazing!',
-        author: 'Sarah Johnson',
-        company: 'TechGrowth Inc.',
-        rating: 4.8,
-      },
-    },
-    {
-      date: 'Dec 10, 2023',
-      title: 'Email Marketing Campaign',
-      subtask: 'Lead Generation',
-      progress: 100,
-      daysLeft: 0,
-      status: 'completed',
-      price: '$2,500',
-    },
-  ]
-
-  const filteredProjects = projects.filter(
-    (project) => project.status === activeTab,
-  )
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
@@ -136,8 +77,8 @@ export function ReviewsSection() {
             transition={{ duration: 0.2 }}
             className="space-y-6"
           >
-            {filteredProjects.length > 0 ? (
-              filteredProjects.map((project, index) => (
+            {projects.length > 0 ? (
+              projects.map((project, index) => (
                 <motion.div
                   key={`${project.title}-${index}`}
                   initial={{ opacity: 0, y: 10 }}
@@ -154,17 +95,19 @@ export function ReviewsSection() {
                         {project.title}
                       </h4>
                       <div className="mt-1 flex items-center text-sm">
-                        <span className="text-gray-600">{project.subtask}</span>
+                        <span className="text-gray-600">
+                          {project.jobTitle}
+                        </span>
                         <span className="mx-2 text-gray-300">•</span>
                         <span className="font-medium text-[#63B7B7]">
-                          {project.price}
+                          {project.meta.budget}
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-center justify-between sm:justify-end sm:space-x-3">
                       <span className="rounded-full bg-[#f5fafa] px-3 py-1 text-xs text-gray-500">
-                        {project.date}
+                        {project.meta.duration}
                       </span>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -207,7 +150,7 @@ export function ReviewsSection() {
                     </div>
                   </div>
 
-                  {project.testimonial && (
+                  {/* {project?.testimonial && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
@@ -218,7 +161,7 @@ export function ReviewsSection() {
                         <div className="flex-1">
                           <div className="mb-1 flex gap-1">
                             {Array.from({ length: 5 }).map((_, i) => {
-                              const rating = project.testimonial?.rating || 0
+                              const rating = project?.testimonial?.rating || 0
                               return (
                                 <Star
                                   key={i}
@@ -228,18 +171,18 @@ export function ReviewsSection() {
                             })}
                           </div>
                           <p className="mb-1 text-sm italic text-gray-700">
-                            {project.testimonial.text}
+                            {project?.testimonial?.text}
                           </p>
                           <div className="text-xs text-gray-500">
                             <span className="font-medium">
-                              {project.testimonial.author}
+                              {project?.testimonial.author}
                             </span>{' '}
                             · {project.testimonial.company}
                           </div>
                         </div>
                       </div>
                     </motion.div>
-                  )}
+                  )} */}
                 </motion.div>
               ))
             ) : (

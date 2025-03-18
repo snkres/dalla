@@ -320,7 +320,7 @@ export function ProProfileClient({ username }: { username: string }) {
               }
             }}
           />
-          <ReviewsSection />
+          <ReviewsSection projects={profile?.data?.User.projects || []} />
           <ExperienceSection
             experiences={profile?.data?.experience || []}
             onUpdate={(updatedExperiences) => {
