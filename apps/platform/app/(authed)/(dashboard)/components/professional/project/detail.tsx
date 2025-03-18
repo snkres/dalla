@@ -12,6 +12,9 @@ import {
   Link,
   Info,
   Users,
+  FileText,
+  Eye,
+  Download,
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
@@ -102,7 +105,7 @@ export function ProjectDetail({
         </div>
       </div>
 
-      <div className="flex h-full flex-col md:flex-row">
+      <div className="flex h-[calc(100%-57px)] flex-col overflow-hidden md:flex-row">
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6">
             <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-0">
@@ -215,11 +218,69 @@ export function ProjectDetail({
                 </div>
               </div>
             )}
+
+            {data?.media && data.media.length > 0 && (
+              <div className="mb-6 sm:mb-8">
+                <div className="mb-3 flex items-center gap-2 sm:mb-4">
+                  <FileText className="h-4 w-4 text-[#63B7B7]" />
+                  <h2 className="text-sm font-medium text-gray-900 sm:text-base">
+                    Project Files
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {data.media.map((file) => (
+                    <div
+                      key={file}
+                      className="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
+                    >
+                      <div className="mb-3 flex items-center">
+                        <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#BEDDF1]/20 shadow-sm">
+                          <FileText className="h-5 w-5 text-[#63B7B7]" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-medium text-gray-900">
+                            {file.split('/').pop() || file}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex justify-between border-t border-gray-200 pt-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 gap-1.5 text-xs text-[#63B7B7] hover:bg-[#BEDDF1]/20"
+                          onClick={() => window.open(file, '_blank')}
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          Preview
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 gap-1.5 text-xs text-gray-700 hover:bg-gray-50"
+                          onClick={() => {
+                            const link = document.createElement('a')
+                            link.href = file
+                            link.download = file.split('/').pop() || 'download'
+                            document.body.appendChild(link)
+                            link.click()
+                            document.body.removeChild(link)
+                          }}
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="w-full border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
-          <div className="sticky top-[73px] p-4 sm:p-5">
+        <div className="w-full border-t border-gray-100 bg-white md:w-[320px] md:overflow-y-auto md:border-l md:border-t-0">
+          <div className="p-4 sm:p-5 md:sticky md:top-0">
             {data?.applied ? (
               <div className="mb-4 rounded-lg bg-[#BEDDF1]/10 p-4 text-center">
                 <CheckCircle className="mx-auto mb-2 h-6 w-6 text-[#63B7B7]" />
@@ -310,26 +371,6 @@ export function ProjectDetail({
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mb-5 border-t border-gray-100 pt-4 sm:mb-6 sm:pt-5">
-              <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                <Link className="h-4 w-4 text-[#63B7B7]" />
-                <h3 className="text-sm font-medium text-gray-900 sm:text-base">
-                  Share project
-                </h3>
-              </div>
-              <div className="mb-2 flex items-center justify-between rounded-md bg-[#BEDDF1]/20 p-3">
-                <p className="w-4/5 truncate text-xs text-gray-600 sm:text-sm">
-                  https://dalla.com/projects/{data?.id}
-                </p>
-                <Button
-                  variant="ghost"
-                  className="h-auto p-0 text-xs text-[#63B7B7] hover:bg-transparent hover:text-[#63B7B7]/80"
-                >
-                  Copy
-                </Button>
               </div>
             </div>
 

@@ -12,6 +12,7 @@ export type GetAllProjectsProfessionalViewRes = {
       jobTitle: string
       description: string
       skills: Array<string>
+      media: Array<string>
       meta: {
         budget: number
         duration: string
@@ -67,6 +68,7 @@ export type GetProjectByIdRes = {
       budget: number
       duration: string
     }
+    media: Array<string>
     createdAt: string
     deliverables: string
     jobTitle: string
