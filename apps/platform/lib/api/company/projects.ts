@@ -16,6 +16,7 @@ export type GetAllCompanyProjectsRes = {
       jobTitle: string
       skills: Array<string>
       deliverables: string
+      media: Array<string>
       meta: {
         budget: number
         timeline: string
@@ -113,6 +114,7 @@ export type GetProjectRes = {
     title: string
     description: string
     skills: Array<string>
+    media: Array<string>
     meta: {
       budget: number
       timeline: string
@@ -200,6 +202,7 @@ export interface CreateProjectReq {
   scope: string
   skills: string[]
   title: string
+  media: Array<string>
   [property: string]: any
 }
 
@@ -222,6 +225,7 @@ export interface CreateProjectRes {
   path: string
   scope: string
   skills: string[]
+  media: Array<string>
   statusCode: number
   success: boolean
   timestamp: string
@@ -244,6 +248,7 @@ export interface CreateProjectData {
   status: string
   title: string
   updatedAt: string
+  media: Array<string>
   [property: string]: any
 }
 

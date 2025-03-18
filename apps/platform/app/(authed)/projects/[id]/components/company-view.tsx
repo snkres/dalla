@@ -22,6 +22,7 @@ import {
   Badge,
   ArrowRight,
   Settings,
+  Download,
 } from 'lucide-react'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
@@ -233,17 +234,17 @@ export function CompanyProjectView({
               <h2 className="font-medium text-gray-900">Project Files</h2>
             </div>
 
-            <Button className="h-9 gap-1.5 !bg-[#63B7B7] text-xs !text-white hover:!bg-[#1D8489]">
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
-              Upload File
-            </Button>
+            {/* <Button className="h-9 gap-1.5 !bg-[#63B7B7] text-xs !text-white hover:!bg-[#1D8489]">
+                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                Upload File
+              </Button> */}
           </div>
 
           <div className="p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {/* {project.files.map((file) => (
+              {project.media.map((file) => (
                 <div
-                  key={file.id}
+                  key={file}
                   className="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
                 >
                   <div className="mb-3 flex items-center">
@@ -252,15 +253,9 @@ export function CompanyProjectView({
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium text-gray-900">
-                        {file.name}
+                        {file}
                       </div>
-                      <div className="text-xs text-gray-500">{file.size}</div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <div>Uploaded: {file.uploadDate}</div>
-                    <div>By: {file.uploadedBy}</div>
                   </div>
 
                   <div className="mt-3 flex justify-between border-t border-gray-200 pt-3">
@@ -268,6 +263,7 @@ export function CompanyProjectView({
                       variant="ghost"
                       size="sm"
                       className="h-8 gap-1.5 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
+                      onClick={() => window.open(file, '_blank')}
                     >
                       <Eye className="h-3.5 w-3.5" />
                       Preview
@@ -276,13 +272,21 @@ export function CompanyProjectView({
                       variant="ghost"
                       size="sm"
                       className="h-8 gap-1.5 text-xs text-gray-700 hover:bg-gray-100"
+                      onClick={() => {
+                        const link = document.createElement('a')
+                        link.href = file
+                        link.download = file.split('/').pop() || 'download'
+                        document.body.appendChild(link)
+                        link.click()
+                        document.body.removeChild(link)
+                      }}
                     >
                       <Download className="h-3.5 w-3.5" />
                       Download
                     </Button>
                   </div>
                 </div>
-              ))} */}
+              ))}
             </div>
           </div>
         </div>

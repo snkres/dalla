@@ -14,6 +14,7 @@ import { Textarea } from '@dallah/design-system'
 import { updateProject } from '@lib/api/company/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { SkillSelector } from '@components/shared/skill-selector'
+import MultiImageUpload from '@components/shared/multiImage-upload'
 import type { GetProjectRes } from '@lib/api/company/projects'
 import {
   Select,
@@ -48,6 +49,7 @@ export function EditProject({
     scope: '',
     deliverables: '',
     skills: [] as string[],
+    media: [] as string[],
     meta: {
       budget: '',
       timelineValue: '1',
@@ -81,6 +83,7 @@ export function EditProject({
         scope: project.scope || '',
         deliverables: project.deliverables || '',
         skills: project.skills || [],
+        media: project.media || [],
         meta: {
           budget: project.meta?.budget?.toString() || '',
           timelineValue,
@@ -128,6 +131,13 @@ export function EditProject({
     setFormData({
       ...formData,
       skills,
+    })
+  }
+
+  const handleMediaChange = (media: string[]) => {
+    setFormData({
+      ...formData,
+      media,
     })
   }
 
@@ -185,6 +195,7 @@ export function EditProject({
         scope: formData.scope || formData.description,
         deliverables: formData.deliverables || 'To be determined',
         skills: formData.skills,
+        media: formData.media,
         meta: {
           budget: Number(formData.meta.budget),
           duration: timeline,
@@ -386,6 +397,16 @@ export function EditProject({
                 onChange={handleInputChange}
                 rows={3}
                 className="w-full"
+              />
+            </div>
+
+            <div>
+              <MultiImageUpload
+                images={formData.media}
+                onImagesChange={handleMediaChange}
+                maxImages={5}
+                label="Project Media"
+                allowPdf={true}
               />
             </div>
 

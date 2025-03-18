@@ -20,6 +20,7 @@ import {
 import { createProject, CreateProjectReq } from '@lib/api/company/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { SkillSelector } from '@components/shared/skill-selector'
+import MultiImageUpload from '@components/shared/multiImage-upload'
 
 const SLIDE_ANIMATION = {
   initial: { x: '100%' },
@@ -27,14 +28,6 @@ const SLIDE_ANIMATION = {
   exit: { x: '100%' },
   transition: { type: 'spring', damping: 25, stiffness: 300 },
 }
-
-const SELECTED_SKILLS = [
-  'React',
-  'TypeScript',
-  'CSS',
-  'UI/UX Design',
-  'Testing',
-]
 
 export function AddProject({
   onClose,
@@ -52,6 +45,7 @@ export function AddProject({
     scope: '',
     deliverables: '',
     skills: [] as string[],
+    media: [] as string[],
     meta: {
       budget: '',
       timelineValue: '1',
@@ -98,6 +92,13 @@ export function AddProject({
     setFormData({
       ...formData,
       skills,
+    })
+  }
+
+  const handleMediaChange = (media: string[]) => {
+    setFormData({
+      ...formData,
+      media,
     })
   }
 
@@ -155,6 +156,7 @@ export function AddProject({
         scope: formData.scope || formData.description,
         deliverables: formData.deliverables || 'To be determined',
         skills: formData.skills,
+        media: formData.media,
         meta: {
           budget: Number(formData.meta.budget),
           duration: timeline,
@@ -359,6 +361,16 @@ export function AddProject({
                 onChange={handleInputChange}
                 rows={3}
                 className="w-full"
+              />
+            </div>
+
+            <div>
+              <MultiImageUpload
+                images={formData.media}
+                onImagesChange={handleMediaChange}
+                maxImages={5}
+                label="Project Media"
+                allowPdf={true}
               />
             </div>
 
