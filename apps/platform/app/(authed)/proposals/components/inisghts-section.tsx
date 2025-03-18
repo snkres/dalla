@@ -7,9 +7,7 @@ import { Progress } from '@dallah/design-system'
 
 interface InsightsSectionProps {
   data: {
-    proposalViews: number
     competingProposals: number
-    interviewRate: number
   }
   isExpanded: boolean
   onToggle: () => void
@@ -98,23 +96,6 @@ const InsightsSection: React.FC<InsightsSectionProps> = ({
         />
       </div> */}
     </div>
-    {data.interviewRate && (
-      <div className="mt-4 rounded-lg bg-[#BEDDF1]/10 p-4">
-        <div className="mb-2 flex items-center justify-between">
-          <p className="flex items-center text-sm text-gray-600">
-            <TrendingUp className="mr-1.5 h-4 w-4 text-[#63B7B7]" />
-            Interview rate
-          </p>
-          <span className="text-sm font-medium text-[#63B7B7]">
-            {data.interviewRate}
-          </span>
-        </div>
-        <p className="text-xs text-gray-500">
-          This is the percentage of similar proposals that progress to
-          interviews
-        </p>
-      </div>
-    )}
   </ExpandableSection>
 )
 

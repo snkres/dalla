@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+
 import { Button } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import {
   Send,
   DollarSign,
@@ -14,38 +15,89 @@ import {
   Clock,
   Briefcase,
   Building,
+  Loader2,
 } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import Image from 'next/image'
+import { GetProjectRes } from '@lib/api/company/projects'
+import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
+import { createProjectProposal } from '@lib/api/pro/proposals'
+import { useAtom } from 'jotai'
+import { useTransitionRouter } from 'next-view-transitions'
 
-export function ProfessionalProjectView({ project }: { project: any }) {
-  const router = useRouter()
+export function ProfessionalProjectView({
+  project,
+}: {
+  project: GetProjectRes['data']
+}) {
+  const router = useTransitionRouter()
+  const { toast } = useToast()
+  const [meta, setMeta] = useAtom(proMetaAtom)
   const [isApplying, setIsApplying] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [proposal, setProposal] = useState({
     description: '',
     price: '',
     timeline: '',
   })
 
+  // Form validation
+  const isFormValid =
+    proposal.description.trim().length >= 50 &&
+    Number(proposal.price) > 0 &&
+    proposal.timeline.trim().length > 0
+
   // Check if the professional has already applied to this project
-  const hasApplied = project.proposals?.some(
-    (p: any) => p.professionalId === project.professionalId, // Assuming current user ID is available
-  )
+  const hasApplied = project.applied
 
   // Check if the professional is assigned to this project
-  const isAssigned = project.assignedProfessionalId === project.professionalId
+  const isAssigned = project.professional?.id === meta?.data.id
 
   const handleApply = async () => {
-    // Implement proposal submission logic
-    try {
-      // Submit proposal API call would go here
+    if (!isFormValid) {
+      toast({
+        title: 'Incomplete proposal',
+        description: 'Please fill out all fields with valid information.',
+        variant: 'destructive',
+      })
+      return
+    }
 
-      // For demo purposes:
-      setTimeout(() => {
-        setIsApplying(false)
-        router.refresh()
-      }, 1000)
+    setIsSubmitting(true)
+
+    try {
+      // Prepare the payload for API
+      const payload = {
+        price: Number(proposal.price),
+        timeline: proposal.timeline,
+        description: proposal.description,
+        relevantProjects: [],
+        media: [], // No media attachments in this simplified version
+      }
+
+      // Submit proposal to API
+      const response = await createProjectProposal(project.id, payload)
+
+      // Show success message
+      toast({
+        title: 'Proposal submitted',
+        description:
+          'Your proposal has been successfully submitted to the client.',
+      })
+
+      // Close the form and refresh the page to reflect the updated state
+      setIsApplying(false)
+      router.refresh()
     } catch (error) {
       console.error('Error submitting proposal:', error)
+      toast({
+        title: 'Submission failed',
+        description:
+          'There was an error submitting your proposal. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -68,6 +120,11 @@ export function ProfessionalProjectView({ project }: { project: any }) {
               setProposal({ ...proposal, description: e.target.value })
             }
           />
+          {proposal.description && proposal.description.length < 50 && (
+            <p className="mt-1 text-xs text-red-500">
+              Please provide a detailed description (minimum 50 characters)
+            </p>
+          )}
         </div>
 
         <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -86,6 +143,11 @@ export function ProfessionalProjectView({ project }: { project: any }) {
                   setProposal({ ...proposal, price: e.target.value })
                 }
               />
+              {proposal.price && Number(proposal.price) <= 0 && (
+                <p className="mt-1 text-xs text-red-500">
+                  Please enter a valid price
+                </p>
+              )}
             </div>
           </div>
 
@@ -103,6 +165,11 @@ export function ProfessionalProjectView({ project }: { project: any }) {
                   setProposal({ ...proposal, timeline: e.target.value })
                 }
               />
+              {proposal.timeline && proposal.timeline.trim().length === 0 && (
+                <p className="mt-1 text-xs text-red-500">
+                  Please provide a timeline estimate
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -111,15 +178,26 @@ export function ProfessionalProjectView({ project }: { project: any }) {
           <Button
             className="bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
             onClick={handleApply}
+            disabled={isSubmitting}
           >
-            <Send className="mr-2 h-4 w-4" />
-            Submit Proposal
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Submit Proposal
+              </>
+            )}
           </Button>
 
           <Button
             variant="outline"
             className="border-gray-300 text-gray-700 hover:bg-gray-50"
             onClick={() => setIsApplying(false)}
+            disabled={isSubmitting}
           >
             Cancel
           </Button>
@@ -161,8 +239,7 @@ export function ProfessionalProjectView({ project }: { project: any }) {
               </h3>
 
               <p className="mt-1 text-sm text-gray-500">
-                {project.company?.CompanyProfile?.meta?.industry || 'Industry'}{' '}
-                •{project.company?.CompanyProfile?.location || 'Location'}
+                {project.company?.CompanyProfile?.location || 'Location'}
               </p>
 
               <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
@@ -181,12 +258,12 @@ export function ProfessionalProjectView({ project }: { project: any }) {
                   </p>
                 </div>
 
-                <div>
+                {/* <div>
                   <span className="text-gray-500">Company size</span>
                   <p className="font-medium text-gray-900">
                     {project.company?.CompanyProfile?.meta?.size || 'N/A'}
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -222,13 +299,13 @@ export function ProfessionalProjectView({ project }: { project: any }) {
               You've submitted a proposal
             </h3>
             <p className="mb-4 text-sm text-gray-600">
-              The client is reviewing your proposal. You'll be notified if they
+              The company is reviewing your proposal. You'll be notified if they
               respond.
             </p>
             <Button
               variant="outline"
               className="mt-2 border-[#63B7B7] text-[#63B7B7] hover:bg-[#63B7B7]/10"
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push('/proposals')}
             >
               View My Proposals
             </Button>
@@ -246,17 +323,17 @@ export function ProfessionalProjectView({ project }: { project: any }) {
               this job.
             </p>
             <Button
-              className="mt-2 bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
-              onClick={() => setIsApplying(true)}
+              className="mt-2 !bg-[#63B7B7] text-white hover:!bg-[#63B7B7]/90"
+              asChild
             >
-              Submit a Proposal
+              <Link href={`/?projectId=${project.id}`}>Submit a Proposal</Link>
             </Button>
           </div>
         )}
       </div>
 
       {/* Similar Projects (optional) */}
-      {!isAssigned && !hasApplied && (
+      {/* {!isAssigned && !hasApplied && (
         <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
           <div className="border-b border-gray-100 px-6 py-4">
             <h2 className="flex items-center text-base font-medium text-gray-900">
@@ -302,7 +379,7 @@ export function ProfessionalProjectView({ project }: { project: any }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   )
 }

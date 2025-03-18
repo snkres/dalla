@@ -16,9 +16,9 @@ export interface SearchBarProps {
   selectedLocations: string[]
   setSelectedLocations: (locations: string[]) => void
   locationOptions: Option[]
-  selectedSkills: string[]
-  setSelectedSkills: (skills: string[]) => void
-  allSkills: string[]
+  selectedSkills?: string[]
+  setSelectedSkills?: (skills?: string[]) => void
+  allSkills?: string[]
   handleResetFilters: () => void
 }
 
@@ -40,7 +40,7 @@ export interface FilterPanelProps {
   selectedLocations: string[]
   setSelectedLocations: (locations: string[]) => void
   locationOptions: Option[]
-  selectedSkills: string[]
-  setSelectedSkills: (skills: string[]) => void
-  allSkills: string[]
+  selectedSkills?: string[]
+  setSelectedSkills?: (skills?: string[]) => void
+  allSkills?: string[]
 }

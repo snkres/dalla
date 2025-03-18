@@ -14,7 +14,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import type { ProProfile } from '@lib/atoms/pro/profile'
+import type { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
 
 export function EducationSection({

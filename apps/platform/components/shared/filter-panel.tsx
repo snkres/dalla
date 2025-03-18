@@ -48,10 +48,10 @@ export function FilterPanel({
   }
 
   const handleSkillChange = (skill: string) => {
-    setSelectedSkills(
-      selectedSkills.includes(skill)
+    setSelectedSkills?.(
+      selectedSkills?.includes(skill)
         ? selectedSkills.filter((item) => item !== skill)
-        : [...selectedSkills, skill],
+        : [...(selectedSkills || []), skill],
     )
   }
 
@@ -176,14 +176,14 @@ export function FilterPanel({
           className="mb-4"
         >
           <div className="flex flex-wrap gap-2">
-            {allSkills.map((skill, idx) => (
+            {allSkills?.map((skill, idx) => (
               <Button
                 key={idx}
                 variant="outline"
                 size="sm"
                 className={cn(
                   'rounded-full text-xs font-normal',
-                  selectedSkills.includes(skill)
+                  selectedSkills?.includes(skill) ?? false
                     ? 'border-[#63B7B7]/30 bg-[#BEDDF1]/20 text-[#63B7B7]'
                     : 'bg-white text-gray-700 hover:border-[#63B7B7]/20 hover:bg-[#BEDDF1]/10',
                 )}

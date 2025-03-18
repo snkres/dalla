@@ -1,4 +1,4 @@
-import { ProProfile } from '@lib/atoms/pro/profile'
+import { ProProfile } from '@lib/atoms/pro/meta'
 import { axiosInstance } from '../instance'
 
 export type ProjectStatus = 'Open' | 'Closed' | 'InProgress' | 'Completed'
@@ -16,6 +16,7 @@ export type GetAllCompanyProjectsRes = {
       jobTitle: string
       skills: Array<string>
       deliverables: string
+      media: Array<string>
       meta: {
         budget: number
         timeline: string
@@ -88,7 +89,7 @@ export type GetAllCompanyProjectsRes = {
       currentPage: number
       previousPage: any
       nextPage: any
-      total: number
+      totalCount: number
     },
   ]
   error: any
@@ -97,11 +98,9 @@ export type GetAllCompanyProjectsRes = {
 }
 
 export const getAllProjects = async (page: number, limit: number) => {
-  const res = await axiosInstance
-    .get<GetAllCompanyProjectsRes>(
-      `/company/projects?page=${page}&limit=${limit}`,
-    )
-    .then((res) => res.data.data)
+  const res = await axiosInstance.get<GetAllCompanyProjectsRes>(
+    `/company/projects?page=${page}&limit=${limit}`,
+  )
 
   return res
 }
@@ -115,6 +114,7 @@ export type GetProjectRes = {
     title: string
     description: string
     skills: Array<string>
+    media: Array<string>
     meta: {
       budget: number
       timeline: string
@@ -137,6 +137,7 @@ export type GetProjectRes = {
       }
       CompanyProfile: {
         location: string
+        logo: string
       }
     }
     proposals: Array<{
@@ -178,6 +179,7 @@ export type GetProjectRes = {
         meta: ProProfile['data']['meta']
       }
     }
+    applied: boolean
   }
   error: any
   path: string
@@ -200,6 +202,7 @@ export interface CreateProjectReq {
   scope: string
   skills: string[]
   title: string
+  media: Array<string>
   [property: string]: any
 }
 
@@ -222,6 +225,7 @@ export interface CreateProjectRes {
   path: string
   scope: string
   skills: string[]
+  media: Array<string>
   statusCode: number
   success: boolean
   timestamp: string
@@ -244,6 +248,7 @@ export interface CreateProjectData {
   status: string
   title: string
   updatedAt: string
+  media: Array<string>
   [property: string]: any
 }
 

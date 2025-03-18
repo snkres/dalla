@@ -2,11 +2,13 @@ import React from 'react'
 import { motion } from 'motion/react'
 import {
   Award,
-  Flame,
+  Bookmark,
   DollarSign,
   Clock,
   MapPin,
   CheckCircle,
+  Calendar,
+  Building,
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
@@ -16,12 +18,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
-import type { Project } from '@lib/api/pro/projects'
+import { calculateDaysSince, cn } from '@dallah/utils'
+import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ProjectCardProps {
-  project: Project
-  onClick: (project: Project, e: React.MouseEvent) => void
+  project: GetAllProjectsProfessionalViewRes['data'][0][number]
+  onClick: (
+    project: GetAllProjectsProfessionalViewRes['data'][0][number],
+    e: React.MouseEvent,
+  ) => void
 }
 
 const CARD_ANIMATION = {
@@ -43,15 +49,20 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
       {...CARD_ANIMATION}
       onClick={(e) => onClick(project, e)}
       className={cn(
-        'overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md',
+        'group cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-[#63B7B7]/40 hover:shadow-md',
         applied ? 'border-l-4 border-l-[#63B7B7]' : '',
       )}
     >
       <div className="flex h-full flex-col p-5">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-base font-medium text-gray-900">{title}</h3>
-            <p className="mt-1 text-sm text-gray-500">{company.name}</p>
+            <h3 className="text-base font-medium text-gray-900 transition-colors group-hover:text-[#1D8489]">
+              {title}
+            </h3>
+            <div className="mt-1 flex items-center gap-2">
+              <Building className="h-3.5 w-3.5 text-gray-400" />
+              <p className="text-sm text-gray-500">{company.name}</p>
+            </div>
             {applied && (
               <Badge className="mt-2 rounded-md border-none !bg-[#BEDDF1]/20 px-2 py-0.5 text-xs font-normal text-[#63B7B7]">
                 <CheckCircle className="mr-1 h-3 w-3" />
@@ -66,24 +77,11 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             onClick={handleBookmark}
             aria-label="Save this project"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-bookmark"
-            >
-              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-            </svg>
+            <Bookmark className="h-4 w-4" />
           </Button>
         </div>
 
-        <p className="mb-5 line-clamp-2 flex-grow text-sm text-gray-600">
+        <p className="mb-5 line-clamp-3 flex-grow text-ellipsis text-sm text-gray-600">
           {description}
         </p>
 
@@ -104,13 +102,15 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
         </div>
 
         <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
-          <div className="grid grid-cols-3 gap-3 text-sm text-gray-600">
+          <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
                     <DollarSign className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{project.meta.budget}</span>
+                    <span className="truncate font-medium">
+                      {formatCurrency(project.meta.budget || 0)}
+                    </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -122,12 +122,14 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
               </Tooltip>
             </TooltipProvider>
 
-            {/* <TooltipProvider>
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
-                    <Clock className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{project.meta.priority}</span>
+                    <Calendar className="h-4 w-4 text-[#63B7B7]" />
+                    <span className="truncate">
+                      {project.meta.duration || 'Not specified'}
+                    </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent
@@ -137,34 +139,16 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                   <p>Project Duration</p>
                 </TooltipContent>
               </Tooltip>
-            </TooltipProvider> */}
-
-            {/* <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex cursor-help items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-[#63B7B7]" />
-                    <span className="truncate">{project.location}</span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="bottom"
-                  className="bg-[#1D8489] text-white"
-                >
-                  <p>Work Location</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider> */}
+            </TooltipProvider>
           </div>
           <div className="whitespace-nowrap text-xs text-gray-400">
-            Posted{' '}
+            <Clock className="mr-1 inline-block h-3 w-3" />
             {new Date(project.createdAt).toLocaleDateString('en-UK', {
+              day: 'numeric',
+              month: 'short',
               year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
+            })}{' '}
+            - {calculateDaysSince(new Date(project.createdAt))}
           </div>
         </div>
       </div>

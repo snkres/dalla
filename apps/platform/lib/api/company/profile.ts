@@ -1,8 +1,16 @@
-import { CompanyProfile } from '@lib/atoms/company/profile'
+import { CompanyMeta, CompanyProfile } from '@lib/atoms/company/meta'
 import { axiosInstance } from '../instance'
 
-export async function getCompanyProfile() {
+export async function getOwnCompanyProfile() {
   let res = await axiosInstance.get<CompanyProfile>('/company/profile')
+
+  return res
+}
+
+export async function getCompanyProfile(id: string) {
+  let res = await axiosInstance.get<CompanyProfile>(
+    `/professionals/company/${id}`,
+  )
 
   return res
 }
@@ -18,6 +26,12 @@ export async function updateCompanyProfile(
 
   console.log('payload', payload)
   console.log('res', res)
+
+  return res
+}
+
+export async function getCompanyMeta() {
+  let res = await axiosInstance.get<CompanyMeta>('/company/profile/meta')
 
   return res
 }

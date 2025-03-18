@@ -1,8 +1,14 @@
-import { ProProfile } from '@lib/atoms/pro/profile'
+import { ProMeta, ProProfile } from '@lib/atoms/pro/meta'
 import { axiosInstance } from '../instance'
 
 export async function getOwnProProfile() {
   let res = await axiosInstance.get<ProProfile>('/professionals/profile')
+
+  return res
+}
+
+export async function getProMeta() {
+  let res = await axiosInstance.get<ProMeta>('/professionals/profile/meta')
 
   return res
 }

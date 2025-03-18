@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { CompanyProfileClient } from './page.client'
 
 interface CompanyProfileProps {
@@ -7,5 +8,9 @@ interface CompanyProfileProps {
 export default async function CompanyProfile({ params }: CompanyProfileProps) {
   const { id } = await params
 
-  return <CompanyProfileClient id={id} />
+  return (
+    <Suspense>
+      <CompanyProfileClient id={id} />
+    </Suspense>
+  )
 }

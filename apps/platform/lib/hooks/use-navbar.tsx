@@ -12,18 +12,15 @@ import {
 import { usePathname } from 'next/navigation'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { useAtom } from 'jotai'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
-import { companyProfileAtom } from '@lib/atoms/company/profile'
 import type { Notification as NotificationType } from '@lib/types/navbar'
-
 import { globalAtom } from '@lib/atoms/global'
 
 const navItems = [
   { icon: Home, label: 'Dashboard', href: '/' },
-  { icon: PencilLine, label: 'Proposals', href: '/proposals' },
-  { icon: Settings, label: 'Settings', href: '/settings' },
   { icon: Briefcase, label: 'Projects', href: '/projects' },
+  { icon: PencilLine, label: 'Proposals', href: '/proposals' },
   { icon: MessageCircle, label: 'Messages', href: '/messages' },
+  { icon: Settings, label: 'Settings', href: '/settings' },
 ]
 
 const accountItems = [
@@ -43,8 +40,7 @@ export const useNavbar = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const [notifications, setNotifications] = useState<NotificationType[]>([])
   const [global] = useAtom(globalAtom)
-  const [proProfile] = useAtom(proProfileAtom)
-  const [companyProfile] = useAtom(companyProfileAtom)
+
   const profileMenuRef = useRef<HTMLDivElement>(null)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const notificationsRef = useRef<HTMLDivElement>(null)
@@ -104,18 +100,6 @@ export const useNavbar = () => {
 
     return items
   }, [global.mode])
-
-  const userProfile = useMemo(
-    () => ({
-      name: global?.name || '',
-      email: global?.email || '',
-      avatar:
-        global?.mode === 'user'
-          ? proProfile?.data?.avatar || '/avatar.png'
-          : companyProfile?.data?.CompanyProfile?.logo || '/avatar.png',
-    }),
-    [global, proProfile?.data, companyProfile?.data],
-  )
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -216,7 +200,6 @@ export const useNavbar = () => {
     searchQuery,
     notifications,
     unreadCount: 0,
-    userProfile,
     getNotificationIcon,
     toggleProfileMenu,
     toggleMobileMenu,

@@ -13,6 +13,8 @@ import {
   Clock,
   Award,
   ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import { Button, Input } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
@@ -39,7 +41,7 @@ export default function CompanyHome() {
   const [selectedProfessional, setSelectedProfessional] = useState<
     GetAllProfessionalsRes['data'][0][number] | null
   >(null)
-  const { data: professionals, isLoading: professionalsLoading } = useQuery({
+  const { data: professionals, isFetched: professionalsFetched } = useQuery({
     queryKey: ['professionals', page],
     queryFn: () => getAllProfessionals(page, LIMIT),
   })
@@ -52,7 +54,11 @@ export default function CompanyHome() {
   const [showProfessionalDetail, setShowProfessionalDetail] = useState(false)
   const [activeFilter, setActiveFilter] = useState('all')
 
-  const { data, refetch } = useQuery({
+  const {
+    data: projectsOverviewData,
+    refetch: refetchProjectsOverview,
+    isLoading: projectsOverviewLoading,
+  } = useQuery({
     queryKey: ['projects', page, 'company'],
     queryFn: () => getAllProjects(page, 5),
   })
@@ -61,7 +67,7 @@ export default function CompanyHome() {
     if (professionals?.data[0]) {
       setFilteredProfessionals(professionals.data[0])
     }
-  }, [professionals])
+  }, [professionalsFetched])
 
   const filterOptions = [
     {
@@ -156,7 +162,8 @@ export default function CompanyHome() {
           <div className="flex-1">
             <ProjectsOverview
               onPostJob={() => setShowAddProject(true)}
-              projects={data?.[0] || []}
+              projects={projectsOverviewData?.data.data[0] || []}
+              isLoading={projectsOverviewLoading}
               onHireConsultant={() => {
                 /* Scroll to consultant list or navigate */
               }}
@@ -166,7 +173,7 @@ export default function CompanyHome() {
               <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-xl font-medium text-gray-900">
-                    Find Consultants
+                    Find Professionals
                   </h1>
                   <p className="mt-1 text-sm text-gray-600">
                     Discover and connect with top talent for your projects
@@ -271,104 +278,67 @@ export default function CompanyHome() {
                     disabled={page === 1}
                     className="flex items-center gap-1"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-chevron-left"
-                    >
-                      <path d="m15 18-6-6 6-6" />
-                    </svg>
+                    <ChevronLeft className="h-4 w-4" />
                     Previous
                   </Button>
 
                   <div className="flex items-center gap-1">
-                    {Array.from(
-                      {
-                        length: Math.ceil(
-                          (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
-                        ),
-                      },
-                      (_, i) => {
-                        // Show pages around current page
-                        let pageNum = page
-                        if (page <= 3) {
-                          pageNum = i + 1
-                        } else if (
-                          page >=
-                          Math.ceil(
-                            (professionals?.data[1]?.totalCount ?? 0) / LIMIT -
-                              2,
-                          )
-                        ) {
-                          pageNum =
-                            Math.ceil(
-                              (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
-                            ) -
-                            4 +
-                            i
-                        } else {
-                          pageNum = page - 2 + i
-                        }
+                    {(() => {
+                      const totalPages = Math.ceil(
+                        (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
+                      )
+                      const visiblePages = Math.min(5, totalPages)
+                      let startPage = 1
 
-                        // Ensure page numbers are within valid range
-                        if (
-                          pageNum > 0 &&
-                          pageNum <=
-                            Math.ceil(
-                              (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
-                            )
-                        ) {
-                          return (
-                            <Button
-                              key={pageNum}
-                              variant={page === pageNum ? 'default' : 'outline'}
-                              onClick={() => setPage(pageNum)}
-                              className={`h-10 w-10 ${page === pageNum ? '!bg-[#63B7B7] text-white' : ''}`}
-                            >
-                              {pageNum}
-                            </Button>
-                          )
-                        }
-                        return null
-                      },
-                    )}
+                      // Determine the starting page based on current page position
+                      if (page > 3) {
+                        startPage = Math.min(
+                          page - 2,
+                          totalPages - visiblePages + 1,
+                        )
+                      }
+
+                      // Ensure start page is never less than 1
+                      startPage = Math.max(1, startPage)
+
+                      return Array.from({ length: visiblePages }, (_, i) => {
+                        const pageNum = startPage + i
+
+                        // Don't render if beyond total pages
+                        if (pageNum > totalPages) return null
+
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={page === pageNum ? 'default' : 'outline'}
+                            onClick={() => setPage(pageNum)}
+                            className={`h-10 w-10 ${page === pageNum ? '!bg-[#63B7B7] text-white' : ''}`}
+                          >
+                            {pageNum}
+                          </Button>
+                        )
+                      })
+                    })()}
                   </div>
 
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      setPage(
-                        Math.min(
-                          professionals?.data[1]?.totalCount ?? 0,
-                          page + 1,
-                        ),
+                    onClick={() => {
+                      const totalPages = Math.ceil(
+                        (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
+                      )
+                      setPage(Math.min(totalPages, page + 1))
+                    }}
+                    disabled={
+                      page >=
+                      Math.ceil(
+                        (professionals?.data[1]?.totalCount ?? 0) / LIMIT,
                       )
                     }
-                    disabled={page === professionals?.data[1]?.totalCount ?? 0}
                     className="flex items-center gap-1"
                   >
                     Next
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-chevron-right"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
+                    <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
               </>
@@ -429,7 +399,7 @@ export default function CompanyHome() {
             key="add-project-modal"
             onClose={() => setShowAddProject(false)}
             onProjectCreated={() => {
-              refetch()
+              refetchProjectsOverview()
             }}
           />
         )}

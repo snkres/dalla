@@ -6,14 +6,13 @@ import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
+import { ProfessionalProjectView } from './components/professional-view'
 import { getProject } from '@lib/api/company/projects'
 import { Tabs, TabsList, TabsTrigger, Button } from '@dallah/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 import { useTransitionRouter } from 'next-view-transitions'
-
-const companyTabs = ['overview', 'professional', 'files', 'budget']
-const professionalTabs = ['overview', 'company', 'team', 'files', 'budget']
+import { getProjectProfessionalView } from '@lib/api/pro/projects'
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -24,11 +23,11 @@ export function ProjectPageClient({ id }: { id: string }) {
   const isCompany = global.mode === 'company'
   const isProfessional = global.mode === 'user'
 
-  // Fetch project data using the appropriate API based on user role
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
-      return getProject(id)
+      const res = isCompany ? getProject(id) : getProjectProfessionalView(id)
+      return res
     },
   })
 
@@ -61,6 +60,13 @@ export function ProjectPageClient({ id }: { id: string }) {
     )
   }
 
+  const companyTabs = [
+    'overview',
+    data.status !== 'Open' ? 'professional' : '',
+    'files',
+    // 'budget',
+  ]
+  const professionalTabs = ['overview', 'company', 'team', 'files', 'budget']
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8">
@@ -75,32 +81,41 @@ export function ProjectPageClient({ id }: { id: string }) {
             project={data}
             isCompany={isCompany}
             setShowEditModal={setShowEditModal}
+            isAssignedProfessional={data.professional?.id === global?.id}
           />
-          <div className="w-full border-t border-gray-200">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="h-12 w-full !justify-start rounded-none border-b border-gray-200 bg-transparent p-0">
-                {isCompany
-                  ? companyTabs.map((tab) => (
-                      <TabsTrigger
-                        key={tab}
-                        value={tab}
-                        className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
-                      >
-                        {tab}
-                      </TabsTrigger>
-                    ))
-                  : professionalTabs.map((tab) => (
-                      <TabsTrigger
-                        key={tab}
-                        value={tab}
-                        className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
-                      >
-                        {tab}
-                      </TabsTrigger>
-                    ))}
-              </TabsList>
-            </Tabs>
-          </div>
+          {(isCompany || data.professional?.id === global?.id) && (
+            <div className="w-full border-t border-gray-200">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                defaultValue={companyTabs[0] as string}
+              >
+                <TabsList className="h-12 w-full !justify-start rounded-none border-b border-gray-200 bg-transparent p-0">
+                  {isCompany
+                    ? companyTabs
+                        .filter((tab) => tab !== '')
+                        .map((tab) => (
+                          <TabsTrigger
+                            key={tab}
+                            value={tab}
+                            className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
+                          >
+                            {tab}
+                          </TabsTrigger>
+                        ))
+                    : professionalTabs.map((tab) => (
+                        <TabsTrigger
+                          key={tab}
+                          value={tab}
+                          className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
+                        >
+                          {tab}
+                        </TabsTrigger>
+                      ))}
+                </TabsList>
+              </Tabs>
+            </div>
+          )}
         </div>
         {isCompany && (
           <CompanyProjectView
@@ -109,13 +124,7 @@ export function ProjectPageClient({ id }: { id: string }) {
             setActiveTab={setActiveTab}
           />
         )}
-        {/* {isProfessional && (
-          <ProfessionalProjectView
-            project={data}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        )} */}
+        {isProfessional && <ProfessionalProjectView project={data} />}
       </div>
 
       {showEditModal && (

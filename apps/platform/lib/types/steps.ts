@@ -1,4 +1,4 @@
-import type { Project } from '@lib/api/pro/projects'
+import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 export interface StepOneProps {
   coverLetter: string
   setCoverLetter: (value: string) => void
@@ -28,7 +28,7 @@ export interface StepTwoProps {
   serviceFee: number
   youllReceive: number
   totalMilestonesAmount: number
-  project: Project
+  project: GetAllProjectsProfessionalViewRes['data'][0][number]
 }
 
 export interface StepThreeProps {
@@ -39,7 +39,7 @@ export interface StepThreeProps {
 }
 
 export interface ApplicationSidebarProps {
-  project: Project
+  project: GetAllProjectsProfessionalViewRes['data'][0][number]
   isSubmitted: boolean
   isSubmitting: boolean
   activeStep: number

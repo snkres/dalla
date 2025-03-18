@@ -7,8 +7,6 @@ import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
-import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
-import { companyProfileAtom } from '@lib/atoms/company/profile'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -79,8 +77,6 @@ export function useOnboarding() {
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
   const [isAbleToProceed, setIsAbleToProceed] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [proProfile, setProProfile] = useAtom(proProfileAtom)
-  const [companyProfile, setCompanyProfile] = useAtom(companyProfileAtom)
 
   const [companyData, setCompanyData] = useState<CompanyOnboardingData>({
     areas: [],
@@ -168,7 +164,6 @@ export function useOnboarding() {
         })
 
         if (res.success) {
-          setCompanyProfile(res.data)
           setGlobal({
             ...global,
             id: res.data.data.id,
@@ -231,7 +226,6 @@ export function useOnboarding() {
         const res = await proOnboarding(submittedData)
 
         if (res.success) {
-          setProProfile(res.data)
           setGlobal({
             ...global,
             id: res.data.data.User.id,

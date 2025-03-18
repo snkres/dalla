@@ -61,14 +61,17 @@ const MultiImageUpload = ({
     onImagesChange(updatedImages)
   }
 
-  // Function to determine if a URL is a PDF
+  // Improved function to determine if a URL is a PDF
   const isPdf = (url: string): boolean => {
-    return url.toLowerCase().endsWith('.pdf')
+    return (
+      url.toLowerCase().includes('.pdf') ||
+      url.toLowerCase().includes('application/pdf')
+    )
   }
 
   return (
     <div className={`space-y-3 ${className}`}>
-      <label className="mb-1 block text-xs font-medium text-gray-500">
+      <label className="mb-1 block text-sm font-medium text-gray-700">
         {label} ({images.length}/{maxImages})
       </label>
 
@@ -81,20 +84,17 @@ const MultiImageUpload = ({
             {isPdf(fileUrl) ? (
               <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50">
                 <FileText className="h-8 w-8 text-[#63B7B7]" />
-                <span className="mt-1 text-[8px] text-gray-500">PDF</span>
+                <span className="mt-1 text-[10px] text-gray-500">PDF</span>
               </div>
             ) : (
-              <Image
-                src={fileUrl}
-                alt={`Media ${index + 1}`}
-                fill
-                className="object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement
-                  target.src =
-                    'https://placehold.co/80x80/e6f3f3/63B7B7?text=Media'
-                }}
-              />
+              <div className="relative h-full w-full">
+                <Image
+                  src="https://placehold.co/80x80/e6f3f3/63B7B7?text=PDF"
+                  alt={`Media`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             )}
             <button
               type="button"

@@ -14,6 +14,8 @@ import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 import { useRouter } from 'next/navigation'
 import { logout } from '@lib/api/auth/logout'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
+import { companyMetaAtom } from '@lib/atoms/company/meta'
 
 type ProfileItem = {
   icon: React.ElementType
@@ -23,17 +25,15 @@ type ProfileItem = {
 
 export type ProfilePopupProps = {
   accountItems?: ProfileItem[]
-  userProfile: {
-    name: string
-    email: string
-    avatar?: string
-  }
 }
 
 const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
-  ({ accountItems, userProfile }, ref) => {
+  ({ accountItems }, ref) => {
     const [global] = useAtom(globalAtom)
     const router = useRouter()
+
+    const [proMeta] = useAtom(proMetaAtom)
+    const [companyMeta] = useAtom(companyMetaAtom)
 
     const profileItems: ProfileItem[] = accountItems || [
       {
@@ -66,10 +66,8 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
         className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
       >
         <div className="border-b border-gray-100 px-4 py-3">
-          <p className="text-sm font-medium text-gray-800">
-            {userProfile.name}
-          </p>
-          <p className="text-xs text-gray-500">{userProfile.email}</p>
+          <p className="text-sm font-medium text-gray-800">{global.name}</p>
+          <p className="text-xs text-gray-500">{global.email}</p>
         </div>
 
         <div className="p-2">

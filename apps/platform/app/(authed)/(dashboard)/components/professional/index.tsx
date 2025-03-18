@@ -2,9 +2,15 @@
 
 import type React from 'react'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useId } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { AlertCircle } from 'lucide-react'
+import {
+  AlertCircle,
+  Filter,
+  RefreshCw,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { SearchBar } from './search-bar'
 import { ProjectCard } from './project/card'
@@ -18,26 +24,42 @@ import {
   locationOptions,
 } from '@lib/data/projects'
 import { applyFilters } from '@lib/utils/filter-utils'
-import { getAllSkills } from '@lib/utils/skill-utils'
+
 import FilterChips from './filter-chips'
 import { useQuery } from '@tanstack/react-query'
-import { getAllProjects, type Project } from '@lib/api/pro/projects'
+import {
+  getAllProjectsProfessionalView,
+  GetAllProjectsProfessionalViewRes,
+} from '@lib/api/pro/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { getAllSkills } from '@lib/utils/skill-utils'
+import { useQueryState } from 'nuqs'
+
+const LIMIT = 4
 
 export function ProfessionalHome() {
   const { toast } = useToast()
-  const { data } = useQuery({
-    queryKey: ['all-projects'],
-    queryFn: getAllProjects,
+  const instanceId = useId()
+
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+    queryKey: ['all-projects', page],
+    queryFn: () => getAllProjectsProfessionalView(page, LIMIT),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   })
+
   const [activeFilter, setActiveFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredProjects, setFilteredProjects] = useState<Project[] | []>(
-    data || [],
-  )
+  const [filteredProjects, setFilteredProjects] = useState<
+    GetAllProjectsProfessionalViewRes['data'][0] | []
+  >([])
   const [showSearchHelp, setShowSearchHelp] = useState(false)
   const [showFilterPanel, setShowFilterPanel] = useState(false)
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+
   const [showProjectDetail, setShowProjectDetail] = useState(false)
   const [showProjectApplication, setShowProjectApplication] = useState(false)
   const [selectedBudgetRange, setSelectedBudgetRange] = useState<
@@ -47,12 +69,78 @@ export function ProfessionalHome() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([])
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [sortBy, setSortBy] = useState<'newest' | 'budget-high' | 'budget-low'>(
+    'newest',
+  )
 
-  const allSkills = getAllSkills(data || [])
+  const [selectedProjectId, setSelectedProjectId] = useQueryState('projectId', {
+    defaultValue: null,
+    parse: (value) => value || null,
+  })
+  const [selectedProject, setSelectedProject] = useState<
+    GetAllProjectsProfessionalViewRes['data'][0][number] | null
+  >(data?.data[0].find((project) => project.id === selectedProjectId) || null)
 
   useEffect(() => {
-    const results = applyFilters(
-      data || [],
+    setSelectedProject(
+      data?.data[0].find((project) => project.id === selectedProjectId) || null,
+    )
+  }, [selectedProjectId])
+
+  useEffect(() => {
+    if (selectedProjectId && data?.data?.[0]?.length) {
+      setShowProjectDetail(true)
+    }
+  }, [selectedProjectId, data])
+
+  const allSkills = useMemo(() => {
+    return getAllSkills(data?.data?.[0] || []) || []
+  }, [data])
+
+  const hasActiveFilters = useMemo(
+    () =>
+      activeFilter !== 'all' ||
+      searchQuery !== '' ||
+      selectedBudgetRange[0] !== 0 ||
+      selectedBudgetRange[1] !== 100000 ||
+      selectedDurations.length > 0 ||
+      selectedLocations.length > 0 ||
+      selectedSkills.length > 0,
+    [
+      activeFilter,
+      searchQuery,
+      selectedBudgetRange,
+      selectedDurations,
+      selectedLocations,
+      selectedSkills,
+    ],
+  )
+
+  const sortProjects = useCallback(
+    (projects: GetAllProjectsProfessionalViewRes['data'][0]) => {
+      if (sortBy === 'newest') {
+        return [...projects].sort(
+          (a, b) =>
+            new Date(b.createdAt || '').getTime() -
+            new Date(a.createdAt || '').getTime(),
+        )
+      } else if (sortBy === 'budget-high') {
+        return [...projects].sort(
+          (a, b) => (b.meta.budget || 0) - (a.meta.budget || 0),
+        )
+      } else if (sortBy === 'budget-low') {
+        return [...projects].sort(
+          (a, b) => (a.meta.budget || 0) - (b.meta.budget || 0),
+        )
+      }
+      return projects
+    },
+    [sortBy],
+  )
+
+  useEffect(() => {
+    let results = applyFilters(
+      data?.data?.[0] || [],
       activeFilter,
       searchQuery,
       showFilterPanel,
@@ -61,6 +149,9 @@ export function ProfessionalHome() {
       selectedLocations,
       selectedSkills,
     )
+
+    results = sortProjects(results)
+
     setFilteredProjects(results)
   }, [
     activeFilter,
@@ -71,6 +162,8 @@ export function ProfessionalHome() {
     selectedLocations,
     selectedSkills,
     data,
+    sortBy,
+    sortProjects,
   ])
 
   useEffect(() => {
@@ -104,10 +197,25 @@ export function ProfessionalHome() {
     }
   }, [showProjectDetail, showProjectApplication])
 
+  useEffect(() => {
+    if (data?.data?.[1]?.totalCount) {
+      setTotalCount(data.data[1].totalCount)
+    }
+  }, [data])
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
   const handleProjectClick = useCallback(
-    (project: Project, e: React.MouseEvent) => {
+    (
+      project: GetAllProjectsProfessionalViewRes['data'][0][number],
+      e: React.MouseEvent,
+    ) => {
       e.preventDefault()
       setSelectedProject(project)
+      setSelectedProjectId(project.id)
       setShowProjectDetail(true)
       setShowProjectApplication(false)
     },
@@ -147,11 +255,12 @@ export function ProfessionalHome() {
     setShowProjectDetail(false)
     setShowProjectApplication(false)
     setSelectedProject(null)
+    setSelectedProjectId(null)
 
     setTimeout(() => {
       window.scrollTo(0, scrollY)
     }, 10)
-  }, [scrollPosition])
+  }, [scrollPosition, setSelectedProjectId])
 
   const handleResetFilters = useCallback(() => {
     setSelectedBudgetRange([0, 100000])
@@ -166,25 +275,79 @@ export function ProfessionalHome() {
     handleResetFilters()
   }, [handleResetFilters])
 
-  const displayedProjects = useMemo(() => {
-    return filteredProjects.map((project) => (
-      <ProjectCard
-        key={project.id}
-        project={project}
-        onClick={handleProjectClick}
-      />
-    ))
-  }, [filteredProjects, handleProjectClick])
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    try {
+      await refetch()
+      toast({
+        title: 'Projects Updated',
+        description: 'Successfully refreshed the latest projects.',
+        variant: 'default',
+      })
+    } catch (error) {
+      toast({
+        title: 'Refresh Failed',
+        description: 'Unable to load the latest projects. Please try again.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [refetch, toast])
+
+  const renderSortOption = (
+    option: 'newest' | 'budget-high' | 'budget-low',
+    label: string,
+  ) => (
+    <Button
+      key={`sort-${option}`}
+      size="sm"
+      className={`!rounded-md px-3 py-1 text-sm ${
+        sortBy === option
+          ? '!bg-[#234d64] text-white'
+          : '!bg-gray-100 !text-gray-700 hover:!bg-gray-200'
+      }`}
+      onClick={() => setSortBy(option)}
+    >
+      {label}
+    </Button>
+  )
+
+  const getProjectKey = useCallback(
+    (
+      project: GetAllProjectsProfessionalViewRes['data'][0][number],
+      index: number,
+    ) => {
+      return project.id
+        ? `project-${project.id}`
+        : `project-${instanceId}-${index}`
+    },
+    [instanceId],
+  )
+
+  const totalPages = Math.ceil(totalCount / LIMIT)
 
   return (
     <div className="w-full py-6">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
           <div className="lg:col-span-3">
-            <div className="mb-6 flex items-center">
+            <div className="mb-6 flex items-center justify-between">
               <h1 className="text-2xl font-semibold text-gray-900">
                 Available Projects
               </h1>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+                onClick={handleRefresh}
+                disabled={isLoading || isRefreshing || isFetching}
+              >
+                <RefreshCw
+                  className={`h-4 w-4 ${isLoading || isRefreshing || isFetching ? 'animate-spin text-[#234d64]' : ''}`}
+                />
+                <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+              </Button>
             </div>
             <SearchBar
               searchQuery={searchQuery}
@@ -200,7 +363,7 @@ export function ProfessionalHome() {
               selectedLocations={selectedLocations}
               setSelectedLocations={setSelectedLocations}
               selectedSkills={selectedSkills}
-              setSelectedSkills={setSelectedSkills}
+              // setSelectedSkills={setSelectedSkills}
               handleResetFilters={handleResetFilters}
               budgetRanges={budgetRanges}
               durationOptions={durationOptions}
@@ -214,34 +377,82 @@ export function ProfessionalHome() {
               showSearchHelp={showSearchHelp}
               filterCategories={filterCategories}
             />
-            <div className="mb-2 mt-4 flex items-center justify-between">
+
+            <div className="mb-4 mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-gray-500">
                 Showing {filteredProjects.length} projects
                 {activeFilter !== 'all' &&
                   ` • Filtered by: ${filterCategories.find((f) => f.key === activeFilter)?.label}`}
                 {searchQuery && ` • Search: "${searchQuery}"`}
+                {selectedSkills.length > 0 &&
+                  ` • Skills: ${selectedSkills.length} selected`}
               </p>
-              {(activeFilter !== 'all' ||
-                searchQuery ||
-                selectedBudgetRange[0] !== 0 ||
-                selectedBudgetRange[1] !== 100000 ||
-                selectedDurations.length > 0 ||
-                selectedLocations.length > 0 ||
-                selectedSkills.length > 0) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-sm text-gray-500"
-                  onClick={clearAllFilters}
-                >
-                  Clear All
-                </Button>
-              )}
+
+              <div className="flex items-center gap-2">
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-sm text-gray-500"
+                    onClick={clearAllFilters}
+                  >
+                    Clear All
+                  </Button>
+                )}
+
+                <div className="ml-2 flex items-center gap-1">
+                  <span className="text-sm text-gray-700">Sort:</span>
+                  <div className="flex gap-1">
+                    {renderSortOption('newest', 'Newest')}
+                    {renderSortOption('budget-high', 'Budget ↓')}
+                    {renderSortOption('budget-low', 'Budget ↑')}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {filteredProjects.length > 0 ? (
+            {isLoading || isRefreshing ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {displayedProjects}
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={`skeleton-${instanceId}-${i}`}
+                    className="h-64 animate-pulse rounded-xl bg-gray-100"
+                  />
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="rounded-xl bg-gray-50 p-8 text-center">
+                <div className="mb-4 flex justify-center">
+                  <AlertCircle className="h-12 w-12 text-red-400" />
+                </div>
+                <h3 className="mb-2 text-lg font-medium text-gray-900">
+                  Error loading projects
+                </h3>
+                <p className="mx-auto mb-6 max-w-md text-gray-500">
+                  We encountered an error while loading projects. Please try
+                  again.
+                </p>
+                <Button
+                  onClick={() => refetch()}
+                  className="!bg-[#234d64] hover:!bg-[#234d64]/90"
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : filteredProjects.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {filteredProjects.map(
+                  (
+                    project: GetAllProjectsProfessionalViewRes['data'][0][number],
+                    index: number,
+                  ) => (
+                    <ProjectCard
+                      key={getProjectKey(project, index)}
+                      project={project}
+                      onClick={handleProjectClick}
+                    />
+                  ),
+                )}
               </div>
             ) : (
               <div className="rounded-xl bg-gray-50 p-8 text-center">
@@ -260,6 +471,60 @@ export function ProfessionalHome() {
                   className="!bg-[#234d64] hover:!bg-[#234d64]/90"
                 >
                   Clear Filters & Search
+                </Button>
+              </div>
+            )}
+
+            {filteredProjects.length > 0 && totalPages > 1 && (
+              <div className="mt-8 flex w-full items-center justify-between gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => handlePageChange(Math.max(1, page - 1))}
+                  disabled={page === 1 || isLoading || isRefreshing}
+                  className="flex items-center gap-1"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum = page
+                    if (page <= 3) {
+                      pageNum = i + 1
+                    } else if (page >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i
+                    } else {
+                      pageNum = page - 2 + i
+                    }
+
+                    if (pageNum > 0 && pageNum <= totalPages) {
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={page === pageNum ? 'default' : 'outline'}
+                          onClick={() => handlePageChange(pageNum)}
+                          disabled={isLoading || isRefreshing}
+                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#234d64] text-white' : ''}`}
+                        >
+                          {pageNum}
+                        </Button>
+                      )
+                    }
+                    return null
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    handlePageChange(Math.min(totalPages, page + 1))
+                  }
+                  disabled={page === totalPages || isLoading || isRefreshing}
+                  className="flex items-center gap-1"
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             )}

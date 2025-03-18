@@ -44,21 +44,9 @@ export function Navbar() {
     notificationsRef,
     profileMenuRef,
     unreadCount,
-    userProfile,
+
     isNotificationsOpen,
   } = useNavbar()
-
-  // Early return if profile data isn't loaded yet to prevent UI glitches
-  if (!userProfile.email) {
-    return (
-      <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 sm:px-6">
-        <div className="origin-left scale-75">
-          <LogoHorizontal className="[&_path]:fill-slate-blue-100 [&_path]:h-24 [&_path]:w-24" />
-        </div>
-        <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200"></div>
-      </div>
-    )
-  }
 
   const onSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -171,7 +159,7 @@ export function Navbar() {
           >
             <div className="relative h-6 w-6 overflow-hidden rounded-full">
               <Image
-                src={userProfile?.avatar || '/avatar.png'}
+                src={global?.avatar || '/avatar.png'}
                 alt="Profile"
                 fill
                 className="object-cover"
@@ -190,11 +178,7 @@ export function Navbar() {
 
           <AnimatePresence>
             {isProfileMenuOpen && (
-              <ProfilePopup
-                ref={profileMenuRef}
-                accountItems={accountItems}
-                userProfile={userProfile}
-              />
+              <ProfilePopup ref={profileMenuRef} accountItems={accountItems} />
             )}
           </AnimatePresence>
         </div>

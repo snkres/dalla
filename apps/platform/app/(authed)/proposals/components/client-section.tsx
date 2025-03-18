@@ -1,6 +1,6 @@
 import { User } from 'lucide-react'
 import ExpandableSection from './expandable-section'
-import { Avatar, AvatarFallback } from '@dallah/design-system'
+import { Avatar, AvatarFallback, AvatarImage } from '@dallah/design-system'
 import { Progress } from '@dallah/design-system'
 import { Star, DollarSign, Globe } from 'lucide-react'
 
@@ -11,6 +11,7 @@ interface ClientSectionProps {
     clientRating: number
     clientSpend: number
     clientHires: number
+    clientLogo: string
   }
   isExpanded: boolean
   onToggle: () => void
@@ -29,6 +30,7 @@ const ClientSection: React.FC<ClientSectionProps> = ({
   >
     <div className="mb-4 flex items-center">
       <Avatar className="mr-4 h-12 w-12 border-2 border-[#BEDDF1]">
+        <AvatarImage src={data.clientLogo} />
         <AvatarFallback className="bg-[#63B7B7]/10 font-medium text-[#63B7B7]">
           {data.clientName.charAt(0)}
         </AvatarFallback>

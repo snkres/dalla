@@ -4,15 +4,12 @@ import { motion, AnimatePresence } from 'motion/react'
 import { Tabs, TabsList, TabsTrigger } from '@dallah/design-system'
 import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { Search, SlidersHorizontal } from 'lucide-react'
-import { BudgetRange } from '@lib/types/project'
-import { FilterPanel } from '@components/shared/filter-panel'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'
 
 interface TabContainerProps {
   activeTab: string
   onTabChange: (tab: string) => void
-  activeProposals: GetAllProposalsRes['data'][0][number][]
-  submittedProposals: GetAllProposalsRes['data'][0][number][]
+  proposals: GetAllProposalsRes['data'][0][number][]
   isMobile: boolean
   isDetailOpen: boolean
   searchQuery: string
@@ -23,111 +20,38 @@ interface TabContainerProps {
   viewType: 'professional' | 'company'
 }
 const TabContainer: React.FC<TabContainerProps> = memo(
-  ({
-    activeTab,
-    onTabChange,
-    activeProposals,
-    submittedProposals,
-    searchQuery,
-    onSearchChange,
-  }) => {
-    const [showFilterPanel, setShowFilterPanel] = useState(false)
-    const [selectedBudgetRange, setSelectedBudgetRange] = useState<
-      [number, number]
-    >([0, 100000])
-    const [selectedDurations, setSelectedDurations] = useState<string[]>([])
-    const [selectedLocations, setSelectedLocations] = useState<string[]>([])
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([])
-
-    const filterPanelRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-      const handleClickOutside = (event: MouseEvent) => {
-        if (
-          filterPanelRef.current &&
-          !filterPanelRef.current.contains(event.target as Node) &&
-          showFilterPanel
-        ) {
-          setShowFilterPanel(false)
-        }
-      }
-
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside)
-      }
-    }, [showFilterPanel])
-
-    const handleResetFilters = () => {
-      setSelectedBudgetRange([0, 100000])
-      setSelectedDurations([])
-      setSelectedLocations([])
-      setSelectedSkills([])
-    }
-
+  ({ activeTab, onTabChange, proposals, searchQuery, onSearchChange }) => {
     const getTabCount = useMemo(
       () =>
         (tab: string): number => {
           switch (tab) {
-            case 'active':
-              return activeProposals.length
-            case 'submitted':
-              return submittedProposals.length
+            case 'Pending':
+              return proposals.filter(
+                (proposal) => proposal.status === 'Pending',
+              ).length
+            case 'Accepted':
+              return proposals.filter(
+                (proposal) => proposal.status === 'Accepted',
+              ).length
+            case 'Rejected':
+              return proposals.filter(
+                (proposal) => proposal.status === 'Rejected',
+              ).length
             default:
               return 0
           }
         },
-      [activeProposals.length, submittedProposals.length],
+      [proposals.length],
     )
 
     const tabItems = useMemo(
       () => [
-        { id: 'active', label: 'Active' },
-        { id: 'submitted', label: 'Submitted' },
-        { id: 'invitations', label: 'Invitations' },
-        { id: 'offers', label: 'Offers' },
+        { id: 'Pending', label: 'Pending' },
+        { id: 'Accepted', label: 'Accepted' },
+        { id: 'Rejected', label: 'Rejected' },
       ],
       [],
     )
-
-    const budgetRanges = [
-      { label: '$0-$1,000', value: [0, 1000] },
-      { label: '$1,000-$5,000', value: [1000, 5000] },
-      { label: '$5,000-$10,000', value: [5000, 10000] },
-      { label: '$10,000-$50,000', value: [10000, 50000] },
-      { label: '$50,000+', value: [50000, 100000] },
-    ]
-
-    const durationOptions = [
-      { label: 'Less than 1 month', value: 'less_than_1_month' },
-      { label: '1-3 months', value: '1_3_months' },
-      { label: '3-6 months', value: '3_6_months' },
-      { label: 'More than 6 months', value: 'more_than_6_months' },
-    ]
-
-    const locationOptions = [
-      { label: 'Remote', value: 'remote' },
-      { label: 'On-site', value: 'on_site' },
-      { label: 'Hybrid', value: 'hybrid' },
-    ]
-
-    const allSkills = [
-      'TypeScript',
-      'React',
-      'Next.js',
-      'Node.js',
-      'JavaScript',
-      'CSS',
-      'HTML',
-      'UI/UX',
-      'Figma',
-      'Tailwind CSS',
-      'GraphQL',
-      'REST API',
-      'MongoDB',
-      'SQL',
-      'Redux',
-    ]
 
     return (
       <motion.div
@@ -142,7 +66,7 @@ const TabContainer: React.FC<TabContainerProps> = memo(
           onValueChange={onTabChange}
         >
           <div className="py-4">
-            <TabsList className="grid h-auto w-full grid-cols-4 gap-1.5 !rounded-lg bg-[#e6f3f3] p-1.5 shadow-sm">
+            <TabsList className="grid h-auto w-full grid-cols-3 gap-1.5 !rounded-lg bg-[#e6f3f3] p-1.5 shadow-sm">
               {tabItems.map(({ id, label }) => (
                 <TabsTrigger
                   key={id}
@@ -195,61 +119,6 @@ const TabContainer: React.FC<TabContainerProps> = memo(
                 onChange={(e) => onSearchChange(e.target.value)}
               />
             </div>
-            <button
-              onClick={() => setShowFilterPanel(!showFilterPanel)}
-              className="relative rounded-lg border border-gray-200 bg-white p-2.5 transition-colors duration-200 hover:bg-[#f5fafa] focus:outline-none focus:ring-2 focus:ring-[#63B7B7]/20"
-            >
-              <SlidersHorizontal className="h-5 w-5 text-gray-600" />
-              <AnimatePresence>
-                {(selectedDurations.length > 0 ||
-                  selectedLocations.length > 0 ||
-                  selectedSkills.length > 0) && (
-                  <motion.span
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0, opacity: 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-                    className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#63B7B7] text-[10px] font-medium text-white"
-                  >
-                    {selectedDurations.length +
-                      selectedLocations.length +
-                      selectedSkills.length}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </button>
-
-            <AnimatePresence>
-              {showFilterPanel && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="absolute right-0 top-full z-10"
-                >
-                  <FilterPanel
-                    filterPanelRef={
-                      filterPanelRef as React.RefObject<HTMLDivElement>
-                    }
-                    setShowFilterPanel={setShowFilterPanel}
-                    handleResetFilters={handleResetFilters}
-                    selectedBudgetRange={selectedBudgetRange}
-                    setSelectedBudgetRange={setSelectedBudgetRange}
-                    budgetRanges={budgetRanges as BudgetRange[]}
-                    selectedDurations={selectedDurations}
-                    setSelectedDurations={setSelectedDurations}
-                    durationOptions={durationOptions}
-                    selectedLocations={selectedLocations}
-                    setSelectedLocations={setSelectedLocations}
-                    locationOptions={locationOptions}
-                    selectedSkills={selectedSkills}
-                    setSelectedSkills={setSelectedSkills}
-                    allSkills={allSkills}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </Tabs>
       </motion.div>

@@ -1,9 +1,9 @@
 'use client'
 import { Navbar } from '@components/layout/navbar'
-import { getCompanyProfile } from '@lib/api/company/profile'
-import { getOwnProProfile } from '@lib/api/pro/profile'
-import { CompanyProfile, companyProfileAtom } from '@lib/atoms/company/profile'
-import { ProProfile, proProfileAtom } from '@lib/atoms/pro/profile'
+import { getCompanyMeta } from '@lib/api/company/profile'
+import { getProMeta } from '@lib/api/pro/profile'
+import { CompanyMeta, companyMetaAtom } from '@lib/atoms/company/meta'
+import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
@@ -11,12 +11,15 @@ import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
+import { fadeInVariants } from '@components/aniamtion/animate'
+import { motion } from 'motion/react'
+import { LogomarkFilled } from '@dallah/design-system'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
   const router = useTransitionRouter()
-  const [_, setProProfile] = useAtom(proProfileAtom)
-  const [__, setCompanyProfile] = useAtom(companyProfileAtom)
+  const [_, setProMeta] = useAtom(proMetaAtom)
+  const [__, setCompanyMeta] = useAtom(companyMetaAtom)
   const [isLoading, setIsLoading] = useState(true)
   const [isDbReady, setIsDbReady] = useState(false)
 
@@ -60,15 +63,45 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [isDbReady, global.mode, router])
 
   const { data, isFetched, isError, error } = useQuery({
-    queryKey: ['profile', global.mode],
+    queryKey: ['meta', global.mode],
     staleTime: Infinity,
     queryFn: async () => {
       try {
         if (global.mode === 'user') {
-          const res = await getOwnProProfile()
+          const res = await getProMeta()
+          // const res: ProMeta = {
+          //   statusCode: 200,
+          //   success: true,
+          //   message: 'Profile fetched successfully',
+          //   error: null,
+          //   data: {
+          //     id: '123',
+          //     email: 'test@test.com',
+          //     username: 'AmrTamer23',
+          //     name: 'Test',
+          //     onboarded: true,
+          //     _count: {
+          //       proposals: 1,
+          //     },
+          //     UserProfile: {
+          //       avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+          //       headline: 'Test',
+          //       meta: {
+          //         phone: '123',
+          //         skills: ['test'],
+          //         location: 'test',
+          //         socialLinks: { github: 'test', linkedin: 'test' },
+          //         yearsOfExperience: 1,
+          //       },
+          //       precentage: 1,
+          //     },
+          //   },
+          //   path: '',
+          //   timestamp: '',
+          // }
           return res.data
         } else if (global.mode === 'company') {
-          const res = await getCompanyProfile()
+          const res = await getCompanyMeta()
           return res.data
         }
         return null
@@ -100,20 +133,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     try {
       if (global.mode === 'user') {
+        const proData = data as ProMeta
         setGlobal({
           ...global,
-          id: (data as ProProfile).data.User.id,
-          email: (data as ProProfile).data.User.email,
-          username: (data as ProProfile).data.User.username,
-          name: (data as ProProfile).data.User.name,
+          id: proData.data.id,
+          email: proData.data.email,
+          username: proData.data.username,
+          name: proData.data.name,
           mode: 'user',
+          avatar: proData.data.UserProfile.avatar,
         })
-        setProProfile(data as ProProfile)
-        if (!(data as ProProfile).data.User.onboarded) {
+        setProMeta(proData)
+        if (!proData.data.onboarded) {
           router.push('/onboard')
         }
       } else {
-        const companyData = data as CompanyProfile
+        const companyData = data as CompanyMeta
 
         setGlobal({
           ...global,
@@ -122,11 +157,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           username: '',
           name: companyData.data?.name || 'Company',
           mode: 'company',
+          avatar: companyData.data?.CompanyProfile.logo || '',
         })
 
-        setCompanyProfile(companyData)
+        setCompanyMeta(companyData)
 
         console.log('Company onboarded status:', companyData.data?.onboarded)
+        console.log('Company data:', companyData.data)
         if (
           companyData.data?.onboarded !== undefined &&
           !companyData.data?.onboarded
@@ -141,14 +178,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }
   }, [data, isFetched, isError, global.mode])
 
-  // Show loading state either when waiting for DB or profile data
   if ((isLoading && Boolean(global.mode)) || !isDbReady) {
     return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-4 border-gray-200 border-t-[#63B7B7]"></div>
-          <p className="text-lg text-gray-600">Loading your dashboard...</p>
-        </div>
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-50">
+        <motion.div
+          variants={fadeInVariants}
+          initial="initial"
+          animate="animate"
+          className="flex flex-col items-center justify-center gap-8"
+        >
+          <div className="relative">
+            <LogomarkFilled className="h-24 w-24" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="h-16 w-16 animate-ping rounded-full bg-white opacity-75"></div>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center gap-2">
+            <h1 className="text-2xl font-semibold text-[#234d64]">Loading</h1>
+            <p className="text-sm text-gray-500">
+              Please wait while we prepare your dashboard
+            </p>
+            <div className="mt-4 h-1.5 w-48 overflow-hidden rounded-full bg-gray-100">
+              <motion.div
+                className="h-full bg-[#63B7B7]"
+                initial={{ width: '0%' }}
+                animate={{
+                  width: '100%',
+                  transition: { duration: 2, repeat: Infinity },
+                }}
+              />
+            </div>
+          </div>
+        </motion.div>
       </div>
     )
   }

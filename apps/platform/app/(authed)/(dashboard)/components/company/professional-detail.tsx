@@ -13,9 +13,9 @@ import {
   Shield,
   X,
   FileText,
-  Award,
   Boxes,
 } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { useQuery } from '@tanstack/react-query'
@@ -63,8 +63,11 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
           variant="ghost"
           size="icon"
           className="h-8 w-8 rounded-full text-[#63B7B7]"
+          asChild
         >
-          <ExternalLink className="h-4 w-4" />
+          <Link href={`/professionals/${username}`} prefetch>
+            <ExternalLink className="h-4 w-4" />
+          </Link>
         </Button>
       </div>
 
@@ -140,7 +143,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             <div className="mb-1 flex flex-wrap gap-1.5">
               {professional?.data?.data?.meta?.skills
                 .slice(0, 5)
-                .map((skill, index) => (
+                .map((skill: string, index: number) => (
                   <Badge
                     key={index}
                     className="!rounded-md !border-none !bg-[#63B7B7]/5 !px-2 !py-0.5 !text-xs !font-normal !text-[#63B7B7]"
@@ -190,29 +193,31 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               </h2>
             </div>
             <div className="space-y-4 p-6 px-4">
-              {professional?.data?.data?.experience?.map((exp, index) => (
-                <div
-                  key={index}
-                  className="border-b border-gray-100 pb-4 last:border-0 last:pb-0"
-                >
-                  <h3 className="mb-1 text-sm font-medium text-gray-800">
-                    {exp.title} at {exp.company}
-                  </h3>
-                  <div className="mb-2 flex items-center text-xs text-gray-500">
-                    <span>
-                      {formatDate(new Date(exp.startDate))} -{' '}
-                      {exp.endDate === 'present'
-                        ? 'Present'
-                        : formatDate(new Date(exp.endDate))}
-                    </span>
-                    <span className="mx-2">•</span>
-                    <span>{exp.location}</span>
+              {professional?.data?.data?.experience?.map(
+                (exp: any, index: number) => (
+                  <div
+                    key={index}
+                    className="border-b border-gray-100 pb-4 last:border-0 last:pb-0"
+                  >
+                    <h3 className="mb-1 text-sm font-medium text-gray-800">
+                      {exp.title} at {exp.company}
+                    </h3>
+                    <div className="mb-2 flex items-center text-xs text-gray-500">
+                      <span>
+                        {formatDate(new Date(exp.startDate))} -{' '}
+                        {exp.endDate === 'present'
+                          ? 'Present'
+                          : formatDate(new Date(exp.endDate))}
+                      </span>
+                      <span className="mx-2">•</span>
+                      <span>{exp.location}</span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      {exp.meta.achievements}
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-600">
-                    {exp.meta.achievements}
-                  </p>
-                </div>
-              ))}
+                ),
+              )}
               {(!professional?.data?.data?.experience ||
                 professional?.data?.data?.experience.length === 0) && (
                 <p className="text-sm text-gray-500">
@@ -239,7 +244,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               </Button>
             </div>
             <div className="grid grid-cols-1 gap-3 p-6 px-4">
-              {professional?.data?.data?.projects?.slice(0, 3).map((p) => (
+              {professional?.data?.data?.projects?.slice(0, 3).map((p: any) => (
                 <div className="rounded-lg bg-[#63B7B7]/10 p-3">
                   <h4 className="mb-1 text-xs font-medium text-gray-800">
                     {p.title}
@@ -250,17 +255,19 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                   <p className="text-xs text-gray-600">{p.description}</p>
                 </div>
               ))}
-              {professional?.data?.data?.User.projects?.slice(0, 3).map((p) => (
-                <div className="rounded-lg bg-[#63B7B7]/10 p-3">
-                  <h4 className="mb-1 text-xs font-medium text-gray-800">
-                    {p.title}
-                  </h4>
-                  <p className="mb-1 text-[11px] text-gray-500">
-                    {p.skills.join(', ')}
-                  </p>
-                  <p className="text-xs text-gray-600">{p.description}</p>
-                </div>
-              ))}
+              {professional?.data?.data?.User.projects
+                ?.slice(0, 3)
+                .map((p: any) => (
+                  <div className="rounded-lg bg-[#63B7B7]/10 p-3">
+                    <h4 className="mb-1 text-xs font-medium text-gray-800">
+                      {p.title}
+                    </h4>
+                    <p className="mb-1 text-[11px] text-gray-500">
+                      {p.skills.join(', ')}
+                    </p>
+                    <p className="text-xs text-gray-600">{p.description}</p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

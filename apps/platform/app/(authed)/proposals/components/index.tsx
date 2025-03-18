@@ -5,13 +5,18 @@ import { motion, AnimatePresence } from 'motion/react'
 import { FileText as DocumentIcon } from 'lucide-react'
 
 import { Loader2 } from 'lucide-react'
-import { getAllProposals, GetAllProposalsRes } from '@lib/api/pro/proposals'
+import {
+  getAllProposals,
+  GetAllProposalsRes,
+  ProposalStatus,
+} from '@lib/api/pro/proposals'
 import Overview from './overview'
 import TabContainer from './tab-container'
 import ProposalList from './proposal-list'
 import ProposalDetails from './proposal-details'
 import FloatingButtons from './floating-buttons'
 import { cn } from '@dallah/utils'
+import { getProfessionalAnalytics } from '@lib/api/pro/analytics'
 
 const getTimeAgo = (date: Date): string => {
   const now = new Date()
@@ -39,18 +44,20 @@ const getTimeAgo = (date: Date): string => {
 const mapStatus = (
   status: string | undefined,
 ): GetAllProposalsRes['data'][0][number]['status'] => {
-  if (!status) return 'Submitted'
+  if (!status) return 'Pending'
 
   switch (status.toLowerCase()) {
+    case 'accepted':
+      return 'Accepted'
+    case 'rejected':
+      return 'Rejected'
     case 'viewed':
-      return 'Viewed'
-    case 'interviewing':
-      return 'Interviewing'
     case 'in review':
     case 'in_review':
-      return 'In review'
+    case 'interviewing':
+    case 'submitted':
     default:
-      return 'Submitted'
+      return 'Pending'
   }
 }
 
@@ -61,17 +68,39 @@ const formatAmount = (budget: any): string => {
   return isNaN(numericBudget) ? '$0' : `$${numericBudget.toLocaleString()}`
 }
 
+// Function to map API statuses to user-friendly display text
+const getStatusDisplayText = (status: ProposalStatus): string => {
+  switch (status) {
+    case 'Accepted':
+      return 'Interviewing'
+    case 'Rejected':
+      return 'Declined'
+    case 'Pending':
+      return 'Submitted'
+    default:
+      return status
+  }
+}
+
 export function ProfessionalProposals() {
+  const { data: analytics } = useQuery({
+    queryKey: ['analytics', 'professional'],
+    queryFn: () =>
+      getProfessionalAnalytics({
+        from: '2022-09-27T18:00:00.000',
+        to: '"2025-09-27T18:00:00.000",',
+      }),
+  })
   const {
     data: proposals,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['proposals', 'professional'],
-    queryFn: getAllProposals,
+    queryFn: () => getAllProposals(1, 10),
   })
 
-  const [activeTab, setActiveTab] = useState('active')
+  const [activeTab, setActiveTab] = useState<ProposalStatus>('Accepted')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedProposal, setSelectedProposal] = useState<
     GetAllProposalsRes['data'][0][number] | null
@@ -93,14 +122,14 @@ export function ProfessionalProposals() {
   const activeProposals = useMemo(() => {
     if (!proposals) return []
     return proposals?.data[0].filter((proposal) =>
-      ['In review', 'Interviewing'].includes(proposal.status),
+      ['Pending', 'Accepted'].includes(proposal.status),
     )
   }, [proposals])
 
   const submittedProposals = useMemo(() => {
     if (!proposals) return []
     return proposals?.data[0].filter((proposal) =>
-      ['Pending', 'Viewed'].includes(proposal.status),
+      ['Pending'].includes(proposal.status),
     )
   }, [proposals])
 
@@ -139,13 +168,19 @@ export function ProfessionalProposals() {
   }
 
   const getVisibleProposals = useMemo(() => {
-    const proposals =
-      activeTab === 'active'
-        ? activeProposals
-        : activeTab === 'submitted'
-          ? submittedProposals
-          : []
-    return sortProposals(filterProposals(proposals || []))
+    const visibleProposals =
+      activeTab === 'Accepted'
+        ? proposals?.data[0].filter(
+            (proposal) => proposal.status === 'Accepted',
+          )
+        : activeTab === 'Pending'
+          ? proposals?.data[0].filter(
+              (proposal) => proposal.status === 'Pending',
+            )
+          : proposals?.data[0].filter(
+              (proposal) => proposal.status === 'Rejected',
+            )
+    return sortProposals(filterProposals(visibleProposals || []))
   }, [
     activeTab,
     searchQuery,
@@ -236,9 +271,7 @@ export function ProfessionalProposals() {
 
       <TabContainer
         activeTab={activeTab}
-        onTabChange={setActiveTab}
-        activeProposals={activeProposals}
-        submittedProposals={submittedProposals}
+        onTabChange={(tab) => setActiveTab(tab as ProposalStatus)}
         isMobile={isMobile}
         isDetailOpen={isDetailOpen}
         searchQuery={searchQuery}
@@ -247,6 +280,7 @@ export function ProfessionalProposals() {
         sortOrder={sortOrder}
         onSort={handleSort}
         viewType="professional"
+        proposals={proposals?.data[0] || []}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row">
@@ -255,8 +289,7 @@ export function ProfessionalProposals() {
             proposals={getVisibleProposals}
             selectedProposal={selectedProposal}
             onSelectProposal={viewProposalDetails}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
+            selectedTab={activeTab}
           />
         </div>
         {(isMobile && isDetailOpen) || !isMobile ? (

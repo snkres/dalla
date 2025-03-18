@@ -15,7 +15,7 @@ import { cn } from '@dallah/utils'
 import { fadeIn } from '@components/aniamtion/animate'
 import { StepThreeProps } from '@lib/types/steps'
 import { useAtom } from 'jotai'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 
 export function StepThree({
   files,
@@ -23,7 +23,7 @@ export function StepThree({
   dragActive,
   setDragActive,
 }: StepThreeProps) {
-  const [profile] = useAtom(proProfileAtom)
+  const [profile] = useAtom(proMetaAtom)
   const [selectedProjects, setSelectedProjects] = useState<string[]>([])
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -80,7 +80,7 @@ export function StepThree({
                 </h4>
               </div>
               <div className="p-4">
-                {profile.data.projects.length > 0 ? (
+                {/* {profile.data.projects.length > 0 ? (
                   <p className="mb-4 text-sm text-gray-700">
                     Select projects from your portfolio that showcase your
                     skills for this job.
@@ -89,10 +89,10 @@ export function StepThree({
                   <p className="mb-4 text-sm text-gray-700">
                     Your profile doesn't have any projects
                   </p>
-                )}
+                )} */}
 
                 <div className="mb-4 space-y-3">
-                  {profile.data.projects.map((project, index) => (
+                  {/* {profile.data.projects.map((project, index) => (
                     <motion.div
                       key={index}
                       className={cn(
@@ -144,7 +144,7 @@ export function StepThree({
                         )}
                       </div>
                     </motion.div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
             </div>

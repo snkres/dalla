@@ -1,4 +1,4 @@
-import { CompanyProfile } from '@lib/atoms/company/profile'
+import { CompanyProfile } from '@lib/atoms/company/meta'
 import { axiosInstance } from '../instance'
 
 export interface CompanyPayload {

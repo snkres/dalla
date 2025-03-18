@@ -15,7 +15,7 @@ import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { Position } from '@lib/types/profile'
-import { ProProfile } from '@lib/atoms/pro/profile'
+import { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
 
 export function ExperienceSection({

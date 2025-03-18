@@ -54,47 +54,29 @@ export type CompanyProfile = {
   timestamp: string
 }
 
-// export interface CompanyProfile {
-//   id: string
-//   name: string
-//   email: string
-//   domain: any
-//   onboarded: boolean
-//   suspended: boolean
-//   verified: boolean
-//   CompanyProfile: {
-//     location: string
-//     areas: Array<{
-//       name: string
-//       description: string
-//     }>
-//     goals: Array<{
-//       name: string
-//       description: string
-//     }>
-//     targetIndustries: Array<{
-//       name: string
-//       description: string
-//     }>
-//     website: string
-//     headline: any
-//     bio: any
-//     logo: any
-//     meta: {
-//       [key: string]: any
-//       size: string
-//       type: string
-//       phone: string
-//       industry: string
-//       socialLinks: {
-//         [key: string]: string
-//       }
-//     }
-//   }
-//   createdAt: string
-// }
-
-export const companyProfileAtom = atomWithLocalForage<CompanyProfile>(
-  'dalla:company:profile',
-  {} as CompanyProfile,
+export const companyMetaAtom = atomWithLocalForage<CompanyMeta>(
+  'dalla:company:meta',
+  {} as CompanyMeta,
 )
+
+export type CompanyMeta = {
+  statusCode: number
+  success: boolean
+  message: string
+  data: {
+    id: string
+    name: string
+    onboarded: boolean
+    email: string
+    CompanyProfile: {
+      headline: string
+      logo: string
+    }
+    _count: {
+      projects: number
+    }
+  }
+  error: any
+  path: string
+  timestamp: string
+}
