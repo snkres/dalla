@@ -16,68 +16,84 @@ import { TargetIndustriesSection } from './components/target-section'
 import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
   const isOwner = global.id === id
+  const queryClient = useQueryClient()
+  const { toast } = useToast()
   const { data } = useQuery({
     queryKey: ['company-profile', id],
     queryFn: () => getCompanyProfile(id),
     enabled: !isOwner,
   })
-  const { data: ownProfile, refetch: refetchOwnProfile } = useQuery({
+  const { data: ownProfile } = useQuery({
     queryKey: ['own-company-profile', id],
     queryFn: () => getOwnCompanyProfile(),
     enabled: isOwner,
   })
   const profile = isOwner ? ownProfile : data
   const [meta, setMeta] = useAtom(companyMetaAtom)
-  const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
   })
 
-  const handleProfileUpdate = async (
-    updateData: Partial<CompanyProfile['data']['CompanyProfile']>,
-    successMessage = 'Profile updated successfully',
-  ) => {
-    try {
-      const {
-        industry,
-        size,
-        type,
-        phone,
-        socialLinks,
-        name,
-        ...directFields
-      } = updateData as any
+  const updateProfileMutation = useMutation({
+    mutationFn: updateCompanyProfile,
+    onSuccess: (updatedData) => {
+      queryClient.setQueryData(['own-company-profile', id], (oldData: any) => {
+        if (!oldData) return oldData
 
-      const metaUpdates = {
-        ...(industry && { industry }),
-        ...(size && { size }),
-        ...(type && { type }),
-        ...(phone && { phone }),
-        ...(socialLinks && { socialLinks }),
-      }
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            data: {
+              ...oldData.data.data,
+              CompanyProfile: {
+                ...oldData.data.data,
+                ...updatedData.data?.data,
+              },
+            },
+          },
+        }
+      })
 
-      const apiPayload: any = { ...directFields, meta: metaUpdates }
-
-      await updateCompanyProfile(apiPayload)
-      refetchOwnProfile()
       toast({
-        title: successMessage,
+        title: 'Profile updated successfully',
         description: 'Your profile has been updated successfully',
       })
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Failed to update profile:', error)
       toast({
         title: 'Update failed',
         description: 'There was a problem updating your profile',
         variant: 'destructive',
       })
+    },
+  })
+
+  const handleProfileUpdate = async (
+    updateData: Partial<CompanyProfile['data']['CompanyProfile']>,
+    successMessage = 'Profile updated successfully',
+  ) => {
+    const { industry, size, type, phone, socialLinks, name, ...directFields } =
+      updateData as any
+
+    const metaUpdates = {
+      ...(industry && { industry }),
+      ...(size && { size }),
+      ...(type && { type }),
+      ...(phone && { phone }),
+      ...(socialLinks && { socialLinks }),
     }
+
+    const apiPayload: any = { ...directFields, meta: metaUpdates }
+
+    updateProfileMutation.mutate(apiPayload)
   }
 
   if (!profile) return null
@@ -131,7 +147,6 @@ export function CompanyProfileClient({ id }: { id: string }) {
             isOwner={isOwner}
             onUpdate={(data) => {
               handleProfileUpdate({
-                // ...profile?.data.CompanyProfile,
                 headline: data.headline,
                 bio: data.bio,
                 areas: data.areas,
@@ -145,7 +160,6 @@ export function CompanyProfileClient({ id }: { id: string }) {
               isOwner={isOwner}
               onUpdate={(data) => {
                 handleProfileUpdate({
-                  // ...profile?.data.CompanyProfile,
                   areas: data.areas,
                 })
               }}
@@ -158,7 +172,6 @@ export function CompanyProfileClient({ id }: { id: string }) {
               isOwner={isOwner}
               onUpdate={(data) => {
                 handleProfileUpdate({
-                  // ...profile?.data.CompanyProfile,
                   targetIndustries: data.targetIndustries,
                 })
               }}
