@@ -20,10 +20,12 @@ export function ProjectSharedDetails({
   project,
   isCompany,
   setShowEditModal,
+  isAssignedProfessional,
 }: {
   project: GetProjectRes['data']
   isCompany: boolean
   setShowEditModal: (show: boolean) => void
+  isAssignedProfessional: boolean
 }) {
   const getStatusBadge = () => {
     switch (project.status) {
@@ -105,7 +107,7 @@ export function ProjectSharedDetails({
 
           <div className="flex flex-wrap gap-2">
             <div className="flex flex-wrap items-center gap-3">
-              {project.status === 'Open' ? (
+              {project.status === 'Open' && isCompany ? (
                 <Button
                   variant="outline"
                   className="border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -116,27 +118,27 @@ export function ProjectSharedDetails({
                     Find Professionals
                   </Link>
                 </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  className="!border-[#63B7B7] !text-[#63B7B7] hover:!bg-[#63B7B7]/10"
-                  asChild
-                >
-                  <Link href={`/messages/project/${project.id}`}>
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    Message Professional
-                  </Link>
-                </Button>
-              )}
-              {project.status === 'Open' && isCompany && (
-                <Button
-                  className="!bg-[#63B7B7] !text-sm font-normal hover:!bg-[#63B7B7]/90"
-                  onClick={() => setShowEditModal(true)}
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit Project
-                </Button>
-              )}
+              ) : isCompany ? (
+                <>
+                  <Button
+                    variant="outline"
+                    className="!border-[#63B7B7] !text-[#63B7B7] hover:!bg-[#63B7B7]/10"
+                    asChild
+                  >
+                    <Link href={`/messages/project/${project.id}`}>
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Message Professional
+                    </Link>
+                  </Button>
+                  <Button
+                    className="!bg-[#63B7B7] !text-sm font-normal hover:!bg-[#63B7B7]/90"
+                    onClick={() => setShowEditModal(true)}
+                  >
+                    <Edit className="mr-2 h-4 w-4" />
+                    Edit Project
+                  </Button>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -192,10 +194,12 @@ export function ProjectSharedDetails({
                   <div className="text-base font-semibold text-[#1D8489]">
                     {formatCurrency(project.meta?.budget)}
                   </div>
-                  <div className="mt-1 text-xs text-gray-500">
-                    {formatCurrency(project.meta?.budget * 0.3)} from total
-                    budget to activate the project
-                  </div>
+                  {isCompany && (
+                    <div className="mt-1 text-xs text-gray-500">
+                      {formatCurrency(project.meta?.budget * 0.3)} from total
+                      budget to activate the project
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

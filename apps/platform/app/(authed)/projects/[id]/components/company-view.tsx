@@ -194,7 +194,9 @@ export function CompanyProjectView({
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Badge className="border border-green-100 bg-green-50 text-green-700">
-                          {project.professional?.UserProfile?.meta?.status}
+                          {project.professional?.UserProfile?.meta?.skills.join(
+                            ', ',
+                          )}
                         </Badge>
                       </div>
                     </div>

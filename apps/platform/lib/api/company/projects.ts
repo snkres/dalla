@@ -1,4 +1,4 @@
-import { ProProfile } from '@lib/atoms/pro/profile'
+import { ProProfile } from '@lib/atoms/pro/meta'
 import { axiosInstance } from '../instance'
 
 export type ProjectStatus = 'Open' | 'Closed' | 'InProgress' | 'Completed'
@@ -137,6 +137,7 @@ export type GetProjectRes = {
       }
       CompanyProfile: {
         location: string
+        logo: string
       }
     }
     proposals: Array<{
@@ -178,6 +179,7 @@ export type GetProjectRes = {
         meta: ProProfile['data']['meta']
       }
     }
+    applied: boolean
   }
   error: any
   path: string

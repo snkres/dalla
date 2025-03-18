@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+
 import { Button } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
@@ -16,9 +16,18 @@ import {
   Building,
 } from 'lucide-react'
 import Image from 'next/image'
+import { GetProjectRes } from '@lib/api/company/projects'
+import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
+import { useAtom } from 'jotai'
+import { useTransitionRouter } from 'next-view-transitions'
 
-export function ProfessionalProjectView({ project }: { project: any }) {
-  const router = useRouter()
+export function ProfessionalProjectView({
+  project,
+}: {
+  project: GetProjectRes['data']
+}) {
+  const router = useTransitionRouter()
+  const [meta, setMeta] = useAtom(proMetaAtom)
   const [isApplying, setIsApplying] = useState(false)
   const [proposal, setProposal] = useState({
     description: '',
@@ -27,12 +36,10 @@ export function ProfessionalProjectView({ project }: { project: any }) {
   })
 
   // Check if the professional has already applied to this project
-  const hasApplied = project.proposals?.some(
-    (p: any) => p.professionalId === project.professionalId, // Assuming current user ID is available
-  )
+  const hasApplied = project.applied
 
   // Check if the professional is assigned to this project
-  const isAssigned = project.assignedProfessionalId === project.professionalId
+  const isAssigned = project.professional?.id === meta?.data.id
 
   const handleApply = async () => {
     // Implement proposal submission logic
@@ -161,8 +168,7 @@ export function ProfessionalProjectView({ project }: { project: any }) {
               </h3>
 
               <p className="mt-1 text-sm text-gray-500">
-                {project.company?.CompanyProfile?.meta?.industry || 'Industry'}{' '}
-                •{project.company?.CompanyProfile?.location || 'Location'}
+                {project.company?.CompanyProfile?.location || 'Location'}
               </p>
 
               <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
@@ -181,12 +187,12 @@ export function ProfessionalProjectView({ project }: { project: any }) {
                   </p>
                 </div>
 
-                <div>
+                {/* <div>
                   <span className="text-gray-500">Company size</span>
                   <p className="font-medium text-gray-900">
                     {project.company?.CompanyProfile?.meta?.size || 'N/A'}
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -222,13 +228,13 @@ export function ProfessionalProjectView({ project }: { project: any }) {
               You've submitted a proposal
             </h3>
             <p className="mb-4 text-sm text-gray-600">
-              The client is reviewing your proposal. You'll be notified if they
+              The company is reviewing your proposal. You'll be notified if they
               respond.
             </p>
             <Button
               variant="outline"
               className="mt-2 border-[#63B7B7] text-[#63B7B7] hover:bg-[#63B7B7]/10"
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push('/proposals')}
             >
               View My Proposals
             </Button>

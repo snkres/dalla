@@ -14,6 +14,7 @@ import {
   Calendar,
   Globe,
 } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import StatusBadge from './status-badge'
 import {
   DropdownMenu,
@@ -34,6 +35,7 @@ import InsightsSection from './inisghts-section'
 import { getProposalById, deleteProposal } from '@lib/api/pro/proposals'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 const ProposalDetails: React.FC<{
   proposalId: string
@@ -144,7 +146,7 @@ const ProposalDetails: React.FC<{
                 <div className="mr-4 flex items-center">
                   <DollarSign className="mr-1 h-4 w-4 text-gray-400" />
                   <span className="text-sm text-gray-700">
-                    {data.data.project.meta.budget}
+                    {formatCurrency(data.data.project.meta.budget)}
                   </span>
                 </div>
                 <div className="mr-4 flex items-center">
@@ -156,8 +158,7 @@ const ProposalDetails: React.FC<{
                 <div className="flex items-center">
                   <Globe className="mr-1 h-4 w-4 text-gray-400" />
                   <span className="text-sm text-gray-700">
-                    {/* TODO: get from API */}
-                    Cairo, Egypt
+                    {data.data.project.company?.CompanyProfile?.meta?.location}
                   </span>
                 </div>
               </div>
@@ -179,9 +180,11 @@ const ProposalDetails: React.FC<{
                   <Mail className="mr-2 h-4 w-4" />
                   <span>Contact client</span>
                 </DropdownMenuItem> */}
-                <DropdownMenuItem>
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  <span>View project</span>
+                <DropdownMenuItem asChild>
+                  <Link href={`/projects/${data.data.project.id}`} prefetch>
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    <span>View project</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -198,9 +201,12 @@ const ProposalDetails: React.FC<{
           <div className="space-y-6">
             <ClientSection
               data={{
-                // TODO: get client from API
-                clientName: 'Dallah',
-                clientLocation: 'Egypt',
+                clientLogo:
+                  data.data.project?.company?.CompanyProfile?.logo ??
+                  'https://randomuser.me/api/portraits/men/2.jpg',
+                clientName: data.data.project?.company?.name,
+                clientLocation:
+                  data.data.project?.company?.CompanyProfile?.meta?.location,
                 clientRating: 4.5,
                 clientSpend: 1000,
                 clientHires: 10,
@@ -225,9 +231,8 @@ const ProposalDetails: React.FC<{
             <InsightsSection
               data={{
                 // TODO: get from API
-                proposalViews: 10,
-                competingProposals: 10,
-                interviewRate: 10,
+
+                competingProposals: data.data.project._count.proposals,
               }}
               isExpanded={expandedSection === 'insights'}
               onToggle={() => toggleSection('insights')}

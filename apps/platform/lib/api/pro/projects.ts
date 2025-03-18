@@ -1,3 +1,4 @@
+import { GetProjectRes } from '../company/projects'
 import { axiosInstance } from '../instance'
 
 export type GetAllProjectsRes = {
@@ -92,6 +93,14 @@ export type GetProjectByIdRes = {
 export async function getProjectById(id: string) {
   const res = await axiosInstance
     .get<GetProjectByIdRes>(`/professionals/projects/${id}`)
+    .then((res) => res.data.data)
+
+  return res
+}
+
+export const getProjectProfessionalView = async (id: string) => {
+  const res = await axiosInstance
+    .get<GetProjectRes>(`/professionals/projects/${id}`)
     .then((res) => res.data.data)
 
   return res

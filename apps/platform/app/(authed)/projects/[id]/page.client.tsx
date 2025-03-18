@@ -6,11 +6,13 @@ import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
+import { ProfessionalProjectView } from './components/professional-view'
 import { getProject } from '@lib/api/company/projects'
 import { Tabs, TabsList, TabsTrigger, Button } from '@dallah/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 import { useTransitionRouter } from 'next-view-transitions'
+import { getProjectProfessionalView } from '@lib/api/pro/projects'
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -21,11 +23,11 @@ export function ProjectPageClient({ id }: { id: string }) {
   const isCompany = global.mode === 'company'
   const isProfessional = global.mode === 'user'
 
-  // Fetch project data using the appropriate API based on user role
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['project', id],
     queryFn: async () => {
-      return getProject(id)
+      const res = isCompany ? getProject(id) : getProjectProfessionalView(id)
+      return res
     },
   })
 
@@ -79,6 +81,7 @@ export function ProjectPageClient({ id }: { id: string }) {
             project={data}
             isCompany={isCompany}
             setShowEditModal={setShowEditModal}
+            isAssignedProfessional={data.professional?.id === global?.id}
           />
           <div className="w-full border-t border-gray-200">
             <Tabs
@@ -119,13 +122,7 @@ export function ProjectPageClient({ id }: { id: string }) {
             setActiveTab={setActiveTab}
           />
         )}
-        {/* {isProfessional && (
-          <ProfessionalProjectView
-            project={data}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        )} */}
+        {isProfessional && <ProfessionalProjectView project={data} />}
       </div>
 
       {showEditModal && (

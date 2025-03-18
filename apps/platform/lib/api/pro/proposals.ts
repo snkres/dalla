@@ -94,7 +94,7 @@ export type GetAllProposalsRes = {
   data: [
     Array<{
       id: string
-      status: string
+      status: ProposalStatus
       createdAt: string
       project: {
         title: string
@@ -187,6 +187,19 @@ export type GetProposalByIdRes = {
       assignedProfessionalId: any
       createdAt: string
       updatedAt: string
+      company: {
+        id: string
+        name: string
+        CompanyProfile: {
+          logo: string
+          meta: {
+            location: string
+          }
+        }
+      }
+      _count: {
+        proposals: number
+      }
     }
     relevantProjects: Array<any>
   }

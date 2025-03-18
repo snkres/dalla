@@ -78,9 +78,9 @@ const ProposalCard: React.FC<{
       <div className="mb-4 flex items-center text-xs text-gray-500">
         <Clock className="mr-1.5 h-3.5 w-3.5" />
         <span>
-          {proposal.status === 'Submitted' || proposal.status === 'Viewed'
+          {proposal.status === 'Pending' || proposal.status === 'Accepted'
             ? 'Initiated'
-            : 'Received'}{' '}
+            : 'Sent'}{' '}
           {getTimeAgo(new Date(proposal.createdAt))}
         </span>
       </div>
@@ -91,9 +91,7 @@ const ProposalCard: React.FC<{
               {companyName.charAt(0)}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm text-gray-700">
-            {companyName}
-          </span>
+          <span className="text-sm text-gray-700">{companyName}</span>
         </div>
         <Button
           variant="ghost"
