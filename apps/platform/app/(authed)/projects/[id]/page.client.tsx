@@ -13,8 +13,8 @@ import { Tabs, TabsList, TabsTrigger, Button } from '@dallah/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 
-const companyTabs = ['overview', 'milestones', 'team', 'files', 'budget']
-const professionalTabs = ['overview', 'milestones', 'team', 'files', 'budget']
+const companyTabs = ['overview', 'professional', 'files', 'budget']
+const professionalTabs = ['overview', 'company', 'team', 'files', 'budget']
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)

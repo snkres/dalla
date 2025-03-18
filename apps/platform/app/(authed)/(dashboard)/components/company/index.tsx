@@ -45,7 +45,7 @@ export default function CompanyHome() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [page, setPage] = useState(1)
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['projects', page, 'company'],
     queryFn: () => getAllProjects(page, LIMIT),
   })
@@ -300,10 +300,7 @@ export default function CompanyHome() {
             key="add-project-modal"
             onClose={() => setShowAddProject(false)}
             onProjectCreated={() => {
-              // Refetch projects when a new one is created
-              queryClient.invalidateQueries({
-                queryKey: ['projects', page, 'company'],
-              })
+              refetch()
             }}
           />
         )}

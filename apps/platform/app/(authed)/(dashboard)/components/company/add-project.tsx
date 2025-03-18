@@ -4,14 +4,19 @@ import {
   ArrowLeft,
   Save,
   DollarSign,
-  Calendar,
   Briefcase,
   AlertCircle,
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@dallah/design-system'
 import { createProject, CreateProjectReq } from '@lib/api/company/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { SkillSelector } from '@components/shared/skill-selector'
@@ -49,7 +54,8 @@ export function AddProject({
     skills: [] as string[],
     meta: {
       budget: '',
-      timeline: '',
+      timelineValue: '1',
+      timelineUnit: 'months',
       priority: 'medium',
     },
   })
@@ -78,6 +84,16 @@ export function AddProject({
     }
   }
 
+  const handleTimelineUnitChange = (value: string) => {
+    setFormData({
+      ...formData,
+      meta: {
+        ...formData.meta,
+        timelineUnit: value,
+      },
+    })
+  }
+
   const handleSkillsChange = (skills: string[]) => {
     setFormData({
       ...formData,
@@ -87,7 +103,7 @@ export function AddProject({
 
   const validateForm = () => {
     const requiredFields = ['title', 'description']
-    const requiredMetaFields = ['budget', 'timeline']
+    const requiredMetaFields = ['budget', 'timelineValue']
 
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
@@ -104,7 +120,7 @@ export function AddProject({
       if (!formData.meta[field as keyof typeof formData.meta]) {
         toast({
           title: 'Missing required field',
-          description: `Please fill in the ${field} field.`,
+          description: `Please fill in the ${field.replace('Value', '')} field.`,
           variant: 'destructive',
         })
         return false
@@ -129,6 +145,9 @@ export function AddProject({
     setIsSubmitting(true)
 
     try {
+      // Format the timeline string from the value and unit
+      const timeline = `${formData.meta.timelineValue} ${formData.meta.timelineUnit}`
+
       const projectData: CreateProjectReq = {
         title: formData.title,
         jobTitle: formData.jobTitle || formData.title,
@@ -138,7 +157,7 @@ export function AddProject({
         skills: formData.skills,
         meta: {
           budget: Number(formData.meta.budget),
-          duration: formData.meta.timeline,
+          duration: timeline,
           // priority: formData.meta.priority,
         },
       }
@@ -183,26 +202,6 @@ export function AddProject({
         <h1 className="ml-2 text-lg font-medium text-gray-900">
           Add New Project
         </h1>
-        <div className="ml-auto flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-gray-300 text-gray-500 hover:bg-gray-50"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button
-            size="sm"
-            className="bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <Save className="mr-1 h-4 w-4" />
-            {isSubmitting ? 'Saving...' : 'Save Project'}
-          </Button>
-        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -315,15 +314,33 @@ export function AddProject({
                 >
                   Timeline*
                 </label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-                  <Input
-                    id="meta.timeline"
-                    placeholder="e.g. 3 months"
-                    value={formData.meta.timeline}
-                    onChange={handleInputChange}
-                    className="pl-9"
-                  />
+                <div className="flex gap-2">
+                  <div className="relative w-1/3">
+                    <Input
+                      id="meta.timelineValue"
+                      placeholder="e.g. 3"
+                      value={formData.meta.timelineValue}
+                      onChange={handleInputChange}
+                      className="w-full"
+                      type="number"
+                      min="1"
+                    />
+                  </div>
+                  <div className="w-2/3">
+                    <Select
+                      value={formData.meta.timelineUnit}
+                      onValueChange={handleTimelineUnitChange}
+                    >
+                      <SelectTrigger className="!h-10 w-full">
+                        <SelectValue placeholder="Select unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="days">Days</SelectItem>
+                        <SelectItem value="weeks">Weeks</SelectItem>
+                        <SelectItem value="months">Months</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -362,14 +379,14 @@ export function AddProject({
             <div className="flex justify-end gap-3 pt-4">
               <Button
                 variant="outline"
-                className="border-gray-300 text-gray-600"
+                className="!border-gray-300 !text-gray-500 hover:!bg-gray-50"
                 onClick={onClose}
                 disabled={isSubmitting}
               >
                 Cancel
               </Button>
               <Button
-                className="bg-[#63B7B7] px-6 text-white hover:bg-[#63B7B7]/90"
+                className="!bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
