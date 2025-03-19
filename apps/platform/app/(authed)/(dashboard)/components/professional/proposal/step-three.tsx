@@ -17,17 +17,30 @@ import { StepThreeProps } from '@lib/types/steps'
 import { useAtom } from 'jotai'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
 
+const MAX_TOTAL_SIZE = 20 * 1024 * 1024
+
 export function StepThree({
   files,
   setFiles,
   dragActive,
   setDragActive,
 }: StepThreeProps) {
-  const [profile] = useAtom(proMetaAtom)
-  const [selectedProjects, setSelectedProjects] = useState<string[]>([])
+  const [sizeError, setSizeError] = useState<string | null>(null)
+
+  const totalSize = files.reduce((sum, file) => sum + file.size, 0)
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files)
+      const newTotalSize =
+        totalSize + newFiles.reduce((sum, file) => sum + file.size, 0)
+
+      if (newTotalSize > MAX_TOTAL_SIZE) {
+        setSizeError('Total file size exceeds the 20MB limit')
+        return
+      }
+
+      setSizeError(null)
       setFiles((prevFiles) => [...prevFiles, ...newFiles])
     }
   }
@@ -55,6 +68,15 @@ export function StepThree({
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const newFiles = Array.from(e.dataTransfer.files)
+      const newTotalSize =
+        totalSize + newFiles.reduce((sum, file) => sum + file.size, 0)
+
+      if (newTotalSize > MAX_TOTAL_SIZE) {
+        setSizeError('Total file size exceeds the 20MB limit')
+        return
+      }
+
+      setSizeError(null)
       setFiles((prevFiles) => [...prevFiles, ...newFiles].slice(0, 5))
     }
   }
@@ -205,6 +227,33 @@ export function StepThree({
                         </button>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {files.length > 0 && (
+                  <div className="mb-4 w-full">
+                    <div className="mb-2 flex items-center justify-between text-xs text-gray-500">
+                      <span>
+                        Total size: {(totalSize / (1024 * 1024)).toFixed(2)} MB
+                      </span>
+                      <span>Maximum: 20 MB</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+                      <div
+                        className={cn(
+                          'h-full rounded-full',
+                          totalSize > MAX_TOTAL_SIZE
+                            ? 'bg-red-500'
+                            : 'bg-[#63B7B7]',
+                        )}
+                        style={{
+                          width: `${Math.min(100, (totalSize / MAX_TOTAL_SIZE) * 100)}%`,
+                        }}
+                      ></div>
+                    </div>
+                    {sizeError && (
+                      <p className="mt-1 text-xs text-red-500">{sizeError}</p>
+                    )}
                   </div>
                 )}
 

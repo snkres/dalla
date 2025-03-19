@@ -13,6 +13,7 @@ import { ApplicationSidebar } from './sidebar'
 import { NavigationButtons } from './navigation-buttons'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
+import { upload } from '@lib/api/shared/upload'
 
 interface ProjectApplicationProps {
   project: GetAllProjectsProfessionalViewRes['data'][0][number]
@@ -164,7 +165,7 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     setIsSubmitting(true)
 
     try {
-      // const media = await Promise.all(files.map((file) => upload(file)))
+      const media = await Promise.all(files.map((file) => upload(file)))
       // Prepare the proposal data
       const proposalData = {
         price: bidType === 'fixed' ? bidAmount : totalMilestonesAmount,
@@ -174,8 +175,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
             : milestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
         description: coverLetter,
         relevantProjects: [],
-        // media: media.map((m) => m.data.fileUrl),
-        media: ['https://placehold.co/80x80/e6f3f3/63B7B7?text=Media'],
+        media: media.map((m) => m.data.fileUrl),
+        // media: ['https://placehold  .co/80x80/e6f3f3/63B7B7?text=Media'],
       }
 
       // Submit the proposal
