@@ -31,7 +31,7 @@ function validateProfessionalDetails(data: ProOnboardingData): boolean {
   const requiredFields = {
     skills: data.meta.skills.length > 0,
     yearsOfExperience: data.meta.yearsOfExperience > 0,
-    portfolio: !!data.meta.socialLinks?.portfolio,
+
     phone: isPhoneValid,
   }
 

@@ -147,7 +147,7 @@ export function ProOnboardingOne({
         </div>
       </div>
 
-      <div className="flex w-full gap-4">
+      <div className="flex w-full items-center gap-4">
         <div className="relative w-full">
           <div className="mb-1 flex items-center">
             <Label htmlFor="headline">Headline</Label>
@@ -162,7 +162,26 @@ export function ProOnboardingOne({
             onChange={(e) => updateData({ ...data, headline: e.target.value })}
           />
         </div>
-
+        <div className="relative w-full">
+          <div className="mb-1 flex items-center">
+            <Label htmlFor="location">Location</Label>
+            <RequiredIndicator />
+          </div>
+          <MapPin className="absolute left-3 top-[2.5rem] h-5 w-5 text-gray-400" />
+          <Input
+            id="location"
+            className="!h-11 pl-10"
+            placeholder="Location"
+            type="name"
+            value={data.meta.location}
+            onChange={(e) =>
+              updateData({
+                ...data,
+                meta: { ...data.meta, location: e.target.value },
+              })
+            }
+          />
+        </div>
         <div className="relative w-full">
           <div className="mb-1 flex items-center">
             <Label htmlFor="gender">Gender</Label>
@@ -182,27 +201,6 @@ export function ProOnboardingOne({
               <SelectItem value="Female">Female</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-        <div className="relative w-full">
-          <Label htmlFor="location">
-            Location
-            <RequiredIndicator />
-          </Label>
-
-          <MapPin className="absolute left-3 top-[2.1rem] h-5 w-5 text-gray-400" />
-          <Input
-            id="location"
-            className="h-11 pl-10"
-            placeholder="Location"
-            type="name"
-            value={data.meta.location}
-            onChange={(e) =>
-              updateData({
-                ...data,
-                meta: { ...data.meta, location: e.target.value },
-              })
-            }
-          />
         </div>
       </div>
 

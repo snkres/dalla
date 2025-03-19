@@ -31,6 +31,7 @@ export default function Page() {
     handlePrevious,
     handleStepAction,
     handleComplete,
+    isLoading,
   } = useOnboarding()
 
   console.log(isAbleToProceed)
@@ -115,6 +116,7 @@ export default function Page() {
             handleSubmit={handleStepAction}
             isSubmitting={isSubmitting}
             isAbleToProceed={true}
+            isLoading={isLoading}
           />
         </div>
       ) : (
@@ -209,6 +211,7 @@ export default function Page() {
               previousText={step === 1 ? null : 'Back'}
               handleSubmit={handleStepAction}
               isSubmitting={isSubmitting}
+              isLoading={isLoading}
             />
           </div>
         </div>

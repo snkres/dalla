@@ -15,10 +15,7 @@ export interface CompanyPayload {
     size: string
     type: string
     industry: string
-    socialLinks: {
-      name: string
-      url: string
-    }
+    socialLinks: { [key: string]: string }
   }
 }
 

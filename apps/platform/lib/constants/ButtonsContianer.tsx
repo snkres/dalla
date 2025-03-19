@@ -1,9 +1,11 @@
 import { Button } from '@dallah/design-system'
+import { Loader2 } from 'lucide-react'
 
 interface ButtonsContainerProps {
   handlePrevious: () => void
   handleSubmit: () => void | Promise<void>
   isSubmitting: boolean
+  isLoading: boolean
   previousText: string | null
   continueText: string
   isNextDisabled?: boolean
@@ -14,6 +16,7 @@ export function ButtonsContainer({
   handlePrevious,
   handleSubmit,
   isSubmitting,
+  isLoading,
   previousText,
   continueText,
   isAbleToProceed,
@@ -37,7 +40,11 @@ export function ButtonsContainer({
         onClick={handleSubmit}
         className="w-full bg-[#234d64] text-white hover:bg-[#1a3b4d]"
       >
-        {continueText}
+        {isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          continueText
+        )}
       </Button>
     </div>
   )

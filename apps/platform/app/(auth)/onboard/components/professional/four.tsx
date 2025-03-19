@@ -87,7 +87,7 @@ export function ProOnboardingFour({
           </div>
         ) : (
           <Image
-            src="/exp.webp"
+            src="/edu.webp"
             alt="Education"
             width={500}
             height={300}
