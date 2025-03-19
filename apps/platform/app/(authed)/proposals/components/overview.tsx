@@ -18,8 +18,10 @@ import {
 } from '@dallah/design-system'
 import { Progress } from '@dallah/design-system'
 import { Card } from '@dallah/design-system'
-import { OverviewProps } from '@lib/types/proposals'
+
 import { useState } from 'react'
+import { getProfessionalAnalytics } from '@lib/api/pro/analytics'
+import { useQuery } from '@tanstack/react-query'
 
 const StatCard = ({
   icon: Icon,
@@ -89,40 +91,43 @@ const PerformanceChart = ({ percentage }: { percentage: number }) => (
   </div>
 )
 
-const Overview: React.FC<OverviewProps> = () => {
+const Overview = () => {
   const [timeRange, setTimeRange] = useState<'7days' | '30days' | '90days'>(
     '30days',
   )
 
-  const performanceData = {
-    profileViews: {
-      '7days': { count: 85, change: '+15%' },
-      '30days': { count: 320, change: '+8%' },
-      '90days': { count: 950, change: '+22%' },
-    },
-    interviews: {
-      '7days': { count: 1, pending: 1, completed: 0 },
-      '30days': { count: 3, pending: 1, completed: 2 },
-      '90days': { count: 8, pending: 1, completed: 7 },
-    },
-    proposals: {
-      '7days': { count: 5, interviews: 1, offers: 0 },
-      '30days': { count: 19, interviews: 3, offers: 0 },
-      '90days': { count: 42, interviews: 8, offers: 2 },
-    },
-    successRate: {
-      '7days': 20.0,
-      '30days': 15.8,
-      '90days': 19.0,
-    },
+  const getDateRange = (range: '7days' | '30days' | '90days') => {
+    const to = new Date().toISOString()
+    const from = new Date()
+
+    switch (range) {
+      case '7days':
+        from.setDate(from.getDate() - 7)
+        break
+      case '30days':
+        from.setDate(from.getDate() - 30)
+        break
+      case '90days':
+        from.setDate(from.getDate() - 90)
+        break
+    }
+
+    return { from: from.toISOString(), to }
   }
 
-  const data = {
-    profileViews: performanceData.profileViews[timeRange],
-    interviews: performanceData.interviews[timeRange],
-    proposals: performanceData.proposals[timeRange],
-    successRate: performanceData.successRate[timeRange],
-  }
+  const { data: analytics } = useQuery({
+    queryKey: ['analytics', 'professional', timeRange],
+    queryFn: () => {
+      const { from, to } = getDateRange(timeRange)
+      return getProfessionalAnalytics({ from, to })
+    },
+  })
+
+  // Extract values from analytics with fallbacks
+  const totalProposals = analytics?.data.totalProposals || 0
+  const acceptedProposals = analytics?.data.acceptedProposals || 0
+  const successRate =
+    totalProposals > 0 ? (acceptedProposals / totalProposals) * 100 : 0
 
   const getSuccessRateBadge = (rate: number) => {
     if (rate >= 25) return { text: 'Excellent', color: 'green' }
@@ -130,20 +135,13 @@ const Overview: React.FC<OverviewProps> = () => {
     return { text: 'Needs Improvement', color: 'gray' }
   }
 
-  const successBadge = getSuccessRateBadge(data.successRate)
-  const timeRangeText =
-    timeRange === '7days'
-      ? '7 days'
-      : timeRange === '30days'
-        ? '30 days'
-        : '90 days'
+  const successBadge = getSuccessRateBadge(successRate)
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="mb-8"
     >
       <Card className="overflow-hidden border-gray-100 shadow-sm">
         <div className="border-b border-gray-100 bg-[#f8fbfd] p-5 sm:p-6">
@@ -176,45 +174,15 @@ const Overview: React.FC<OverviewProps> = () => {
                   </button>
                 ))}
               </div>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-9 whitespace-nowrap border-[#63B7B7]/30 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
-                    >
-                      <BarChart2 className="mr-1.5 h-3.5 w-3.5" />
-                      Analytics
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="bottom"
-                    className="border border-gray-100 bg-white p-2 shadow-lg"
-                  >
-                    <p className="text-xs">View detailed performance metrics</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 sm:p-6 xl:grid-cols-4">
-          <StatCard
-            icon={Eye}
-            label="Profile Visibility"
-            value={data.profileViews.count}
-            badge={data.profileViews.change}
-            badgeColor="green"
-            subtext={`${data.profileViews.count} profile views in ${timeRangeText}`}
-          />
-
+        <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2 sm:p-6 xl:grid-cols-3">
           <StatCard
             icon={RefreshCw}
-            label="Interview Invitations"
-            value={data.interviews.count}
+            label="Proposals"
+            value={totalProposals}
             badge={
               timeRange === '7days'
                 ? 'this week'
@@ -223,50 +191,26 @@ const Overview: React.FC<OverviewProps> = () => {
                   : 'this quarter'
             }
             badgeColor="blue"
-            subtext={`${data.interviews.pending} pending, ${data.interviews.completed} completed`}
+            subtext={`You have submitted ${totalProposals} proposals`}
+          />
+
+          <StatCard
+            icon={TrendingUp}
+            label="Accepted Proposals"
+            value={acceptedProposals}
+            badge={acceptedProposals > 0 ? 'Active' : 'None yet'}
+            badgeColor={acceptedProposals > 0 ? 'green' : 'gray'}
+            subtext={`You have been accepted for ${acceptedProposals} proposals`}
           />
 
           <StatCard
             icon={Award}
             label="Success Rate"
-            value={`${data.successRate.toFixed(1)}%`}
+            value={`${successRate?.toFixed(1)}%`}
             badge={successBadge.text}
             badgeColor={successBadge.color}
-            subtext={`${data.proposals.interviews} interviews from ${data.proposals.count} proposals`}
+            subtext={`You have been accepted for ${acceptedProposals} proposals`}
           />
-
-          <StatCard
-            icon={TrendingUp}
-            label="Job Offers"
-            value={data.proposals.offers}
-            badge={data.proposals.offers > 0 ? 'Active' : 'None yet'}
-            badgeColor={data.proposals.offers > 0 ? 'green' : 'gray'}
-            subtext={`${((data.proposals.offers / Math.max(1, data.proposals.count)) * 100).toFixed(1)}% conversion rate`}
-          />
-        </div>
-
-        <div className="border-t border-gray-100 bg-white p-5 sm:p-6">
-          <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
-            <div>
-              <p className="mb-2 text-sm font-medium text-gray-900">
-                Proposal Performance
-              </p>
-              <div className="flex flex-col items-start gap-1 text-xs text-gray-600 sm:flex-row sm:items-center sm:gap-3">
-                <div className="flex items-center">
-                  <Calendar className="mr-1.5 h-3.5 w-3.5 text-[#1D8489]" />
-                  <span>Last {timeRangeText}</span>
-                </div>
-                <div className="flex flex-wrap gap-x-3 gap-y-1">
-                  <span>• {data.proposals.count} proposals</span>
-                  <span>• {data.proposals.interviews} interviews</span>
-                  <span>• {data.proposals.offers} offers</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-3 w-full lg:mt-0 lg:w-[300px]">
-              <PerformanceChart percentage={data.successRate} />
-            </div>
-          </div>
         </div>
       </Card>
     </motion.div>

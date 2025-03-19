@@ -11,14 +11,6 @@ export type ProposalStatus =
   | 'Submitted'
   | 'Viewed'
 
-export interface OverviewProps {
-  totalProposals: number
-  totalConversions: number
-  conversionRate: number
-  averageResponseTime: number
-  averageConversionTime: number
-}
-
 export interface Proposal {
   id: number
   date: string
