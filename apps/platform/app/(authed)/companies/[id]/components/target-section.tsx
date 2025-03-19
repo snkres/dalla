@@ -1,16 +1,40 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Target, Edit, Check, X, Plus, Trash2 } from 'lucide-react'
+import { Target, Edit, Check, X } from 'lucide-react'
 import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Checkbox } from '@dallah/design-system'
 import { toast } from '@dallah/design-system/ui/toast/use-toast'
 
 interface Industry {
   name: string
   description: string
 }
+
+const PREDEFINED_INDUSTRIES: Industry[] = [
+  {
+    name: 'Technology',
+    description: 'Software, hardware, IT services, and digital solutions.',
+  },
+  {
+    name: 'Healthcare',
+    description:
+      'Medical services, pharmaceuticals, and healthcare technology.',
+  },
+  {
+    name: 'Finance',
+    description: 'Banking, investment, insurance, and financial technology.',
+  },
+  {
+    name: 'Education',
+    description:
+      'Schools, universities, e-learning, and educational technology.',
+  },
+  {
+    name: 'Manufacturing',
+    description: 'Production of goods, industrial equipment, and supply chain.',
+  },
+]
 
 export function TargetIndustriesSection({
   industries,
@@ -25,34 +49,41 @@ export function TargetIndustriesSection({
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedIndustries, setEditedIndustries] = useState<Industry[]>([])
-  const nameInputRef = useRef<HTMLInputElement>(null)
   const MAX_INDUSTRIES = 3
+  const [selectedIndustryIds, setSelectedIndustryIds] = useState<number[]>([])
 
   const handleEdit = () => {
-    setEditedIndustries(
-      industries.length > 0
-        ? [...industries.slice(0, MAX_INDUSTRIES)]
-        : [{ name: '', description: '' }],
-    )
+    // Find indices of existing industries in the predefined list
+    const initialSelectedIds = industries
+      .map((industry) =>
+        PREDEFINED_INDUSTRIES.findIndex(
+          (predefined) =>
+            predefined.name === industry.name &&
+            predefined.description === industry.description,
+        ),
+      )
+      .filter((index) => index !== -1)
+
+    setSelectedIndustryIds(initialSelectedIds)
     setIsEditing(true)
-    setTimeout(() => nameInputRef.current?.focus(), 100)
   }
 
   const handleSave = () => {
-    const validIndustries = editedIndustries.filter(
-      (industry) => industry.name.trim() !== '',
-    )
-
-    if (validIndustries.length === 0) {
+    if (selectedIndustryIds.length === 0) {
       toast({
         title: 'Validation Error',
-        description: 'Please add at least one industry with a name',
+        description: 'Please select at least one industry',
         variant: 'destructive',
       })
       return
     }
 
-    onUpdate?.({ targetIndustries: validIndustries })
+    // Convert selected IDs to actual industry objects
+    const selectedIndustries = selectedIndustryIds.map(
+      (id) => PREDEFINED_INDUSTRIES[id],
+    )
+
+    onUpdate?.({ targetIndustries: selectedIndustries })
     setIsEditing(false)
   }
 
@@ -60,31 +91,26 @@ export function TargetIndustriesSection({
     setIsEditing(false)
   }
 
-  const addIndustry = () => {
-    if (editedIndustries.length < MAX_INDUSTRIES) {
-      setEditedIndustries([...editedIndustries, { name: '', description: '' }])
-      setTimeout(() => {
-        const inputs = document.querySelectorAll(
-          'input[placeholder="Industry name"]',
-        )
-        const lastInput = inputs[inputs.length - 1] as HTMLInputElement
-        lastInput?.focus()
-      }, 100)
-    }
-  }
+  const toggleIndustrySelection = (index: number) => {
+    setSelectedIndustryIds((prev) => {
+      // If already selected, remove it
+      if (prev.includes(index)) {
+        return prev.filter((id) => id !== index)
+      }
 
-  const removeIndustry = (index: number) => {
-    setEditedIndustries(editedIndustries.filter((_, i) => i !== index))
-  }
+      // If not selected and we haven't reached the limit, add it
+      if (prev.length < MAX_INDUSTRIES) {
+        return [...prev, index]
+      }
 
-  const updateIndustry = (
-    index: number,
-    field: keyof Industry,
-    value: string,
-  ) => {
-    const updatedIndustries = [...editedIndustries]
-    updatedIndustries[index] = { ...updatedIndustries[index], [field]: value }
-    setEditedIndustries(updatedIndustries)
+      // If we've reached the limit, show a toast and don't change
+      toast({
+        title: 'Selection Limit Reached',
+        description: `You can only select up to ${MAX_INDUSTRIES} industries`,
+        variant: 'destructive',
+      })
+      return prev
+    })
   }
 
   const displayIndustries = isEditing
@@ -142,74 +168,48 @@ export function TargetIndustriesSection({
       {isEditing ? (
         <div className="space-y-4">
           <p className="text-xs text-gray-500">
-            Add up to {MAX_INDUSTRIES} target industries:
+            Select up to {MAX_INDUSTRIES} target industries:
           </p>
 
-          <div className="space-y-4">
-            {editedIndustries.map((industry, index) => (
+          <div className="space-y-3">
+            {PREDEFINED_INDUSTRIES.map((industry, index) => (
               <div
                 key={index}
-                className="rounded-lg border border-gray-100 p-4"
+                onClick={() => toggleIndustrySelection(index)}
+                className={`cursor-pointer rounded-lg border p-4 transition-all ${
+                  selectedIndustryIds.includes(index)
+                    ? 'border-[#3A97A0] bg-[#3A97A0]/5'
+                    : 'border-gray-100'
+                }`}
               >
-                <div className="mb-3 flex items-center justify-between">
-                  <h4 className="text-xs font-medium text-gray-700">
-                    Industry {index + 1}
-                  </h4>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeIndustry(index)}
-                    className="h-7 w-7 rounded-full p-0 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <Input
-                      ref={index === 0 ? nameInputRef : undefined}
-                      value={industry.name}
-                      onChange={(e) =>
-                        updateIndustry(index, 'name', e.target.value)
-                      }
-                      placeholder="Industry name"
-                      className="h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <Textarea
-                      value={industry.description}
-                      onChange={(e) =>
-                        updateIndustry(index, 'description', e.target.value)
-                      }
-                      placeholder="Brief description of this industry"
-                      className="min-h-[80px] text-xs"
-                    />
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id={`industry-${index}`}
+                    checked={selectedIndustryIds.includes(index)}
+                    disabled={
+                      !selectedIndustryIds.includes(index) &&
+                      selectedIndustryIds.length >= MAX_INDUSTRIES
+                    }
+                  />
+                  <div className="flex-1">
+                    <label
+                      htmlFor={`industry-${index}`}
+                      className="block cursor-pointer text-xs font-medium text-gray-700"
+                    >
+                      {industry.name}
+                    </label>
+                    <p className="mt-1 text-xs text-gray-600">
+                      {industry.description}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {editedIndustries.length < MAX_INDUSTRIES && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={addIndustry}
-              className="mt-2 w-full border-dashed border-[#3A97A0]/30 text-xs text-[#3A97A0] hover:border-[#3A97A0] hover:bg-[#3A97A0]/5"
-            >
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Add Industry {editedIndustries.length + 1}
-            </Button>
-          )}
-
-          {editedIndustries.length === MAX_INDUSTRIES && (
-            <p className="text-center text-xs italic text-gray-500">
-              Maximum of {MAX_INDUSTRIES} industries reached
-            </p>
-          )}
+          <p className="text-center text-xs text-gray-500">
+            {selectedIndustryIds.length}/{MAX_INDUSTRIES} industries selected
+          </p>
         </div>
       ) : (
         <div className="space-y-3">

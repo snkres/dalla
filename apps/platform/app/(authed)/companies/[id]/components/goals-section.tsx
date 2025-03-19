@@ -1,16 +1,43 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Goal, Edit, Check, X, Plus, Trash2 } from 'lucide-react'
+import { Goal, Edit, Check, X } from 'lucide-react'
 import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Checkbox } from '@dallah/design-system'
 import { toast } from '@dallah/design-system/ui/toast/use-toast'
 
 interface GoalType {
   name: string
   description: string
 }
+
+const PREDEFINED_GOALS: GoalType[] = [
+  {
+    name: 'Increase Revenue',
+    description:
+      'Grow company revenue through new customers and expanded services.',
+  },
+  {
+    name: 'Market Expansion',
+    description:
+      'Enter new markets and geographic regions to increase customer base.',
+  },
+  {
+    name: 'Product Innovation',
+    description:
+      'Develop new products or enhance existing ones to meet market demands.',
+  },
+  {
+    name: 'Operational Efficiency',
+    description:
+      'Streamline processes and reduce costs to improve profit margins.',
+  },
+  {
+    name: 'Talent Development',
+    description:
+      'Invest in employee growth and create a positive company culture.',
+  },
+]
 
 export function GoalsSection({
   goals,
@@ -25,32 +52,40 @@ export function GoalsSection({
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [editedGoals, setEditedGoals] = useState<GoalType[]>([])
-  const nameInputRef = useRef<HTMLInputElement>(null)
+
   const MAX_GOALS = 3
+  const [selectedGoalIds, setSelectedGoalIds] = useState<number[]>([])
 
   const handleEdit = () => {
-    setEditedGoals(
-      goals.length > 0
-        ? [...goals.slice(0, MAX_GOALS)]
-        : [{ name: '', description: '' }],
-    )
+    // Find indices of existing goals in the predefined list
+    const initialSelectedIds = goals
+      .map((goal) =>
+        PREDEFINED_GOALS.findIndex(
+          (predefined) =>
+            predefined.name === goal.name &&
+            predefined.description === goal.description,
+        ),
+      )
+      .filter((index) => index !== -1)
+
+    setSelectedGoalIds(initialSelectedIds)
     setIsEditing(true)
-    setTimeout(() => nameInputRef.current?.focus(), 100)
   }
 
   const handleSave = () => {
-    const validGoals = editedGoals.filter((goal) => goal.name.trim() !== '')
-
-    if (validGoals.length === 0) {
+    if (selectedGoalIds.length === 0) {
       toast({
         title: 'Validation Error',
-        description: 'Please add at least one goal with a name',
+        description: 'Please select at least one goal',
         variant: 'destructive',
       })
       return
     }
 
-    onUpdate?.({ goals: validGoals })
+    // Convert selected IDs to actual goal objects
+    const selectedGoals = selectedGoalIds.map((id) => PREDEFINED_GOALS[id])
+
+    onUpdate?.({ goals: selectedGoals })
     setIsEditing(false)
   }
 
@@ -58,27 +93,26 @@ export function GoalsSection({
     setIsEditing(false)
   }
 
-  const addGoal = () => {
-    if (editedGoals.length < MAX_GOALS) {
-      setEditedGoals([...editedGoals, { name: '', description: '' }])
-      setTimeout(() => {
-        const inputs = document.querySelectorAll(
-          'input[placeholder="Goal name"]',
-        )
-        const lastInput = inputs[inputs.length - 1] as HTMLInputElement
-        lastInput?.focus()
-      }, 100)
-    }
-  }
+  const toggleGoalSelection = (index: number) => {
+    setSelectedGoalIds((prev) => {
+      // If already selected, remove it
+      if (prev.includes(index)) {
+        return prev.filter((id) => id !== index)
+      }
 
-  const removeGoal = (index: number) => {
-    setEditedGoals(editedGoals.filter((_, i) => i !== index))
-  }
+      // If not selected and we haven't reached the limit, add it
+      if (prev.length < MAX_GOALS) {
+        return [...prev, index]
+      }
 
-  const updateGoal = (index: number, field: keyof GoalType, value: string) => {
-    const updatedGoals = [...editedGoals]
-    updatedGoals[index] = { ...updatedGoals[index], [field]: value }
-    setEditedGoals(updatedGoals)
+      // If we've reached the limit, show a toast and don't change
+      toast({
+        title: 'Selection Limit Reached',
+        description: `You can only select up to ${MAX_GOALS} goals`,
+        variant: 'destructive',
+      })
+      return prev
+    })
   }
 
   const displayGoals = isEditing ? editedGoals : goals.slice(0, MAX_GOALS)
@@ -134,74 +168,48 @@ export function GoalsSection({
       {isEditing ? (
         <div className="space-y-4">
           <p className="text-xs text-gray-500">
-            Add up to {MAX_GOALS} company goals:
+            Select up to {MAX_GOALS} company goals:
           </p>
 
-          <div className="space-y-4">
-            {editedGoals.map((goal, index) => (
+          <div className="space-y-3">
+            {PREDEFINED_GOALS.map((goal, index) => (
               <div
                 key={index}
-                className="rounded-lg border border-gray-100 p-4"
+                onClick={() => toggleGoalSelection(index)}
+                className={`cursor-pointer rounded-lg border p-4 transition-all ${
+                  selectedGoalIds.includes(index)
+                    ? 'border-[#3A97A0] bg-[#3A97A0]/5'
+                    : 'border-gray-100'
+                }`}
               >
-                <div className="mb-3 flex items-center justify-between">
-                  <h4 className="text-xs font-medium text-gray-700">
-                    Goal {index + 1}
-                  </h4>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeGoal(index)}
-                    className="h-7 w-7 rounded-full p-0 text-gray-400 hover:bg-red-50 hover:text-red-500"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <Input
-                      ref={index === 0 ? nameInputRef : undefined}
-                      value={goal.name}
-                      onChange={(e) =>
-                        updateGoal(index, 'name', e.target.value)
-                      }
-                      placeholder="Goal name"
-                      className="h-9 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <Textarea
-                      value={goal.description}
-                      onChange={(e) =>
-                        updateGoal(index, 'description', e.target.value)
-                      }
-                      placeholder="Brief description of this goal"
-                      className="min-h-[80px] text-xs"
-                    />
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id={`goal-${index}`}
+                    checked={selectedGoalIds.includes(index)}
+                    disabled={
+                      !selectedGoalIds.includes(index) &&
+                      selectedGoalIds.length >= MAX_GOALS
+                    }
+                  />
+                  <div className="flex-1">
+                    <label
+                      htmlFor={`goal-${index}`}
+                      className="block cursor-pointer text-xs font-medium text-gray-700"
+                    >
+                      {goal.name}
+                    </label>
+                    <p className="mt-1 text-xs text-gray-600">
+                      {goal.description}
+                    </p>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {editedGoals.length < MAX_GOALS && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={addGoal}
-              className="mt-2 w-full border-dashed border-[#3A97A0]/30 text-xs text-[#3A97A0] hover:border-[#3A97A0] hover:bg-[#3A97A0]/5"
-            >
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Add Goal {editedGoals.length + 1}
-            </Button>
-          )}
-
-          {editedGoals.length === MAX_GOALS && (
-            <p className="text-center text-xs italic text-gray-500">
-              Maximum of {MAX_GOALS} goals reached
-            </p>
-          )}
+          <p className="text-center text-xs text-gray-500">
+            {selectedGoalIds.length}/{MAX_GOALS} goals selected
+          </p>
         </div>
       ) : (
         <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
