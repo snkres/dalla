@@ -16,7 +16,7 @@ import {
   Eye,
   Download,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button, Modal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { getProjectById } from '@lib/api/pro/projects'
 import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
@@ -67,44 +67,12 @@ export function ProjectDetail({
   }, [])
 
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed right-0 top-0 z-50 flex h-screen w-full flex-col border-l border-gray-200 bg-white shadow-xl md:w-[1000px]"
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title={`${data?.title} - Project Details`}
+      width="xl"
     >
-      <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
-        <button
-          onClick={(e) => {
-            const scrollY = document.body.style.top
-              ? Number.parseInt(document.body.style.top.replace('px', '')) * -1
-              : 0
-
-            document.body.style.removeProperty('overflow')
-            document.body.style.removeProperty('position')
-            document.body.style.removeProperty('width')
-            document.body.style.removeProperty('top')
-            document.body.style.removeProperty('height')
-
-            setTimeout(() => {
-              window.scrollTo(0, scrollY)
-              onClose()
-            }, 10)
-          }}
-          className="flex items-center text-[#234d64] transition-colors hover:text-[#234d64]/80"
-        >
-          <ArrowLeft className="mr-1 h-5 w-5" />
-        </button>
-        <div className="ml-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden border-[#63B7B7] text-[#63B7B7] hover:bg-[#BEDDF1]/20 hover:text-[#63B7B7]/90 sm:flex"
-          >
-            <ExternalLink className="mr-1 h-4 w-4" />
-            Open in new window
-          </Button>
-        </div>
-      </div>
-
       <div className="flex h-[calc(100%-57px)] flex-col overflow-hidden md:flex-row">
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6">
@@ -400,6 +368,6 @@ export function ProjectDetail({
           </div>
         </div>
       </div>
-    </motion.div>
+    </Modal>
   )
 }

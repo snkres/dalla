@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Button, Badge } from '@dallah/design-system'
+import { Button, Badge, Modal } from '@dallah/design-system'
 import {
   ArrowLeft,
   Star,
@@ -157,24 +157,12 @@ const ProposalDetails = ({
   }
 
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed bottom-2 left-auto right-4 top-2 z-50 flex w-full flex-col rounded-3xl border-l border-gray-200 bg-white shadow-lg md:w-[600px] lg:w-[750px]"
+    <Modal
+      isOpen={true}
+      onClose={handleCloseProposal}
+      title="Proposal Details"
+      width="lg"
     >
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCloseProposal}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-          <h2 className="text-sm font-medium text-gray-700">
-            Proposal Details
-          </h2>
-        </div>
-      </div>
-
       <div className="flex h-full flex-col overflow-hidden md:flex-row">
         <div className="flex-1 overflow-y-auto">
           <div className="border-b border-gray-100 p-5">
@@ -503,7 +491,7 @@ const ProposalDetails = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </motion.div>
+    </Modal>
   )
 }
 

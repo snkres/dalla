@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Button } from '@dallah/design-system'
+import { Button, Modal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import {
   Star,
@@ -69,10 +69,12 @@ const ProposalsOverivewModal = ({
         return a.price - b.price
       }
     })
+
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed bottom-2 left-auto right-4 top-2 z-50 flex w-full flex-col rounded-3xl border-l border-gray-200 bg-white shadow-lg md:w-[600px] lg:w-[750px]"
+    <Modal
+      title={`Proposals for ${projectTitle}`}
+      isOpen={true}
+      onClose={onBack}
     >
       <motion.div
         key="overview"
@@ -82,26 +84,7 @@ const ProposalsOverivewModal = ({
         transition={{ duration: 0.2 }}
         className="flex h-full flex-col"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 px-4 py-3">
-          <button
-            onClick={onBack}
-            className="flex h-8 w-8 items-center justify-center !rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          >
-            <X className="h-4 w-4" />
-          </button>
-          <h2 className="text-sm font-medium text-gray-700">
-            Proposals for {projectTitle}
-          </h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 !rounded-full text-[#63B7B7]"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="sticky top-[49px] z-10 border-b border-gray-100 bg-white p-4">
+        <div className="sticky z-10 border-b border-gray-100 bg-white p-4 pb-0">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
@@ -144,17 +127,6 @@ const ProposalsOverivewModal = ({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search proposals by name, skill, or role..."
-              className="h-9 py-2 pl-9 pr-4 text-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
           </div>
         </div>
 
@@ -280,7 +252,7 @@ const ProposalsOverivewModal = ({
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </Modal>
   )
 }
 

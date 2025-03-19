@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import { motion } from 'motion/react'
-import {
-  ArrowLeft,
-  Save,
-  DollarSign,
-  Briefcase,
-  AlertCircle,
-} from 'lucide-react'
+import { Save, DollarSign, Briefcase, AlertCircle } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
@@ -21,13 +14,7 @@ import { createProject, CreateProjectReq } from '@lib/api/company/projects'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { SkillSelector } from '@components/shared/skill-selector'
 import MultiImageUpload from '@components/shared/multiImage-upload'
-
-const SLIDE_ANIMATION = {
-  initial: { x: '100%' },
-  animate: { x: 0 },
-  exit: { x: '100%' },
-  transition: { type: 'spring', damping: 25, stiffness: 300 },
-}
+import { Modal } from '@dallah/design-system'
 
 export function AddProject({
   onClose,
@@ -190,22 +177,7 @@ export function AddProject({
   }
 
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed right-0 top-0 z-50 flex h-screen w-full flex-col border-l border-gray-200 bg-white shadow-xl md:w-[1000px]"
-    >
-      <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
-        <button
-          className="flex items-center text-[#234d64] transition-colors hover:text-[#234d64]/80"
-          onClick={onClose}
-        >
-          <ArrowLeft className="mr-1 h-5 w-5" />
-        </button>
-        <h1 className="ml-2 text-lg font-medium text-gray-900">
-          Add New Project
-        </h1>
-      </div>
-
+    <Modal isOpen onClose={onClose} title={`Start a Project`}>
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 sm:p-6">
           <div className="mb-6 flex items-center rounded-lg bg-[#BEDDF1]/10 p-4">
@@ -409,6 +381,6 @@ export function AddProject({
           </div>
         </div>
       </div>
-    </motion.div>
+    </Modal>
   )
 }

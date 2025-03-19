@@ -1,12 +1,9 @@
 import React from 'react'
-import { motion } from 'motion/react'
 import {
-  ArrowLeft,
   Globe,
   Clock,
   Flag,
   Bookmark,
-  ExternalLink,
   FileText,
   User,
   CheckCircle,
@@ -17,10 +14,10 @@ import {
   Info,
   Users,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button, Modal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { Project } from '@lib/types/project'
-import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
+
 interface ProjectDetailProps {
   project: Project
   onClose: () => void
@@ -73,11 +70,8 @@ export function ProjectDetail({
   ]
 
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed right-0 top-0 z-50 flex h-screen w-full flex-col border-l border-gray-200 bg-white shadow-xl md:w-[1000px]"
-    >
-      <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
+    <Modal isOpen={true} onClose={onClose} title={project.title}>
+      {/* <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
         <button
           onClick={onClose}
           className="flex items-center text-[#234d64] transition-colors hover:text-[#234d64]/80"
@@ -94,7 +88,7 @@ export function ProjectDetail({
             Open in new window
           </Button>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex h-full flex-col md:flex-row">
         <div className="flex-1 overflow-y-auto">
@@ -390,6 +384,6 @@ export function ProjectDetail({
           </div>
         </div>
       </div>
-    </motion.div>
+    </Modal>
   )
 }
