@@ -36,35 +36,8 @@ export function ReviewsSection({
       <div className="flex items-center justify-between border-b border-gray-100 p-5">
         <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
           <Briefcase className="mr-1.5 h-3.5 w-3.5 text-[#63B7B7]" />
-          Client Projects
+          Completed Projects
         </h2>
-      </div>
-
-      <div className="px-5 pb-4 pt-6">
-        <div className="flex max-w-fit rounded-lg bg-[#e6f3f3] p-0.5">
-          {(['completed'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                'relative rounded-md px-4 py-2 text-sm font-medium capitalize transition-all duration-200',
-                activeTab === tab
-                  ? 'text-white'
-                  : 'text-[#63B7B7] hover:text-[#4a8a8a]',
-              )}
-            >
-              {activeTab === tab && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute inset-0 rounded-md bg-[#63B7B7] shadow-sm"
-                  transition={{ type: 'spring', duration: 0.5 }}
-                  style={{ zIndex: 0 }}
-                />
-              )}
-              <span className="relative z-10">{tab} Projects</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="px-5 pb-5">
