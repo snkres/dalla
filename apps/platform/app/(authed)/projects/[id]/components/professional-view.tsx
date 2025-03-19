@@ -257,17 +257,36 @@ export function ProfessionalProjectView({
                       : 'N/A'}
                   </p>
                 </div>
-
-                {/* <div>
-                  <span className="text-gray-500">Company size</span>
-                  <p className="font-medium text-gray-900">
-                    {project.company?.CompanyProfile?.meta?.size || 'N/A'}
-                  </p>
-                </div> */}
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Project Details */}
+      <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+        <h2 className="text-lg font-medium text-gray-900">Project Details</h2>
+        <p className="mt-2 text-sm text-gray-600">
+          <strong>Scope:</strong> {project.scope || 'Not specified'}
+        </p>
+        <p className="mt-2 text-sm text-gray-600">
+          <strong>Deliverables:</strong>{' '}
+          {project.deliverables || 'Not specified'}
+        </p>
+        {project.media && project.media.length > 0 && (
+          <div className="mt-4">
+            <h3 className="text-sm font-medium text-gray-900">Project Files</h3>
+            <ul className="mt-2 list-disc pl-5 text-sm text-gray-600">
+              {project.media.map((file, index) => (
+                <li key={index}>
+                  <a href={file} target="_blank" rel="noopener noreferrer">
+                    {file}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Action Area */}

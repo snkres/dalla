@@ -3,44 +3,28 @@
 import { motion } from 'motion/react'
 import { Badge } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
-import {
-  Briefcase,
-  Clock,
-  DollarSign,
-  Users,
-  CheckCircle,
-  Edit,
-  Calendar,
-  Star,
-  ArrowUpRight,
-  Building,
-} from 'lucide-react'
+import { Clock, DollarSign, Calendar, Building } from 'lucide-react'
 import { calculateDaysSince, cn } from '@dallah/utils'
 import { GetAllProposalsRes, ProposalStatus } from '@lib/api/pro/proposals'
-import { globalAtom } from '@lib/atoms/global'
-import { useAtom } from 'jotai'
 import { formatCurrency } from '@lib/utils/format-currency'
+import { useTransitionRouter } from 'next-view-transitions'
 
 interface ProjectCardProps {
   project: GetAllProposalsRes['data'][0][number]['project'] & {
     appliedAt: string
     proposalStatus: ProposalStatus
   }
-  onClick: () => void
 }
 
 const CARD_ANIMATION = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.3 },
+  initial: { opacity: 0.5 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.2 },
+  exit: { opacity: 1 },
 }
 
-export function ProjectCardProfessional({
-  project,
-
-  onClick,
-}: ProjectCardProps) {
-  const [global] = useAtom(globalAtom)
+export function ProjectCardProfessional({ project }: ProjectCardProps) {
+  const router = useTransitionRouter()
 
   const getStatusBadge = () => {
     switch (project.proposalStatus) {
@@ -69,13 +53,14 @@ export function ProjectCardProfessional({
   return (
     <motion.div
       {...CARD_ANIMATION}
+      key={project.id}
       className={cn(
         'cursor-pointer overflow-hidden rounded-xl border bg-white shadow-sm transition-all duration-300 hover:shadow-md',
         project.appliedAt
           ? 'border-l-4 border-gray-100 !border-l-[#63B7B7]'
           : 'border-gray-200',
       )}
-      onClick={onClick}
+      onClick={() => router.push(`/projects/${project.id}`)}
     >
       <div className="p-5">
         <div className="mb-2 flex items-start justify-between">

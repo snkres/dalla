@@ -1,29 +1,22 @@
-'use client'
-
-import { motion } from 'motion/react'
-import { Button, Badge, Modal } from '@dallah/design-system'
-import {
-  ArrowLeft,
-  Star,
-  DollarSign,
-  CheckCircle,
-  MessageSquare,
-  ThumbsUp,
-  ThumbsDown,
-  User,
-  Briefcase,
-  MapPin,
-  FileText,
-  ExternalLink,
-} from 'lucide-react'
+import { Modal, Button, Badge } from '@dallah/design-system'
 import { useState } from 'react'
+import {
+  Star,
+  MapPin,
+  Briefcase,
+  FileText,
+  User,
+  CheckCircle,
+  DollarSign,
+  MessageSquare,
+  ThumbsDown,
+} from 'lucide-react'
 import Image from 'next/image'
+import { Link } from 'next-view-transitions'
+import { GetProjectRes } from '@lib/api/company/projects'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { updateProposalStatus } from '@lib/api/company/proposals'
-import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
-import { Link } from 'next-view-transitions'
 import {
   Dialog,
   DialogContent,
@@ -32,46 +25,31 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@dallah/design-system'
-import { AxiosResponse } from 'axios'
 
-interface ProposalDetailsProps {
-  handleCloseProposal: () => void
-  selectedProposalId: string | null
-
-  onStatusChange?: (proposalId: string, status: string) => void
+interface ProposalDetailModalProps {
+  proposal: GetProjectRes['data']['proposals'][number] | null
+  isOpen: boolean
+  onClose: () => void
 }
 
-const ProposalDetails = ({
-  handleCloseProposal,
-  selectedProposalId,
-}: ProposalDetailsProps) => {
+const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({
+  proposal,
+  isOpen,
+  onClose,
+}) => {
+  if (!proposal) return null
+
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const [showHireDialog, setShowHireDialog] = useState(false)
   const [showDeclineDialog, setShowDeclineDialog] = useState(false)
 
-  const selectedProposalData = selectedProposalId
-    ? queryClient
-        .getQueryData<AxiosResponse<GetAllCompanyProjectsRes>>([
-          'projects',
-          'overview',
-        ])
-        ?.data.data[0]?.find((p) =>
-          p.proposals.find((p) => p.id === selectedProposalId),
-        )
-        ?.proposals.find((p) => p.id === selectedProposalId)
-    : null
-
   const hireProposalMutation = useMutation({
     mutationFn: () => {
-      if (!selectedProposalId || !selectedProposalData?.id) {
-        throw new Error('Missing proposal or project ID')
+      if (!proposal.id) {
+        throw new Error('Missing proposal ID')
       }
-      return updateProposalStatus(
-        selectedProposalData.projectId,
-        selectedProposalId,
-        'Accepted',
-      )
+      return updateProposalStatus(proposal.projectId, proposal.id, 'Accepted')
     },
     onSuccess: () => {
       toast({
@@ -81,7 +59,7 @@ const ProposalDetails = ({
       })
 
       setTimeout(() => {
-        handleCloseProposal()
+        onClose()
       }, 1500)
     },
     onError: (error) => {
@@ -102,14 +80,10 @@ const ProposalDetails = ({
 
   const declineProposalMutation = useMutation({
     mutationFn: () => {
-      if (!selectedProposalId || !selectedProposalData?.id) {
-        throw new Error('Missing proposal or project ID')
+      if (!proposal.id) {
+        throw new Error('Missing proposal ID')
       }
-      return updateProposalStatus(
-        selectedProposalData.projectId,
-        selectedProposalId,
-        'Rejected',
-      )
+      return updateProposalStatus(proposal.projectId, proposal.id, 'Rejected')
     },
     onSuccess: () => {
       toast({
@@ -119,7 +93,7 @@ const ProposalDetails = ({
       })
 
       setTimeout(() => {
-        handleCloseProposal()
+        onClose()
       }, 1500)
     },
     onError: (error) => {
@@ -158,8 +132,8 @@ const ProposalDetails = ({
 
   return (
     <Modal
-      isOpen={true}
-      onClose={handleCloseProposal}
+      isOpen={isOpen}
+      onClose={onClose}
       title="Proposal Details"
       width="lg"
     >
@@ -169,13 +143,13 @@ const ProposalDetails = ({
             <div className="mb-4 flex items-start gap-4">
               <div className="relative">
                 <div className="h-16 w-16 overflow-hidden rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white">
-                  {selectedProposalData?.professional.UserProfile?.avatar && (
+                  {proposal.professional.UserProfile?.avatar && (
                     <Image
                       src={
-                        selectedProposalData.professional.UserProfile.avatar ||
+                        proposal.professional.UserProfile.avatar ||
                         '/placeholder.svg'
                       }
-                      alt={selectedProposalData.professional.name}
+                      alt={proposal.professional.name}
                       width={64}
                       height={64}
                       className="object-cover"
@@ -187,36 +161,34 @@ const ProposalDetails = ({
               <div className="flex-1">
                 <div className="mb-1 flex items-start justify-between">
                   <h1 className="text-lg font-medium text-gray-800">
-                    {selectedProposalData?.professional.name}
+                    {proposal.professional.name}
                   </h1>
                   <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
                     {Math.floor(Math.random() * 100)}% Match
                   </Badge>
                 </div>
                 <p className="text-sm text-gray-600">
-                  {selectedProposalData?.professional.UserProfile?.headline ||
-                    'N/A'}
+                  {proposal.professional.UserProfile?.headline || 'N/A'}
                 </p>
 
                 <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
                   <div className="flex items-center">
                     <Star className="mr-1 h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     <span className="font-medium text-gray-700">
-                      {selectedProposalData?.professional?.UserProfile?.meta
-                        ?.rating || 'N/A'}
+                      {proposal.professional.UserProfile?.meta?.rating || 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center">
                     <MapPin className="mr-1 h-3.5 w-3.5" />
                     <span>
-                      {selectedProposalData?.professional?.UserProfile?.meta
-                        ?.location || 'N/A'}
+                      {proposal.professional.UserProfile?.meta?.location ||
+                        'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center">
                     <Briefcase className="mr-1 h-3.5 w-3.5" />
                     <span>
-                      {selectedProposalData?.professional?.UserProfile?.meta
+                      {proposal.professional.UserProfile?.meta
                         ?.yearsOfExperience || 'N/A'}{' '}
                       yrs
                     </span>
@@ -226,8 +198,8 @@ const ProposalDetails = ({
             </div>
 
             <div className="mb-1 flex flex-wrap gap-1.5">
-              {selectedProposalData?.professional?.UserProfile?.meta?.skills?.map(
-                (skill: string, index: number) => (
+              {proposal.professional.UserProfile?.meta?.skills?.map(
+                (skill, index) => (
                   <Badge
                     key={index}
                     className="!rounded-md !border-none !bg-[#63B7B7]/5 !px-2 !py-0.5 !text-xs !font-normal !text-[#63B7B7]"
@@ -250,8 +222,7 @@ const ProposalDetails = ({
             </div>
             <div className="p-5">
               <p className="text-sm leading-relaxed text-gray-600">
-                {selectedProposalData?.description ||
-                  'No cover letter provided.'}
+                {proposal.description || 'No cover letter provided.'}
               </p>
             </div>
           </div>
@@ -275,7 +246,7 @@ const ProposalDetails = ({
                     </span>
                   </div>
                   <p className="ml-5 text-sm font-medium text-gray-900">
-                    {selectedProposalData?.professional?.UserProfile?.meta
+                    {proposal.professional.UserProfile?.meta
                       ?.yearsOfExperience || 'N/A'}{' '}
                     years
                   </p>
@@ -289,7 +260,7 @@ const ProposalDetails = ({
                     </span>
                   </div>
                   <p className="ml-5 text-sm font-medium text-gray-900">
-                    {selectedProposalData?.professional?.UserProfile?.meta
+                    {proposal.professional.UserProfile?.meta
                       ?.projectsCompleted || '0'}{' '}
                     projects
                   </p>
@@ -314,26 +285,27 @@ const ProposalDetails = ({
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Price</span>
                   <span className="font-semibold text-gray-800">
-                    $ {selectedProposalData?.price}
+                    $ {proposal.price}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Delivery Time</span>
                   <span className="font-normal text-gray-800">
-                    {selectedProposalData?.timeline || 'N/A'}
+                    {proposal.timeline || 'N/A'}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Submitted</span>
                   <span className="font-normal text-gray-800">
-                    {selectedProposalData?.createdAt
-                      ? new Date(
-                          selectedProposalData.createdAt,
-                        ).toLocaleDateString('en-UK', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })
+                    {proposal.createdAt
+                      ? new Date(proposal.createdAt).toLocaleDateString(
+                          'en-UK',
+                          {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          },
+                        )
                       : 'N/A'}
                   </span>
                 </div>
@@ -342,22 +314,46 @@ const ProposalDetails = ({
                   <span className="text-gray-600">Status</span>
                   <Badge
                     className={
-                      selectedProposalData?.status === 'Rejected'
+                      proposal.status === 'Rejected'
                         ? '!border-red-200 !bg-red-50 !text-red-700'
-                        : selectedProposalData?.status === 'Accepted'
+                        : proposal.status === 'Accepted'
                           ? '!border-green-200 !bg-green-50 !text-green-700'
                           : '!border-amber-200 !bg-amber-50 !text-amber-700'
                     }
                   >
-                    {selectedProposalData?.status === 'Rejected'
+                    {proposal.status === 'Rejected'
                       ? 'Rejected'
-                      : selectedProposalData?.status === 'Accepted'
+                      : proposal.status === 'Accepted'
                         ? 'Accepted'
-                        : selectedProposalData?.status === 'Pending'
+                        : proposal.status === 'Pending'
                           ? 'Pending Review'
-                          : selectedProposalData?.status}
+                          : proposal.status}
                   </Badge>
                 </div>
+              </div>
+            </div>
+
+            <div className="p-4">
+              <div className="rounded-lg border border-gray-200 bg-white p-3">
+                <h4 className="mb-2 text-xs font-medium text-gray-800">
+                  View Full Profile
+                </h4>
+                <p className="mb-3 text-xs text-gray-600">
+                  See this consultant&apos;s complete work history, portfolio,
+                  and reviews.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-full text-xs"
+                  asChild
+                >
+                  <Link
+                    href={`/professionals/${proposal.professional.username}`}
+                  >
+                    View Profile
+                  </Link>
+                </Button>
               </div>
             </div>
 
@@ -368,8 +364,8 @@ const ProposalDetails = ({
                 disabled={
                   hireProposalMutation.isPending ||
                   declineProposalMutation.isPending ||
-                  selectedProposalData?.status === 'Rejected' ||
-                  selectedProposalData?.status === 'Accepted'
+                  proposal.status === 'Rejected' ||
+                  proposal.status === 'Accepted'
                 }
               >
                 {hireProposalMutation.isPending ? 'Processing...' : 'Hire'}
@@ -391,38 +387,14 @@ const ProposalDetails = ({
                   disabled={
                     hireProposalMutation.isPending ||
                     declineProposalMutation.isPending ||
-                    selectedProposalData?.status === 'Rejected' ||
-                    selectedProposalData?.status === 'Accepted'
+                    proposal.status === 'Rejected' ||
+                    proposal.status === 'Accepted'
                   }
                 >
                   <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
                   {declineProposalMutation.isPending
                     ? 'Processing...'
                     : 'Decline'}
-                </Button>
-              </div>
-            </div>
-
-            <div className="p-4">
-              <div className="rounded-lg border border-gray-200 bg-white p-3">
-                <h4 className="mb-2 text-xs font-medium text-gray-800">
-                  View Full Profile
-                </h4>
-                <p className="mb-3 text-xs text-gray-600">
-                  See this consultant&apos;s complete work history, portfolio,
-                  and reviews.
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-8 w-full text-xs"
-                  asChild
-                >
-                  <Link
-                    href={`/professionals/${selectedProposalData?.professional.username}`}
-                  >
-                    View Profile
-                  </Link>
                 </Button>
               </div>
             </div>
@@ -435,9 +407,8 @@ const ProposalDetails = ({
           <DialogHeader>
             <DialogTitle>Confirm Hiring</DialogTitle>
             <DialogDescription>
-              Are you sure you want to hire{' '}
-              {selectedProposalData?.professional.name}? This will accept their
-              proposal and notify them to begin the project.
+              Are you sure you want to hire {proposal.professional.name}? This
+              will accept their proposal and notify them to begin the project.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -460,15 +431,13 @@ const ProposalDetails = ({
         </DialogContent>
       </Dialog>
 
-      {/* Decline Confirmation Dialog */}
       <Dialog open={showDeclineDialog} onOpenChange={setShowDeclineDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Decline</DialogTitle>
             <DialogDescription>
               Are you sure you want to decline this proposal from{' '}
-              {selectedProposalData?.professional.name}? This action cannot be
-              undone.
+              {proposal.professional.name}? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -495,4 +464,4 @@ const ProposalDetails = ({
   )
 }
 
-export default ProposalDetails
+export default ProposalDetailModal

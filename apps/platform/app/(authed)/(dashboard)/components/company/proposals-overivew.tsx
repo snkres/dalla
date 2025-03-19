@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Button } from '@dallah/design-system'
+import { Button, Modal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import {
   Star,
@@ -69,10 +69,12 @@ const ProposalsOverivewModal = ({
         return a.price - b.price
       }
     })
+
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed bottom-2 left-auto right-4 top-2 z-50 flex w-full flex-col rounded-3xl border-l border-gray-200 bg-white shadow-lg md:w-[600px] lg:w-[750px]"
+    <Modal
+      title={`Proposals for ${projectTitle}`}
+      isOpen={true}
+      onClose={onBack}
     >
       <motion.div
         key="overview"
@@ -82,26 +84,7 @@ const ProposalsOverivewModal = ({
         transition={{ duration: 0.2 }}
         className="flex h-full flex-col"
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 px-4 py-3">
-          <button
-            onClick={onBack}
-            className="flex h-8 w-8 items-center justify-center !rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-          >
-            <X className="h-4 w-4" />
-          </button>
-          <h2 className="text-sm font-medium text-gray-700">
-            Proposals for {projectTitle}
-          </h2>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 !rounded-full text-[#63B7B7]"
-          >
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="sticky top-[49px] z-10 border-b border-gray-100 bg-white p-4">
+        <div className="sticky z-10 border-b border-gray-100 bg-white p-4 pb-0">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
@@ -145,171 +128,131 @@ const ProposalsOverivewModal = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search proposals by name, skill, or role..."
-              className="h-9 py-2 pl-9 pr-4 text-sm"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-3">
-            {filteredAndSortedProposals.length > 0 ? (
-              filteredAndSortedProposals.map((proposal) => (
-                <motion.div
-                  key={proposal.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className={cn(
-                    'mb-3 cursor-pointer rounded-lg border p-4 transition-all duration-300',
-                    proposal.status === 'Rejected'
-                      ? 'border-red-100 bg-red-50/30 opacity-60'
-                      : proposal.status === 'Accepted'
-                        ? 'border-green-100 bg-green-50/30'
-                        : 'border-gray-100 bg-white hover:border-[#63B7B7]/30 hover:bg-[#63B7B7]/5',
-                  )}
-                  onClick={() => handleViewProposal(proposal.id)}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="h-12 w-12 flex-shrink-0 overflow-hidden !rounded-full border-2 border-gray-100">
-                      <Image
-                        src={
-                          proposal.professional.UserProfile?.avatar ||
-                          '/avatar.png' ||
-                          '/placeholder.svg'
-                        }
-                        alt={'avatar'}
-                        width={48}
-                        height={48}
-                        className="object-cover"
-                      />
-                    </div>
+            {filteredAndSortedProposals.map((proposal) => (
+              <motion.div
+                key={proposal.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+                className={cn(
+                  'mb-3 cursor-pointer rounded-lg border p-4 transition-all duration-300',
+                  proposal.status === 'Rejected'
+                    ? 'border-red-100 bg-red-50/30 opacity-60'
+                    : proposal.status === 'Accepted'
+                      ? 'border-green-100 bg-green-50/30'
+                      : 'border-gray-100 bg-white hover:border-[#63B7B7]/30 hover:bg-[#63B7B7]/5',
+                )}
+                onClick={() => handleViewProposal(proposal.id)}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="h-12 w-12 flex-shrink-0 overflow-hidden !rounded-full border-2 border-gray-100">
+                    <Image
+                      src={
+                        proposal.professional.UserProfile?.avatar ||
+                        '/avatar.png' ||
+                        '/placeholder.svg'
+                      }
+                      alt={'avatar'}
+                      width={48}
+                      height={48}
+                      className="object-cover"
+                    />
+                  </div>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex flex-col gap-0.5">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h4 className="text-sm font-medium text-gray-900">
-                              {proposal.professional.name}
-                            </h4>
-                            <div className="flex items-center !rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
-                              <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                              <span className="ml-0.5 text-xs font-medium text-amber-700">
-                                {proposal.professional.UserProfile?.meta
-                                  ?.rating || 5}
-                              </span>
-                            </div>
-                            <Badge className="!rounded-full !border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-xs !text-[#63B7B7]">
-                              {Math.floor(70 + Math.random() * 30)}% Match
-                            </Badge>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4 className="text-sm font-medium text-gray-900">
+                            {proposal.professional.name}
+                          </h4>
+                          <div className="flex items-center !rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
+                            <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                            <span className="ml-0.5 text-xs font-medium text-amber-700">
+                              {proposal.professional.UserProfile?.meta
+                                ?.rating || 5}
+                            </span>
                           </div>
-                          <p className="mt-0.5 text-xs text-gray-500">
-                            {proposal.professional.UserProfile?.headline ||
-                              'Consultant'}{' '}
-                            •{' '}
-                            {proposal.professional.UserProfile?.meta
-                              ?.location || 'Remote'}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-col items-end gap-1">
-                          <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-sm font-semibold !text-[#63B7B7]">
-                            {formatCurrency(proposal.price || 0)}
+                          <Badge className="!rounded-full !border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-xs !text-[#63B7B7]">
+                            {Math.floor(70 + Math.random() * 30)}% Match
                           </Badge>
-                          <div className="mt-0.5 flex items-center text-xs text-gray-500">
-                            <Clock className="mr-1 h-3 w-3" />
-                            {proposal.timeline}
-                          </div>
                         </div>
-                      </div>
-
-                      <div className="mt-2">
-                        <p className="line-clamp-2 text-xs text-gray-600">
-                          {proposal.description}
+                        <p className="mt-0.5 text-xs text-gray-500">
+                          {proposal.professional.UserProfile?.headline ||
+                            'Consultant'}{' '}
+                          •{' '}
+                          {proposal.professional.UserProfile?.meta?.location ||
+                            'Remote'}
                         </p>
                       </div>
 
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {proposal.professional.UserProfile?.meta?.skills
-                          ?.slice(0, 3)
-                          .map((skill, index) => (
-                            <Badge
-                              key={index}
-                              variant="outline"
-                              className="border-[#63B7B7]/20 bg-[#1D8489]/10 px-1.5 py-0 text-[10px] font-normal text-[#1D8489]"
-                            >
-                              {skill}
-                            </Badge>
-                          ))}
-                        {proposal.professional.UserProfile?.meta?.skills
-                          ?.length > 3 && (
-                          <Badge
-                            variant="outline"
-                            className="border-[#1D8489]/20 bg-[#1D8489]/10 px-1.5 py-0 text-[10px] font-normal text-[#1D8489]"
-                          >
-                            +
-                            {proposal.professional.UserProfile?.meta?.skills
-                              ?.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-
-                      {proposal.status && (
-                        <div className="mt-2">
-                          <Badge
-                            className={
-                              proposal.status === 'Rejected'
-                                ? '!border-red-200 !bg-red-50 !text-red-700'
-                                : '!border-green-200 !bg-green-50 !text-green-700'
-                            }
-                          >
-                            {proposal.status}
-                          </Badge>
+                      <div className="flex flex-col items-end gap-1">
+                        <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-sm font-semibold !text-[#63B7B7]">
+                          {formatCurrency(proposal.price || 0)}
+                        </Badge>
+                        <div className="mt-0.5 flex items-center text-xs text-gray-500">
+                          <Clock className="mr-1 h-3 w-3" />
+                          {proposal.timeline}
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-2">
+                      <p className="line-clamp-2 text-xs text-gray-600">
+                        {proposal.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {proposal.professional.UserProfile?.meta?.skills
+                        ?.slice(0, 3)
+                        .map((skill, index) => (
+                          <Badge
+                            key={index}
+                            variant="outline"
+                            className="border-[#63B7B7]/20 bg-[#1D8489]/10 px-1.5 py-0 text-[10px] font-normal text-[#1D8489]"
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      {proposal.professional.UserProfile?.meta?.skills?.length >
+                        3 && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#1D8489]/20 bg-[#1D8489]/10 px-1.5 py-0 text-[10px] font-normal text-[#1D8489]"
+                        >
+                          +
+                          {proposal.professional.UserProfile?.meta?.skills
+                            ?.length - 3}
+                        </Badge>
                       )}
                     </div>
-                  </div>
-                </motion.div>
-              ))
-            ) : (
-              <div className="rounded-lg border border-gray-200 bg-white p-8 text-center">
-                <div className="mb-4 flex justify-center">
-                  <div className="flex h-12 w-12 items-center justify-center !rounded-full bg-gray-100">
-                    <Search className="h-6 w-6 text-gray-400" />
+
+                    {proposal.status && (
+                      <div className="mt-2">
+                        <Badge
+                          className={
+                            proposal.status === 'Rejected'
+                              ? '!border-red-200 !bg-red-50 !text-red-700'
+                              : '!border-green-200 !bg-green-50 !text-green-700'
+                          }
+                        >
+                          {proposal.status}
+                        </Badge>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <h3 className="mb-2 text-base font-medium text-gray-900">
-                  No proposals found
-                </h3>
-                <p className="mx-auto max-w-md text-sm text-gray-500">
-                  {searchQuery
-                    ? `We couldn't find any proposals matching "${searchQuery}". Try adjusting your search.`
-                    : 'There are no proposals for this project yet.'}
-                </p>
-                {searchQuery && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="mt-4 h-8 text-xs"
-                    onClick={() => setSearchQuery('')}
-                  >
-                    <X className="mr-1.5 h-3.5 w-3.5" />
-                    Clear Search
-                  </Button>
-                )}
-              </div>
-            )}
+              </motion.div>
+            ))}
           </div>
         </div>
       </motion.div>
-    </motion.div>
+    </Modal>
   )
 }
 

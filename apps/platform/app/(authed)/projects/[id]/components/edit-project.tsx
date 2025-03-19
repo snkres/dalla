@@ -8,7 +8,7 @@ import {
   Briefcase,
   AlertCircle,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button, Modal } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { updateProject } from '@lib/api/company/projects'
@@ -228,20 +228,7 @@ export function EditProject({
   }
 
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed right-0 top-0 z-50 flex h-screen w-full flex-col border-l border-gray-200 bg-white shadow-xl md:w-[1000px]"
-    >
-      <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
-        <button
-          className="flex items-center text-[#234d64] transition-colors hover:text-[#234d64]/80"
-          onClick={onClose}
-        >
-          <ArrowLeft className="mr-1 h-5 w-5" />
-        </button>
-        <h1 className="ml-2 text-lg font-medium text-gray-900">Edit Project</h1>
-      </div>
-
+    <Modal isOpen={true} onClose={onClose} title="Edit Project" width="lg">
       <div className="flex-1 overflow-y-auto">
         <div className="p-4 sm:p-6">
           <div className="mb-6 flex items-center rounded-lg bg-[#BEDDF1]/10 p-4">
@@ -445,6 +432,6 @@ export function EditProject({
           </div>
         </div>
       </div>
-    </motion.div>
+    </Modal>
   )
 }

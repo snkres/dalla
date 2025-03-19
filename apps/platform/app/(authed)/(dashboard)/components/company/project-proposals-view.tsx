@@ -6,23 +6,34 @@ import { motion } from 'motion/react'
 import ProposalsOverivewModal from './proposals-overivew'
 import ProposalDetails from './proposal-details'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
+import { AxiosResponse } from 'axios'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface ProjectProposalsViewProps {
   projectTitle: string
   onBack: () => void
-  proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
 }
 
 export default function ProjectProposalsView({
   projectTitle,
   onBack,
-  proposals: initialProposals,
 }: ProjectProposalsViewProps) {
-  const [selectedProposal, setSelectedProposal] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+  const [selectedProposalId, setSelectedProposalId] = useState<string | null>(
+    null,
+  )
+  const proposalsData = queryClient
+    .getQueryData<
+      AxiosResponse<GetAllCompanyProjectsRes, any>
+    >(['projects', 'overview'])
+    ?.data.data[0].find((p) => p.title === projectTitle)?.proposals
+
+  console.log(proposalsData)
+
   const [showDetailView, setShowDetailView] = useState(false)
 
   const handleViewProposal = (proposalId: string) => {
-    setSelectedProposal(proposalId)
+    setSelectedProposalId(proposalId)
     setShowDetailView(true)
   }
 
@@ -32,11 +43,10 @@ export default function ProjectProposalsView({
 
   return (
     <div className="flex h-full flex-col">
-      {showDetailView && selectedProposal && (
+      {showDetailView && selectedProposalId && (
         <ProposalDetails
           handleCloseProposal={handleCloseProposal}
-          selectedProposal={selectedProposal}
-          proposals={initialProposals || []}
+          selectedProposalId={selectedProposalId}
         />
       )}
       {!showDetailView && (
@@ -44,7 +54,7 @@ export default function ProjectProposalsView({
           projectTitle={projectTitle}
           onBack={onBack}
           handleViewProposal={handleViewProposal}
-          proposals={initialProposals || []}
+          proposals={proposalsData || []}
         />
       )}
       <motion.div

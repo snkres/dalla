@@ -83,14 +83,6 @@ const getStatusDisplayText = (status: ProposalStatus): string => {
 }
 
 export function ProfessionalProposals() {
-  const { data: analytics } = useQuery({
-    queryKey: ['analytics', 'professional'],
-    queryFn: () =>
-      getProfessionalAnalytics({
-        from: '2022-09-27T18:00:00.000',
-        to: '"2025-09-27T18:00:00.000",',
-      }),
-  })
   const {
     data: proposals,
     isLoading,
@@ -100,7 +92,7 @@ export function ProfessionalProposals() {
     queryFn: () => getAllProposals(1, 10),
   })
 
-  const [activeTab, setActiveTab] = useState<ProposalStatus>('Accepted')
+  const [activeTab, setActiveTab] = useState<ProposalStatus>('Pending')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedProposal, setSelectedProposal] = useState<
     GetAllProposalsRes['data'][0][number] | null
@@ -122,7 +114,7 @@ export function ProfessionalProposals() {
   const activeProposals = useMemo(() => {
     if (!proposals) return []
     return proposals?.data[0].filter((proposal) =>
-      ['Pending', 'Accepted'].includes(proposal.status),
+      ['Pending', 'Accepted', 'Rejected'].includes(proposal.status),
     )
   }, [proposals])
 
@@ -256,18 +248,7 @@ export function ProfessionalProposals() {
         </p>
       </motion.div>
 
-      <Overview
-        totalProposals={proposals?.data[0].length || 0}
-        totalConversions={activeProposals?.length || 0}
-        conversionRate={
-          (proposals?.data?.[0]?.length || 0) > 0
-            ? (activeProposals?.length ||
-                0 / (proposals?.data?.[0]?.length || 0)) * 100
-            : 0
-        }
-        averageResponseTime={3}
-        averageConversionTime={7}
-      />
+      <Overview />
 
       <TabContainer
         activeTab={activeTab}

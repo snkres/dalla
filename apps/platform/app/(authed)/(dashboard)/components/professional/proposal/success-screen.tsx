@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { CheckCircle } from 'lucide-react'
+import { Link } from 'next-view-transitions'
 import { Button } from '@dallah/design-system'
 import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { scaleIn } from '@components/aniamtion/animate'
@@ -36,8 +37,8 @@ export function SuccessScreen({ project, onClose }: SuccessScreenProps) {
         >
           Return to project
         </Button>
-        <Button className="!bg-[#63B7B7] px-6 hover:!bg-[#63B7B7]/90">
-          View your proposals
+        <Button className="!bg-[#63B7B7] px-6 hover:!bg-[#63B7B7]/90" asChild>
+          <Link href={`/proposals`}>View your proposals</Link>
         </Button>
       </div>
     </motion.div>

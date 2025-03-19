@@ -1,8 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, ChevronDown } from 'lucide-react'
-import { Button, Input, Label, Textarea } from '@dallah/design-system'
+import { Search, ChevronDown, School } from 'lucide-react'
+import {
+  Button,
+  Input,
+  Label,
+  Textarea,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@dallah/design-system'
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
 import { DatePicker } from './date-picker'
@@ -92,11 +102,7 @@ export function EducationForm({
     >
       <div className="mb-2 flex items-center justify-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
-          <img
-            src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIyIDEwVjE1QzIyIDE2LjEgMjEuMSAxNyAyMCAxN0g0QzIuOSAxNyAyIDE2LjEgMiAxNVYxME0yMiAxMEwyMiA2QzIyIDQuOSAyMS4xIDQgMjAgNEg0QzIuOSA0IDIgNC45IDIgNlYxME0yMiAxMEgxN1YxNUgyMk0yIDEwSDdWMTVIMk0xMiA0VjE3TTEyIDE3VjIwTTEyIDIwSDdNMTIgMjBIMTciIHN0cm9rZT0iIzZCNzI4MCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg=="
-            alt="Education"
-            className="h-6 w-6"
-          />
+          <School />
         </div>
       </div>
 
@@ -125,36 +131,18 @@ export function EducationForm({
           <Label className="mb-1 block text-sm font-medium text-gray-700">
             Degree <span className="text-red-500">*</span>
           </Label>
-          <div className="relative">
-            <button
-              type="button"
-              className="flex w-full items-center justify-between rounded-lg border border-gray-300 px-4 py-2 text-left"
-              onClick={() => setDegreeTypeOpen(!degreeTypeOpen)}
-            >
-              <span>{degree || 'Select degree type'}</span>
-              <ChevronDown size={20} className="text-gray-400" />
-            </button>
-
-            {degreeTypeOpen && (
-              <div className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg">
-                {degreeTypes.map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => {
-                      setDegree(type)
-                      setDegreeTypeOpen(false)
-                    }}
-                    className={`w-full px-4 py-2 text-left hover:bg-gray-50 ${
-                      degree === type ? 'bg-blue-50 text-blue-700' : ''
-                    }`}
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <Select value={degree} onValueChange={(value) => setDegree(value)}>
+            <SelectTrigger className="!h-11 w-full rounded-xl">
+              <SelectValue placeholder="Select degree type" />
+            </SelectTrigger>
+            <SelectContent>
+              {degreeTypes.map((type) => (
+                <SelectItem key={type} value={type}>
+                  {type}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>

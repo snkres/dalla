@@ -15,7 +15,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   onSelectProposal,
 }) => {
   return (
-    <div className="w-full overflow-hidden rounded-xl bg-white lg:col-span-2">
+    <div className="w-full overflow-hidden rounded-xl lg:col-span-2">
       <div className="w-full p-4">
         {Array.isArray(proposals) && proposals.length > 0 ? (
           <div className="space-y-4">
@@ -31,7 +31,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
             ))}
           </div>
         ) : (
-          <div className="rounded-lg bg-[#BEDDF1]/5 px-4 py-10 text-center">
+          <div className="rounded-lg px-4 py-10 text-center">
             <p className="text-gray-500">No proposals is {selectedTab}.</p>
           </div>
         )}

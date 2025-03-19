@@ -34,6 +34,7 @@ export function ProOnboardingThree({
     setIsAbleToProceed,
     currentStep: 3,
   })
+  console.log(data.experience)
   return (
     <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
       <div className="flex flex-col items-center justify-center gap-1">
@@ -131,7 +132,17 @@ export function ProOnboardingThree({
             setEditingIndex(null)
           }}
           initialData={
-            editingIndex !== null ? data.experience[editingIndex] : undefined
+            editingIndex !== null
+              ? {
+                  ...data.experience[editingIndex],
+                  meta: {
+                    ...data.experience[editingIndex].meta,
+                    skills: data.experience[editingIndex].meta.skills.map(
+                      (skill) => ({ id: skill, text: skill }),
+                    ),
+                  },
+                }
+              : undefined
           }
         />
       </Modal>

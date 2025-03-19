@@ -135,6 +135,7 @@ export default function VerifyPage() {
             handleSubmit={handleVerificationSubmit}
             isAbleToProceed={verificationCode.length === 4}
             isNextDisabled={verificationCode.length !== 4}
+            isLoading={isSubmitting}
           />
         </form>
       </div>

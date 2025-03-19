@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
-import { motion } from 'motion/react'
 import { createProjectProposal } from '@lib/api/pro/proposals'
-import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { ApplicationHeader } from './header'
 import { StepOne } from './step-one'
 import { StepTwo } from './step-two'
@@ -13,6 +11,8 @@ import { ApplicationSidebar } from './sidebar'
 import { NavigationButtons } from './navigation-buttons'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
+import { upload } from '@lib/api/shared/upload'
+import { Modal } from '@dallah/design-system'
 
 interface ProjectApplicationProps {
   project: GetAllProjectsProfessionalViewRes['data'][0][number]
@@ -164,7 +164,7 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     setIsSubmitting(true)
 
     try {
-      // const media = await Promise.all(files.map((file) => upload(file)))
+      const media = await Promise.all(files.map((file) => upload(file)))
       // Prepare the proposal data
       const proposalData = {
         price: bidType === 'fixed' ? bidAmount : totalMilestonesAmount,
@@ -174,8 +174,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
             : milestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
         description: coverLetter,
         relevantProjects: [],
-        // media: media.map((m) => m.data.fileUrl),
-        media: ['https://placehold.co/80x80/e6f3f3/63B7B7?text=Media'],
+        media: media.map((m) => m.data.fileUrl),
+        // media: ['https://placehold  .co/80x80/e6f3f3/63B7B7?text=Media'],
       }
 
       // Submit the proposal
@@ -276,15 +276,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   )
 
   return (
-    <motion.div
-      {...SLIDE_ANIMATION}
-      className="fixed right-0 top-0 z-50 flex h-screen w-full flex-col border-l border-gray-200 bg-white shadow-xl md:w-[1000px]"
-    >
-      <ApplicationHeader
-        onClose={onClose}
-        activeStep={activeStep}
-        isSubmitted={isSubmitted}
-      />
+    <Modal isOpen={true} onClose={onClose} title="Submit a Proposal" width="lg">
+      <ApplicationHeader activeStep={activeStep} isSubmitted={isSubmitted} />
       <div className="flex h-full flex-col md:flex-row">
         <div className="relative mb-[100px] flex-1 overflow-y-auto p-4 sm:p-6">
           <div className="max-w-3xl">
@@ -371,6 +364,6 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
           onClose={onClose}
         />
       </div>
-    </motion.div>
+    </Modal>
   )
 }

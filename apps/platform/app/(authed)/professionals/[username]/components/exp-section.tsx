@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@dallah/design-system'
 import {
   Edit,
@@ -9,13 +11,15 @@ import {
   MapPin,
   Award,
   Building,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import { Position } from '@lib/types/profile'
-import { ProProfile } from '@lib/atoms/pro/meta'
+import type { Position } from '@lib/types/profile'
+import type { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
 
 export function ExperienceSection({
@@ -42,6 +46,9 @@ export function ExperienceSection({
   const [skillsInput, setSkillsInput] = useState<string[]>(
     experiences.map((exp) => exp.meta.skills.join(', ')),
   )
+  const [expandedItems, setExpandedItems] = useState<{
+    [key: string]: boolean
+  }>({})
 
   // Add validation state at the top of the component, after other state declarations
   const [validationErrors, setValidationErrors] = useState<{
@@ -62,6 +69,8 @@ export function ExperienceSection({
   const handleEdit = () => {
     setEditedExperiences([...experiences])
     setIsEditing(true)
+    // Reset all expanded states to collapsed
+    setExpandedItems({})
 
     setTimeout(() => {
       inputRef.current?.focus()
@@ -344,289 +353,377 @@ export function ExperienceSection({
               </div>
             )}
             {Object.entries(groupedExperiences()).map(
-              ([company, companyExps], groupIndex) => (
-                <div
-                  key={groupIndex}
-                  className={cn(
-                    'relative border-l-2 border-gray-200',
-                    padding,
-                    'pb-2',
-                  )}
-                >
-                  <div className="absolute -left-[5px] top-0 h-[10px] w-[10px] rounded-full bg-[#63B7B7]"></div>
-                  <div className="mb-2 border-b border-dashed border-gray-100 pb-4">
-                    <div className="mb-3 flex flex-wrap items-start justify-between gap-2 sm:flex-nowrap">
-                      <Input
-                        ref={groupIndex === 0 ? inputRef : undefined}
-                        value={company}
-                        onChange={(e) => {
-                          const updatedExperiences = [...editedExperiences]
-                          editedExperiences.forEach((exp, idx) => {
-                            if (exp.company === company) {
-                              updatedExperiences[idx] = {
-                                ...updatedExperiences[idx],
-                                company: e.target.value,
-                              }
-                            }
-                          })
-                          setEditedExperiences(updatedExperiences)
+              ([company, companyExps], groupIndex) => {
+                const companyKey = `company-${company}-${groupIndex}`
+                const isExpanded = expandedItems[companyKey] || false
 
-                          // Clear validation errors for company field
-                          const firstExpIndex = editedExperiences.findIndex(
-                            (exp) => exp.company === company,
-                          )
-                          if (
-                            firstExpIndex >= 0 &&
-                            validationErrors[firstExpIndex]?.company
-                          ) {
-                            const updatedErrors = { ...validationErrors }
-                            delete updatedErrors[firstExpIndex].company
-                            if (
-                              Object.keys(updatedErrors[firstExpIndex])
-                                .length === 0
-                            ) {
-                              delete updatedErrors[firstExpIndex]
-                            }
-                            setValidationErrors(updatedErrors)
-                          }
-                        }}
-                        placeholder="Company name"
-                        className={cn(
-                          'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
-                          validationErrors[
-                            editedExperiences.findIndex(
-                              (exp) => exp.company === company,
-                            )
-                          ]?.company
-                            ? 'border-b-2 border-red-500'
-                            : '',
-                        )}
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setEditedExperiences(
-                            editedExperiences.filter(
-                              (exp) => exp.company !== company,
-                            ),
-                          )
-                        }}
-                        className="-mt-1 h-6 w-6 rounded-full text-gray-300 hover:bg-transparent hover:text-red-500"
-                      >
-                        <X className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+                return (
+                  <div
+                    key={groupIndex}
+                    className={cn(
+                      'relative border-l-2 border-gray-200',
+                      padding,
+                      'pb-2',
+                    )}
+                  >
+                    <div className="absolute -left-[5px] top-0 h-[10px] w-[10px] rounded-full bg-[#63B7B7]"></div>
 
-                    <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                        <Input
-                          value={companyExps[0].location || ''}
-                          onChange={(e) => {
-                            const updatedExperiences = [...editedExperiences]
-                            editedExperiences.forEach((exp, idx) => {
-                              if (exp.company === company) {
-                                updatedExperiences[idx] = {
-                                  ...updatedExperiences[idx],
-                                  location: e.target.value,
+                    {/* Company header - always visible */}
+                    <div className="mb-2 border-b border-dashed border-gray-100 pb-4">
+                      <div className="mb-3 flex flex-wrap items-start justify-between gap-2 sm:flex-nowrap">
+                        <div className="flex flex-1 items-center">
+                          <Input
+                            ref={groupIndex === 0 ? inputRef : undefined}
+                            value={company}
+                            onChange={(e) => {
+                              const updatedExperiences = [...editedExperiences]
+                              editedExperiences.forEach((exp, idx) => {
+                                if (exp.company === company) {
+                                  updatedExperiences[idx] = {
+                                    ...updatedExperiences[idx],
+                                    company: e.target.value,
+                                  }
                                 }
-                              }
-                            })
-                            setEditedExperiences(updatedExperiences)
-                          }}
-                          placeholder="Location (optional)"
-                          className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <Building className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                        <Input
-                          value={companyExps[0].meta.employmentType || ''}
-                          onChange={(e) => {
-                            // For employment type, let each role have its own value
-                            const updatedExperiences = [...editedExperiences]
-                            const firstExpIndex = editedExperiences.findIndex(
-                              (exp) =>
-                                exp.company === company &&
-                                exp.title === companyExps[0].title,
-                            )
-                            if (firstExpIndex >= 0) {
-                              updatedExperiences[firstExpIndex] = {
-                                ...updatedExperiences[firstExpIndex],
-                                meta: {
-                                  ...updatedExperiences[firstExpIndex].meta,
-                                  employmentType: e.target.value,
-                                },
-                              }
+                              })
                               setEditedExperiences(updatedExperiences)
-                            }
-                          }}
-                          placeholder="Employment type (optional)"
-                          className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="ml-1 space-y-6 sm:ml-2">
-                    {companyExps.map((exp, roleIndex) => {
-                      const expIndex = findExperienceIndex(
-                        exp as unknown as Position,
-                        company,
-                      )
-
-                      if (expIndex === -1) {
-                        console.error(
-                          'Could not find experience index',
-                          exp,
-                          company,
-                        )
-                        return null
-                      }
-
-                      return (
-                        <div
-                          key={exp.id || `${company}-role-${roleIndex}`}
-                          className={cn(
-                            'relative border-l border-dotted border-gray-200',
-                            posPadding,
-                          )}
-                        >
-                          <div className="absolute -left-[4px] top-[10px] h-[8px] w-[8px] rounded-full bg-gray-300"></div>
-
-                          <div className="mb-3 flex flex-wrap items-start justify-between gap-2 sm:flex-nowrap">
-                            <Input
-                              value={exp.title}
-                              onChange={(e) =>
-                                updateExperience(
-                                  expIndex,
-                                  'title',
-                                  e.target.value,
-                                )
+                              // Clear validation errors for company field
+                              const firstExpIndex = editedExperiences.findIndex(
+                                (exp) => exp.company === company,
+                              )
+                              if (
+                                firstExpIndex >= 0 &&
+                                validationErrors[firstExpIndex]?.company
+                              ) {
+                                const updatedErrors = { ...validationErrors }
+                                delete updatedErrors[firstExpIndex].company
+                                if (
+                                  Object.keys(updatedErrors[firstExpIndex])
+                                    .length === 0
+                                ) {
+                                  delete updatedErrors[firstExpIndex]
+                                }
+                                setValidationErrors(updatedErrors)
                               }
-                              placeholder="Position title"
-                              className={cn(
-                                'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
-                                validationErrors[expIndex]?.title
-                                  ? 'border-b-2 border-red-500'
-                                  : '',
-                              )}
+                            }}
+                            placeholder="Company name"
+                            className={cn(
+                              'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                              validationErrors[
+                                editedExperiences.findIndex(
+                                  (exp) => exp.company === company,
+                                )
+                              ]?.company
+                                ? 'border-b-2 border-red-500'
+                                : '',
+                            )}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setExpandedItems((prev) => ({
+                                ...prev,
+                                [companyKey]: !isExpanded,
+                              }))
+                            }
+                            className="ml-2 h-7 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
+                          >
+                            {isExpanded ? (
+                              <>
+                                <ChevronUp className="h-3.5 w-3.5" />
+                                Collapse
+                              </>
+                            ) : (
+                              <>
+                                <ChevronDown className="h-3.5 w-3.5" />
+                                Expand
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setEditedExperiences(
+                              editedExperiences.filter(
+                                (exp) => exp.company !== company,
+                              ),
+                            )
+                          }}
+                          className="-mt-1 h-6 w-6 rounded-full text-gray-300 hover:bg-transparent hover:text-red-500"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+
+                      {/* Only show these fields when expanded */}
+                      {isExpanded && (
+                        <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                            <Input
+                              value={companyExps[0].location || ''}
+                              onChange={(e) => {
+                                const updatedExperiences = [
+                                  ...editedExperiences,
+                                ]
+                                editedExperiences.forEach((exp, idx) => {
+                                  if (exp.company === company) {
+                                    updatedExperiences[idx] = {
+                                      ...updatedExperiences[idx],
+                                      location: e.target.value,
+                                    }
+                                  }
+                                })
+                                setEditedExperiences(updatedExperiences)
+                              }}
+                              placeholder="Location (optional)"
+                              className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
                             />
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeExperience(expIndex)}
-                              className="-mt-1 h-6 w-6 rounded-full text-gray-300 hover:bg-transparent hover:text-red-500"
-                            >
-                              <X className="h-3 w-3" />
-                            </Button>
                           </div>
 
-                          <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                              <MonthYearPicker
-                                value={exp.startDate}
-                                onChange={(value) =>
-                                  updateExperience(expIndex, 'startDate', value)
-                                }
-                                placeholder="Start date"
-                                className={
-                                  validationErrors[expIndex]?.startDate
-                                    ? 'border-red-500'
-                                    : ''
-                                }
-                              />
-                            </div>
-
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                              <MonthYearPicker
-                                value={exp.endDate || 'Present'}
-                                onChange={(value) =>
-                                  updateExperience(expIndex, 'endDate', value)
-                                }
-                                placeholder="End date (or Present)"
-                              />
-                            </div>
-                          </div>
-
-                          <div className="mt-3 space-y-3">
-                            <div className="space-y-1">
-                              <label className="text-xs font-medium text-gray-500">
-                                Skills
-                              </label>
-                              <Input
-                                value={skillsInput[expIndex] || ''}
-                                onChange={(e) => {
-                                  const updatedSkillsInput = [...skillsInput]
-                                  updatedSkillsInput[expIndex] = e.target.value
-                                  setSkillsInput(updatedSkillsInput)
-                                }}
-                                onBlur={() =>
-                                  updateSkills(
-                                    expIndex,
-                                    skillsInput[expIndex] || '',
+                          <div className="flex items-center gap-1">
+                            <Building className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                            <Input
+                              value={companyExps[0].meta.employmentType || ''}
+                              onChange={(e) => {
+                                // For employment type, let each role have its own value
+                                const updatedExperiences = [
+                                  ...editedExperiences,
+                                ]
+                                const firstExpIndex =
+                                  editedExperiences.findIndex(
+                                    (exp) =>
+                                      exp.company === company &&
+                                      exp.title === companyExps[0].title,
                                   )
+                                if (firstExpIndex >= 0) {
+                                  updatedExperiences[firstExpIndex] = {
+                                    ...updatedExperiences[firstExpIndex],
+                                    meta: {
+                                      ...updatedExperiences[firstExpIndex].meta,
+                                      employmentType: e.target.value,
+                                    },
+                                  }
+                                  setEditedExperiences(updatedExperiences)
                                 }
-                                placeholder="Skills (comma separated)"
-                                className="h-7 rounded-md border border-gray-200 text-xs focus:border-[#63B7B7] focus:ring-0"
-                              />
-                              <p className="text-[10px] italic text-gray-400">
-                                Separate skills with commas
-                              </p>
-                            </div>
-
-                            <div className="space-y-1">
-                              <label className="text-xs font-medium text-gray-500">
-                                Key Achievements
-                              </label>
-                              <Textarea
-                                value={exp.meta.achievements || ''}
-                                onChange={(e) =>
-                                  updateAchievement(expIndex, e.target.value)
-                                }
-                                placeholder="Describe your key achievements"
-                                className="h-24 rounded-md border border-gray-200 !text-xs focus:border-[#63B7B7] focus:ring-0"
-                              />
-                            </div>
-
-                            <div className="space-y-1">
-                              <label className="text-xs font-medium text-gray-500">
-                                Responsibilities
-                              </label>
-                              <Textarea
-                                value={exp.meta.responsibilities || ''}
-                                onChange={(e) =>
-                                  updateMeta(
-                                    expIndex,
-                                    'responsibilities',
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="Brief description of your role and responsibilities"
-                                className="h-24 rounded-md border border-gray-200 !text-xs focus:border-[#63B7B7] focus:ring-0"
-                              />
-                            </div>
+                              }}
+                              placeholder="Employment type (optional)"
+                              className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
+                            />
                           </div>
                         </div>
-                      )
-                    })}
+                      )}
+                    </div>
 
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => addRole(company)}
-                      className="mt-2 h-7 w-full rounded-md text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
-                    >
-                      <Plus className="mr-1 h-3 w-3" />
-                      Add another role
-                    </Button>
+                    {/* Only show roles when expanded */}
+                    {isExpanded && (
+                      <div className="ml-1 space-y-6 sm:ml-2">
+                        {companyExps.map((exp, roleIndex) => {
+                          const expIndex = findExperienceIndex(
+                            exp as unknown as Position,
+                            company,
+                          )
+                          const roleKey = `role-${company}-${exp.id || roleIndex}`
+                          const isRoleExpanded = expandedItems[roleKey] || false
+
+                          if (expIndex === -1) {
+                            console.error(
+                              'Could not find experience index',
+                              exp,
+                              company,
+                            )
+                            return null
+                          }
+
+                          return (
+                            <div
+                              key={exp.id || `${company}-role-${roleIndex}`}
+                              className={cn(
+                                'relative border-l border-dotted border-gray-200',
+                                posPadding,
+                              )}
+                            >
+                              <div className="absolute -left-[4px] top-[10px] h-[8px] w-[8px] rounded-full bg-gray-300"></div>
+
+                              <div className="mb-3 flex flex-wrap items-start justify-between gap-2 sm:flex-nowrap">
+                                <div className="flex flex-1 items-center">
+                                  <Input
+                                    value={exp.title}
+                                    onChange={(e) =>
+                                      updateExperience(
+                                        expIndex,
+                                        'title',
+                                        e.target.value,
+                                      )
+                                    }
+                                    placeholder="Position title"
+                                    className={cn(
+                                      'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                                      validationErrors[expIndex]?.title
+                                        ? 'border-b-2 border-red-500'
+                                        : '',
+                                    )}
+                                  />
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                      setExpandedItems((prev) => ({
+                                        ...prev,
+                                        [roleKey]: !isRoleExpanded,
+                                      }))
+                                    }
+                                    className="ml-2 h-7 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
+                                  >
+                                    {isRoleExpanded ? (
+                                      <>
+                                        <ChevronUp className="h-3.5 w-3.5" />
+                                        Collapse
+                                      </>
+                                    ) : (
+                                      <>
+                                        <ChevronDown className="h-3.5 w-3.5" />
+                                        Expand
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => removeExperience(expIndex)}
+                                  className="-mt-1 h-6 w-6 rounded-full text-gray-300 hover:bg-transparent hover:text-red-500"
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+
+                              {isRoleExpanded && (
+                                <>
+                                  <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                                      <MonthYearPicker
+                                        value={exp.startDate}
+                                        onChange={(value) =>
+                                          updateExperience(
+                                            expIndex,
+                                            'startDate',
+                                            value,
+                                          )
+                                        }
+                                        placeholder="Start date"
+                                        className={
+                                          validationErrors[expIndex]?.startDate
+                                            ? 'border-red-500'
+                                            : ''
+                                        }
+                                      />
+                                    </div>
+
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                                      <MonthYearPicker
+                                        value={exp.endDate || 'Present'}
+                                        onChange={(value) =>
+                                          updateExperience(
+                                            expIndex,
+                                            'endDate',
+                                            value,
+                                          )
+                                        }
+                                        placeholder="End date (or Present)"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="mt-3 space-y-3">
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-medium text-gray-500">
+                                        Skills
+                                      </label>
+                                      <Input
+                                        value={skillsInput[expIndex] || ''}
+                                        onChange={(e) => {
+                                          const updatedSkillsInput = [
+                                            ...skillsInput,
+                                          ]
+                                          updatedSkillsInput[expIndex] =
+                                            e.target.value
+                                          setSkillsInput(updatedSkillsInput)
+                                        }}
+                                        onBlur={() =>
+                                          updateSkills(
+                                            expIndex,
+                                            skillsInput[expIndex] || '',
+                                          )
+                                        }
+                                        placeholder="Skills (comma separated)"
+                                        className="h-7 rounded-md border border-gray-200 text-xs focus:border-[#63B7B7] focus:ring-0"
+                                      />
+                                      <p className="text-[10px] italic text-gray-400">
+                                        Separate skills with commas
+                                      </p>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-medium text-gray-500">
+                                        Key Achievements
+                                      </label>
+                                      <Textarea
+                                        value={exp.meta.achievements || ''}
+                                        onChange={(e) =>
+                                          updateAchievement(
+                                            expIndex,
+                                            e.target.value,
+                                          )
+                                        }
+                                        placeholder="Describe your key achievements"
+                                        className="h-24 rounded-md border border-gray-200 !text-xs focus:border-[#63B7B7] focus:ring-0"
+                                      />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-medium text-gray-500">
+                                        Responsibilities
+                                      </label>
+                                      <Textarea
+                                        value={exp.meta.responsibilities || ''}
+                                        onChange={(e) =>
+                                          updateMeta(
+                                            expIndex,
+                                            'responsibilities',
+                                            e.target.value,
+                                          )
+                                        }
+                                        placeholder="Brief description of your role and responsibilities"
+                                        className="h-24 rounded-md border border-gray-200 !text-xs focus:border-[#63B7B7] focus:ring-0"
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          )
+                        })}
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => addRole(company)}
+                          className="mt-2 h-7 w-full rounded-md text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
+                        >
+                          <Plus className="mr-1 h-3 w-3" />
+                          Add Another Role
+                        </Button>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ),
+                )
+              },
             )}
 
             <div className={cn('relative border-l-2 border-gray-200', padding)}>
@@ -638,7 +735,7 @@ export function ExperienceSection({
                 className="h-9 w-full rounded-md py-5 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
               >
                 <Plus className="mr-1 h-3.5 w-3.5" />
-                Add experience
+                Add Experience
               </Button>
             </div>
           </div>
@@ -709,7 +806,9 @@ export function ExperienceSection({
                             {companyExps[0].meta && (
                               <div className="flex items-center">
                                 <Building className="mr-1 h-3 w-3" />
-                                <span>{companyExps[0].meta.industry}</span>
+                                <span>
+                                  {companyExps[0].meta.employmentType}
+                                </span>
                               </div>
                             )}
                           </div>

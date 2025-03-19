@@ -33,6 +33,8 @@ export function ApplicationSidebar({
   files,
   totalMilestonesAmount,
 }: ApplicationSidebarProps) {
+  const [showAllSkills, setShowAllSkills] = React.useState(false)
+
   if (isSubmitted) {
     return (
       <div className="sticky top-0 flex h-screen w-full flex-col border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
@@ -317,17 +319,30 @@ export function ApplicationSidebar({
             <div>
               <p className="mb-2 text-xs text-gray-400">Skills required</p>
               <div className="flex flex-wrap gap-1.5">
-                {project.skills.slice(0, 3).map((skill) => (
+                {project.skills
+                  .slice(0, showAllSkills ? project.skills.length : 3)
+                  .map((skill) => (
+                    <Badge
+                      key={skill}
+                      className="rounded-md border-none !bg-[#BEDDF1]/10 px-2 py-0.5 text-xs font-normal text-[#63B7B7] hover:!bg-[#BEDDF1]/20"
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                {!showAllSkills && project.skills.length > 3 && (
                   <Badge
-                    key={skill}
-                    className="rounded-md border-none !bg-[#BEDDF1]/10 px-2 py-0.5 text-xs font-normal text-[#63B7B7] hover:!bg-[#BEDDF1]/20"
+                    className="cursor-pointer rounded-md border-none !bg-gray-50 px-2 py-0.5 text-xs !text-gray-500 hover:!bg-gray-100"
+                    onClick={() => setShowAllSkills(true)}
                   >
-                    {skill}
+                    +{project.skills.length - 3} more
                   </Badge>
-                ))}
-                {project.skills.length > 3 && (
-                  <Badge className="rounded-md border-none bg-gray-50 px-2 py-0.5 text-xs text-gray-500 hover:bg-gray-100">
-                    +{project.skills.length - 3}
+                )}
+                {showAllSkills && project.skills.length > 3 && (
+                  <Badge
+                    className="cursor-pointer rounded-md border-none !bg-gray-50 px-2 py-0.5 text-xs !text-gray-500 hover:!bg-gray-100"
+                    onClick={() => setShowAllSkills(false)}
+                  >
+                    Show less
                   </Badge>
                 )}
               </div>

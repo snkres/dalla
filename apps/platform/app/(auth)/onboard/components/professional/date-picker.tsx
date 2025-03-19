@@ -44,11 +44,13 @@ const currentYear = new Date().getFullYear()
 // Modified to create two different year arrays
 const pastYears = Array.from({ length: 50 }, (_, i) =>
   (currentYear - 49 + i).toString(),
-).filter((year) => parseInt(year) <= currentYear)
+)
+  .filter((year) => parseInt(year) <= currentYear)
+  .reverse()
 
 const allYears = Array.from({ length: 50 }, (_, i) =>
   (currentYear - 25 + i).toString(),
-)
+).reverse()
 
 export function DatePicker({
   label,
