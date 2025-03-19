@@ -59,8 +59,8 @@ export default function CompanyHome() {
     refetch: refetchProjectsOverview,
     isLoading: projectsOverviewLoading,
   } = useQuery({
-    queryKey: ['projects', page, 'company'],
-    queryFn: () => getAllProjects(page, 5),
+    queryKey: ['projects', 'overview'],
+    queryFn: () => getAllProjects(1, 5),
   })
 
   useEffect(() => {

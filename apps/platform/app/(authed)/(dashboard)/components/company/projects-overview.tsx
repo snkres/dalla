@@ -278,7 +278,6 @@ export function ProjectsOverview({
           <ProjectProposalsView
             projectTitle={selectedProjectForProposals.title}
             onBack={closeProposals}
-            proposals={selectedProjectForProposals.proposals}
           />
         )}
       </AnimatePresence>

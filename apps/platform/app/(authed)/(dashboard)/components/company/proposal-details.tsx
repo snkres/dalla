@@ -32,36 +32,44 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@dallah/design-system'
+import { AxiosResponse } from 'axios'
 
 interface ProposalDetailsProps {
   handleCloseProposal: () => void
-  selectedProposal: string | null
-  proposals: GetAllCompanyProjectsRes['data'][0][number]['proposals']
+  selectedProposalId: string | null
+
   onStatusChange?: (proposalId: string, status: string) => void
 }
 
 const ProposalDetails = ({
   handleCloseProposal,
-  selectedProposal,
-  proposals,
+  selectedProposalId,
 }: ProposalDetailsProps) => {
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const [showHireDialog, setShowHireDialog] = useState(false)
   const [showDeclineDialog, setShowDeclineDialog] = useState(false)
 
-  const selectedProposalData = selectedProposal
-    ? proposals.find((p) => p.id === selectedProposal)
+  const selectedProposalData = selectedProposalId
+    ? queryClient
+        .getQueryData<AxiosResponse<GetAllCompanyProjectsRes>>([
+          'projects',
+          'overview',
+        ])
+        ?.data.data[0]?.find((p) =>
+          p.proposals.find((p) => p.id === selectedProposalId),
+        )
+        ?.proposals.find((p) => p.id === selectedProposalId)
     : null
 
   const hireProposalMutation = useMutation({
     mutationFn: () => {
-      if (!selectedProposal || !selectedProposalData?.projectId) {
+      if (!selectedProposalId || !selectedProposalData?.id) {
         throw new Error('Missing proposal or project ID')
       }
       return updateProposalStatus(
         selectedProposalData.projectId,
-        selectedProposal,
+        selectedProposalId,
         'Accepted',
       )
     },
@@ -71,7 +79,6 @@ const ProposalDetails = ({
         description: 'You have successfully hired this professional.',
         variant: 'default',
       })
-      queryClient.invalidateQueries({ queryKey: ['company', 'projects'] })
 
       setTimeout(() => {
         handleCloseProposal()
@@ -85,16 +92,22 @@ const ProposalDetails = ({
         variant: 'destructive',
       })
     },
+    onSettled: () => {
+      queryClient.refetchQueries({
+        queryKey: ['projects'],
+        exact: false,
+      })
+    },
   })
 
   const declineProposalMutation = useMutation({
     mutationFn: () => {
-      if (!selectedProposal || !selectedProposalData?.projectId) {
+      if (!selectedProposalId || !selectedProposalData?.id) {
         throw new Error('Missing proposal or project ID')
       }
       return updateProposalStatus(
         selectedProposalData.projectId,
-        selectedProposal,
+        selectedProposalId,
         'Rejected',
       )
     },
@@ -104,8 +117,6 @@ const ProposalDetails = ({
         description: 'You have declined this proposal.',
         variant: 'default',
       })
-
-      queryClient.invalidateQueries({ queryKey: ['company', 'projects'] })
 
       setTimeout(() => {
         handleCloseProposal()
@@ -117,6 +128,12 @@ const ProposalDetails = ({
         description:
           error instanceof Error ? error.message : 'An unknown error occurred',
         variant: 'destructive',
+      })
+    },
+    onSettled: () => {
+      queryClient.refetchQueries({
+        queryKey: ['projects'],
+        exact: false,
       })
     },
   })
@@ -145,20 +162,17 @@ const ProposalDetails = ({
       className="fixed bottom-2 left-auto right-4 top-2 z-50 flex w-full flex-col rounded-3xl border-l border-gray-200 bg-white shadow-lg md:w-[600px] lg:w-[750px]"
     >
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 px-4 py-3">
-        <button
-          onClick={handleCloseProposal}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-        <h2 className="text-sm font-medium text-gray-700">Proposal Details</h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-full text-[#63B7B7]"
-        >
-          <ExternalLink className="h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleCloseProposal}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+          <h2 className="text-sm font-medium text-gray-700">
+            Proposal Details
+          </h2>
+        </div>
       </div>
 
       <div className="flex h-full flex-col overflow-hidden md:flex-row">
