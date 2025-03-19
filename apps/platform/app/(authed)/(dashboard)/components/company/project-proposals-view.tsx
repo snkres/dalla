@@ -28,6 +28,8 @@ export default function ProjectProposalsView({
     >(['projects', 'overview'])
     ?.data.data[0].find((p) => p.title === projectTitle)?.proposals
 
+  console.log(proposalsData)
+
   const [showDetailView, setShowDetailView] = useState(false)
 
   const handleViewProposal = (proposalId: string) => {
