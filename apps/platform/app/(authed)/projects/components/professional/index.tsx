@@ -83,7 +83,7 @@ export function ProfessionalProjectsView() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Filters sidebar
           <div className="lg:col-span-1">
             <ProjectFilters clearAllFilters={clearAllFilters} />

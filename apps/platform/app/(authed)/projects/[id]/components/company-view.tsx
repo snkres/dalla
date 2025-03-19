@@ -24,9 +24,16 @@ import {
   Settings,
   Download,
 } from 'lucide-react'
-import { GetProjectRes } from '@lib/api/company/projects'
+import {
+  GetAllCompanyProjectsRes,
+  GetProjectRes,
+} from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { Link } from 'next-view-transitions'
+import { useState } from 'react'
+import ProposalDetailModal from './proposal-detail-modal'
+import StatusBadge from 'app/(authed)/proposals/components/status-badge'
+import { ProposalStatus } from '@lib/api/pro/proposals'
 
 export function CompanyProjectView({
   project,
@@ -37,6 +44,23 @@ export function CompanyProjectView({
   activeTab: string
   setActiveTab: (tab: string) => void
 }) {
+  const [selectedProposal, setSelectedProposal] = useState<
+    GetProjectRes['data']['proposals'][number] | null
+  >(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleProposalClick = (
+    proposal: GetProjectRes['data']['proposals'][number],
+  ) => {
+    setSelectedProposal(proposal)
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+    setSelectedProposal(null)
+  }
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab}>
       <TabsContent value="overview" className="m-0 p-0 outline-none">
@@ -138,9 +162,6 @@ export function CompanyProjectView({
               <ScrollArea className="h-64">
                 {project.status === 'InProgress' ? (
                   <ProjectAssignedProfessional project={project} />
-                ) : project.proposals && project.proposals.length > 0 ? (
-                  // <ProjectProposals proposals={project.proposals} />
-                  <></>
                 ) : (
                   <div className="flex h-64 items-center justify-center p-5 text-sm text-gray-500">
                     No professional assigned yet
@@ -186,19 +207,13 @@ export function CompanyProjectView({
                         <div className="flex items-center gap-1 rounded border border-amber-100 bg-amber-50 px-1.5 py-0.5">
                           <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
                           <span className="text-xs font-medium text-amber-700">
-                            {project.professional?.UserProfile?.meta?.rating}
+                            {project.professional?.UserProfile?.meta?.rating ??
+                              5}
                           </span>
                         </div>
                       </div>
                       <div className="mt-0.5 text-sm text-gray-500">
                         {project.professional?.UserProfile?.headline}
-                      </div>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        <Badge className="border border-green-100 bg-green-50 text-green-700">
-                          {project.professional?.UserProfile?.meta?.skills.join(
-                            ', ',
-                          )}
-                        </Badge>
                       </div>
                     </div>
                   </div>
@@ -213,15 +228,54 @@ export function CompanyProjectView({
                     <Button
                       variant="ghost"
                       className="h-10 flex-1 gap-1.5 rounded-none text-xs text-gray-700 hover:bg-gray-50"
+                      asChild
                     >
-                      <Eye className="h-3.5 w-3.5" />
-                      View Profile
+                      <Link
+                        href={`/professionals/${project.professional?.username}`}
+                        prefetch
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View Profile
+                      </Link>
                     </Button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </TabsContent>
+      )}
+      {project.status === 'Open' && (
+        <TabsContent value="proposals" className="m-0 p-0 outline-none">
+          <div className="py-4">
+            {project.proposals.map((proposal) => (
+              <div
+                key={proposal.id}
+                className="mb-4 cursor-pointer rounded-lg border border-gray-200 bg-white p-4"
+                onClick={() => handleProposalClick(proposal)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="text-base font-medium text-gray-900">
+                    {proposal.professional.name}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {formatCurrency(proposal.price)}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="mt-1 text-sm text-gray-500">
+                    {proposal.timeline} days
+                  </div>
+                  <StatusBadge status={proposal.status as ProposalStatus} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <ProposalDetailModal
+            proposal={selectedProposal}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+          />
         </TabsContent>
       )}
       <TabsContent value="files" className="m-0 p-0 outline-none">
@@ -241,53 +295,59 @@ export function CompanyProjectView({
           </div>
 
           <div className="p-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {project.media.map((file) => (
-                <div
-                  key={file}
-                  className="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
-                >
-                  <div className="mb-3 flex items-center">
-                    <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#E0F2F2] shadow-sm">
-                      <FileText className="h-5 w-5 text-[#1D8489]" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-medium text-gray-900">
-                        {file}
+            {project.media.length === 0 ? (
+              <div className="flex h-32 items-center justify-center text-sm text-gray-500">
+                No files available
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {project.media.map((file) => (
+                  <div
+                    key={file}
+                    className="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
+                  >
+                    <div className="mb-3 flex items-center">
+                      <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#E0F2F2] shadow-sm">
+                        <FileText className="h-5 w-5 text-[#1D8489]" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-medium text-gray-900">
+                          {file}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-3 flex justify-between border-t border-gray-200 pt-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 gap-1.5 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
-                      onClick={() => window.open(file, '_blank')}
-                    >
-                      <Eye className="h-3.5 w-3.5" />
-                      Preview
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 gap-1.5 text-xs text-gray-700 hover:bg-gray-100"
-                      onClick={() => {
-                        const link = document.createElement('a')
-                        link.href = file
-                        link.download = file.split('/').pop() || 'download'
-                        document.body.appendChild(link)
-                        link.click()
-                        document.body.removeChild(link)
-                      }}
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      Download
-                    </Button>
+                    <div className="mt-3 flex justify-between border-t border-gray-200 pt-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 gap-1.5 text-xs text-[#1D8489] hover:bg-[#E0F2F2]"
+                        onClick={() => window.open(file, '_blank')}
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        Preview
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 gap-1.5 text-xs text-gray-700 hover:bg-gray-100"
+                        onClick={() => {
+                          const link = document.createElement('a')
+                          link.href = file
+                          link.download = file.split('/').pop() || 'download'
+                          document.body.appendChild(link)
+                          link.click()
+                          document.body.removeChild(link)
+                        }}
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        Download
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </TabsContent>
@@ -468,6 +528,35 @@ function ProjectAssignedProfessional({
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function ProjectProposals({
+  proposals,
+}: {
+  proposals: GetProjectRes['data']['proposals']
+}) {
+  return (
+    <div className="p-5">
+      {proposals.map((proposal) => (
+        <div
+          key={proposal.id}
+          className="mb-4 rounded-lg border border-gray-200 p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-base font-medium text-gray-900">
+              {proposal.professional.name}
+            </div>
+            <div className="text-sm text-gray-500">
+              {formatCurrency(proposal.price)}
+            </div>
+          </div>
+          <div className="mt-1 text-sm text-gray-500">
+            {proposal.timeline} days
+          </div>
+        </div>
+      ))}
     </div>
   )
 }

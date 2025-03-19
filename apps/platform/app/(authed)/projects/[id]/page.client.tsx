@@ -62,6 +62,7 @@ export function ProjectPageClient({ id }: { id: string }) {
 
   const companyTabs = [
     'overview',
+    data.status === 'Open' ? 'proposals' : '',
     data.status !== 'Open' ? 'professional' : '',
     'files',
     // 'budget',

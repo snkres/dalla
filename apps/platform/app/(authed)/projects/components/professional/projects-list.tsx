@@ -22,7 +22,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
     }
 
     return (
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
         {projects.map((project) => (
           <ProjectCardProfessional
             key={`${project.id}-${project.proposalStatus}`}

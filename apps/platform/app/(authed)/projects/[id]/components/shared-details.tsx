@@ -182,7 +182,7 @@ export function ProjectSharedDetails({
               </div>
             </div> */}
 
-            <div className="col-span-2 overflow-hidden rounded-xl border shadow-sm">
+            <div className="col-span-2 h-fit overflow-hidden rounded-xl border shadow-sm">
               <div className={`border-b px-4 py-3`}>
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-[#1D8489]" />
