@@ -7,7 +7,9 @@ import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getCompanyMeta } from '@lib/api/company/profile'
+import { getProMeta } from '@lib/api/pro/profile'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -73,9 +75,40 @@ export interface ProOnboardingData {
 }
 
 export function useOnboarding() {
-  const [global, setGlobal] = useAtom(globalAtom)
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const router = useTransitionRouter()
+  const [global, setGlobal] = useAtom(globalAtom)
+
+  useQuery({
+    queryKey: ['meta', global.mode],
+    staleTime: Infinity,
+    queryFn: async () => {
+      try {
+        if (global.mode === 'user') {
+          const res = await getProMeta()
+          if (res.data.data.onboarded) {
+            router.push('/')
+          } else {
+            return res.data
+          }
+          return res.data
+        } else if (global.mode === 'company') {
+          const res = await getCompanyMeta()
+
+          if (res.data.data.onboarded) {
+            router.push('/')
+          } else {
+            return res.data
+          }
+        }
+        return null
+      } catch (err) {
+        console.error('Error fetching profile:', err)
+        throw err
+      }
+    },
+    retry: 1,
+  })
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
   const [isAbleToProceed, setIsAbleToProceed] = useState<boolean>(false)
   const { toast } = useToast()

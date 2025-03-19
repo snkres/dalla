@@ -34,8 +34,6 @@ export default function Page() {
     isLoading,
   } = useOnboarding()
 
-  console.log(isAbleToProceed)
-
   return (
     <AnimatePresence mode="wait">
       {showCompleteDialog ? (
