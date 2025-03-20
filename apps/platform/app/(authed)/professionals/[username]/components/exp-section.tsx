@@ -144,7 +144,6 @@ export function ExperienceSection({
           achievements: '',
           responsibilities: '',
           employmentType: '',
-          industry: '',
         },
         id: '',
         profileId: '',
@@ -285,7 +284,6 @@ export function ExperienceSection({
         ...exp,
         meta: {
           ...exp.meta,
-          industry: companyExperience.meta.industry || '',
         },
       })),
     )

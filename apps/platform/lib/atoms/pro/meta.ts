@@ -24,7 +24,7 @@ export type ProProfile = {
       totalEarned: number
       projectsCompleted: number
       successRate: number
-      weeklyAvailability: number
+      weeklyAvailability: string
       availability: string
       rating: number
       projectCompletion: string
@@ -67,7 +67,6 @@ export type ProProfile = {
         achievements: string
         employmentType: string
         responsibilities: string
-        industry: string
       }
       startDate: string
       endDate: string

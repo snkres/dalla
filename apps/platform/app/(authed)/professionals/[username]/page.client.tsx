@@ -2,7 +2,7 @@
 
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
-import { proMetaAtom } from '@lib/atoms/pro/meta'
+import { proMetaAtom, ProProfile } from '@lib/atoms/pro/meta'
 import {
   createShowCaseProject,
   getOwnProProfile,
@@ -95,36 +95,6 @@ export function ProProfileClient({ username }: { username: string }) {
     },
   })
 
-  const handleProfileUpdate = async (
-    updateData: any,
-    successMessage = 'Profile updated successfully',
-  ) => {
-    if (!isOwner) return
-
-    const formattedData = {
-      ...updateData,
-      meta: {
-        ...ownProfile?.data?.data.meta,
-        ...updateData.meta,
-        weeklyAvailability: String(updateData.meta.weeklyAvailability),
-      },
-      education: ownProfile?.data?.data.education?.map(
-        ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
-      ),
-      experience: ownProfile?.data?.data.experience?.map(
-        ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
-          ...exp,
-          meta: {
-            ...exp.meta,
-            skills: exp.meta.skills,
-          },
-        }),
-      ),
-    }
-
-    profileMutation.mutate(formattedData)
-  }
-
   if (isLoading || ownProfileLoading)
     return (
       <Loading
@@ -162,17 +132,30 @@ export function ProProfileClient({ username }: { username: string }) {
               isOwner ? () => setIsPublicView(!isPublicView) : undefined
             }
             onUpdate={(updatedProfile) => {
-              handleProfileUpdate({
+              profileMutation.mutate({
                 meta: {
                   ...profile?.data?.meta,
-                  hourlyRate: updatedProfile.hourlyRate,
-                  totalEarned: updatedProfile.totalEarned,
-                  projectsCompleted: updatedProfile.projectsCompleted,
-                  successRate: updatedProfile.successRate,
-                  weeklyAvailability: updatedProfile.weeklyAvailability,
+                  hourlyRate: updatedProfile.hourlyRate || 0,
+                  totalEarned: updatedProfile.totalEarned || 0,
+                  projectsCompleted: updatedProfile.projectsCompleted || 0,
+                  successRate: updatedProfile.successRate || 0,
+                  weeklyAvailability:
+                    String(updatedProfile.weeklyAvailability) || '0',
                   availability: updatedProfile.availability,
-                  projectCompletion: updatedProfile.projectCompletion,
+                  projectCompletion: updatedProfile.projectCompletion || '',
                 },
+                education: [
+                  ...(ownProfile?.data.data.education || []).map(
+                    ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                      cleanedEntry,
+                  ),
+                ],
+                experience: [
+                  ...(ownProfile?.data.data.experience || []).map(
+                    ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                      cleanedEntry,
+                  ),
+                ],
               })
             }}
           />
@@ -188,11 +171,23 @@ export function ProProfileClient({ username }: { username: string }) {
                   {},
                 )
 
-                handleProfileUpdate({
+                profileMutation.mutate({
                   meta: {
                     ...profile?.data?.meta,
                     languages: languagesObj,
                   },
+                  education: [
+                    ...(ownProfile?.data.data.education || []).map(
+                      ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                        cleanedEntry,
+                    ),
+                  ],
+                  experience: [
+                    ...(ownProfile?.data.data.experience || []).map(
+                      ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                        cleanedEntry,
+                    ),
+                  ],
                 })
               }}
               isPublicView={isPublicView}
@@ -219,15 +214,24 @@ export function ProProfileClient({ username }: { username: string }) {
                   {},
                 )
 
-                handleProfileUpdate(
-                  {
-                    meta: {
-                      ...profile?.data?.meta,
-                      socialLinks: socialLinksObj,
-                    },
+                profileMutation.mutate({
+                  meta: {
+                    ...profile?.data?.meta,
+                    socialLinks: socialLinksObj,
                   },
-                  'Social links updated successfully',
-                )
+                  education: [
+                    ...(ownProfile?.data.data.education || []).map(
+                      ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                        cleanedEntry,
+                    ),
+                  ],
+                  experience: [
+                    ...(ownProfile?.data.data.experience || []).map(
+                      ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                        cleanedEntry,
+                    ),
+                  ],
+                })
               }}
               isPublicView={isPublicView}
               isOwner={isOwner}
@@ -244,13 +248,21 @@ export function ProProfileClient({ username }: { username: string }) {
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={(updatedSummary) => {
-              handleProfileUpdate({
+              profileMutation.mutate({
                 headline: updatedSummary.title,
                 bio: updatedSummary.content,
                 meta: {
                   ...profile?.data?.meta,
                   skills: updatedSummary.skills,
                 },
+                education: ownProfile?.data.data.education.map(
+                  ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                    cleanedEntry,
+                ),
+                experience: ownProfile?.data.data.experience.map(
+                  ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                    cleanedEntry,
+                ),
               })
             }}
           />
@@ -329,33 +341,15 @@ export function ProProfileClient({ username }: { username: string }) {
           <ExperienceSection
             experiences={profile?.data?.experience || []}
             onUpdate={(updatedExperiences) => {
-              handleProfileUpdate({
-                experience: updatedExperiences.map(
-                  ({
-                    id,
-                    profileId,
-                    createdAt,
-                    updatedAt,
-                    ...exp
-                  }: {
-                    id: string
-                    profileId: string
-                    createdAt: string
-                    updatedAt: string
-                    meta: { skills: any[] }
-                    title: string
-                    company: string
-                    location: string
-                    startDate: string
-                    endDate: string
-                    [key: string]: any
-                  }) => ({
-                    ...exp,
-                    meta: {
-                      ...exp.meta,
-                      skills: exp.meta.skills,
-                    },
-                  }),
+              const cleanedExp = updatedExperiences.map(
+                ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                  cleanedEntry,
+              )
+              profileMutation.mutate({
+                experience: [...cleanedExp],
+                education: ownProfile?.data.data.education.map(
+                  ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                    cleanedEntry,
                 ),
               })
             }}
@@ -367,26 +361,16 @@ export function ProProfileClient({ username }: { username: string }) {
             onUpdateEducation={(updatedEducation) => {
               if (!profile) return
 
-              handleProfileUpdate({
-                education: updatedEducation?.map(
-                  ({
-                    id,
-                    profileId,
-                    createdAt,
-                    updatedAt,
-                    ...edu
-                  }: {
-                    id: string
-                    profileId: string
-                    createdAt: string
-                    updatedAt: string
-                    school: string
-                    degree: string
-                    field: string
-                    startDate: string
-                    endDate: string
-                    description: string
-                  }) => edu,
+              const cleanedEducation = updatedEducation.map(
+                ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                  cleanedEntry,
+              )
+
+              profileMutation.mutate({
+                education: [...cleanedEducation],
+                experience: ownProfile?.data.data.experience.map(
+                  ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
+                    cleanedEntry,
                 ),
               })
             }}

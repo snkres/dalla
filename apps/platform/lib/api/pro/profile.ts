@@ -39,8 +39,6 @@ export async function updateProProfile(
     headline?: string
     meta?: ProProfile['data']['meta']
     resume?: string
-
-    [property: string]: any
   }>,
 ) {
   let res = await axiosInstance
