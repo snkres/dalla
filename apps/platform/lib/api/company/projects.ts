@@ -116,6 +116,8 @@ export type GetProjectRes = {
     skills: Array<string>
     media: Array<string>
     meta: {
+      startedAt: string
+      endedAt?: string
       budget: number
       timeline: string
       duration: string
