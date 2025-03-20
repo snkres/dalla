@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import {
@@ -15,8 +15,8 @@ import {
   FileText,
   Boxes,
 } from 'lucide-react'
-import { Link } from 'next-view-transitions'
-import { Button } from '@dallah/design-system'
+import { Link, useTransitionRouter } from 'next-view-transitions'
+import { Button, Modal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { useQuery } from '@tanstack/react-query'
 import { getProProfile } from '@lib/api/pro/profile'
@@ -28,10 +28,12 @@ interface ConsultantDetailProps {
 }
 
 export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
+  const router = useTransitionRouter()
   const { data: professional } = useQuery({
     queryKey: ['professional', username],
     queryFn: () => getProProfile(username),
   })
+  const [showAllSkills, setShowAllSkills] = useState(false)
 
   if (!professional?.data) return null
 
@@ -42,35 +44,16 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
   )
 
   return (
-    <motion.div
-      initial={{ x: '100%' }}
-      animate={{ x: 0 }}
-      exit={{ x: '100%' }}
-      transition={{ duration: 0.3 }}
-      className="fixed right-0 top-0 z-50 h-full w-full max-w-2xl overflow-y-auto bg-white shadow-xl"
+    <Modal
+      isOpen={true}
+      onClose={onClose}
+      title="Professional Profile"
+      showExternalLink
+      onExternalLinkClick={() => {
+        router.push(`/professionals/${username}`)
+      }}
+      width="lg"
     >
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3">
-        <button
-          onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100"
-        >
-          <X className="h-4 w-4" />
-        </button>
-        <h2 className="text-sm font-medium text-gray-700">
-          Consultant Profile
-        </h2>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-full text-[#63B7B7]"
-          asChild
-        >
-          <Link href={`/professionals/${username}`} prefetch>
-            <ExternalLink className="h-4 w-4" />
-          </Link>
-        </Button>
-      </div>
-
       <div className="flex h-full flex-col overflow-hidden md:flex-row">
         <div className="flex-1 overflow-y-auto">
           <div className="border-b border-gray-100 p-5">
@@ -141,20 +124,33 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
 
             <div className="mb-1 flex flex-wrap gap-1.5">
-              {professional?.data?.data?.meta?.skills
-                .slice(0, 5)
-                .map((skill: string, index: number) => (
+              {(showAllSkills
+                ? professional?.data?.data?.meta?.skills
+                : professional?.data?.data?.meta?.skills?.slice(0, 5)
+              )?.map((skill: string, index: number) => (
+                <Badge
+                  key={index}
+                  className="!rounded-md !border-none !bg-[#63B7B7]/5 !px-2 !py-0.5 !text-xs !font-normal !text-[#63B7B7]"
+                >
+                  {skill}
+                </Badge>
+              ))}
+              {!showAllSkills &&
+                professional?.data?.data?.meta?.skills?.length > 5 && (
                   <Badge
-                    key={index}
-                    className="!rounded-md !border-none !bg-[#63B7B7]/5 !px-2 !py-0.5 !text-xs !font-normal !text-[#63B7B7]"
+                    className="cursor-pointer !rounded-md !border-none !bg-gray-50 !px-2 !py-0.5 !text-xs !font-normal !text-gray-600 hover:!bg-gray-100"
+                    onClick={() => setShowAllSkills(true)}
                   >
-                    {skill}
-                  </Badge>
-                ))}
-              {professional?.data?.data?.meta?.skills.length &&
-                professional?.data?.data?.meta?.skills.length > 5 && (
-                  <Badge className="!rounded-md !border-none !bg-gray-50 !px-2 !py-0.5 !text-xs !font-normal !text-gray-600">
                     +{professional?.data?.data?.meta?.skills.length - 5}
+                  </Badge>
+                )}
+              {showAllSkills &&
+                professional?.data?.data?.meta?.skills?.length > 5 && (
+                  <Badge
+                    className="cursor-pointer !rounded-md !border-none !bg-gray-50 !px-2 !py-0.5 !text-xs !font-normal !text-gray-600 hover:!bg-gray-100"
+                    onClick={() => setShowAllSkills(false)}
+                  >
+                    Show less
                   </Badge>
                 )}
             </div>
@@ -367,6 +363,6 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </Modal>
   )
 }
