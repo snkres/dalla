@@ -342,7 +342,7 @@ export function AddProject({
                 onImagesChange={handleMediaChange}
                 maxImages={5}
                 label="Project Media"
-                allowPdf={true}
+                allowAllFileTypes
               />
             </div>
 
