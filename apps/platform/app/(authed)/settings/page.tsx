@@ -67,9 +67,9 @@ const SettingsOverview = () => {
       icon: <HelpCircle className="h-5 w-5" />,
       description: 'Get help with your account and contact support',
       links: [
-        { key: 'faq', label: 'FAQ' },
-        { key: 'contact', label: 'Contact Support' },
-        { key: 'guides', label: 'User Guides' },
+        { key: '/?faq', label: 'FAQ' },
+        { key: '/?contact', label: 'Contact Support' },
+        { key: '/?guides', label: 'User Guides' },
       ],
     },
   ]

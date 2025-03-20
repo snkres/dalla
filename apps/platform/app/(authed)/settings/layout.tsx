@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { motion } from 'motion/react'
 import { ReactNode } from 'react'
 import { User, CreditCard, HelpCircle, ChevronRight, Cog } from 'lucide-react'
-import { ProfileSettings } from '@components/settings/ProfileSettings'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -50,7 +50,7 @@ export default function SettingsLayoutPage({ children }: SettingsPageProps) {
       label: 'Account',
       icon: <User className="h-4 w-4" />,
       description: 'Manage your account information and preferences',
-      component: <ProfileSettings />,
+
       subroutes: [
         { key: 'personal-info', label: 'Personal Info' },
         { key: 'avatar', label: 'Profile Photo' },
