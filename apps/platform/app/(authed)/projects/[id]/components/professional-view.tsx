@@ -243,7 +243,7 @@ export function ProfessionalProjectView({
                   Communicate with the client and deliver your best work.
                 </p>
                 <Button
-                  className="mt-2 bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
+                  className="mt-2 !bg-[#63B7B7] text-white hover:!bg-[#63B7B7]/90"
                   onClick={() => router.push(`/messages/project/${project.id}`)}
                 >
                   Go to Project Workspace
@@ -392,6 +392,14 @@ export function ProfessionalProjectView({
                     </p>
                   </div>
                 </div>
+                <Button
+                  asChild
+                  className="mt-2 !bg-[#63B7B7] text-white hover:!bg-[#63B7B7]/90"
+                >
+                  <Link href={`/companies/${project.company.id}`}>
+                    View Company Profile
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
