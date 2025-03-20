@@ -7,15 +7,18 @@ import { Camera, Check, UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import { upload } from '@lib/api/shared/upload'
 import { RequiredIndicator } from '@components/shared/required-indicator'
+import { cn } from '@dallah/utils'
 
 const AvatarUpload = ({
   setUploadedURL,
   required,
   initialURL,
+  className,
 }: {
   setUploadedURL: (url: string) => void
   required: boolean
   initialURL?: string
+  className?: string
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewUrl, setPreviewUrl] = useState<string>(initialURL || '')
@@ -38,7 +41,7 @@ const AvatarUpload = ({
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className={cn('flex flex-col items-center gap-4')}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -47,7 +50,7 @@ const AvatarUpload = ({
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="relative h-24 w-24 cursor-pointer"
+          className={cn('relative h-24 w-24 cursor-pointer', className)}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onClick={() => fileInputRef.current?.click()}

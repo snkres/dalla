@@ -47,6 +47,7 @@ export async function updateProProfile(
     .patch<{
       success: boolean
       message: string
+      data: ProProfile['data']
     }>('/professionals/profile', profile)
     .catch((err) => {
       throw err

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { useAtom } from 'jotai'
 import { GlobalAtom, globalAtom } from '@lib/atoms/global'
-import { useRouter } from 'next/navigation'
+
 import { logout } from '@lib/api/auth/logout'
 import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
 import { CompanyMeta, companyMetaAtom } from '@lib/atoms/company/meta'
@@ -32,7 +32,6 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
   ({ accountItems }, ref) => {
     const queryClient = useQueryClient()
     const [global, setGlobal] = useAtom(globalAtom)
-    const router = useRouter()
 
     const [proMeta, setProMeta] = useAtom(proMetaAtom)
     const [companyMeta, setCompanyMeta] = useAtom(companyMetaAtom)

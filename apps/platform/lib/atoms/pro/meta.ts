@@ -32,6 +32,7 @@ export type ProProfile = {
     }
     resume: string
     precentage: number
+    percentage: number
     createdAt: string
     updatedAt: string
     User: {
@@ -112,8 +113,7 @@ export type ProMeta = {
         skills: Array<string>
         location: string
         socialLinks: {
-          github: string
-          linkedin: string
+          [key: string]: string
         }
         yearsOfExperience: number
       }

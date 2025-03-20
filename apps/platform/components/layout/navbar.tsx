@@ -13,10 +13,14 @@ import { useNavbar } from '@lib/hooks/use-navbar'
 
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
+import { companyMetaAtom } from '@lib/atoms/company/meta'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 
 export function Navbar() {
   const router = useTransitionRouter()
   const [global] = useAtom(globalAtom)
+  const [proMeta] = useAtom(proMetaAtom)
+  const [companyMeta] = useAtom(companyMetaAtom)
   console.log(global)
 
   const {
@@ -159,7 +163,11 @@ export function Navbar() {
           >
             <div className="relative h-6 w-6 overflow-hidden rounded-full">
               <Image
-                src={global?.avatar || '/avatar.png'}
+                src={
+                  global?.mode === 'user'
+                    ? proMeta?.data?.UserProfile?.avatar || '/avatar.png'
+                    : companyMeta?.data?.CompanyProfile?.logo || '/avatar.png'
+                }
                 alt="Profile"
                 fill
                 className="object-cover"
