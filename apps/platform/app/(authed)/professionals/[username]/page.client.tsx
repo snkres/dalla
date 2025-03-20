@@ -256,7 +256,7 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <ProjectsSection
             projects={profile?.data?.projects || []}
-            proId={profile?.data?.id || ''}
+            proId={profile?.data?.User?.id || ''}
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={async (updatedProjects) => {
@@ -276,7 +276,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
                   if (project.id) {
                     await updateProjectMutation.mutateAsync({
-                      proId: ownProfile?.data.data.id || '',
+                      proId: ownProfile?.data.data.User.id || '',
                       projectId: project.id,
                       projectData,
                     })
@@ -288,7 +288,7 @@ export function ProProfileClient({ username }: { username: string }) {
                   } else {
                     try {
                       const response = await createProjectMutation.mutateAsync({
-                        proId: profile?.data?.id,
+                        proId: profile?.data?.User?.id,
                         projectData,
                       })
 
@@ -316,6 +316,7 @@ export function ProProfileClient({ username }: { username: string }) {
                 })
               } catch (error) {
                 console.error('Failed to update projects:', error)
+                console.log(error)
                 toast({
                   title: 'Update failed',
                   description: 'There was a problem updating your projects',
