@@ -8,7 +8,19 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'dalla-dev.fra1.digitaloceanspaces.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
       },
     ],
   },

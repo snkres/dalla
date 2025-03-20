@@ -1,4 +1,7 @@
+import { ProjectStatus } from '../company/projects'
 import { axiosInstance } from '../instance'
+
+export type ProposalStatus = 'Accepted' | 'Rejected' | 'Pending'
 
 interface CreateProjectProposalRes {
   data: Data
@@ -61,8 +64,6 @@ interface Project {
 
 interface Meta {
   budget: number
-  duration: string
-  priority: string
   timeline: string
   [property: string]: any
 }
@@ -93,7 +94,7 @@ export type GetAllProposalsRes = {
   data: [
     Array<{
       id: string
-      status: string
+      status: ProposalStatus
       createdAt: string
       project: {
         title: string
@@ -126,6 +127,7 @@ export type GetAllProposalsRes = {
       currentPage: number
       previousPage: any
       nextPage: any
+      totalCount: number
     },
   ]
   error: any
@@ -133,9 +135,11 @@ export type GetAllProposalsRes = {
   timestamp: string
 }
 
-export async function getAllProposals() {
+export async function getAllProposals(page: number, limit: number) {
   const res = await axiosInstance
-    .get<GetAllProposalsRes>('/professionals/proposals')
+    .get<GetAllProposalsRes>(
+      `/professionals/proposals?page=${page}&limit=${limit}`,
+    )
     .then((res) => res.data)
 
   return res
@@ -152,7 +156,8 @@ export type GetProposalByIdRes = {
     price: number
     timeline: string
     media: Array<string>
-    status: string
+    status: ProposalStatus
+
     createdAt: string
     updatedAt: string
     professional: {
@@ -180,11 +185,24 @@ export type GetProposalByIdRes = {
         duration: string
       }
       approved: boolean
-      status: string
+      status: ProjectStatus
       companyId: string
       assignedProfessionalId: any
       createdAt: string
       updatedAt: string
+      company: {
+        id: string
+        name: string
+        CompanyProfile: {
+          logo: string
+          meta: {
+            location: string
+          }
+        }
+      }
+      _count: {
+        proposals: number
+      }
     }
     relevantProjects: Array<any>
   }

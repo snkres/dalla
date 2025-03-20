@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Search, ChevronDown, X, Plus, MapPin } from 'lucide-react'
+import { Briefcase, MapPin } from 'lucide-react'
 import {
   Button,
   Input,
@@ -16,6 +16,7 @@ import {
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
 import { DatePicker } from './date-picker'
+import { Tag, TagInput } from 'emblor'
 
 interface Tool {
   id: string
@@ -30,7 +31,7 @@ interface ExperienceFormProps {
     company: string
     location: string
     meta: {
-      skills: Array<string>
+      skills: Array<Tag>
       achievements: string
       responsibilities: string
       employmentType: string
@@ -57,15 +58,8 @@ export function ExperienceForm({
   const [achievements, setAchievements] = useState(
     initialData?.meta.achievements || '',
   )
-  const [selectedTools, setSelectedTools] = useState<Tool[]>(
-    initialData?.meta.skills
-      ? initialData.meta.skills.map((skill: string | Tool) =>
-          typeof skill === 'string' ? { id: skill, name: skill } : skill,
-        )
-      : [
-          { id: '1', name: 'Figma' },
-          { id: '2', name: 'Jira' },
-        ],
+  const [selectedTools, setSelectedTools] = useState<Tag[]>(
+    initialData?.meta.skills || [],
   )
   const [isCurrentlyWorking, setIsCurrentlyWorking] = useState(
     initialData?.endDate === 'Present' || false,
@@ -86,7 +80,6 @@ export function ExperienceForm({
       ? initialData.endDate.split(' ')[1]
       : '',
   )
-  const [toolInput, setToolInput] = useState('')
 
   const employmentTypes = [
     'Full-time',
@@ -98,21 +91,6 @@ export function ExperienceForm({
     'Apprenticeship',
     'Seasonal',
   ]
-
-  const removeTool = (toolId: string) => {
-    setSelectedTools((tools) => tools.filter((tool) => tool.id !== toolId))
-  }
-
-  const addTool = () => {
-    if (toolInput.trim()) {
-      const newTool = {
-        id: Date.now().toString(),
-        name: toolInput.trim(),
-      }
-      setSelectedTools((prev) => [...prev, newTool])
-      setToolInput('')
-    }
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -137,30 +115,27 @@ export function ExperienceForm({
         employmentType,
         responsibilities,
         achievements,
-        tools: selectedTools,
+        skills: selectedTools.map((tool) => tool.text),
       },
       startDate: `${startMonth} ${startYear}`,
       endDate: isCurrentlyWorking ? 'Present' : `${endMonth} ${endYear}`,
     }
 
+    console.log(formData)
     onSubmit(formData)
   }
 
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="max-h-[80vh] overflow-y-auto p-8"
+      className="custom-scrollbar max-h-[80vh] overflow-y-auto p-8"
       variants={fadeInVariants}
       initial="hidden"
       animate="visible"
     >
       <div className="mb-2 flex items-center justify-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100">
-          <img
-            src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIwIDZMOSAxN0w0IDEyIiBzdHJva2U9IiM2QjcyODAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo="
-            alt="Experience"
-            className="h-6 w-6"
-          />
+          <Briefcase />
         </div>
       </div>
 
@@ -213,7 +188,7 @@ export function ExperienceForm({
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="e.g. San Francisco, CA"
-                className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                className="w-full !rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
@@ -240,52 +215,34 @@ export function ExperienceForm({
             </SelectContent>
           </Select>
         </div>
-
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Used Tools <span className="text-red-500">*</span>
+            Tools & Skills
           </Label>
-          <div className="rounded-lg border border-gray-300 p-2">
-            <div className="mb-2 flex flex-wrap gap-2">
-              {selectedTools.map((tool) => (
-                <span
-                  key={tool.id}
-                  className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm"
-                >
-                  {tool.name}
-                  <button
-                    type="button"
-                    onClick={() => removeTool(tool.id)}
-                    className="ml-2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={14} />
-                  </button>
-                </span>
-              ))}
-            </div>
-            <div className="flex">
-              <Input
-                type="text"
-                value={toolInput}
-                onChange={(e) => setToolInput(e.target.value)}
-                placeholder="Add tools..."
-                className="flex-1 border-none bg-transparent px-2 py-1 !ring-0 focus:!outline-none focus:!ring-0"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addTool()
-                  }
-                }}
-              />
-              <button
-                type="button"
-                onClick={addTool}
-                className="text-blue-500 hover:text-blue-700"
-              >
-                <Plus size={18} />
-              </button>
-            </div>
-          </div>
+          <TagInput
+            id="skills"
+            tags={selectedTools}
+            setTags={(newTags) => {
+              setSelectedTools(newTags)
+            }}
+            placeholder="Add tools or skills, separated by comma"
+            styleClasses={{
+              tagList: {
+                container: 'gap-1',
+              },
+              input:
+                '!rounded-xl !h-11 !transition-[color,box-shadow] placeholder:text-muted-foreground/70 focus-visible:border-ring outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+              tag: {
+                body: 'relative !h-7 bg-background border border-input hover:bg-background rounded-md font-medium text-xs !ps-2 !pe-7',
+                closeButton:
+                  'absolute -inset-y-px end-px p-0 rounded-s-none rounded-e-md flex size-7 transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] text-muted-foreground/80 hover:text-foreground',
+              },
+            }}
+            inlineTags={false}
+            inputFieldPosition="top"
+            activeTagIndex={null}
+            setActiveTagIndex={(value) => {}}
+          />
         </div>
 
         <div>

@@ -1,12 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { useTransitionRouter } from 'next-view-transitions'
 import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { getCompanyMeta } from '@lib/api/company/profile'
+import { getProMeta } from '@lib/api/pro/profile'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -32,6 +35,7 @@ export interface CompanyOnboardingData {
   logo: string | null
   headline: string
   bio: string
+  socialLinks: { [key: string]: string }
 }
 
 export interface ProOnboardingData {
@@ -71,12 +75,46 @@ export interface ProOnboardingData {
 }
 
 export function useOnboarding() {
-  const [global, setGlobal] = useAtom(globalAtom)
-  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const router = useTransitionRouter()
+  const [global, setGlobal] = useAtom(globalAtom)
+
+  useQuery({
+    queryKey: ['meta', global.mode, 'onboarding'],
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    queryFn: async () => {
+      try {
+        if (global.mode === 'user') {
+          const res = await getProMeta()
+          if (res.data.data.onboarded) {
+            router.push('/')
+          } else {
+            return res.data
+          }
+          return res.data
+        } else if (global.mode === 'company') {
+          const res = await getCompanyMeta()
+
+          if (res.data.data.onboarded) {
+            router.push('/')
+          } else {
+            return res.data
+          }
+        }
+        return null
+      } catch (err) {
+        console.error('Error fetching profile:', err)
+        throw err
+      }
+    },
+    retry: 1,
+  })
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [showCompleteDialog, setShowCompleteDialog] = useState(false)
   const [isAbleToProceed, setIsAbleToProceed] = useState<boolean>(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { toast } = useToast()
 
   const [companyData, setCompanyData] = useState<CompanyOnboardingData>({
     areas: [],
@@ -91,6 +129,7 @@ export function useOnboarding() {
     logo: null,
     headline: '',
     bio: '',
+    socialLinks: {},
   })
 
   const [proData, setProData] = useState<ProOnboardingData>({
@@ -114,7 +153,72 @@ export function useOnboarding() {
   const proSteps = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }]
   const currentStep = step
 
-  const { toast } = useToast()
+  const companyOnboardingMutation = useMutation({
+    mutationFn: companyOnboarding,
+    onSuccess: (res) => {
+      if (res.success) {
+        setGlobal({
+          ...global,
+          id: res.data.CompanyProfile.id,
+          name: res.data.name,
+        })
+        setShowCompleteDialog(true)
+      } else {
+        toast({
+          title: 'Error',
+          description:
+            process.env.NODE_ENV === 'development'
+              ? res.message
+              : 'Something went wrong, Please check all fields and try again',
+          variant: 'destructive',
+        })
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong, Please check all fields and try again',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const proOnboardingMutation = useMutation({
+    mutationFn: proOnboarding,
+    onSuccess: (res) => {
+      if (res.success) {
+        setGlobal({
+          ...global,
+          id: res.data.id,
+          name: res.data.User.name,
+          username: res.data.User.username,
+        })
+        setShowCompleteDialog(true)
+      } else {
+        toast({
+          title: 'Error',
+          description:
+            process.env.NODE_ENV === 'development'
+              ? res.message
+              : 'Something went wrong, Please check all fields and try again',
+          variant: 'destructive',
+        })
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong, Please check all fields and try again',
+        variant: 'destructive',
+      })
+    },
+  })
 
   const handlePrevious = () => {
     setStep((prev) =>
@@ -130,107 +234,54 @@ export function useOnboarding() {
   }
 
   const handleSubmit = async () => {
-    try {
-      setIsSubmitting(true)
-      if (global.mode === 'company' && 'areas' in companyData!) {
-        const res = await companyOnboarding({
-          headline: companyData.headline,
-          bio: companyData.bio,
-          areas: companyData.areas.map((area) => ({
-            name: area.name,
-            description: area.description,
-          })),
-          goals: companyData.goals.map((goal) => ({
-            name: goal.name,
-            description: goal.description,
-          })),
-          targetIndustries: companyData.targetIndustries.map((ind) => ({
-            name: ind.name,
-            description: ind.description,
-          })),
-          website: companyData.website,
-          location: companyData.address,
-          logo: companyData.logo ?? undefined,
-          meta: {
-            phone: companyData.phoneNumber,
-            size: companyData.companySize,
-            type: companyData.businessType,
-            industry: companyData.industry,
-            socialLinks: {
-              name: 'Facebook',
-              url: 'https://facebook.com',
-            },
-          },
-        })
-        if (res.success) {
-          setGlobal({ ...global, name: res.data.name })
-          setShowCompleteDialog(true)
-        }
-      } else {
-        console.log('proData', proData)
-        const submittedData: ProOnboardingData = {
-          headline: proData.headline,
-          resume: proData.resume,
-          bio: proData.bio,
-          education: proData.education.map((edu: any) => ({
-            school: edu.school,
-            degree: edu.degree,
-            field: edu.field,
-            startDate:
-              new Date(`${edu.startDate} 01`).toISOString() ??
-              new Date().toISOString(),
-            endDate:
-              edu.endDate === 'Present'
-                ? 'present'
-                : new Date(`${edu.endDate} 01`).toISOString(),
-            description: edu.description,
-          })),
-          experience: proData.experience.map((exp) => ({
-            title: exp.title,
-            company: exp.company,
-            location: exp.location,
-            meta: {
-              skills: exp.meta.skills ?? [],
-              achievements: exp.meta.achievements,
-              responsibilities: exp.meta.responsibilities,
-              employmentType: exp.meta.employmentType,
-            },
-            startDate: new Date(`${exp.startDate} 01`).toISOString(),
-            endDate:
-              exp.endDate === 'Present'
-                ? 'present'
-                : new Date(`${exp.endDate} 01`).toISOString(),
-          })),
-          gender: 'Male',
-          avatar: proData.avatar,
-          meta: {
-            socialLinks: proData.meta.socialLinks,
-            phone: proData.meta.phone,
-            location: proData.meta.location,
-            yearsOfExperience: proData.meta.yearsOfExperience,
-            skills: proData.meta.skills ?? [],
-          },
-        }
-
-        const res = await proOnboarding(submittedData)
-
-        if (res.success) {
-          setGlobal({
-            ...global,
-            name: res.data.name,
-            username: res.data.username,
-          })
-          setShowCompleteDialog(true)
-        }
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Something went wrong',
-        variant: 'destructive',
+    if (global.mode === 'company') {
+      companyOnboardingMutation.mutate({
+        headline: companyData.headline,
+        bio: companyData.bio,
+        areas: companyData.areas.map((area) => ({
+          name: area.name,
+          description: area.description,
+        })),
+        goals: companyData.goals.map((goal) => ({
+          name: goal.name,
+          description: goal.description,
+        })),
+        targetIndustries: companyData.targetIndustries.map((ind) => ({
+          name: ind.name,
+          description: ind.description,
+        })),
+        website: companyData.website,
+        location: companyData.address,
+        logo: companyData.logo ?? undefined,
+        meta: {
+          phone: companyData.phoneNumber,
+          size: companyData.companySize,
+          type: companyData.businessType,
+          industry: companyData.industry,
+          socialLinks: companyData.socialLinks,
+        },
       })
-    } finally {
-      setIsSubmitting(false)
+    } else {
+      const formattedProData: ProOnboardingData = {
+        ...proData,
+        education: proData.education.map((edu) => ({
+          ...edu,
+          startDate: new Date(`${edu.startDate} 01`).toISOString(),
+          endDate:
+            edu.endDate === 'Present'
+              ? 'present'
+              : new Date(`${edu.endDate} 01`).toISOString(),
+        })),
+        experience: proData.experience.map((exp) => ({
+          ...exp,
+          startDate: new Date(`${exp.startDate} 01`).toISOString(),
+          endDate:
+            exp.endDate === 'Present'
+              ? 'present'
+              : new Date(`${exp.endDate} 01`).toISOString(),
+        })),
+      }
+      proOnboardingMutation.mutate(formattedProData)
     }
   }
 
@@ -247,11 +298,7 @@ export function useOnboarding() {
   }
 
   const handleComplete = () => {
-    router.push(
-      `/${global.mode === 'company' ? 'companies' : 'professionals'}/${
-        global.mode === 'company' ? global.name : global.username
-      }`,
-    )
+    router.push('/')
   }
 
   return {
@@ -261,7 +308,10 @@ export function useOnboarding() {
     proData,
     isAbleToProceed,
     showCompleteDialog,
-    isSubmitting,
+    isSubmitting:
+      companyOnboardingMutation.isPending || proOnboardingMutation.isPending,
+    isLoading:
+      companyOnboardingMutation.isPending || proOnboardingMutation.isPending,
     companySteps,
     proSteps,
     currentStep,

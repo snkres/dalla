@@ -96,9 +96,7 @@ export function ProOnboardingTwo({
         </div>
 
         <div className="relative w-full">
-          <Label htmlFor="portfolio">
-            Portfolio <RequiredIndicator />
-          </Label>
+          <Label htmlFor="portfolio">Portfolio</Label>
           <Globe2 className="absolute left-3 top-9 h-5 w-5 text-gray-400" />
           <Input
             id="portfolio"
@@ -118,11 +116,6 @@ export function ProOnboardingTwo({
             placeholder="Portfolio URL"
             className="h-11 pl-10"
           />
-          {!data.meta.socialLinks?.portfolio && (
-            <p className="mt-1 text-xs text-red-500">
-              Please enter your portfolio URL
-            </p>
-          )}
         </div>
       </div>
 

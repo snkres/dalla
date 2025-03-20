@@ -31,7 +31,7 @@ function validateProfessionalDetails(data: ProOnboardingData): boolean {
   const requiredFields = {
     skills: data.meta.skills.length > 0,
     yearsOfExperience: data.meta.yearsOfExperience > 0,
-    portfolio: !!data.meta.socialLinks?.portfolio,
+
     phone: isPhoneValid,
   }
 
@@ -108,21 +108,28 @@ export const useProfessionalOnboarding = ({
   const updateCVData = useCallback(
     (cvData: CVParseResponse['data']) => {
       const yoe = calculateYearsOfExperience(cvData.workExperiences)
-      const extractedSkills = cvData.skills.featuredSkills.map(
-        (skill) => skill.skill,
+      const extractedSkills = cvData.skills.featuredSkills.every(
+        (skill) => skill.skill.length > 0,
       )
+        ? cvData.skills.featuredSkills
+            .filter((skill) => skill.skill.length > 0)
+            .map((skill) => skill.skill)
+        : []
       const educationEntries = extractEducation(cvData.educations)
       const workExperience = extractWorkExperience(cvData.workExperiences)
 
-      workExperience.forEach((exp) => {
-        exp.meta.skills = extractedSkills.filter(
-          (skill) =>
-            exp.meta.responsibilities
-              .toLowerCase()
-              .includes(skill.toLowerCase()) ||
-            exp.title.toLowerCase().includes(skill.toLowerCase()),
-        )
-      })
+      // Only add skills to experience if extractedSkills is not empty
+      if (extractedSkills.length > 0) {
+        workExperience.forEach((exp) => {
+          exp.meta.skills = extractedSkills.filter(
+            (skill) =>
+              exp.meta.responsibilities
+                .toLowerCase()
+                .includes(skill.toLowerCase()) ||
+              exp.title.toLowerCase().includes(skill.toLowerCase()),
+          )
+        })
+      }
 
       const bio =
         cvData.profile.summary ||
@@ -177,7 +184,6 @@ export const useProfessionalOnboarding = ({
       })
         .filter(([_, value]) => !value)
         .map(([key]) => key)
-      console.log('Missing fields:', missingFields)
     }
 
     // Check experience and education

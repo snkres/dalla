@@ -130,3 +130,25 @@ html {
   scroll-behavior: smooth;
   background-color: #F9FAFB;
 }
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin; /* For Firefox */
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: rgb(203 213 225); /* Tailwind slate-300 */
+      border-radius: 9999px;
+    }
+    
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgb(148 163 184); /* Tailwind slate-400 */
+    }
+  }
+}

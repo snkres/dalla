@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@dallah/design-system'
 import {
   Edit,
@@ -7,12 +9,14 @@ import {
   Check,
   X,
   BookText,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
-import type { ProProfile } from '@lib/atoms/pro/profile'
+import type { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
 
 export function EducationSection({
@@ -21,18 +25,22 @@ export function EducationSection({
   isPublicView,
   isOwner,
 }: {
-  education: ProProfile['UserProfile']['education']
-  onUpdateEducation: (
-    updatedEducation: ProProfile['UserProfile']['education'],
-  ) => void
+  education: ProProfile['data']['education']
+  onUpdateEducation: (updatedEducation: ProProfile['data']['education']) => void
   isPublicView: boolean
   isOwner: boolean
 }) {
   const [editedEducation, setEditedEducation] =
-    useState<ProProfile['UserProfile']['education']>(education)
+    useState<ProProfile['data']['education']>(education)
   const [isEditing, setIsEditing] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: { [field: string]: boolean }
+  }>({})
+  const [expandedItems, setExpandedItems] = useState<{
+    [key: string]: boolean
+  }>({})
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640)
@@ -44,30 +52,71 @@ export function EducationSection({
   const handleEdit = () => {
     setEditedEducation(JSON.parse(JSON.stringify(education)))
     setIsEditing(true)
+    // Reset all expanded states to collapsed
+    setExpandedItems({})
     setTimeout(() => inputRef.current?.focus(), 100)
   }
 
   const handleSave = () => {
+    // Validate required fields
+    const errors: { [key: number]: { [field: string]: boolean } } = {}
+    let hasErrors = false
+
+    editedEducation.forEach((edu, index) => {
+      const indexErrors: { [field: string]: boolean } = {}
+
+      if (!edu.degree.trim()) {
+        indexErrors.degree = true
+        hasErrors = true
+      }
+
+      if (!edu.school.trim()) {
+        indexErrors.school = true
+        hasErrors = true
+      }
+
+      if (!edu.startDate) {
+        indexErrors.startDate = true
+        hasErrors = true
+      }
+
+      if (Object.keys(indexErrors).length > 0) {
+        errors[index] = indexErrors
+      }
+    })
+
+    setValidationErrors(errors)
+
+    if (hasErrors) {
+      // Don't save if there are validation errors
+      return
+    }
+
     onUpdateEducation(editedEducation)
     setIsEditing(false)
   }
 
   const addEducation = () => {
-    setEditedEducation([
-      ...editedEducation,
-      {
-        school: '',
-        degree: '',
-        field: '',
-        startDate: '',
-        endDate: '',
-        description: '',
-        id: '',
-        profileId: '',
-        createdAt: '',
-        updatedAt: '',
-      },
-    ])
+    const newEdu = {
+      school: '',
+      degree: '',
+      field: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+      id: `new-edu-${Date.now()}`,
+      profileId: '',
+      createdAt: '',
+      updatedAt: '',
+    }
+    setEditedEducation([...editedEducation, newEdu])
+
+    // Automatically expand the new education item
+    setExpandedItems((prev) => ({
+      ...prev,
+      [`edu-${newEdu.id}`]: true,
+    }))
+
     setTimeout(() => {
       const inputs = document.querySelectorAll(
         'input[placeholder="Degree or certification"]',
@@ -88,6 +137,16 @@ export function EducationSection({
       [field]: value,
     }
     setEditedEducation(updatedEducation)
+
+    // Clear validation error for this field if it exists
+    if (validationErrors[index]?.[field]) {
+      const updatedErrors = { ...validationErrors }
+      delete updatedErrors[index][field]
+      if (Object.keys(updatedErrors[index]).length === 0) {
+        delete updatedErrors[index]
+      }
+      setValidationErrors(updatedErrors)
+    }
   }
 
   const padding = isMobile ? 'pl-5' : 'pl-7'
@@ -139,130 +198,185 @@ export function EducationSection({
       <div className="p-4">
         {isEditing ? (
           <div className="space-y-8">
+            {Object.keys(validationErrors).length > 0 && (
+              <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600">
+                Please fill in all required fields before saving.
+              </div>
+            )}
             {editedEducation
               .sort(
                 (a, b) =>
                   new Date(b.startDate).getTime() -
                   new Date(a.startDate).getTime(),
               )
-              .map((edu, index) => (
-                <div
-                  key={index}
-                  className={cn(
-                    'relative border-l-2 border-gray-200',
-                    padding,
-                    'pb-2',
-                  )}
-                >
-                  <div className="absolute -left-[5px] top-0 h-[10px] w-[10px] rounded-full bg-[#63B7B7]"></div>
+              .map((edu, index) => {
+                const eduKey = `edu-${edu.id || index}`
+                const isExpanded = expandedItems[eduKey] || false
 
-                  <div className="mb-3 flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <GraduationCap className="h-3 w-3 text-white" />
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      'relative border-l-2 border-gray-200',
+                      padding,
+                      'pb-2',
+                    )}
+                  >
+                    <div className="absolute -left-[5px] top-0 h-[10px] w-[10px] rounded-full bg-[#63B7B7]"></div>
 
-                      <Input
-                        ref={index === 0 ? inputRef : undefined}
-                        value={edu.degree}
-                        onChange={(e) =>
-                          updateEducation(index, 'degree', e.target.value)
-                        }
-                        placeholder="Degree or certification"
-                        className="h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto"
-                      />
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeEducation(index)}
-                      className="-mt-1 h-6 w-6 rounded-full text-gray-300 hover:bg-transparent hover:text-red-500"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
+                    <div className="mb-3 flex items-start justify-between gap-2">
+                      <div className="flex flex-1 items-center gap-2">
+                        <GraduationCap className="h-3 w-3 text-white" />
 
-                  <div className="ml-1 space-y-3 pb-2 sm:ml-2">
-                    <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-                      <div className="flex items-center gap-1">
-                        <svg
-                          className="h-3 w-3 flex-shrink-0 text-gray-400"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16" />
-                          <path d="M12 10v6" />
-                          <path d="M12 7h.01" />
-                        </svg>
                         <Input
-                          value={edu.school}
+                          ref={index === 0 ? inputRef : undefined}
+                          value={edu.degree}
                           onChange={(e) =>
-                            updateEducation(index, 'school', e.target.value)
+                            updateEducation(index, 'degree', e.target.value)
                           }
-                          placeholder="Institution name"
-                          className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
+                          placeholder="Degree or certification"
+                          className={cn(
+                            'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                            validationErrors[index]?.degree
+                              ? 'border-b-2 border-red-500'
+                              : '',
+                          )}
                         />
-                      </div>
 
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                        <MonthYearPicker
-                          value={edu.startDate}
-                          onChange={(value) =>
-                            updateEducation(index, 'startDate', value)
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setExpandedItems((prev) => ({
+                              ...prev,
+                              [eduKey]: !isExpanded,
+                            }))
                           }
-                          placeholder="Start date"
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                        <MonthYearPicker
-                          value={edu.endDate || 'Present'}
-                          onChange={(value) =>
-                            updateEducation(index, 'endDate', value)
-                          }
-                          placeholder="End date"
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <svg
-                          className="h-3 w-3 flex-shrink-0 text-gray-400"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
+                          className="ml-2 h-7 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
                         >
-                          <path d="M12 20v-6M12 8V2M4.93 10A8 8 0 0 0 4 14a8 8 0 0 0 16 0 8 8 0 0 0-.93-4" />
-                        </svg>
-                        <Input
-                          value={edu.field || ''}
-                          onChange={(e) =>
-                            updateEducation(index, 'field', e.target.value)
-                          }
-                          placeholder="Field of study (optional)"
-                          className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
-                        />
+                          {isExpanded ? (
+                            <>
+                              <ChevronUp className="h-3.5 w-3.5" />
+                              Collapse
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="h-3.5 w-3.5" />
+                              Expand
+                            </>
+                          )}
+                        </Button>
                       </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeEducation(index)}
+                        className="-mt-1 h-6 w-6 rounded-full text-gray-300 hover:bg-transparent hover:text-red-500"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-medium text-gray-500">
-                        Description
-                      </label>
-                      <Textarea
-                        value={edu.description || ''}
-                        onChange={(e) =>
-                          updateEducation(index, 'description', e.target.value)
-                        }
-                        placeholder="Brief description of your studies or notable courses (optional)"
-                        className="h-24 rounded-md border border-gray-200 !text-xs focus:border-[#63B7B7] focus:ring-0"
-                      />
-                    </div>
+                    {isExpanded && (
+                      <div className="ml-1 space-y-3 pb-2 sm:ml-2">
+                        <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
+                          <div className="flex items-center gap-1">
+                            <svg
+                              className="h-3 w-3 flex-shrink-0 text-gray-400"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16" />
+                              <path d="M12 10v6" />
+                              <path d="M12 7h.01" />
+                            </svg>
+                            <Input
+                              value={edu.school}
+                              onChange={(e) =>
+                                updateEducation(index, 'school', e.target.value)
+                              }
+                              placeholder="Institution name"
+                              className={cn(
+                                'h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0',
+                                validationErrors[index]?.school
+                                  ? 'border-b-2 border-red-500'
+                                  : '',
+                              )}
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                            <MonthYearPicker
+                              value={edu.startDate}
+                              onChange={(value) =>
+                                updateEducation(index, 'startDate', value)
+                              }
+                              placeholder="Start date"
+                              className={
+                                validationErrors[index]?.startDate
+                                  ? 'border-red-500'
+                                  : ''
+                              }
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                            <MonthYearPicker
+                              value={edu.endDate || 'Present'}
+                              onChange={(value) =>
+                                updateEducation(index, 'endDate', value)
+                              }
+                              placeholder="End date"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-1">
+                            <svg
+                              className="h-3 w-3 flex-shrink-0 text-gray-400"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <path d="M12 20v-6M12 8V2M4.93 10A8 8 0 0 0 4 14a8 8 0 0 0 16 0 8 8 0 0 0-.93-4" />
+                            </svg>
+                            <Input
+                              value={edu.field || ''}
+                              onChange={(e) =>
+                                updateEducation(index, 'field', e.target.value)
+                              }
+                              placeholder="Field of study (optional)"
+                              className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-gray-500">
+                            Description
+                          </label>
+                          <Textarea
+                            value={edu.description || ''}
+                            onChange={(e) =>
+                              updateEducation(
+                                index,
+                                'description',
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Brief description of your studies or notable courses (optional)"
+                            className="h-24 rounded-md border border-gray-200 !text-xs focus:border-[#63B7B7] focus:ring-0"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                )
+              })}
 
             <div className={cn('relative border-l-2 border-gray-200', padding)}>
               <div className="absolute -left-[5px] top-3 h-[10px] w-[10px] rounded-full bg-gray-200"></div>
@@ -273,7 +387,7 @@ export function EducationSection({
                 className="h-9 w-full rounded-md py-5 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
               >
                 <Plus className="mr-1 h-3.5 w-3.5" />
-                Add education
+                Add Education
               </Button>
             </div>
           </div>
@@ -289,7 +403,7 @@ export function EducationSection({
               className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
             >
               <Plus className="mr-1 h-3.5 w-3.5" />
-              Add education
+              Add Education
             </Button>
           </div>
         ) : (

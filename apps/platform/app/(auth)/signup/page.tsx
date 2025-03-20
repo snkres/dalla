@@ -3,13 +3,10 @@
 import { motion } from 'motion/react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
-import { FaXTwitter } from 'react-icons/fa6'
-import { FaFacebookF, FaGoogle } from 'react-icons/fa'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 import type { AccountType } from '@lib/types/auth'
-import { RiAppleFill } from 'react-icons/ri'
 import { fadeInUpVariants, fadeInVariants } from '@components/aniamtion/animate'
-import { Link, useTransitionRouter } from 'next-view-transitions'
+import { Link } from 'next-view-transitions'
 import { z } from 'zod'
 import { register } from '@lib/api/auth/register'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -18,6 +15,7 @@ import { useQueryState } from 'nuqs'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
+import { redirect } from 'next/navigation'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
@@ -33,10 +31,13 @@ type FormData = z.infer<typeof schema>
 
 export default function SignupPage() {
   const [global, setGlobal] = useAtom(globalAtom)
+  if (global.id) {
+    return redirect('/')
+  }
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
-  const router = useTransitionRouter()
+
   const { toast } = useToast()
 
   const {
@@ -57,12 +58,13 @@ export default function SignupPage() {
       })
       if (res.success) {
         setGlobal({
+          id: '',
           mode: mode === 'company' ? 'company' : 'user',
           email: data.email,
           name: data.name,
           username: data.username || '',
         })
-        router.push('/verify')
+        window.location.href = '/verify'
       }
     } catch (error) {
       toast({
@@ -215,40 +217,10 @@ export default function SignupPage() {
         </Button>
       </form>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-200" />
-        </div>
-        <div className="relative flex justify-center text-xs lowercase">
-          <span className="bg-white px-2 text-gray-400">Or continue with</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-3">
-        {[
-          { icon: FaGoogle, label: 'Google' },
-          { icon: RiAppleFill, label: 'Apple' },
-          { icon: FaFacebookF, label: 'Facebook' },
-          { icon: FaXTwitter, label: 'Twitter' },
-        ].map(({ icon: Icon, label }) => (
-          <Button
-            key={label}
-            type="button"
-            variant="outline"
-            className="h-11"
-            onClick={() => {
-              /* Handle social signup */
-            }}
-          >
-            <Icon className="h-5 w-5" />
-          </Button>
-        ))}
-      </div>
-
       <p className="text-center text-xs text-gray-500">
         Already have an account?{' '}
         <Link
-          href="/login"
+          href={`/login?mode=${mode}`}
           className="font-medium text-[#234d64] hover:text-[#1a3b4d]"
         >
           Sign in

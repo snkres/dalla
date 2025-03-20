@@ -1,7 +1,7 @@
-import type { Project } from '@lib/api/pro/projects'
+import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 
 export function getAllSkills(
-  projects: Project[],
+  projects: GetAllProjectsProfessionalViewRes['data'][0],
 ): { name: string; description: string }[] {
   const skillsSet = new Set<string>()
 

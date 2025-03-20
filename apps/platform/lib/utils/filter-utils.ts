@@ -1,16 +1,16 @@
-import { Project } from '@lib/api/pro/projects'
+import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 
 export function applyFilters(
-  projects: Project[],
+  projects: GetAllProjectsProfessionalViewRes['data'][0][number][],
   activeFilter: string,
   searchQuery: string,
   showFilterPanel: boolean,
   selectedBudgetRange: [number, number],
   selectedDurations: string[],
   selectedLocations: string[],
-  selectedSkills: string[],
+  selectedSkills?: string[],
   sortAppliedToBottom = true,
-): Project[] {
+): GetAllProjectsProfessionalViewRes['data'][0][number][] {
   let results = [...projects]
 
   if (activeFilter !== 'all') {
@@ -66,9 +66,9 @@ export function applyFilters(
 
     if (selectedDurations.length > 0) {
       results = results.filter((project) => {
-        if (!project.meta.timeline) return false
+        if (!project.meta.duration) return false
 
-        const months = parseInt(project.meta.timeline.split(' ')[0])
+        const months = parseInt(project.meta.duration.split(' ')[0])
 
         return selectedDurations.some((range) => {
           if (range === '1-month') return months <= 1
@@ -80,7 +80,7 @@ export function applyFilters(
       })
     }
 
-    if (selectedSkills.length > 0) {
+    if (selectedSkills && selectedSkills.length > 0) {
       results = results.filter((project) =>
         selectedSkills.some((skill) =>
           project.skills

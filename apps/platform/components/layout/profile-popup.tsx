@@ -11,7 +11,12 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { useAtom } from 'jotai'
-import { globalAtom } from '@lib/atoms/global'
+import { GlobalAtom, globalAtom } from '@lib/atoms/global'
+import { useRouter } from 'next/navigation'
+import { logout } from '@lib/api/auth/logout'
+import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
+import { CompanyMeta, companyMetaAtom } from '@lib/atoms/company/meta'
+import { useQueryClient } from '@tanstack/react-query'
 
 type ProfileItem = {
   icon: React.ElementType
@@ -21,28 +26,37 @@ type ProfileItem = {
 
 export type ProfilePopupProps = {
   accountItems?: ProfileItem[]
-  userProfile: {
-    name: string
-    email: string
-    avatar?: string
-  }
 }
 
 const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
-  ({ accountItems, userProfile }, ref) => {
-    const [global] = useAtom(globalAtom)
+  ({ accountItems }, ref) => {
+    const queryClient = useQueryClient()
+    const [global, setGlobal] = useAtom(globalAtom)
+    const router = useRouter()
+
+    const [proMeta, setProMeta] = useAtom(proMetaAtom)
+    const [companyMeta, setCompanyMeta] = useAtom(companyMetaAtom)
 
     const profileItems: ProfileItem[] = accountItems || [
       {
         icon: User,
         label: 'View Profile',
         href: `/${global.mode === 'user' ? 'professionals' : 'companies'}/${
-          global.mode === 'user' ? global.username : global.name
+          global.mode === 'user' ? global.username : global.id
         }`,
       },
       { icon: CreditCard, label: 'Billing & Plans', href: '/billing' },
       { icon: HelpCircle, label: 'Help & Support', href: '/support' },
     ]
+
+    const handleSignOut = async () => {
+      try {
+        await logout(queryClient)
+        window.location.href = '/login'
+      } catch (error) {
+        console.error('Error during sign out:', error)
+      }
+    }
 
     return (
       <motion.div
@@ -54,10 +68,8 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
         className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm"
       >
         <div className="border-b border-gray-100 px-4 py-3">
-          <p className="text-sm font-medium text-gray-800">
-            {userProfile.name}
-          </p>
-          <p className="text-xs text-gray-500">{userProfile.email}</p>
+          <p className="text-sm font-medium text-gray-800">{global.name}</p>
+          <p className="text-xs text-gray-500">{global.email}</p>
         </div>
 
         <div className="p-2">
@@ -72,14 +84,15 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
           ))}
         </div>
 
-        {/* <div className="border-t border-gray-100 p-2">
-          <Link href="/api/auth/signout">
-            <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50">
-              <LogOut className="h-4 w-4" />
-              <span>Sign Out</span>
-            </div>
-          </Link>
-        </div> */}
+        <div className="border-t border-gray-100 p-2">
+          <button
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-red-600 transition-colors hover:bg-red-50"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </motion.div>
     )
   },

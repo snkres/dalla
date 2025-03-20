@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { ProProfileClient } from './page.client'
 
 interface ProProfileProps {
@@ -6,6 +7,9 @@ interface ProProfileProps {
 
 export default async function ProProfile({ params }: ProProfileProps) {
   const { username } = await params
-  console.log(username)
-  return <ProProfileClient username={username} />
+  return (
+    <Suspense>
+      <ProProfileClient username={username} />
+    </Suspense>
+  )
 }

@@ -3,8 +3,6 @@
 import { motion } from 'motion/react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
-import { FaXTwitter, FaFacebookF, FaGoogle } from 'react-icons/fa6'
-import { RiAppleFill } from 'react-icons/ri'
 import Link from 'next/link'
 import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
 import { useQueryState } from 'nuqs'
@@ -15,10 +13,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { login } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
-import { useTransitionRouter } from 'next-view-transitions'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { redirect } from 'next/navigation'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -30,6 +28,9 @@ type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
   const [global, setGlobal] = useAtom(globalAtom)
+  if (global.id) {
+    return redirect('/')
+  }
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
@@ -42,13 +43,13 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   })
 
-  const router = useTransitionRouter()
   const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
     try {
       setGlobal({
         ...global,
+        id: '',
         mode: mode === 'company' ? 'company' : 'user',
         email: data.email,
       })
@@ -58,23 +59,28 @@ export default function LoginPage() {
         userType: mode === 'company' ? 'company' : 'user',
       })
       if (res.success) {
-        router.push('/')
+        window.location.href = '/'
       }
     } catch (e) {
       if (e instanceof Error && 'status' in e) {
-        if (e.status === 422) {
-          await resendOTP({
-            email: data.email,
-            userType: mode === 'company' ? 'company' : 'user',
-          })
-          router.push('/verify')
-        }
         if (e.status === 403) {
           await resendOTP({
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',
           })
-          router.push('/verify')
+          window.location.href = '/verify'
+        } else if (e.status === 422) {
+          toast({
+            title: 'Invalid Mode',
+            description: 'Please select the correct mode of your account.',
+            variant: 'destructive',
+          })
+        } else {
+          toast({
+            title: 'Invalid credentials',
+            description: 'Please check your email and password and try again.',
+            variant: 'destructive',
+          })
         }
       }
     }
@@ -192,40 +198,10 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t border-gray-200" />
-        </div>
-        <div className="relative flex justify-center text-xs lowercase">
-          <span className="bg-white px-2 text-gray-400">Or continue with</span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-4 gap-3">
-        {[
-          { icon: FaGoogle, label: 'Google' },
-          { icon: RiAppleFill, label: 'Apple' },
-          { icon: FaFacebookF, label: 'Facebook' },
-          { icon: FaXTwitter, label: 'Twitter' },
-        ].map(({ icon: Icon, label }) => (
-          <Button
-            key={label}
-            type="button"
-            variant="outline"
-            className="h-11"
-            onClick={() => {
-              /* Handle social login */
-            }}
-          >
-            <Icon className="h-5 w-5" />
-          </Button>
-        ))}
-      </div>
-
       <p className="text-center text-xs text-gray-500">
         Don&apos;t have an account?{' '}
         <Link
-          href="/signup"
+          href={`/signup?mode=${mode}`}
           className="font-medium text-[#234d64] hover:text-[#1a3b4d]"
         >
           Sign up

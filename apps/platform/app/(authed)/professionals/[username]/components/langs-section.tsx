@@ -38,25 +38,22 @@ export function LanguagesSection({
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleEdit = () => {
-    if (!languages || Object.keys(languages).length === 0) {
+    if (!languages || languages.length === 0) {
       setEditedLanguages([{ language: '', proficiency: 'Beginner' }])
     } else {
-      // Convert object to array format for editing
-      const languagesArray = Object.entries(languages).map(
-        ([language, proficiency]) => ({
-          language,
-          proficiency: proficiency as unknown as string,
-        }),
-      )
-      setEditedLanguages(languagesArray)
+      setEditedLanguages([...languages])
     }
     setIsEditing(true)
     setTimeout(() => inputRef.current?.focus(), 100)
   }
 
   const handleSave = () => {
+    // Filter out any languages with empty language names
+    const validLanguages = editedLanguages.filter(
+      (lang) => lang.language.trim() !== '',
+    )
     setIsEditing(false)
-    onUpdate(editedLanguages)
+    onUpdate(validLanguages)
   }
 
   const handleCancel = () => {
@@ -197,39 +194,37 @@ export function LanguagesSection({
         )}
 
         <div className="divide-y divide-gray-50">
-          {Object.entries(languages || {}).length > 0 &&
+          {languages.length > 0 &&
             !isEditing &&
-            Object.entries(languages || {}).map(
-              ([language, proficiency], index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between py-3 transition-colors hover:bg-gray-50/50"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-gray-800">
-                      {language}
-                    </span>
-                  </div>
-                  <ProficiencyBadge
-                    proficiency={proficiency as unknown as string}
-                  />
+            languages.map((lang, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between py-3 transition-colors hover:bg-gray-50/50"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-gray-800">
+                    {lang.language}
+                  </span>
                 </div>
-              ),
-            )}
+                <ProficiencyBadge proficiency={lang.proficiency} />
+              </div>
+            ))}
         </div>
 
-        {Object.entries(languages || {}).length === 0 && !isEditing && (
+        {languages.length === 0 && !isEditing && (
           <div className="flex flex-col items-center justify-center py-6 text-center">
             <p className="mb-2 text-sm text-gray-500">No languages added yet</p>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleEdit}
-              className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
-            >
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Add languages
-            </Button>
+            {!isPublicView && isOwner && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleEdit}
+                className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+              >
+                <Plus className="mr-1 h-3.5 w-3.5" />
+                Add languages
+              </Button>
+            )}
           </div>
         )}
       </div>

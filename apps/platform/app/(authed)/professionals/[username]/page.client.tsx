@@ -2,9 +2,11 @@
 
 import { ProfileCard } from './components/profile-card'
 import { useAtom } from 'jotai'
-import { proProfileAtom } from '@lib/atoms/pro/profile'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 import {
   createShowCaseProject,
+  getOwnProProfile,
+  getProProfile,
   updateProProfile,
   updateShowCaseProject,
 } from '@lib/api/pro/profile'
@@ -20,62 +22,116 @@ import { Language, Social, ShowcaseProject } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
-import { axiosInstance } from '@lib/api/instance'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Loading } from '@components/shared/dalla-loading'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
   const isOwner = global.username === username
-  const [profile, setProfile] = useAtom(proProfileAtom)
+  const queryClient = useQueryClient()
+  const { data: proProfile, isLoading } = useQuery({
+    queryKey: ['pro-profile', username],
+    queryFn: () => getProProfile(username),
+    enabled: !isOwner,
+  })
+  const { data: ownProfile, isLoading: ownProfileLoading } = useQuery({
+    queryKey: ['own-pro-profile', username],
+    queryFn: () => getOwnProProfile(),
+    enabled: isOwner,
+  })
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
   })
 
-  const handleProfileUpdate = async (
-    updateData: any,
-    successMessage = 'Profile updated successfully',
-  ) => {
-    try {
-      console.log('updateData', updateData)
-      await updateProProfile({
-        ...updateData,
-        education: profile.UserProfile.education?.map(
-          ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
-        ),
-        experience: profile.UserProfile.experience?.map(
-          ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
-            ...exp,
-            meta: {
-              ...exp.meta,
-              skills: exp.meta.skills,
-            },
-          }),
-        ),
-      })
+  const profile = isOwner ? ownProfile?.data : proProfile?.data
 
-      setProfile({
-        ...profile,
-        UserProfile: {
-          ...profile.UserProfile,
-          ...updateData,
-        },
-      })
-
+  const profileMutation = useMutation({
+    mutationFn: updateProProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
       toast({
-        title: successMessage,
+        title: 'Profile updated successfully',
         description: 'Your profile has been updated successfully',
       })
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Failed to update profile:', error)
       toast({
         title: 'Update failed',
         description: 'There was a problem updating your profile',
         variant: 'destructive',
       })
+    },
+  })
+
+  const createProjectMutation = useMutation({
+    mutationFn: ({ proId, projectData }: { proId: string; projectData: any }) =>
+      createShowCaseProject(proId, projectData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
+    },
+    onError: (error) => {
+      console.error('Failed to create project:', error)
+    },
+  })
+
+  const updateProjectMutation = useMutation({
+    mutationFn: ({
+      proId,
+      projectId,
+      projectData,
+    }: {
+      proId: string
+      projectId: string
+      projectData: any
+    }) => updateShowCaseProject(proId, projectId, projectData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
+    },
+    onError: (error) => {
+      console.error('Failed to update project:', error)
+    },
+  })
+
+  const handleProfileUpdate = async (
+    updateData: any,
+    successMessage = 'Profile updated successfully',
+  ) => {
+    if (!isOwner) return
+
+    const formattedData = {
+      ...updateData,
+      meta: {
+        ...ownProfile?.data?.data.meta,
+        ...updateData.meta,
+        weeklyAvailability: String(updateData.meta.weeklyAvailability),
+      },
+      education: ownProfile?.data?.data.education?.map(
+        ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+      ),
+      experience: ownProfile?.data?.data.experience?.map(
+        ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
+          ...exp,
+          meta: {
+            ...exp.meta,
+            skills: exp.meta.skills,
+          },
+        }),
+      ),
     }
+
+    profileMutation.mutate(formattedData)
   }
 
+  if (isLoading || ownProfileLoading)
+    return (
+      <Loading
+        title="Loading profile..."
+        description="Please wait while we prepare the profile"
+      />
+    )
   if (!profile) return null
 
   return (
@@ -84,25 +140,21 @@ export function ProProfileClient({ username }: { username: string }) {
         <div className="space-y-6 lg:col-span-4">
           <ProfileCard
             profile={{
-              name: profile?.name,
-              avatar: profile?.UserProfile?.avatar,
-              title: profile?.UserProfile?.headline,
-              hourlyRate:
-                Number(profile?.UserProfile?.meta['hourlyRate']) || null,
-              totalEarned:
-                Number(profile?.UserProfile?.meta['totalEarned']) || null,
+              name: profile?.data?.User.name,
+              avatar: profile?.data?.avatar,
+              title: profile?.data?.headline,
+              hourlyRate: Number(profile?.data?.meta['hourlyRate']) || null,
+              totalEarned: Number(profile?.data?.meta['totalEarned']) || null,
               projectsCompleted:
-                Number(profile?.UserProfile?.meta['projectsCompleted']) || null,
-              successRate:
-                Number(profile?.UserProfile?.meta['successRate']) || null,
+                Number(profile?.data?.meta['projectsCompleted']) || null,
+              successRate: Number(profile?.data?.meta['successRate']) || null,
               weeklyAvailability:
-                Number(profile?.UserProfile?.meta['weeklyAvailability']) ||
-                null,
-              availability: String(profile?.UserProfile?.meta['availability']),
-              rating: Number(profile?.UserProfile?.meta['rating']) || null,
+                Number(profile?.data?.meta['weeklyAvailability']) || null,
+              availability: profile?.data?.meta['availability'],
+              rating: Number(profile?.data?.meta['rating']) || null,
               projectCompletion:
-                String(profile?.UserProfile?.meta['projectCompletion']) || null,
-              isVerified: profile?.verified,
+                profile?.data?.meta['projectCompletion'] || null,
+              isVerified: profile?.data?.User.verified,
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -112,7 +164,7 @@ export function ProProfileClient({ username }: { username: string }) {
             onUpdate={(updatedProfile) => {
               handleProfileUpdate({
                 meta: {
-                  ...profile?.UserProfile.meta,
+                  ...profile?.data?.meta,
                   hourlyRate: updatedProfile.hourlyRate,
                   totalEarned: updatedProfile.totalEarned,
                   projectsCompleted: updatedProfile.projectsCompleted,
@@ -126,9 +178,7 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
-              languages={
-                profile?.UserProfile?.meta?.languages as unknown as Language[]
-              }
+              languages={profile?.data?.meta?.['languages'] ?? []}
               onUpdate={(languages) => {
                 const languagesObj = languages.reduce(
                   (acc, { language, proficiency }) => ({
@@ -140,7 +190,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
                 handleProfileUpdate({
                   meta: {
-                    ...profile?.UserProfile?.meta,
+                    ...profile?.data?.meta,
                     languages: languagesObj,
                   },
                 })
@@ -149,13 +199,13 @@ export function ProProfileClient({ username }: { username: string }) {
               isOwner={isOwner}
             />
             <VerificationsSection
-              isEmailVerified={profile?.verified}
+              isEmailVerified={profile?.data?.User.verified}
               isPublicView={isPublicView}
               isOwner={isOwner}
             />
             <SocialsSection
               socials={Object.entries(
-                profile?.UserProfile?.meta?.socialLinks ||
+                profile?.data?.meta?.socialLinks ||
                   ({} as Record<string, string>),
               ).map(([platform, url]) => ({ platform, url }) as Social)}
               onUpdate={(socials) => {
@@ -172,7 +222,7 @@ export function ProProfileClient({ username }: { username: string }) {
                 handleProfileUpdate(
                   {
                     meta: {
-                      ...profile?.UserProfile?.meta,
+                      ...profile?.data?.meta,
                       socialLinks: socialLinksObj,
                     },
                   },
@@ -187,9 +237,9 @@ export function ProProfileClient({ username }: { username: string }) {
         <div className="space-y-6 lg:col-span-8">
           <ProfileSummary
             summary={{
-              title: profile?.UserProfile?.headline,
-              content: profile?.UserProfile?.bio,
-              skills: profile?.UserProfile?.meta?.skills || [],
+              title: profile?.data?.headline,
+              content: profile?.data?.bio,
+              skills: profile?.data?.meta['skills'] || [],
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
@@ -198,29 +248,20 @@ export function ProProfileClient({ username }: { username: string }) {
                 headline: updatedSummary.title,
                 bio: updatedSummary.content,
                 meta: {
-                  ...profile?.UserProfile?.meta,
+                  ...profile?.data?.meta,
                   skills: updatedSummary.skills,
                 },
               })
             }}
           />
           <ProjectsSection
-            projects={profile?.UserProfile?.projects || []}
-            proId={profile?.id || ''}
+            projects={profile?.data?.projects || []}
+            proId={profile?.data?.id || ''}
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={async (updatedProjects) => {
               try {
-                const finalProjects: Array<{
-                  id: string
-                  title: string
-                  role: string
-                  description: string
-                  skills: string[]
-                  thumbnail: string
-                  link: string
-                  media: string[]
-                }> = []
+                const finalProjects: typeof profile.data.User.projects = []
 
                 for (const project of updatedProjects) {
                   const projectData = {
@@ -234,11 +275,11 @@ export function ProProfileClient({ username }: { username: string }) {
                   }
 
                   if (project.id) {
-                    await updateShowCaseProject(
-                      profile.id,
-                      project.id,
+                    await updateProjectMutation.mutateAsync({
+                      proId: ownProfile?.data.data.id || '',
+                      projectId: project.id,
                       projectData,
-                    )
+                    })
 
                     finalProjects.push({
                       id: project.id,
@@ -246,10 +287,10 @@ export function ProProfileClient({ username }: { username: string }) {
                     })
                   } else {
                     try {
-                      const response = await createShowCaseProject(
-                        profile.id,
+                      const response = await createProjectMutation.mutateAsync({
+                        proId: profile?.data?.id,
                         projectData,
-                      )
+                      })
 
                       const newProject = response.data.data
 
@@ -258,7 +299,7 @@ export function ProProfileClient({ username }: { username: string }) {
                         title: newProject.title,
                         role: newProject.role,
                         description: newProject.description,
-                        skills: newProject.skills,
+                        skills: newProject.meta.skills,
                         thumbnail: newProject.thumbnail,
                         link: newProject.link,
                         media: newProject.media,
@@ -268,14 +309,6 @@ export function ProProfileClient({ username }: { username: string }) {
                     }
                   }
                 }
-
-                setProfile({
-                  ...profile,
-                  UserProfile: {
-                    ...profile.UserProfile,
-                    projects: finalProjects,
-                  },
-                })
 
                 toast({
                   title: 'Projects updated successfully',
@@ -291,21 +324,31 @@ export function ProProfileClient({ username }: { username: string }) {
               }
             }}
           />
-          <ReviewsSection />
+          <ReviewsSection projects={profile?.data?.User.projects || []} />
           <ExperienceSection
-            experiences={profile?.UserProfile?.experience || []}
+            experiences={profile?.data?.experience || []}
             onUpdate={(updatedExperiences) => {
-              setProfile({
-                ...profile,
-                UserProfile: {
-                  ...profile.UserProfile,
-                  experience: updatedExperiences,
-                },
-              })
-
               handleProfileUpdate({
                 experience: updatedExperiences.map(
-                  ({ id, profileId, createdAt, updatedAt, ...exp }) => ({
+                  ({
+                    id,
+                    profileId,
+                    createdAt,
+                    updatedAt,
+                    ...exp
+                  }: {
+                    id: string
+                    profileId: string
+                    createdAt: string
+                    updatedAt: string
+                    meta: { skills: any[] }
+                    title: string
+                    company: string
+                    location: string
+                    startDate: string
+                    endDate: string
+                    [key: string]: any
+                  }) => ({
                     ...exp,
                     meta: {
                       ...exp.meta,
@@ -319,21 +362,30 @@ export function ProProfileClient({ username }: { username: string }) {
             isOwner={isOwner}
           />
           <EducationSection
-            education={profile?.UserProfile?.education || []}
+            education={profile?.data?.education || []}
             onUpdateEducation={(updatedEducation) => {
               if (!profile) return
 
-              setProfile({
-                ...profile,
-                UserProfile: {
-                  ...profile.UserProfile,
-                  education: updatedEducation,
-                },
-              })
-
               handleProfileUpdate({
                 education: updatedEducation?.map(
-                  ({ id, profileId, createdAt, updatedAt, ...edu }) => edu,
+                  ({
+                    id,
+                    profileId,
+                    createdAt,
+                    updatedAt,
+                    ...edu
+                  }: {
+                    id: string
+                    profileId: string
+                    createdAt: string
+                    updatedAt: string
+                    school: string
+                    degree: string
+                    field: string
+                    startDate: string
+                    endDate: string
+                    description: string
+                  }) => edu,
                 ),
               })
             }}
