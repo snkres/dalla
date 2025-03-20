@@ -22,6 +22,8 @@ import {
   updateCompanyProfile,
 } from '@lib/api/company/profile'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { companyMetaAtom } from '@lib/atoms/company/meta'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 
 const timezones = [
   'Pacific Time (PT)',
@@ -35,6 +37,8 @@ const languages = ['English', 'Spanish', 'French', 'German', 'Chinese']
 export function ProfilePersonalInfo() {
   const { toast } = useToast()
   const [global] = useAtom(globalAtom)
+  const [companyMeta, setCompanyMeta] = useAtom(companyMetaAtom)
+  const [proMeta, setProMeta] = useAtom(proMetaAtom)
   const { data: proProfile } = useQuery({
     queryKey: ['own-pro-profile', global.username],
     queryFn: () => getOwnProProfile(),
@@ -57,6 +61,16 @@ export function ProfilePersonalInfo() {
       toast({
         title: 'Profile updated successfully',
         description: 'Your profile has been updated successfully',
+      })
+      setProMeta({
+        ...proMeta,
+        data: {
+          ...proMeta.data,
+          UserProfile: {
+            ...proMeta.data.UserProfile,
+            headline: formData.headline,
+          },
+        },
       })
     },
     onError: (error) => {
@@ -96,6 +110,16 @@ export function ProfilePersonalInfo() {
       toast({
         title: 'Profile updated successfully',
         description: 'Your profile has been updated successfully',
+      })
+      setCompanyMeta({
+        ...companyMeta,
+        data: {
+          ...companyMeta.data,
+          CompanyProfile: {
+            ...companyMeta.data.CompanyProfile,
+            headline: formData.headline,
+          },
+        },
       })
     },
     onError: (error) => {
@@ -416,7 +440,7 @@ export function ProfilePersonalInfo() {
             </div>
             <Switch
               defaultChecked
-              className="data-[state=checked]:border-[#63B7B7] data-[state=checked]:bg-[#63B7B7]"
+              className="!h-5 !w-9 data-[state=checked]:!border-[#63B7B7] data-[state=checked]:!bg-[#63B7B7]"
             />
           </div>
 

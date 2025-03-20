@@ -14,11 +14,13 @@ import {
 import { getOwnProProfile, updateProProfile } from '@lib/api/pro/profile'
 import { toast } from '@dallah/design-system/ui/toast/use-toast'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
+import { companyMetaAtom } from '@lib/atoms/company/meta'
 
 export function ProfileAvatar() {
   const [dragActive, setDragActive] = useState(false)
   const [isHoveringAvatar, setIsHoveringAvatar] = useState(false)
   const [global] = useAtom(globalAtom)
+  const [companyMeta, setCompanyMeta] = useAtom(companyMetaAtom)
   const [proMeta, setProMeta] = useAtom(proMetaAtom)
   const { data: proProfile } = useQuery({
     queryKey: ['own-pro-profile', global.username],
@@ -87,7 +89,16 @@ export function ProfileAvatar() {
           }
         },
       )
-
+      setCompanyMeta({
+        ...companyMeta,
+        data: {
+          ...companyMeta.data,
+          CompanyProfile: {
+            ...companyMeta.data.CompanyProfile,
+            logo: updatedData.data?.data?.logo,
+          },
+        },
+      })
       toast({
         title: 'Profile updated successfully',
         description: 'Your profile has been updated successfully',
