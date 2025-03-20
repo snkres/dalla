@@ -9,8 +9,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "build:main": "turbo run build --filter=main...",
-    "build:docs": "turbo run build --filter=docs...",
+    "build:platform": "turbo run build --filter=dalla-platform",
     "changeset": "changeset",
     "clean": "turbo run clean && rm -rf node_modules",
     "dev": "turbo run dev",
@@ -18,7 +17,7 @@
     "lint": "turbo run lint",
     "release": "turbo run build --filter=main... && changeset publish",
     "type-check": "turbo run type-check",
-    "start": "turbo run start",
+    "start": "turbo run start --filter=dalla-platform",
     "version-packages": "changeset version",
     "prepare": "husky"
   },
