@@ -1,6 +1,6 @@
 import { atomWithLocalForage } from './atom-with-localforge'
 
-interface GlobalAtom {
+export interface GlobalAtom {
   id: string
   mode: 'company' | 'user'
   email: string

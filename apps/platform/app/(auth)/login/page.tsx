@@ -55,7 +55,7 @@ export default function LoginPage() {
         userType: mode === 'company' ? 'company' : 'user',
       })
       if (res.success) {
-        router.push('/')
+        window.location.href = '/'
       }
     } catch (e) {
       if (e instanceof Error && 'status' in e) {

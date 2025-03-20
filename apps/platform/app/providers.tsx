@@ -6,14 +6,22 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Provider } from 'jotai'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
+import { useEffect, useState } from 'react'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [global] = useAtom(globalAtom)
+  const [isReady, setIsReady] = useState(false)
+
+  useEffect(() => {
+    if (Boolean(global.mode)) {
+      setIsReady(true)
+    }
+  }, [global.mode])
 
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        enabled: Boolean(global.mode),
+        enabled: isReady && Boolean(global.mode),
       },
     },
   })

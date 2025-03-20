@@ -48,8 +48,10 @@ export function ProfessionalHome() {
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ['all-projects', page],
     queryFn: () => getAllProjectsProfessionalView(page, LIMIT),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
   })
 
   const [activeFilter, setActiveFilter] = useState('all')

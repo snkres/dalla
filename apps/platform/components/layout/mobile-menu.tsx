@@ -8,6 +8,7 @@ import { cn } from '@dallah/utils'
 import { NavItem } from '@lib/types/navbar'
 import { useRouter } from 'next/navigation'
 import { logout } from '@lib/api/auth/logout'
+import { useQueryClient } from '@tanstack/react-query'
 
 export interface MobileMenuProps {
   navItems: NavItem[]
@@ -23,10 +24,11 @@ const MobileMenu = ({
   toggleMobileMenu,
 }: MobileMenuProps) => {
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   const handleSignOut = async () => {
     try {
-      await logout().then(() => {
+      await logout(queryClient).then(() => {
         toggleMobileMenu()
         router.push('/login')
       })

@@ -44,6 +44,10 @@ export default function CompanyHome() {
   const { data: professionals, isFetched: professionalsFetched } = useQuery({
     queryKey: ['professionals', page],
     queryFn: () => getAllProfessionals(page, LIMIT),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchInterval: 1000 * 60 * 10, // 10 minutes
   })
   const [showAddProject, setShowAddProject] = useQueryState(
     'startProject',
@@ -61,6 +65,10 @@ export default function CompanyHome() {
   } = useQuery({
     queryKey: ['projects', 'overview'],
     queryFn: () => getAllProjects(1, 5),
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchInterval: 1000 * 60 * 5, // 5 minutes
   })
 
   useEffect(() => {
