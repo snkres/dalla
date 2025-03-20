@@ -67,7 +67,12 @@ export function ProjectPageClient({ id }: { id: string }) {
     'files',
     // 'budget',
   ]
-  const professionalTabs = ['overview', 'company', 'team', 'files', 'budget']
+  const professionalTabs = [
+    'overview',
+    'company',
+    'files',
+    //  'budget'
+  ]
   return (
     <div className="container mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8">
@@ -84,27 +89,18 @@ export function ProjectPageClient({ id }: { id: string }) {
             setShowEditModal={setShowEditModal}
             isAssignedProfessional={data.professional?.id === global?.id}
           />
-          {(isCompany || data.professional?.id === global?.id) && (
-            <div className="w-full border-t border-gray-200">
-              <Tabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                defaultValue={companyTabs[0] as string}
-              >
-                <TabsList className="h-12 w-full !justify-start rounded-none border-b border-gray-200 bg-transparent p-0">
-                  {isCompany
-                    ? companyTabs
-                        .filter((tab) => tab !== '')
-                        .map((tab) => (
-                          <TabsTrigger
-                            key={tab}
-                            value={tab}
-                            className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
-                          >
-                            {tab}
-                          </TabsTrigger>
-                        ))
-                    : professionalTabs.map((tab) => (
+
+          <div className="w-full border-t border-gray-200">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              defaultValue={companyTabs[0] as string}
+            >
+              <TabsList className="h-12 w-full !justify-start rounded-none border-b border-gray-200 bg-transparent p-0">
+                {isCompany
+                  ? companyTabs
+                      .filter((tab) => tab !== '')
+                      .map((tab) => (
                         <TabsTrigger
                           key={tab}
                           value={tab}
@@ -112,11 +108,19 @@ export function ProjectPageClient({ id }: { id: string }) {
                         >
                           {tab}
                         </TabsTrigger>
-                      ))}
-                </TabsList>
-              </Tabs>
-            </div>
-          )}
+                      ))
+                  : professionalTabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab}
+                        value={tab}
+                        className="h-12 !rounded-none border-b-2 border-transparent bg-transparent px-6 text-sm capitalize text-gray-600 data-[state=active]:border-[#63B7B7] data-[state=active]:font-medium data-[state=active]:text-[#1D8489]"
+                      >
+                        {tab}
+                      </TabsTrigger>
+                    ))}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
         {isCompany && (
           <CompanyProjectView
@@ -125,7 +129,13 @@ export function ProjectPageClient({ id }: { id: string }) {
             setActiveTab={setActiveTab}
           />
         )}
-        {isProfessional && <ProfessionalProjectView project={data} />}
+        {isProfessional && (
+          <ProfessionalProjectView
+            project={data}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )}
       </div>
 
       {showEditModal && (
