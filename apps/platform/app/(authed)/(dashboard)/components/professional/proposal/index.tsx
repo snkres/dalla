@@ -276,10 +276,10 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   )
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Submit a Proposal" width="lg">
+    <Modal isOpen={true} onClose={onClose} title="Submit a Proposal" width="xl">
       <ApplicationHeader activeStep={activeStep} isSubmitted={isSubmitted} />
-      <div className="flex h-full flex-col md:flex-row">
-        <div className="relative mb-[100px] flex-1 overflow-y-auto p-4 sm:p-6">
+      <div className="flex h-full flex-col justify-end md:flex-row">
+        <div className="relative w-[70%] overflow-y-auto p-4 sm:p-6">
           <div className="max-w-3xl">
             {isSubmitted ? (
               <SuccessScreen project={project} onClose={onClose} />
