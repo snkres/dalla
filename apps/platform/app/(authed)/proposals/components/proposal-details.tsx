@@ -158,7 +158,7 @@ const ProposalDetails: React.FC<{
                 <div className="flex items-center">
                   <Globe className="mr-1 h-4 w-4 text-gray-400" />
                   <span className="text-sm text-gray-700">
-                    {data.data.project.company?.CompanyProfile?.meta?.location}
+                    {data.data.project.company?.CompanyProfile?.location}
                   </span>
                 </div>
               </div>
@@ -206,7 +206,7 @@ const ProposalDetails: React.FC<{
                   'https://randomuser.me/api/portraits/men/2.jpg',
                 clientName: data.data.project?.company?.name,
                 clientLocation:
-                  data.data.project?.company?.CompanyProfile?.meta?.location,
+                  data.data.project?.company?.CompanyProfile?.location,
                 clientRating: 4.5,
                 clientSpend: 1000,
                 clientHires: 10,
