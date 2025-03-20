@@ -16,6 +16,7 @@ import { resendOTP } from '@lib/api/auth/otp-verify'
 import { useTransitionRouter } from 'next-view-transitions'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -39,7 +40,7 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   })
 
-  const router = useTransitionRouter()
+  const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -64,13 +65,19 @@ export default function LoginPage() {
             email: data.email,
             userType: mode === 'company' ? 'company' : 'user',
           })
-          router.push('/verify')
+          window.location.href = '/verify'
         } else if (e.status === 422) {
-          await resendOTP({
-            email: data.email,
-            userType: mode === 'company' ? 'company' : 'user',
+          toast({
+            title: 'Invalid Mode',
+            description: 'Please select the correct mode of your account.',
+            variant: 'destructive',
           })
-          router.push('/verify')
+        } else {
+          toast({
+            title: 'Invalid credentials',
+            description: 'Please check your email and password and try again.',
+            variant: 'destructive',
+          })
         }
       }
     }

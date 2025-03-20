@@ -3,13 +3,10 @@
 import { motion } from 'motion/react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
-import { FaXTwitter } from 'react-icons/fa6'
-import { FaFacebookF, FaGoogle } from 'react-icons/fa'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 import type { AccountType } from '@lib/types/auth'
-import { RiAppleFill } from 'react-icons/ri'
 import { fadeInUpVariants, fadeInVariants } from '@components/aniamtion/animate'
-import { Link, useTransitionRouter } from 'next-view-transitions'
+import { Link } from 'next-view-transitions'
 import { z } from 'zod'
 import { register } from '@lib/api/auth/register'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -36,7 +33,7 @@ export default function SignupPage() {
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
-  const router = useTransitionRouter()
+
   const { toast } = useToast()
 
   const {
@@ -63,7 +60,7 @@ export default function SignupPage() {
           name: data.name,
           username: data.username || '',
         })
-        router.push('/verify')
+        window.location.href = '/verify'
       }
     } catch (error) {
       toast({
