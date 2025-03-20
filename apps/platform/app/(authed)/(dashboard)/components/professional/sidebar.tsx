@@ -30,7 +30,6 @@ import { proMetaAtom } from '@lib/atoms/pro/meta'
 export function ProfileSidebar() {
   const [profile] = useAtom(proMetaAtom)
   if (!profile) return null
-  const [isWindowFocused, setIsWindowFocused] = useState(true)
 
   const quickLinks: QuickLink[] = [
     {
@@ -90,11 +89,6 @@ export function ProfileSidebar() {
               {/* <div className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm">
                 <Star className="h-4 w-4 text-amber-400" />
               </div> */}
-              <div
-                className={`absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white ${
-                  isWindowFocused ? 'bg-green-500' : 'bg-yellow-500'
-                }`}
-              ></div>
             </div>
             <h3 className="mb-0.5 text-base font-medium text-gray-800">
               {profile?.data?.name}

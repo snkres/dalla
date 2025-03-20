@@ -79,8 +79,11 @@ export function useOnboarding() {
   const [global, setGlobal] = useAtom(globalAtom)
 
   useQuery({
-    queryKey: ['meta', global.mode],
-    staleTime: Infinity,
+    queryKey: ['meta', global.mode, 'onboarding'],
+    staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       try {
         if (global.mode === 'user') {
@@ -156,8 +159,8 @@ export function useOnboarding() {
       if (res.success) {
         setGlobal({
           ...global,
-          id: res.data.data.id,
-          name: res.data.data.name,
+          id: res.data.CompanyProfile.id,
+          name: res.data.name,
         })
         setShowCompleteDialog(true)
       } else {
@@ -189,9 +192,9 @@ export function useOnboarding() {
       if (res.success) {
         setGlobal({
           ...global,
-          id: res.data.data.User.id,
-          name: res.data.data.User.name,
-          username: res.data.data.User.username,
+          id: res.data.id,
+          name: res.data.User.name,
+          username: res.data.User.username,
         })
         setShowCompleteDialog(true)
       } else {

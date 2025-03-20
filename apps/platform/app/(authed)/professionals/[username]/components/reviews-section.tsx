@@ -29,48 +29,18 @@ export function ReviewsSection({
 }: {
   projects: GetAllProjectsProfessionalViewRes['data'][0][number][]
 }) {
-  const [activeTab, setActiveTab] = useState<ProjectStatus>('completed')
-
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-gray-100 p-5">
         <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
           <Briefcase className="mr-1.5 h-3.5 w-3.5 text-[#63B7B7]" />
-          Client Projects
+          Completed Projects
         </h2>
-      </div>
-
-      <div className="px-5 pb-4 pt-6">
-        <div className="flex max-w-fit rounded-lg bg-[#e6f3f3] p-0.5">
-          {(['completed'] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                'relative rounded-md px-4 py-2 text-sm font-medium capitalize transition-all duration-200',
-                activeTab === tab
-                  ? 'text-white'
-                  : 'text-[#63B7B7] hover:text-[#4a8a8a]',
-              )}
-            >
-              {activeTab === tab && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute inset-0 rounded-md bg-[#63B7B7] shadow-sm"
-                  transition={{ type: 'spring', duration: 0.5 }}
-                  style={{ zIndex: 0 }}
-                />
-              )}
-              <span className="relative z-10">{tab} Projects</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="px-5 pb-5">
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -149,40 +119,6 @@ export function ReviewsSection({
                       </DropdownMenu>
                     </div>
                   </div>
-
-                  {/* {project?.testimonial && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="mt-4 rounded-lg border-l-2 border-[#63B7B7]/30 bg-[#f5fafa] px-4 py-3"
-                    >
-                      <div className="flex items-start gap-2">
-                        <Quote className="mt-1 h-4 w-4 flex-shrink-0 text-[#63B7B7] opacity-70" />
-                        <div className="flex-1">
-                          <div className="mb-1 flex gap-1">
-                            {Array.from({ length: 5 }).map((_, i) => {
-                              const rating = project?.testimonial?.rating || 0
-                              return (
-                                <Star
-                                  key={i}
-                                  className={`h-3 w-3 ${i < Math.floor(rating) ? 'fill-[#FFD580] text-[#FFD580]' : i < rating ? 'fill-[#FFD580]/50 text-[#FFD580]' : 'text-gray-200'}`}
-                                />
-                              )
-                            })}
-                          </div>
-                          <p className="mb-1 text-sm italic text-gray-700">
-                            {project?.testimonial?.text}
-                          </p>
-                          <div className="text-xs text-gray-500">
-                            <span className="font-medium">
-                              {project?.testimonial.author}
-                            </span>{' '}
-                            · {project.testimonial.company}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )} */}
                 </motion.div>
               ))
             ) : (
@@ -191,12 +127,10 @@ export function ReviewsSection({
                   <Briefcase className="h-6 w-6 text-[#63B7B7]" />
                 </div>
                 <h3 className="mb-1 text-lg font-medium text-gray-900">
-                  No {activeTab} projects
+                  No completed projects
                 </h3>
                 <p className="max-w-md text-sm text-gray-500">
-                  {activeTab === 'ongoing'
-                    ? "You don't have any ongoing projects at the moment."
-                    : "You don't have any completed projects yet."}
+                  You don't have any completed projects yet.
                 </p>
               </div>
             )}

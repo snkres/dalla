@@ -314,7 +314,7 @@ export function ProjectsSection({
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="grid grid-cols-1 gap-6">
+              <div className="mt-4 grid grid-cols-1 gap-6">
                 {editedProjects.map((project, index) => (
                   <motion.div
                     key={index}

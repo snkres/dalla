@@ -1,16 +1,16 @@
 import { axiosInstance } from '../instance'
 import localForage from 'localforage'
-import { QueryClient } from '@tanstack/react-query'
 
-const queryClient = new QueryClient()
-
-export async function logout() {
+export async function logout(queryClient?: any) {
   try {
     const res = await axiosInstance.post('/auth/logout')
 
     await localForage.clear()
 
-    queryClient.clear()
+    // Clear the passed queryClient if provided
+    if (queryClient) {
+      queryClient.clear()
+    }
 
     return res
   } catch (err) {
@@ -18,7 +18,9 @@ export async function logout() {
 
     try {
       await localForage.clear()
-      queryClient.clear()
+      if (queryClient) {
+        queryClient.clear()
+      }
     } catch (clearError) {
       console.error('Failed to clear local storage:', clearError)
     }

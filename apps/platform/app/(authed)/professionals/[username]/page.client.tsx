@@ -276,7 +276,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
                   if (project.id) {
                     await updateProjectMutation.mutateAsync({
-                      proId: profile?.data?.id,
+                      proId: ownProfile?.data.data.id || '',
                       projectId: project.id,
                       projectData,
                     })

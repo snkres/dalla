@@ -11,11 +11,12 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { useAtom } from 'jotai'
-import { globalAtom } from '@lib/atoms/global'
+import { GlobalAtom, globalAtom } from '@lib/atoms/global'
 import { useRouter } from 'next/navigation'
 import { logout } from '@lib/api/auth/logout'
-import { proMetaAtom } from '@lib/atoms/pro/meta'
-import { companyMetaAtom } from '@lib/atoms/company/meta'
+import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
+import { CompanyMeta, companyMetaAtom } from '@lib/atoms/company/meta'
+import { useQueryClient } from '@tanstack/react-query'
 
 type ProfileItem = {
   icon: React.ElementType
@@ -29,11 +30,12 @@ export type ProfilePopupProps = {
 
 const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
   ({ accountItems }, ref) => {
-    const [global] = useAtom(globalAtom)
+    const queryClient = useQueryClient()
+    const [global, setGlobal] = useAtom(globalAtom)
     const router = useRouter()
 
-    const [proMeta] = useAtom(proMetaAtom)
-    const [companyMeta] = useAtom(companyMetaAtom)
+    const [proMeta, setProMeta] = useAtom(proMetaAtom)
+    const [companyMeta, setCompanyMeta] = useAtom(companyMetaAtom)
 
     const profileItems: ProfileItem[] = accountItems || [
       {
@@ -49,8 +51,8 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
 
     const handleSignOut = async () => {
       try {
-        await logout()
-        router.push('/login')
+        await logout(queryClient)
+        window.location.href = '/login'
       } catch (error) {
         console.error('Error during sign out:', error)
       }
