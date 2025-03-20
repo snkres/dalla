@@ -15,6 +15,7 @@ import { useQueryState } from 'nuqs'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
+import { redirect } from 'next/navigation'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
@@ -30,6 +31,9 @@ type FormData = z.infer<typeof schema>
 
 export default function SignupPage() {
   const [global, setGlobal] = useAtom(globalAtom)
+  if (global.id) {
+    return redirect('/')
+  }
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
