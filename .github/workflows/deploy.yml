@@ -26,7 +26,7 @@ jobs:
             git config pull.rebase false  # Configure git to use merge
             git pull origin dev || { echo "Git pull failed"; exit 1; }
             pnpm install
-            pnpm build
+            pnpm build:platform
             pm2 restart dalla
             echo "Waiting for 10sec for logs to be ready..."
             sleep 5
@@ -48,7 +48,7 @@ jobs:
             git config pull.rebase false  # Configure git to use merge
             git pull origin dev || { echo "Git pull failed"; exit 1; }
             pnpm install
-            pnpm build
+            pnpm build:platform
             pm2 restart dalla
             echo "Waiting for 10sec for logs to be ready..."
             sleep 5
