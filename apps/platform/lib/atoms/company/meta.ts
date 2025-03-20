@@ -1,3 +1,4 @@
+import { ProjectStatus } from '@lib/api/company/projects'
 import { atomWithLocalForage } from '../atom-with-localforge'
 
 export type CompanyProfile = {
@@ -15,6 +16,27 @@ export type CompanyProfile = {
     verified: boolean
     createdAt: string
     updatedAt: string
+    projects: Array<{
+      id: string
+      title: string
+      description: string
+      scope: string
+      jobTitle: string
+      skills: Array<string>
+      deliverables: string
+      meta: {
+        budget: number
+        duration: string
+      }
+      approved: boolean
+      status: ProjectStatus
+      companyId: string
+      assignedProfessionalId: any
+      media: Array<string>
+      createdAt: string
+      updatedAt: string
+      deletedAt: any
+    }>
     CompanyProfile: {
       id: string
       companyId: string
@@ -23,6 +45,7 @@ export type CompanyProfile = {
         name: string
         description: string
       }>
+
       goals: Array<{
         name: string
         description: string

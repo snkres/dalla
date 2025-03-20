@@ -121,6 +121,10 @@ export function CompanyProfileClient({ id }: { id: string }) {
               location: profile.data.data.CompanyProfile.location,
               website: profile.data.data.CompanyProfile.website,
               rating: 5,
+              openProjects:
+                profile.data.data?.projects?.filter(
+                  (project) => project.status === 'Open',
+                ) || [],
               joinedAt: new Date(
                 profile.data.data.createdAt,
               ).toLocaleDateString(),
