@@ -223,7 +223,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
           </div>
 
-          <div className="border-b border-gray-100">
+          <div className="border-gray-100">
             <div className="flex items-center border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <Boxes className="h-3.5 w-3.5 text-[#63B7B7]" />
@@ -235,13 +235,18 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 variant="ghost"
                 size="sm"
                 className="ml-auto h-7 text-xs text-[#63B7B7]"
+                onClick={() =>
+                  router.push(
+                    `/professionals/${professional?.data.data.User.username}`,
+                  )
+                }
               >
                 View all <ChevronRight className="ml-1 h-3 w-3" />
               </Button>
             </div>
             <div className="grid grid-cols-1 gap-3 p-6 px-4">
               {professional?.data?.data?.projects?.slice(0, 3).map((p: any) => (
-                <div className="rounded-lg bg-[#63B7B7]/10 p-3">
+                <div className="rounded-lg bg-[#63B7B7]/10 p-3" key={p.id}>
                   <h4 className="mb-1 text-xs font-medium text-gray-800">
                     {p.title}
                   </h4>
@@ -254,7 +259,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               {professional?.data?.data?.User.projects
                 ?.slice(0, 3)
                 .map((p: any) => (
-                  <div className="rounded-lg bg-[#63B7B7]/10 p-3">
+                  <div className="rounded-lg bg-[#63B7B7]/10 p-3" key={p.id}>
                     <h4 className="mb-1 text-xs font-medium text-gray-800">
                       {p.title}
                     </h4>
@@ -268,7 +273,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
           </div>
         </div>
 
-        <div className="w-full border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72">
+        <div className="h-full w-full rounded-ee-3xl border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72">
           <div className="space-y-3">
             <div className="border-b border-gray-200">
               <div className="flex items-center border-b border-gray-200 p-2">

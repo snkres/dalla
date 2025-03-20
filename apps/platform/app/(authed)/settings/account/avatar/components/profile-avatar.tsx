@@ -137,8 +137,8 @@ export function ProfileAvatar() {
             <AvatarUpload
               initialURL={
                 global.mode === 'user'
-                  ? proProfile?.data?.data?.avatar
-                  : companyProfile?.data?.data?.CompanyProfile.logo
+                  ? proMeta.data?.UserProfile?.avatar
+                  : companyMeta.data?.CompanyProfile?.logo
               }
               setUploadedURL={(url) => {
                 if (global.mode === 'user') {

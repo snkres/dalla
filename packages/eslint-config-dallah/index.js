@@ -19,7 +19,7 @@ export default [
 
   // Next.js / React
   ...fixupConfigRules(compat.extends('plugin:@next/next/recommended')),
-  ...fixupConfigRules(compat.extends('plugin:react/recommended')),
+  // ...fixupConfigRules(compat.extends('plugin:react/recommended')),
   ...fixupConfigRules(compat.extends('plugin:react-hooks/recommended')),
   ...fixupConfigRules(compat.extends('plugin:jsx-a11y/strict')),
 
