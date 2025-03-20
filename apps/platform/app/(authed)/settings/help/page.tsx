@@ -131,7 +131,7 @@ export default function HelpSupport() {
         <Accordion type="single" collapsible className="w-full">
           {faqItems.map((item, index) => (
             <AccordionItem value={`item-${index}`} key={index}>
-              <AccordionTrigger className="text-sm font-medium">
+              <AccordionTrigger className="text-sm font-medium !text-[#234d64]">
                 {item.question}
               </AccordionTrigger>
               <AccordionContent className="text-sm text-gray-600">
