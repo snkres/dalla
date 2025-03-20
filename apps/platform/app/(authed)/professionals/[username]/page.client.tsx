@@ -178,10 +178,10 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
-              languages={profile?.data?.meta?.['languages'] ?? []}
+              languages={profile?.data?.meta?.languages ?? {}}
               onUpdate={(languages) => {
-                const languagesObj = languages.reduce(
-                  (acc, { language, proficiency }) => ({
+                const languagesObj = Object.entries(languages).reduce(
+                  (acc, [language, proficiency]) => ({
                     ...acc,
                     [language]: proficiency,
                   }),
