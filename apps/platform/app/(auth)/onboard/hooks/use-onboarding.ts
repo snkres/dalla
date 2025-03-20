@@ -168,7 +168,7 @@ export function useOnboarding() {
           title: 'Error',
           description:
             process.env.NODE_ENV === 'development'
-              ? res.message
+              ? 'Make sure to fill all fields'
               : 'Something went wrong, Please check all fields and try again',
           variant: 'destructive',
         })
@@ -179,7 +179,7 @@ export function useOnboarding() {
         title: 'Error',
         description:
           error instanceof Error
-            ? error.message
+            ? 'Make sure to fill all fields'
             : 'Something went wrong, Please check all fields and try again',
         variant: 'destructive',
       })
@@ -202,7 +202,7 @@ export function useOnboarding() {
           title: 'Error',
           description:
             process.env.NODE_ENV === 'development'
-              ? res.message
+              ? 'Make sure to fill all fields'
               : 'Something went wrong, Please check all fields and try again',
           variant: 'destructive',
         })
@@ -213,7 +213,7 @@ export function useOnboarding() {
         title: 'Error',
         description:
           error instanceof Error
-            ? error.message
+            ? 'Make sure to fill all fields'
             : 'Something went wrong, Please check all fields and try again',
         variant: 'destructive',
       })

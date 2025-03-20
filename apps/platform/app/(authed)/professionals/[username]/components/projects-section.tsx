@@ -75,6 +75,7 @@ export function ProjectsSection({
   const validateProjects = () => {
     const errors: { [key: number]: { [field: string]: boolean } } = {}
     let isValid = true
+    let firstErrorIndex: number | null = null
 
     editedProjects.forEach((project, index) => {
       const projectErrors: { [field: string]: boolean } = {}
@@ -83,31 +84,37 @@ export function ProjectsSection({
       if (!project.title.trim()) {
         projectErrors.title = true
         isValid = false
+        firstErrorIndex = firstErrorIndex === null ? index : firstErrorIndex
       }
 
       if (!project.role.trim()) {
         projectErrors.role = true
         isValid = false
+        firstErrorIndex = firstErrorIndex === null ? index : firstErrorIndex
       }
 
       if (!project.description.trim()) {
         projectErrors.description = true
         isValid = false
+        firstErrorIndex = firstErrorIndex === null ? index : firstErrorIndex
       }
 
       if (!project.skills || project.skills.length === 0) {
         projectErrors.skills = true
         isValid = false
+        firstErrorIndex = firstErrorIndex === null ? index : firstErrorIndex
       }
 
       if (!project.thumbnail) {
         projectErrors.thumbnail = true
         isValid = false
+        firstErrorIndex = firstErrorIndex === null ? index : firstErrorIndex
       }
 
       if (!project.link) {
         projectErrors.link = true
         isValid = false
+        firstErrorIndex = firstErrorIndex === null ? index : firstErrorIndex
       }
 
       // Only add to errors if there are any
@@ -116,13 +123,33 @@ export function ProjectsSection({
       }
     })
 
-    toast({
-      title: 'Fields are missing',
-      description: 'Please fill in all required fields.',
-      variant: 'destructive',
-    })
-
     setValidationErrors(errors)
+
+    if (!isValid) {
+      // Count total missing fields
+      const totalMissingFields = Object.values(errors).reduce(
+        (count, projectErrors) => count + Object.keys(projectErrors).length,
+        0,
+      )
+
+      // Show more specific toast message
+      toast({
+        title: `${totalMissingFields} required ${totalMissingFields === 1 ? 'field is' : 'fields are'} missing`,
+        description: `Please complete all required fields${firstErrorIndex !== null ? ` in project ${firstErrorIndex + 1}` : ''}.`,
+        variant: 'destructive',
+      })
+
+      // Scroll to the first project with errors
+      if (firstErrorIndex !== null) {
+        const projectElement = document.getElementById(
+          `project-${firstErrorIndex}`,
+        )
+        if (projectElement) {
+          projectElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }
+
     return isValid
   }
 
@@ -318,6 +345,7 @@ export function ProjectsSection({
                 {editedProjects.map((project, index) => (
                   <motion.div
                     key={index}
+                    id={`project-${index}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}

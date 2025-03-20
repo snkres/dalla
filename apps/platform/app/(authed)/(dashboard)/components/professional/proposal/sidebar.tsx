@@ -37,8 +37,8 @@ export function ApplicationSidebar({
 
   if (isSubmitted) {
     return (
-      <div className="sticky top-0 flex h-screen w-full flex-col border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
-        <div className="flex-1 space-y-5 overflow-y-auto p-5">
+      <div className="sticky top-0 flex w-2/5 flex-col rounded-3xl border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
+        <div className="space-y-5 overflow-y-auto p-5">
           <div className="rounded-xl border border-[#63B7B7]/20 bg-[#63B7B7]/5 p-5">
             <div className="mb-4 flex items-start">
               <div className="mr-3 flex-shrink-0">
@@ -123,8 +123,8 @@ export function ApplicationSidebar({
   }
 
   return (
-    <div className="sticky top-0 flex h-screen w-full flex-col border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
-      <div className="flex-1 space-y-5 overflow-y-auto p-5">
+    <div className="sticky top-0 flex h-fit w-full flex-col border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
+      <div className="space-y-5 overflow-y-auto p-5">
         <div>
           {isSubmitting ? (
             <Button
@@ -260,7 +260,7 @@ export function ApplicationSidebar({
                       {item.icon}
                     </div>
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-">
                     <span
                       className={cn(
                         'text-sm',

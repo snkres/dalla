@@ -13,8 +13,8 @@ import { useRef, useState } from 'react'
 import { Language } from '@lib/types/profile'
 
 type LanguagesSectionProps = {
-  languages: Language[]
-  onUpdate: (languages: Language[]) => void
+  languages: { [key: string]: string }
+  onUpdate: (languages: { [key: string]: string }) => void
   isPublicView: boolean
   isOwner: boolean
 }
@@ -38,10 +38,15 @@ export function LanguagesSection({
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleEdit = () => {
-    if (!languages || languages.length === 0) {
+    if (!languages || Object.keys(languages).length === 0) {
       setEditedLanguages([{ language: '', proficiency: 'Beginner' }])
     } else {
-      setEditedLanguages([...languages])
+      setEditedLanguages(
+        Object.entries(languages).map(([language, proficiency]) => ({
+          language,
+          proficiency,
+        })),
+      )
     }
     setIsEditing(true)
     setTimeout(() => inputRef.current?.focus(), 100)
@@ -53,7 +58,15 @@ export function LanguagesSection({
       (lang) => lang.language.trim() !== '',
     )
     setIsEditing(false)
-    onUpdate(validLanguages)
+    onUpdate(
+      validLanguages.reduce(
+        (acc, lang) => ({
+          ...acc,
+          [lang.language]: lang.proficiency,
+        }),
+        {} as { [key: string]: string },
+      ),
+    )
   }
 
   const handleCancel = () => {
@@ -194,24 +207,24 @@ export function LanguagesSection({
         )}
 
         <div className="divide-y divide-gray-50">
-          {languages.length > 0 &&
+          {Object.keys(languages).length > 0 &&
             !isEditing &&
-            languages.map((lang, index) => (
+            Object.entries(languages).map(([language, proficiency], index) => (
               <div
                 key={index}
                 className="flex items-center justify-between py-3 transition-colors hover:bg-gray-50/50"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-medium text-gray-800">
-                    {lang.language}
+                    {language}
                   </span>
                 </div>
-                <ProficiencyBadge proficiency={lang.proficiency} />
+                <ProficiencyBadge proficiency={proficiency} />
               </div>
             ))}
         </div>
 
-        {languages.length === 0 && !isEditing && (
+        {Object.keys(languages).length === 0 && !isEditing && (
           <div className="flex flex-col items-center justify-center py-6 text-center">
             <p className="mb-2 text-sm text-gray-500">No languages added yet</p>
             {!isPublicView && isOwner && (

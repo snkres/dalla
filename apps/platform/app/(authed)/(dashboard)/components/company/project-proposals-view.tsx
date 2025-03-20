@@ -42,7 +42,7 @@ export default function ProjectProposalsView({
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <>
       {showDetailView && selectedProposalId && (
         <ProposalDetails
           handleCloseProposal={handleCloseProposal}
@@ -57,12 +57,6 @@ export default function ProjectProposalsView({
           proposals={proposalsData || []}
         />
       )}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed left-0 top-0 h-full w-full bg-black/10 backdrop-blur-sm"
-      />
-    </div>
+    </>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { Badge, Button, Tabs, TabsContent } from '@dallah/design-system'
-import { calculateDaysSince, getRemainingTime } from '@dallah/utils'
+import { calculateDaysSince, formatDate, getRemainingTime } from '@dallah/utils'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 
@@ -80,7 +80,10 @@ export function ProjectSharedDetails({
               {project.status === 'InProgress' ? (
                 <div className="flex items-center">
                   <Calendar className="mr-1.5 h-3.5 w-3.5 text-[#1D8489]" />
-                  {/* {project.meta?.startDate} - {project.meta?.endDate} */}
+                  {formatDate(new Date(project.meta?.startedAt))} -{' '}
+                  {project.meta?.endedAt
+                    ? formatDate(new Date(project.meta?.endedAt))
+                    : 'N/A'}
                 </div>
               ) : (
                 <div className="flex items-center">

@@ -178,10 +178,10 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <div className="mx-auto flex max-w-5xl flex-col gap-5">
             <LanguagesSection
-              languages={profile?.data?.meta?.['languages'] ?? []}
+              languages={profile?.data?.meta?.languages ?? {}}
               onUpdate={(languages) => {
-                const languagesObj = languages.reduce(
-                  (acc, { language, proficiency }) => ({
+                const languagesObj = Object.entries(languages).reduce(
+                  (acc, [language, proficiency]) => ({
                     ...acc,
                     [language]: proficiency,
                   }),
@@ -256,7 +256,7 @@ export function ProProfileClient({ username }: { username: string }) {
           />
           <ProjectsSection
             projects={profile?.data?.projects || []}
-            proId={profile?.data?.id || ''}
+            proId={profile?.data?.User?.id || ''}
             isPublicView={isPublicView}
             isOwner={isOwner}
             onUpdate={async (updatedProjects) => {
@@ -276,7 +276,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
                   if (project.id) {
                     await updateProjectMutation.mutateAsync({
-                      proId: ownProfile?.data.data.id || '',
+                      proId: ownProfile?.data.data.User.id || '',
                       projectId: project.id,
                       projectData,
                     })
@@ -288,7 +288,7 @@ export function ProProfileClient({ username }: { username: string }) {
                   } else {
                     try {
                       const response = await createProjectMutation.mutateAsync({
-                        proId: profile?.data?.id,
+                        proId: profile?.data?.User?.id,
                         projectData,
                       })
 
@@ -316,6 +316,7 @@ export function ProProfileClient({ username }: { username: string }) {
                 })
               } catch (error) {
                 console.error('Failed to update projects:', error)
+                console.log(error)
                 toast({
                   title: 'Update failed',
                   description: 'There was a problem updating your projects',

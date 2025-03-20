@@ -28,7 +28,7 @@ export type ProProfile = {
       availability: string
       rating: number
       projectCompletion: string
-      languages: Language[]
+      languages: { [key: string]: string }
     }
     resume: string
     precentage: number
