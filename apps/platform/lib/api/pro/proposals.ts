@@ -195,9 +195,7 @@ export type GetProposalByIdRes = {
         name: string
         CompanyProfile: {
           logo: string
-          meta: {
-            location: string
-          }
+          location: string
         }
       }
       _count: {
