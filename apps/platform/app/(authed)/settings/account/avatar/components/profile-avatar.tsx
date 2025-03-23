@@ -176,7 +176,6 @@ export function ProfileAvatar() {
                     ...cleanProfile,
                     education: cleanedEducation,
                     experience: cleanedExperience,
-                    avatar: url,
                   })
                 } else {
                   updateProfileMutation.mutate({ logo: url })
