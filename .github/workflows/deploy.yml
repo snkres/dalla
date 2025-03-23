@@ -9,9 +9,56 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - name: Deploying to Dev
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.4
+          run_install: false
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Build project
+        run: pnpm build
+        
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/  # Adjust this path to match your build output directory
+          
+  deploy-dev:
+    name: Deploy to Dev
+    needs: build
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: apps/platform/.next
+            
+      - name: Copy build files to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DEV_SERVER }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          source: "apps/platform/.next"
+          target: "/root/dalla/apps/platform"
+          strip_components: 0
+          
+      - name: Restart application
         uses: appleboy/ssh-action@v1.0.0
-        if: github.ref == 'refs/heads/dev'
         with:
           host: ${{ secrets.DEV_SERVER }}
           username: ${{ secrets.DEV_USER }}
@@ -21,19 +68,25 @@ jobs:
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             cd /root/dalla
-            git reset --hard HEAD
-            git clean -f -d
-            git config pull.rebase false  # Configure git to use merge
-            git pull origin dev || { echo "Git pull failed"; exit 1; }
-            pnpm install
-            pnpm build:platform
             pm2 restart dalla
-            echo "Waiting for 10sec for logs to be ready..."
+            echo "Waiting for logs to be ready..."
             sleep 5
             pm2 logs --nostream --lines 100
-      - name: Deploying to prod
+            
+  deploy-prod:
+    name: Deploy to Production
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist
+          
+      - name: Deploy to Production Server
         uses: appleboy/ssh-action@v1.0.0
-        if: github.ref == 'refs/heads/main'
         with:
           host: ${{ secrets.PROD_SERVER }}
           username: ${{ secrets.PROD_USER }}
@@ -43,13 +96,32 @@ jobs:
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             cd /root/dalla
-            git reset --hard HEAD
-            git clean -f -d
-            git config pull.rebase false  # Configure git to use merge
-            git pull origin dev || { echo "Git pull failed"; exit 1; }
-            pnpm install
-            pnpm build:platform
+            mkdir -p backup
+            tar -czf backup/dalla-backup-$(date +%Y%m%d%H%M%S).tar.gz dist || true
+            rm -rf dist/* || true
+            
+      - name: Copy build files to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.PROD_SERVER }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          source: "dist/"
+          target: "/root/dalla"
+          strip_components: 0
+          
+      - name: Restart application
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_SERVER }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          timeout: 60s
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            cd /root/dalla
             pm2 restart dalla
-            echo "Waiting for 10sec for logs to be ready..."
+            echo "Waiting for logs to be ready..."
             sleep 5
             pm2 logs --nostream --lines 100
