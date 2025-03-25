@@ -4,7 +4,7 @@ on:
       - main
       - dev
 jobs:
-  build:
+  build-and-deploy-dev:
     name: Build
     runs-on: ubuntu-latest
     timeout-minutes: 6
@@ -28,25 +28,7 @@ jobs:
         
       - name: Build project
         run: pnpm build
-        
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: apps/platform/.next/  # Adjust this path to match your build output directory
-          
-  deploy-dev:
-    name: Deploy to Dev
-    needs: build
-    if: github.ref == 'refs/heads/dev'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: apps/platform/.next
-            
+
       - name: Copy build files to server
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -73,49 +55,47 @@ jobs:
             sleep 5
             pm2 logs --nostream --lines 100
             
-  deploy-prod:
-    name: Deploy to Production
-    needs: build
-    if: github.ref == 'refs/heads/main'
+  build-and-deploy-prod:
+    name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 6
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          name: build-artifacts
-          path: dist
+          node-version: '22'
           
-      - name: Deploy to Production Server
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
         with:
-          host: ${{ secrets.PROD_SERVER }}
-          username: ${{ secrets.PROD_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
-          timeout: 60s
-          script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
-            cd /root/dalla
-            mkdir -p backup
-            tar -czf backup/dalla-backup-$(date +%Y%m%d%H%M%S).tar.gz dist || true
-            rm -rf dist/* || true
-            
+          version: 9.4
+          run_install: false
+          
+      - name: Install dependencies
+        run: pnpm install
+        
+      - name: Build project
+        run: pnpm build
+
       - name: Copy build files to server
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.PROD_SERVER }}
-          username: ${{ secrets.PROD_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
-          source: "dist/"
-          target: "/root/dalla"
+          host: ${{ secrets.DEV_SERVER }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
+          source: "apps/platform/.next"
+          target: "/root/dalla/apps/platform"
           strip_components: 0
           
       - name: Restart application
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.PROD_SERVER }}
-          username: ${{ secrets.PROD_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
+          host: ${{ secrets.DEV_SERVER }}
+          username: ${{ secrets.DEV_USER }}
+          key: ${{ secrets.DEV_SSH_KEY }}
           timeout: 60s
           script: |
             export NVM_DIR=~/.nvm
