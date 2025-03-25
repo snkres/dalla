@@ -20,6 +20,7 @@ import Link from 'next/link'
 import { PlatformIcon } from '@components/shared/platform-icon'
 import { detectPlatform, enhanceSocialLink } from '@lib/utils/detect-platform'
 import type { SocialLink } from '@lib/types/profile'
+import { LocationSelector } from '@dallah/components/locationSelector'
 
 export function ContactInfoCard({
   data,
@@ -213,25 +214,9 @@ export function ContactInfoCard({
             </a>
           )}
         </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-600">Location</span>
-          {isEditing ? (
-            <div className="flex items-center">
-              <Input
-                value={editedInfo.location}
-                onChange={(e) => handleChange('location', e.target.value)}
-                className="h-7 w-48 text-xs"
-                placeholder="Location"
-              />
-            </div>
-          ) : (
-            <span className="text-xs text-gray-800">{data.location}</span>
-          )}
-        </div>
       </div>
 
-      <div className="mt-5 border-t border-gray-100 pt-4">
+      <div className="mt-5 border-gray-100">
         <h4 className="mb-3 text-sm text-gray-800">Social Presence</h4>
 
         {isEditing ? (

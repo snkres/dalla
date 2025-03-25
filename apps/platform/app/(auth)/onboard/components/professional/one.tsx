@@ -19,6 +19,7 @@ import { fadeInVariants } from '@components/aniamtion/animate'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
+import { LocationSelector } from '@dallah/components/locationSelector'
 
 export function ProOnboardingOne({
   data,
@@ -167,17 +168,12 @@ export function ProOnboardingOne({
             <Label htmlFor="location">Location</Label>
             <RequiredIndicator />
           </div>
-          <MapPin className="absolute left-3 top-[2.5rem] h-5 w-5 text-gray-400" />
-          <Input
-            id="location"
-            className="!h-11 pl-10"
-            placeholder="Location"
-            type="name"
+          <LocationSelector
             value={data.meta.location}
-            onChange={(e) =>
+            onChange={(location) =>
               updateData({
                 ...data,
-                meta: { ...data.meta, location: e.target.value },
+                meta: { ...data.meta, location },
               })
             }
           />

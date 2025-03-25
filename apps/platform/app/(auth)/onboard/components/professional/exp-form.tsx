@@ -17,6 +17,7 @@ import { motion } from 'motion/react'
 import { fadeInVariants } from '@components/aniamtion/animate'
 import { DatePicker } from './date-picker'
 import { Tag, TagInput } from 'emblor'
+import { LocationSelector } from '@dallah/components/locationSelector'
 
 interface Tool {
   id: string
@@ -178,20 +179,14 @@ export function ExperienceForm({
             <Label className="mb-1 block text-sm font-medium text-gray-700">
               Location <span className="text-red-500">*</span>
             </Label>
-            <div className="relative">
-              <MapPin
-                className="absolute left-3 top-2.5 text-gray-400"
-                size={20}
-              />
-              <Input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. San Francisco, CA"
-                className="w-full !rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
+            <LocationSelector
+              value={location}
+              onChange={setLocation}
+              placeholder={{
+                country: 'Select country',
+                city: "Select city or 'Remote'",
+              }}
+            />
           </div>
         </div>
 

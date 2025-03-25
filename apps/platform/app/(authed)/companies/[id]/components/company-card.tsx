@@ -25,6 +25,7 @@ import { useState } from 'react'
 import { Input } from '@dallah/design-system'
 import type { CompanyProfile } from '@lib/atoms/company/meta'
 import { Link } from 'next-view-transitions'
+import { LocationSelector } from '@dallah/components/locationSelector'
 
 export function CompanyCard({
   data,
@@ -256,11 +257,16 @@ export function CompanyCard({
             <div className="flex w-full items-center justify-between">
               <span className="text-xs text-gray-600">Location</span>
               {isEditing ? (
-                <Input
-                  value={editedCompany.location}
-                  onChange={(e) => handleChange('location', e.target.value)}
-                  className="h-7 !w-32 text-right text-xs"
-                />
+                <div className="w-4/5">
+                  <LocationSelector
+                    value={editedCompany.location}
+                    onChange={(value) => handleChange('location', value)}
+                    placeholder={{
+                      country: 'Country',
+                      city: 'City',
+                    }}
+                  />
+                </div>
               ) : (
                 <span className="text-xs font-medium text-gray-800">
                   {data.location}
