@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: dist/  # Adjust this path to match your build output directory
+          path: apps/platform/.next/  # Adjust this path to match your build output directory
           
   deploy-dev:
     name: Deploy to Dev
