@@ -15,7 +15,9 @@
     "./countrySelect": "./src/country.select.tsx",
     "./citySelect": "./src/city.select.tsx",
     "./locationSelector": "./src/location.selector.tsx",
-    "./company-sizeSelector": "./src/company-size.select.tsx"
+    "./company-sizeSelector": "./src/company-size.select.tsx",
+    "./listInput": "./src/list-input.tsx",
+    "./listDisplay": "./src/list-display.tsx"
   },
   "typesVersions": {
     "*": {
@@ -45,6 +47,12 @@
       ],
       "company-sizeSelector": [
         "./src/company-size.select.tsx"
+      ],
+      "listInput": [
+        "./src/list-input.tsx"
+      ],
+      "listDisplay": [
+        "./src/list-display.tsx"
       ]
     }
   },

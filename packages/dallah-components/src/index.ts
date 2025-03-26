@@ -14,5 +14,9 @@ export {
 export { default as PhoneInputWithCountry } from './phone-number.input'
 export { MultiStepForm } from './multi-step-form'
 
+// List components
+export { ListInput, LIST_ITEM_DELIMITER } from './list-input'
+export { ListDisplay } from './list-display'
+
 // Utility components
 export { PrefetchCrossZoneLinks } from './prefetch-cross-zone-links'

@@ -27,6 +27,7 @@ import type { CompanyProfile } from '@lib/atoms/company/meta'
 import { Link } from 'next-view-transitions'
 import { LocationSelector } from '@dallah/components/locationSelector'
 import { CompanySizeSelector } from '@dallah/components/company-sizeSelector'
+import { ListDisplay } from '@dallah/components/listDisplay'
 
 export function CompanyCard({
   data,
@@ -337,9 +338,26 @@ export function CompanyCard({
                         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#BEDDF1]/20">
                           <RssIcon className="h-3 w-3 text-[#3A97A0]" />
                         </div>
-                        <span className="line-clamp-1 text-xs text-gray-600">
-                          {project.scope}
-                        </span>
+                        <div className="flex-1 overflow-hidden">
+                          <span className="block text-xs font-medium text-gray-600">
+                            Scope:
+                          </span>
+                          <div className="max-h-12 overflow-hidden">
+                            {project.scope &&
+                            project.scope.includes('%DALLA%') ? (
+                              <ListDisplay
+                                value={project.scope}
+                                emptyText="No scope specified"
+                                className="max-h-10 overflow-hidden"
+                                itemClassName="text-xs text-gray-500"
+                              />
+                            ) : (
+                              <span className="line-clamp-1 text-xs text-gray-500">
+                                {project.scope || 'No scope specified'}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-1.5">
