@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from '@dallah/design-system'
 
-// Define company size ranges
 export const COMPANY_SIZE_RANGES = [
   { value: '1-10', label: '1-10 employees' },
   { value: '11-50', label: '11-50 employees' },
@@ -21,14 +20,12 @@ export const COMPANY_SIZE_RANGES = [
   { value: '10000+', label: 'More than 10,000 employees' },
 ]
 
-// Helper to get range from a number or string
 export function getSizeRangeFromValue(value: string | number): string {
   if (!value) return ''
 
   const numValue = typeof value === 'string' ? parseInt(value, 10) : value
 
   if (isNaN(numValue)) {
-    // If the value is already a range string, return it if valid
     const isValidRange = COMPANY_SIZE_RANGES.some(
       (range) => range.value === value,
     )
@@ -45,7 +42,6 @@ export function getSizeRangeFromValue(value: string | number): string {
   return '10000+'
 }
 
-// Company size selector props
 interface CompanySizeSelectorProps {
   value?: string | number
   onChange?: (value: string) => void
@@ -64,7 +60,6 @@ export function CompanySizeSelector({
   const isInternalChange = useRef(false)
   const [selectedSize, setSelectedSize] = useState<string>('')
 
-  // Initialize the selected size based on value
   useEffect(() => {
     if (!isInternalChange.current) {
       const range = getSizeRangeFromValue(value)
@@ -73,7 +68,6 @@ export function CompanySizeSelector({
     isInternalChange.current = false
   }, [value])
 
-  // Handle size selection
   const handleSizeChange = (size: string) => {
     setSelectedSize(size)
     isInternalChange.current = true
