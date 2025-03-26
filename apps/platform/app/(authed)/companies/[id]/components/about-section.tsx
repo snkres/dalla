@@ -170,6 +170,21 @@ export function AboutSection({
               {data.headline}
             </h4>
 
+            <div className="mb-3 flex flex-wrap gap-3">
+              {data.industry && (
+                <Badge variant="outline" className="bg-gray-50 text-xs">
+                  <Briefcase className="mr-1 h-3 w-3 text-[#63B7B7]" />
+                  {data.industry}
+                </Badge>
+              )}
+              {data.size && (
+                <Badge variant="outline" className="bg-gray-50 text-xs">
+                  <Users className="mr-1 h-3 w-3 text-[#63B7B7]" />
+                  {data.size}
+                </Badge>
+              )}
+            </div>
+
             <p className="text-xs leading-relaxed text-gray-600">{data.bio}</p>
           </div>
         )}

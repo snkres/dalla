@@ -34,6 +34,7 @@ import { useState } from 'react'
 import ProposalDetailModal from './proposal-detail-modal'
 import StatusBadge from 'app/(authed)/proposals/components/status-badge'
 import { ProposalStatus } from '@lib/api/pro/proposals'
+import { ListDisplay } from '@dallah/components/listDisplay'
 
 export function CompanyProjectView({
   project,
@@ -144,6 +145,45 @@ export function CompanyProjectView({
                 </div>
               </div>
             </div>
+
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+              <div className="flex items-center justify-between border-b border-gray-200 p-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
+                    <FileText className="h-4 w-4 text-[#1D8489]" />
+                  </div>
+                  <h2 className="font-medium text-gray-900">Project Details</h2>
+                </div>
+              </div>
+
+              <div className="p-5">
+                <div className="mb-6">
+                  <h3 className="mb-3 text-sm font-medium text-gray-900">
+                    Project Scope
+                  </h3>
+                  <div className="rounded-md bg-gray-50 p-4">
+                    <ListDisplay
+                      value={project.scope}
+                      emptyText="No scope details provided"
+                      className="text-gray-600"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="mb-3 text-sm font-medium text-gray-900">
+                    Deliverables
+                  </h3>
+                  <div className="rounded-md bg-gray-50 p-4">
+                    <ListDisplay
+                      value={project.deliverables}
+                      emptyText="No deliverables specified"
+                      className="text-gray-600"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-6">
@@ -248,28 +288,45 @@ export function CompanyProjectView({
       {project.status === 'Open' && (
         <TabsContent value="proposals" className="m-0 p-0 outline-none">
           <div className="py-4">
-            {project.proposals.map((proposal) => (
-              <div
-                key={proposal.id}
-                className="mb-4 cursor-pointer rounded-lg border border-gray-200 bg-white p-4"
-                onClick={() => handleProposalClick(proposal)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-base font-medium text-gray-900">
-                    {proposal.professional.name}
+            {project.proposals.length > 0 ? (
+              project.proposals.map((proposal) => (
+                <div
+                  key={proposal.id}
+                  className="mb-4 cursor-pointer rounded-lg border border-gray-200 bg-white p-4"
+                  onClick={() => handleProposalClick(proposal)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-base font-medium text-gray-900">
+                      {proposal.professional.name}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      {formatCurrency(proposal.price)}
+                    </div>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    {formatCurrency(proposal.price)}
+                  <div className="flex items-center justify-between">
+                    <div className="mt-1 text-sm text-gray-500">
+                      {proposal.timeline} days
+                    </div>
+                    <StatusBadge status={proposal.status as ProposalStatus} />
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="mt-1 text-sm text-gray-500">
-                    {proposal.timeline} days
+              ))
+            ) : (
+              <div className="rounded-lg border border-gray-200 bg-white p-6">
+                <div className="mb-4 text-center">
+                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+                    <FileText className="h-6 w-6 text-gray-500" />
                   </div>
-                  <StatusBadge status={proposal.status as ProposalStatus} />
+                  <h3 className="text-base font-medium text-gray-900">
+                    No proposals yet
+                  </h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Your project is waiting for professionals to submit
+                    proposals.
+                  </p>
                 </div>
               </div>
-            ))}
+            )}
           </div>
           <ProposalDetailModal
             proposal={selectedProposal}

@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@dallah/design-system'
+import { ListInput } from '@dallah/components/listInput'
 
 const SLIDE_ANIMATION = {
   initial: { x: '100%' },
@@ -301,14 +302,17 @@ export function EditProject({
               >
                 Project Scope
               </label>
-              <Textarea
-                id="scope"
-                placeholder="Define the scope of work"
+              <ListInput
                 value={formData.scope}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full"
+                onChange={(value) => setFormData({ ...formData, scope: value })}
+                placeholder="Add scope item"
+                label="Scope Items"
+                addItemText="Add Scope Item"
+                maxItems={10}
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Add specific items that define the scope of this project
+              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -377,14 +381,19 @@ export function EditProject({
               >
                 Deliverables
               </label>
-              <Textarea
-                id="deliverables"
-                placeholder="List expected deliverables"
+              <ListInput
                 value={formData.deliverables}
-                onChange={handleInputChange}
-                rows={3}
-                className="w-full"
+                onChange={(value) =>
+                  setFormData({ ...formData, deliverables: value })
+                }
+                placeholder="Add deliverable"
+                label="Project Deliverables"
+                addItemText="Add Deliverable"
+                maxItems={10}
               />
+              <p className="mt-1 text-xs text-gray-500">
+                List the expected deliverables for this project
+              </p>
             </div>
 
             <div>

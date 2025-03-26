@@ -22,10 +22,11 @@ import {
 import { Link } from 'next-view-transitions'
 import Image from 'next/image'
 import { GetProjectRes } from '@lib/api/company/projects'
-import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
+import { proMetaAtom } from '@lib/atoms/pro/meta'
 import { createProjectProposal } from '@lib/api/pro/proposals'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
+import { ListDisplay } from '@dallah/components/listDisplay'
 
 export function ProfessionalProjectView({
   project,
@@ -220,13 +221,29 @@ export function ProfessionalProjectView({
             <h2 className="text-lg font-medium text-gray-900">
               Project Details
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              <strong>Scope:</strong> {project.scope || 'Not specified'}
-            </p>
-            <p className="mt-2 text-sm text-gray-600">
-              <strong>Deliverables:</strong>{' '}
-              {project.deliverables || 'Not specified'}
-            </p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-gray-700">
+                  Scope:
+                </h3>
+                <ListDisplay
+                  value={project.scope || ''}
+                  emptyText="No scope details specified"
+                  className="text-gray-600"
+                />
+              </div>
+
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-gray-700">
+                  Deliverables:
+                </h3>
+                <ListDisplay
+                  value={project.deliverables || ''}
+                  emptyText="No deliverables specified"
+                  className="text-gray-600"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Action Area */}

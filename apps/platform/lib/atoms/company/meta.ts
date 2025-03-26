@@ -61,8 +61,7 @@ export type CompanyProfile = {
         phone: string
         industry: string
         socialLinks: {
-          url: string
-          name: string
+          [key: string]: string
         }
       }
       headline: string

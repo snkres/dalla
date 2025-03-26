@@ -25,6 +25,9 @@ import { useState } from 'react'
 import { Input } from '@dallah/design-system'
 import type { CompanyProfile } from '@lib/atoms/company/meta'
 import { Link } from 'next-view-transitions'
+import { LocationSelector } from '@dallah/components/locationSelector'
+import { CompanySizeSelector } from '@dallah/components/company-sizeSelector'
+import { ListDisplay } from '@dallah/components/listDisplay'
 
 export function CompanyCard({
   data,
@@ -234,13 +237,14 @@ export function CompanyCard({
             <div className="w flex w-full items-center justify-between">
               <span className="text-xs text-gray-600">Company Size</span>
               {isEditing ? (
-                <Input
-                  value={editedCompany.size}
-                  onChange={(e) => handleChange('size', e.target.value)}
-                  className="h-7 !w-28 text-right text-xs"
-                  placeholder="Company size"
-                  type="number"
-                />
+                <div className="w-4/5">
+                  <CompanySizeSelector
+                    value={editedCompany.size}
+                    onChange={(value: string) => handleChange('size', value)}
+                    placeholder="Select company size"
+                    className="text-xs"
+                  />
+                </div>
               ) : (
                 <span className="text-xs font-medium text-gray-800">
                   {data.size}
@@ -256,11 +260,16 @@ export function CompanyCard({
             <div className="flex w-full items-center justify-between">
               <span className="text-xs text-gray-600">Location</span>
               {isEditing ? (
-                <Input
-                  value={editedCompany.location}
-                  onChange={(e) => handleChange('location', e.target.value)}
-                  className="h-7 !w-32 text-right text-xs"
-                />
+                <div className="w-4/5">
+                  <LocationSelector
+                    value={editedCompany.location}
+                    onChange={(value) => handleChange('location', value)}
+                    placeholder={{
+                      country: 'Country',
+                      city: 'City',
+                    }}
+                  />
+                </div>
               ) : (
                 <span className="text-xs font-medium text-gray-800">
                   {data.location}
@@ -329,9 +338,26 @@ export function CompanyCard({
                         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#BEDDF1]/20">
                           <RssIcon className="h-3 w-3 text-[#3A97A0]" />
                         </div>
-                        <span className="line-clamp-1 text-xs text-gray-600">
-                          {project.scope}
-                        </span>
+                        <div className="flex-1 overflow-hidden">
+                          <span className="block text-xs font-medium text-gray-600">
+                            Scope:
+                          </span>
+                          <div className="max-h-12 overflow-hidden">
+                            {project.scope &&
+                            project.scope.includes('%DALLA%') ? (
+                              <ListDisplay
+                                value={project.scope}
+                                emptyText="No scope specified"
+                                className="max-h-10 overflow-hidden"
+                                itemClassName="text-xs text-gray-500"
+                              />
+                            ) : (
+                              <span className="line-clamp-1 text-xs text-gray-500">
+                                {project.scope || 'No scope specified'}
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
 
                       <div className="flex items-center gap-1.5">

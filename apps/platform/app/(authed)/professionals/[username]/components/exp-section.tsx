@@ -21,6 +21,7 @@ import { cn } from '@dallah/utils'
 import type { Position } from '@lib/types/profile'
 import type { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
+import { LocationSelector } from '@dallah/components/locationSelector'
 
 export function ExperienceSection({
   experiences,
@@ -459,11 +460,16 @@ export function ExperienceSection({
                       {/* Only show these fields when expanded */}
                       {isExpanded && (
                         <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                            <Input
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                              <span className="text-xs text-gray-500">
+                                Location
+                              </span>
+                            </div>
+                            <LocationSelector
                               value={companyExps[0].location || ''}
-                              onChange={(e) => {
+                              onChange={(value) => {
                                 const updatedExperiences = [
                                   ...editedExperiences,
                                 ]
@@ -471,14 +477,16 @@ export function ExperienceSection({
                                   if (exp.company === company) {
                                     updatedExperiences[idx] = {
                                       ...updatedExperiences[idx],
-                                      location: e.target.value,
+                                      location: value,
                                     }
                                   }
                                 })
                                 setEditedExperiences(updatedExperiences)
                               }}
-                              placeholder="Location (optional)"
-                              className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
+                              placeholder={{
+                                country: 'Country',
+                                city: 'City or Remote',
+                              }}
                             />
                           </div>
 

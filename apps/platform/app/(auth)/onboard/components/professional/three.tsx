@@ -8,7 +8,7 @@ import { Button } from '@dallah/design-system'
 import { Modal } from '@components/shared/modal'
 import { ExperienceForm } from './exp-form'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, Trash2 } from 'lucide-react'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 
 export function ProOnboardingThree({
@@ -34,6 +34,15 @@ export function ProOnboardingThree({
     setIsAbleToProceed,
     currentStep: 3,
   })
+
+  const handleRemoveExp = (index: number) => {
+    const newExperience = [...data.experience]
+    newExperience.splice(index, 1)
+    updateData({ ...data, experience: newExperience })
+
+    setIsAbleToProceed(newExperience.length > 0)
+  }
+
   console.log(data.experience)
   return (
     <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
@@ -75,14 +84,24 @@ export function ProOnboardingThree({
                       </p>
                     )}
                   </div>
-                  <Button
-                    onClick={() => handleEditExp(index)}
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    Edit
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleRemoveExp(index)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:bg-red-50 hover:text-red-600"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleEditExp(index)}
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Edit
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}

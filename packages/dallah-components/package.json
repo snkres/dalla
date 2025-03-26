@@ -7,14 +7,23 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
+    ".": "./src/index.ts",
     "./navbar": "./src/navbar.tsx",
     "./prefetch": "./src/prefetch-cross-zone-links.tsx",
     "./multistep": "./src/multi-step-form.tsx",
     "./phoneInput": "./src/phone-number.input.tsx",
-    "./countrySelect": "./src/country.select.tsx"
+    "./countrySelect": "./src/country.select.tsx",
+    "./citySelect": "./src/city.select.tsx",
+    "./locationSelector": "./src/location.selector.tsx",
+    "./company-sizeSelector": "./src/company-size.select.tsx",
+    "./listInput": "./src/list-input.tsx",
+    "./listDisplay": "./src/list-display.tsx"
   },
   "typesVersions": {
     "*": {
+      ".": [
+        "./src/index.ts"
+      ],
       "navbar": [
         "./src/navbar.tsx"
       ],
@@ -29,6 +38,21 @@
       ],
       "countrySelect": [
         "./src/country.select.tsx"
+      ],
+      "citySelect": [
+        "./src/city.select.tsx"
+      ],
+      "locationSelector": [
+        "./src/location.selector.tsx"
+      ],
+      "company-sizeSelector": [
+        "./src/company-size.select.tsx"
+      ],
+      "listInput": [
+        "./src/list-input.tsx"
+      ],
+      "listDisplay": [
+        "./src/list-display.tsx"
       ]
     }
   },
