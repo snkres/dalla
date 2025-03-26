@@ -23,6 +23,7 @@ import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
 import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getLocalTimeForLocation } from '@dallah/utils'
+import { ListDisplay } from '@dallah/components/listDisplay'
 
 interface ProjectDetailProps {
   projectId: string
@@ -167,9 +168,11 @@ export function ProjectDetail({
                     Deliverables
                   </h2>
                 </div>
-                <div className="prose max-w-none text-sm text-gray-700 sm:text-base">
-                  {data.deliverables}
-                </div>
+                <ListDisplay
+                  value={data.deliverables}
+                  emptyText="No deliverables specified"
+                  className="text-gray-600"
+                />
               </div>
             )}
 
@@ -181,9 +184,12 @@ export function ProjectDetail({
                     Project Scope
                   </h2>
                 </div>
-                <div className="prose max-w-none text-sm text-gray-700 sm:text-base">
-                  {data.scope}
-                </div>
+
+                <ListDisplay
+                  value={data.scope}
+                  emptyText="No scope details provided"
+                  className="text-gray-600"
+                />
               </div>
             )}
 

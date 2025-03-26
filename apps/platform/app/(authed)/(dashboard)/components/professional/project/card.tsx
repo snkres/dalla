@@ -81,7 +81,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           </Button>
         </div>
 
-        <p className="mb-5 line-clamp-3 flex-grow text-ellipsis text-sm text-gray-600">
+        <p className="mb-5 line-clamp-3 overflow-hidden text-ellipsis text-sm">
           {description}
         </p>
 
