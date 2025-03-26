@@ -7,7 +7,7 @@ import { Button } from '@dallah/design-system'
 import { Modal } from '@components/shared/modal'
 import { EducationForm } from './edu-form'
 import type { ProOnboardingData } from '../../hooks/use-onboarding'
-import { PlusIcon } from 'lucide-react'
+import { PlusIcon, Trash2 } from 'lucide-react'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 
 export function ProOnboardingFour({
@@ -33,6 +33,14 @@ export function ProOnboardingFour({
     setIsAbleToProceed,
     currentStep: 4,
   })
+
+  const handleRemoveEdu = (index: number) => {
+    const newEducation = [...data.education]
+    newEducation.splice(index, 1)
+    updateData({ ...data, education: newEducation })
+
+    setIsAbleToProceed(newEducation.length > 0)
+  }
 
   return (
     <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
@@ -72,14 +80,24 @@ export function ProOnboardingFour({
                         {edu.startDate} - {edu.endDate}
                       </p>
                     </div>
-                    <Button
-                      onClick={() => handleEduEdit(index as number)}
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 rounded-full hover:bg-slate-100"
-                    >
-                      Edit
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleRemoveEdu(index as number)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 rounded-full text-red-500 hover:bg-red-50 hover:text-red-600"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        onClick={() => handleEduEdit(index as number)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 rounded-full hover:bg-slate-100"
+                      >
+                        Edit
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ),
