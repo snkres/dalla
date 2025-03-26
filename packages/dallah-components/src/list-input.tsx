@@ -26,7 +26,6 @@ export function ListInput({
   maxItems = 10,
   className = '',
 }: ListInputProps) {
-  // Parse the initial items from the delimited string
   const parseItems = (str: string): string[] => {
     if (!str) return []
     return str.split(LIST_ITEM_DELIMITER).filter((item) => item.trim() !== '')
@@ -39,23 +38,18 @@ export function ListInput({
   const isInternalChange = useRef(false)
   const prevValueRef = useRef(value)
 
-  // Initialize items when value changes from outside
   useEffect(() => {
-    // Only update items from props if the value changed externally (not due to our onChange)
     if (value !== prevValueRef.current && !isInternalChange.current) {
       setItems(parseItems(value))
     }
 
-    // Reset the flag after each render
     isInternalChange.current = false
     prevValueRef.current = value
   }, [value])
 
-  // Update parent when items change
   const updateParentValue = () => {
     const newValue = items.join(LIST_ITEM_DELIMITER)
 
-    // Only call onChange if the value actually changed
     if (newValue !== value) {
       isInternalChange.current = true
       prevValueRef.current = newValue
@@ -63,18 +57,15 @@ export function ListInput({
     }
   }
 
-  // Handle adding a new item
   const handleAddItem = () => {
     if (!currentItem.trim()) return
 
     if (editingIndex !== null) {
-      // Update existing item
       const newItems = [...items]
       newItems[editingIndex] = currentItem
       setItems(newItems)
       setEditingIndex(null)
     } else {
-      // Add new item
       setItems((prevItems) => [...prevItems, currentItem])
     }
 
@@ -82,27 +73,23 @@ export function ListInput({
     inputRef.current?.focus()
   }
 
-  // Handle removing an item
   const handleRemoveItem = (index: number) => {
     const newItems = [...items]
     newItems.splice(index, 1)
     setItems(newItems)
 
-    // If we were editing this item, reset
     if (editingIndex === index) {
       setEditingIndex(null)
       setCurrentItem('')
     }
   }
 
-  // Handle editing an item
   const handleEditItem = (index: number) => {
     setCurrentItem(items[index])
     setEditingIndex(index)
     inputRef.current?.focus()
   }
 
-  // Handle keyboard events for adding items with Enter
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && currentItem.trim()) {
       e.preventDefault()
@@ -110,7 +97,6 @@ export function ListInput({
     }
   }
 
-  // Update parent whenever items array changes
   useEffect(() => {
     updateParentValue()
   }, [items])
