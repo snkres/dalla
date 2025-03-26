@@ -18,6 +18,7 @@ import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Loading } from '@components/shared/dalla-loading'
+import { getSizeRangeFromValue } from '@dallah/components/company-sizeSelector'
 
 export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -78,23 +79,9 @@ export function CompanyProfileClient({ id }: { id: string }) {
   })
 
   const handleProfileUpdate = async (
-    updateData: Partial<CompanyProfile['data']['CompanyProfile']>,
-    successMessage = 'Profile updated successfully',
+    payload: Partial<CompanyProfile['data']['CompanyProfile']>,
   ) => {
-    const { industry, size, type, phone, socialLinks, name, ...directFields } =
-      updateData as any
-
-    const metaUpdates = {
-      ...(industry && { industry }),
-      ...(size && { size }),
-      ...(type && { type }),
-      ...(phone && { phone }),
-      ...(socialLinks && { socialLinks }),
-    }
-
-    const apiPayload: any = { ...directFields, meta: metaUpdates }
-
-    updateProfileMutation.mutate(apiPayload)
+    updateProfileMutation.mutate(payload)
   }
 
   if (isLoading || ownProfileLoading)
@@ -117,7 +104,7 @@ export function CompanyProfileClient({ id }: { id: string }) {
               verified: profile.data.data.verified,
               logo: profile.data.data.CompanyProfile.logo,
               name: profile.data.data.name,
-              size: profile.data.data.CompanyProfile.meta?.size,
+              size: profile.data.data.CompanyProfile.meta?.size || '',
               location: profile.data.data.CompanyProfile.location,
               website: profile.data.data.CompanyProfile.website,
               rating: 5,
@@ -131,7 +118,16 @@ export function CompanyProfileClient({ id }: { id: string }) {
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
-            onUpdate={handleProfileUpdate}
+            onUpdate={(updatedCompany) => {
+              handleProfileUpdate({
+                location: updatedCompany.location || '',
+                meta: {
+                  ...profile?.data.data.CompanyProfile.meta,
+                  size: updatedCompany.size || '',
+                  industry: updatedCompany.industry || '',
+                },
+              })
+            }}
             onTogglePublicView={() => setIsPublicView(!isPublicView)}
           />
           <ContactInfoCard
@@ -143,14 +139,23 @@ export function CompanyProfileClient({ id }: { id: string }) {
             }}
             isOwner={isOwner}
             isPublicView={isPublicView}
-            onUpdate={handleProfileUpdate}
+            onUpdate={(updatedCompany) => {
+              handleProfileUpdate({
+                website: updatedCompany.website || '',
+                meta: {
+                  ...profile?.data.data.CompanyProfile.meta,
+                  socialLinks: updatedCompany.socialLinks || {},
+                },
+              })
+            }}
           />
         </aside>
         <main className="space-y-6 lg:col-span-2">
           <AboutSection
             data={{
               name: profile?.data.data.name,
-              size: profile?.data.data.CompanyProfile.meta?.size,
+              size: profile?.data.data.CompanyProfile.meta?.size || '',
+
               industry: profile?.data.data.CompanyProfile.meta?.industry,
               headline: profile?.data.data.CompanyProfile.headline,
               bio: profile?.data.data.CompanyProfile.bio,
@@ -163,6 +168,9 @@ export function CompanyProfileClient({ id }: { id: string }) {
                 headline: data.headline,
                 bio: data.bio,
                 areas: data.areas,
+                meta: {
+                  ...profile?.data.data.CompanyProfile.meta,
+                },
               })
             }}
           />

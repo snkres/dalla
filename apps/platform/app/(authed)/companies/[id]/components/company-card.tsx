@@ -26,6 +26,7 @@ import { Input } from '@dallah/design-system'
 import type { CompanyProfile } from '@lib/atoms/company/meta'
 import { Link } from 'next-view-transitions'
 import { LocationSelector } from '@dallah/components/locationSelector'
+import { CompanySizeSelector } from '@dallah/components/company-sizeSelector'
 
 export function CompanyCard({
   data,
@@ -235,13 +236,14 @@ export function CompanyCard({
             <div className="w flex w-full items-center justify-between">
               <span className="text-xs text-gray-600">Company Size</span>
               {isEditing ? (
-                <Input
-                  value={editedCompany.size}
-                  onChange={(e) => handleChange('size', e.target.value)}
-                  className="h-7 !w-28 text-right text-xs"
-                  placeholder="Company size"
-                  type="number"
-                />
+                <div className="w-4/5">
+                  <CompanySizeSelector
+                    value={editedCompany.size}
+                    onChange={(value: string) => handleChange('size', value)}
+                    placeholder="Select company size"
+                    className="text-xs"
+                  />
+                </div>
               ) : (
                 <span className="text-xs font-medium text-gray-800">
                   {data.size}
