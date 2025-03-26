@@ -20,7 +20,7 @@ import { expertiseOptions } from '../data'
 import ExpertiseSelect from '../expertise-select'
 import type { CompanyOnboardingData } from '../../hooks/use-onboarding'
 import PhoneInput from '@dallah/components/phoneInput'
-import { COMPANY_SIZE_RANGES } from '@dallah/components/src/company-size.select'
+import { COMPANY_SIZE_RANGES } from '@dallah/components/company-sizeSelector'
 
 export function CompanyOnboardingOne({
   data,
