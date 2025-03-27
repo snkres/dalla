@@ -18,7 +18,7 @@ export function CompanyOnboardingTwo({
       if (prev.areas.includes(area)) {
         return {
           ...prev,
-          areas: prev.areas.filter((area) => area !== area),
+          areas: prev.areas.filter((a) => a !== area),
         }
       }
 
