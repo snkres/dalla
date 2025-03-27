@@ -299,7 +299,7 @@ const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({
                   <span className="font-normal text-gray-800">
                     {proposal.createdAt
                       ? new Date(proposal.createdAt).toLocaleDateString(
-                          'en-UK',
+                          'en-GB',
                           {
                             month: 'short',
                             day: 'numeric',

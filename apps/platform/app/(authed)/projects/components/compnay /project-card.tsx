@@ -99,7 +99,7 @@ export function ProjectCard({
             <p className="mt-1 text-sm text-gray-500">
               {isCompany
                 ? `Posted ${new Date(project.createdAt).toLocaleDateString(
-                    'en-UK',
+                    'en-GB',
                     {
                       day: 'numeric',
                       month: 'short',
@@ -178,7 +178,7 @@ export function ProjectCard({
             ) : (
               <span className="text-sm text-gray-500">
                 <Clock className="mr-1 inline-block h-3.5 w-3.5" />
-                {new Date(project.createdAt).toLocaleDateString('en-UK', {
+                {new Date(project.createdAt).toLocaleDateString('en-GB', {
                   day: 'numeric',
                   month: 'short',
                 })}

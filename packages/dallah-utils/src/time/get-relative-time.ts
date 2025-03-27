@@ -24,7 +24,7 @@ export function getRelativeTime(timestamp: string): string {
     return `${days} ${days === 1 ? 'day' : 'days'} ago`
   }
 
-  return past.toLocaleDateString('en-UK', {
+  return past.toLocaleDateString('en-GB', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

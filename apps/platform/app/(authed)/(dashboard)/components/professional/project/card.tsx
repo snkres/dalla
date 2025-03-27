@@ -143,7 +143,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           </div>
           <div className="whitespace-nowrap text-xs text-gray-400">
             <Clock className="mr-1 inline-block h-3 w-3" />
-            {new Date(project.createdAt).toLocaleDateString('en-UK', {
+            {new Date(project.createdAt).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'short',
               year: 'numeric',

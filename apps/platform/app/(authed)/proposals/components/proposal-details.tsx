@@ -132,7 +132,7 @@ const ProposalDetails: React.FC<{
               <div className="mb-2 flex items-center gap-2">
                 <StatusBadge status={data.data.status} />
                 <span className="text-sm text-gray-500">
-                  {new Date(data.data.createdAt).toLocaleDateString('en-UK', {
+                  {new Date(data.data.createdAt).toLocaleDateString('en-GB', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric',

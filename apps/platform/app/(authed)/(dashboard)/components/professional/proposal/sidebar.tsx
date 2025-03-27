@@ -308,7 +308,7 @@ export function ApplicationSidebar({
               <Clock className="h-3.5 w-3.5 text-gray-400" />
               <p className="text-xs text-gray-500">
                 Posted{' '}
-                {new Date(project.createdAt).toLocaleDateString('en-UK', {
+                {new Date(project.createdAt).toLocaleDateString('en-GB', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
