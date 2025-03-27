@@ -435,7 +435,7 @@ export function EducationSection({
                       <div className="mt-1 flex items-center text-xs text-gray-500 sm:mt-0">
                         <Calendar className="mr-1 h-3 w-3" />
                         <span>
-                          {new Date(edu.startDate).toLocaleDateString('en-UK', {
+                          {new Date(edu.startDate).toLocaleDateString('en-GB', {
                             month: 'short',
                             year: 'numeric',
                           })}{' '}

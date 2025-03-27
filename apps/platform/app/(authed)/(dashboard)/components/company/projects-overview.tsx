@@ -189,7 +189,7 @@ export function ProjectsOverview({
                                   Posted:{' '}
                                   {new Date(
                                     project.createdAt,
-                                  ).toLocaleDateString('en-UK', {
+                                  ).toLocaleDateString('en-GB', {
                                     month: 'short',
                                     day: 'numeric',
                                     year: 'numeric',

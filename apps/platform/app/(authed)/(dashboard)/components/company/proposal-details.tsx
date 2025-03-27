@@ -329,7 +329,7 @@ const ProposalDetails = ({
                     {selectedProposalData?.createdAt
                       ? new Date(
                           selectedProposalData.createdAt,
-                        ).toLocaleDateString('en-UK', {
+                        ).toLocaleDateString('en-GB', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',

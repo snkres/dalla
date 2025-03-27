@@ -16,6 +16,11 @@ import { SkillSelector } from '@components/shared/skill-selector'
 import MultiImageUpload from '@components/shared/multiImage-upload'
 import { Modal } from '@dallah/design-system'
 import { ListInput } from '@dallah/components/listInput'
+import { useAtom } from 'jotai'
+import {
+  addNotificationAtom,
+  createProjectNotification,
+} from '@lib/atoms/shared/notifications'
 
 export function AddProject({
   onClose,
@@ -26,6 +31,7 @@ export function AddProject({
 }) {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [, addNotification] = useAtom(addNotificationAtom)
   const [formData, setFormData] = useState({
     title: '',
     jobTitle: '',
@@ -134,7 +140,6 @@ export function AddProject({
     setIsSubmitting(true)
 
     try {
-      // Format the timeline string from the value and unit
       const timeline = `${formData.meta.timelineValue} ${formData.meta.timelineUnit}`
 
       const projectData: CreateProjectReq = {
@@ -148,11 +153,12 @@ export function AddProject({
         meta: {
           budget: Number(formData.meta.budget),
           duration: timeline,
-          // priority: formData.meta.priority,
         },
       }
 
       const response = await createProject(projectData)
+
+      addNotification(createProjectNotification(formData.title))
 
       toast({
         title: 'Project created successfully',

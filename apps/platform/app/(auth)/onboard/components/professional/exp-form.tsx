@@ -186,6 +186,8 @@ export function ExperienceForm({
                 country: 'Select country',
                 city: "Select city or 'Remote'",
               }}
+              required={true}
+              selectClassName="!rounded-xl h-11 [&_span]:!text-sm"
             />
           </div>
         </div>

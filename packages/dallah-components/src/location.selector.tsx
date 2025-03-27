@@ -6,6 +6,7 @@ import {
   COUNTRY_CODE_MAPPING,
 } from './country.select'
 import { CityDropdown, type LocationValue } from './city.select'
+import { cn } from '@dallah/utils'
 
 interface LocationSelectorProps {
   value?: string
@@ -16,6 +17,8 @@ interface LocationSelectorProps {
   }
   disabled?: boolean
   required?: boolean
+  className?: string
+  selectClassName?: string
 }
 
 const CODE_TO_COUNTRY_NAME: Record<string, string> = Object.entries(
@@ -37,6 +40,8 @@ export function LocationSelector({
   },
   disabled = false,
   required = false,
+  className,
+  selectClassName,
 }: LocationSelectorProps) {
   const isInternalChange = useRef(false)
 
@@ -138,22 +143,30 @@ export function LocationSelector({
   }
 
   return (
-    <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
-      <div className="w-full sm:w-1/2">
+    <div
+      className={cn(
+        'flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0',
+        className,
+      )}
+    >
+      <div className="w-full flex-1 sm:w-1/2">
         <CountryDropdown
           onChange={handleCountryChange}
           placeholder={placeholder.country}
           disabled={disabled}
           value={location.country?.name}
+          className={cn(selectClassName)}
         />
       </div>
-      <div className="w-full sm:w-1/2">
+
+      <div className="w-full flex-1 sm:w-1/2">
         <CityDropdown
           countryCode={location.country?.code}
           onChange={handleCityChange}
           value={location.city}
           placeholder={placeholder.city}
           disabled={disabled || !location.country}
+          className={cn(selectClassName)}
         />
       </div>
     </div>

@@ -21,6 +21,7 @@ import ExpertiseSelect from '../expertise-select'
 import type { CompanyOnboardingData } from '../../hooks/use-onboarding'
 import PhoneInput from '@dallah/components/phoneInput'
 import { COMPANY_SIZE_RANGES } from '@dallah/components/company-sizeSelector'
+import { LocationSelector } from '@dallah/components/locationSelector'
 
 export function CompanyOnboardingOne({
   data,
@@ -103,10 +104,13 @@ export function CompanyOnboardingOne({
             </div>
           </motion.div>
 
-          <motion.div variants={fadeInUpVariants} className="w-full gap-8">
+          <motion.div
+            variants={fadeInUpVariants}
+            className="w-full min-w-full gap-8"
+          >
             <div className="space-y-4">
               <Label>Company Details</Label>
-              <div className="flex gap-4">
+              <div className="flex gap-2">
                 <div className="relative w-full">
                   <PhoneInput
                     defaultValue={data.phoneNumber}
@@ -119,17 +123,6 @@ export function CompanyOnboardingOne({
                   />
                 </div>
                 <div className="relative w-full">
-                  <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <Input
-                    value={data.address}
-                    onChange={(e) =>
-                      updateData({ ...data, address: e.target.value })
-                    }
-                    placeholder="Location"
-                    className="h-11 pl-10"
-                  />
-                </div>
-                <div className="relative w-full">
                   <Globe2 className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
                     value={data.website}
@@ -138,6 +131,20 @@ export function CompanyOnboardingOne({
                     }
                     placeholder="Website"
                     className="h-11 pl-10"
+                  />
+                </div>
+                <div className="relative">
+                  <LocationSelector
+                    value={data.address}
+                    onChange={(value: string) =>
+                      updateData({ ...data, address: value })
+                    }
+                    placeholder={{
+                      country: 'Select country',
+                      city: 'Select city',
+                    }}
+                    required={false}
+                    selectClassName="!rounded-xl h-11"
                   />
                 </div>
               </div>

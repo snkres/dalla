@@ -54,6 +54,7 @@ export default function SettingsLayoutPage({ children }: SettingsPageProps) {
       subroutes: [
         { key: 'personal-info', label: 'Personal Info' },
         { key: 'avatar', label: 'Profile Photo' },
+        { key: 'password', label: 'Password' },
       ],
     },
     // {

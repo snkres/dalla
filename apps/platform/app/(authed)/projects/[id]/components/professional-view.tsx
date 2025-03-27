@@ -401,7 +401,7 @@ export function ProfessionalProjectView({
                       {project.company?.createdAt
                         ? new Date(
                             project.company.createdAt,
-                          ).toLocaleDateString('en-UK', {
+                          ).toLocaleDateString('en-GB', {
                             month: 'short',
                             year: 'numeric',
                           })

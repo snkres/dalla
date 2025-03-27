@@ -10,17 +10,18 @@ import NotificationsPopup from './notifications-popup'
 import ProfilePopup from './profile-popup'
 import MobileMenu from './mobile-menu'
 import { useNavbar } from '@lib/hooks/use-navbar'
-
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
+import { unreadNotificationCountAtom } from '@lib/atoms/shared/notifications'
 
 export function Navbar() {
   const router = useTransitionRouter()
   const [global] = useAtom(globalAtom)
   const [proMeta] = useAtom(proMetaAtom)
   const [companyMeta] = useAtom(companyMetaAtom)
+  const [unreadNotificationCount] = useAtom(unreadNotificationCountAtom)
   console.log(global)
 
   const {
@@ -32,17 +33,12 @@ export function Navbar() {
     isSearchActive,
     searchQuery,
     setSearchQuery,
-    notifications,
     setActiveItem,
     toggleProfileMenu,
     toggleMobileMenu,
     toggleSearch,
     toggleNotifications,
-    handleSearch,
     handleKeyDown,
-    dismissNotification,
-    markAllAsRead,
-    getNotificationIcon,
     pathname,
     searchInputRef,
     notificationsRef,
@@ -52,11 +48,13 @@ export function Navbar() {
     isNotificationsOpen,
   } = useNavbar()
 
+  const hasUnreadNotifications = unreadNotificationCount > 0 || unreadCount > 0
+
   const onSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
-      toggleSearch() // Close search after submission
+      toggleSearch()
     }
   }
 
@@ -135,22 +133,22 @@ export function Navbar() {
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
-            {unreadCount > 0 && (
-              <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
-                {unreadCount}
-              </span>
+            {hasUnreadNotifications && (
+              <>
+                <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+
+                {(unreadNotificationCount > 0 || unreadCount > 0) && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
+                    {unreadNotificationCount || unreadCount}
+                  </span>
+                )}
+              </>
             )}
           </button>
 
           <AnimatePresence>
             {isNotificationsOpen && (
-              <NotificationsPopup
-                ref={notificationsRef}
-                notifications={notifications}
-                dismissNotification={dismissNotification}
-                markAllAsRead={markAllAsRead}
-                getNotificationIcon={getNotificationIcon}
-              />
+              <NotificationsPopup ref={notificationsRef} />
             )}
           </AnimatePresence>
         </div>
@@ -173,7 +171,6 @@ export function Navbar() {
                 className="object-cover"
                 sizes="24px"
                 onError={(e) => {
-                  // Fallback to default avatar if image fails to load
                   const target = e.target as HTMLImageElement
                   target.src = '/avatar.png'
                 }}

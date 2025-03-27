@@ -70,7 +70,7 @@ export function ProjectCardProfessional({ project }: ProjectCardProps) {
             </h3>
             <p className="mt-1 text-sm text-gray-500">
               {`Posted ${new Date(project.appliedAt).toLocaleDateString(
-                'en-UK',
+                'en-GB',
                 {
                   day: 'numeric',
                   month: 'short',
@@ -140,7 +140,7 @@ export function ProjectCardProfessional({ project }: ProjectCardProps) {
         ) : (
           <span className="text-sm text-gray-500">
             <Clock className="mr-1 inline-block h-3.5 w-3.5" />
-            {new Date(project.appliedAt).toLocaleDateString('en-UK', {
+            {new Date(project.appliedAt).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'short',
             })}
