@@ -171,6 +171,7 @@ interface CityDropdownProps {
   value?: string
   disabled?: boolean
   placeholder?: string
+  className?: string
 }
 
 const CityDropdownComponent = (
@@ -180,6 +181,7 @@ const CityDropdownComponent = (
     value,
     disabled = false,
     placeholder = 'Select a city',
+    className,
     ...props
   }: CityDropdownProps,
   ref: React.ForwardedRef<HTMLButtonElement>,
@@ -217,19 +219,21 @@ const CityDropdownComponent = (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         ref={ref}
-        className="border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 w-full items-center justify-between whitespace-nowrap rounded-3xl border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+        className={cn(
+          'border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring flex h-10 w-full items-center justify-between whitespace-nowrap rounded-3xl border bg-transparent px-3 py-2 !text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+          className,
+        )}
         disabled={disabled}
         {...props}
       >
         {selectedCity ? (
           <div className="flex w-0 flex-grow items-center gap-2 overflow-hidden">
-            <Map className="h-5 w-5 shrink-0" />
-            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xs">
               {selectedCity}
             </span>
           </div>
         ) : (
-          <span className="text-sm">{placeholder}</span>
+          <span className="!text-xs">{placeholder}</span>
         )}
         <ChevronDown size={16} />
       </PopoverTrigger>
@@ -252,7 +256,6 @@ const CityDropdownComponent = (
                   onSelect={() => handleSelect(city)}
                 >
                   <div className="flex w-0 flex-grow space-x-2 overflow-hidden">
-                    <Map className="h-4 w-4 shrink-0" />
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
                       {city}
                     </span>

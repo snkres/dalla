@@ -58,7 +58,7 @@ const EmptyProjectView = ({
             className="w-full border-[#63B7B7]/30 bg-white text-xs text-[#1D8489] hover:bg-white"
           >
             <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
-            Post Job
+            Start a Project
           </Button>
         </div>
 
@@ -71,14 +71,14 @@ const EmptyProjectView = ({
               Hire Professionals
             </h4>
           </div>
-          <p className="mb-4 text-xs text-gray-600">
+          <p className="mb-4 text-center text-xs text-gray-600">
             Browse our talent pool and hire professionals directly for your
             projects.
           </p>
           <Button
             size="sm"
             onClick={onHireConsultant}
-            className="w-full bg-[#63B7B7] text-xs text-white hover:bg-[#1D8489]"
+            className="w-full !bg-[#63B7B7] text-xs text-white hover:!bg-[#1D8489]"
           >
             Find Professionals
             <ArrowRight className="ml-1.5 h-3.5 w-3.5" />

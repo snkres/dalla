@@ -41,6 +41,7 @@ interface CountryDropdownProps {
   disabled?: boolean
   placeholder?: string
   slim?: boolean
+  className?: string
 }
 
 export const MENA_COUNTRIES = [
@@ -91,6 +92,7 @@ const CountryDropdownComponent = (
     disabled = false,
     placeholder = 'Select a country',
     slim = false,
+    className,
     ...props
   }: CountryDropdownProps,
   ref: React.ForwardedRef<HTMLButtonElement>,
@@ -165,6 +167,7 @@ const CountryDropdownComponent = (
   const triggerClasses = cn(
     'flex h-10 w-full items-center justify-between whitespace-nowrap rounded-3xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
     slim ? 'w-20' : '',
+    className,
   )
 
   return (
@@ -176,7 +179,7 @@ const CountryDropdownComponent = (
         {...props}
       >
         {selectedCountry ? (
-          <div className="flex w-0 flex-grow items-center gap-2 overflow-hidden">
+          <div className="flex w-full items-center gap-2 overflow-hidden text-ellipsis">
             <div className="inline-flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full">
               <CircleFlag
                 countryCode={selectedCountry.alpha2.toLowerCase()}
@@ -184,15 +187,17 @@ const CountryDropdownComponent = (
               />
             </div>
             {slim === false && (
-              <span className="overflow-hidden text-ellipsis whitespace-nowrap !text-sm">
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap !text-xs">
                 {selectedCountry.name}
               </span>
             )}
           </div>
         ) : (
-          <span>{slim === false ? placeholder : <Globe size={20} />}</span>
+          <div className="flex items-center gap-2">
+            {slim === false && <span className="!text-xs">{placeholder}</span>}
+          </div>
         )}
-        <ChevronDown size={16} />
+        <ChevronDown size={16} className="ml-auto shrink-0" />
       </PopoverTrigger>
       <PopoverContent
         collisionPadding={10}

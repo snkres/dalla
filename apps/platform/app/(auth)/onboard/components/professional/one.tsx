@@ -148,7 +148,7 @@ export function ProOnboardingOne({
         </div>
       </div>
 
-      <div className="flex w-full items-center gap-4">
+      <div className="flex w-full items-center gap-2">
         <div className="relative w-full">
           <div className="mb-1 flex items-center">
             <Label htmlFor="headline">Headline</Label>
@@ -176,6 +176,12 @@ export function ProOnboardingOne({
                 meta: { ...data.meta, location },
               })
             }
+            placeholder={{
+              country: 'Country',
+              city: 'City',
+            }}
+            required={true}
+            selectClassName="!rounded-xl h-11"
           />
         </div>
         <div className="relative w-full">
