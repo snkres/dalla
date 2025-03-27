@@ -17,6 +17,8 @@ import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { redirect } from 'next/navigation'
+import { useState } from 'react'
+import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -28,6 +30,9 @@ type FormData = z.infer<typeof schema>
 
 export default function LoginPage() {
   const [global, setGlobal] = useAtom(globalAtom)
+  const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   if (global.id) {
     return redirect('/')
   }
@@ -38,7 +43,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isLoading },
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
@@ -46,6 +51,7 @@ export default function LoginPage() {
   const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true)
     try {
       setGlobal({
         ...global,
@@ -83,6 +89,8 @@ export default function LoginPage() {
           })
         }
       }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -140,7 +148,7 @@ export default function LoginPage() {
               type="email"
               {...register('email')}
               placeholder="Enter your email"
-              className="hx"
+              className="h-11"
             />
             {errors.email && (
               <p className="mt-1 text-xs text-red-500">
@@ -156,13 +164,27 @@ export default function LoginPage() {
             >
               Password
             </label>
-            <Input
-              id="password"
-              type="password"
-              {...register('password')}
-              placeholder="Enter your password"
-              className="h-11"
-            />
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                {...register('password')}
+                placeholder="Enter your password"
+                className="h-11 pl-10 pr-10"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="mt-1 text-xs text-red-500">
                 {errors.password.message}
@@ -191,22 +213,31 @@ export default function LoginPage() {
 
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="h-11 w-full bg-[#234d64] font-medium text-white hover:bg-[#1a3b4d]"
         >
-          {isLoading ? 'Signing in...' : 'Sign in'}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Signing in...
+            </>
+          ) : (
+            'Sign in'
+          )}
         </Button>
       </form>
 
-      <p className="text-center text-xs text-gray-500">
-        Don&apos;t have an account?{' '}
-        <Link
-          href={`/signup?mode=${mode}`}
-          className="font-medium text-[#234d64] hover:text-[#1a3b4d]"
-        >
-          Sign up
-        </Link>
-      </p>
+      <div className="mt-6 text-center">
+        <p className="text-sm text-slate-600">
+          Don't have an account?{' '}
+          <Link
+            href="/signup"
+            className="text-slate-blue-90 font-medium hover:underline"
+          >
+            Sign up
+          </Link>
+        </p>
+      </div>
 
       <p className="text-center text-xs text-gray-500">
         By signing in, you agree to our{' '}
