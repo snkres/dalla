@@ -183,14 +183,12 @@ interface PopupMenuItem {
   onClick: () => void
 }
 
-// Add random avatar generation
 const getRandomAvatar = (seed: number | string) => {
   const styles = ['micah', 'avataaars', 'bottts', 'adventurer', 'lorelei']
   const randomStyle = styles[Math.floor(Math.random() * styles.length)]
   return `https://randomuser.me/api/portraits/men/${seed}.jpg`
 }
 
-// Create conversations with random avatars
 const getConversationsWithRandomAvatars = () => {
   return conversations.map((convo) => ({
     ...convo,
@@ -345,18 +343,15 @@ export default function MessagesPage() {
   }
 
   const handleStartConversation = () => {
-    // Simulate loading
     setIsLoading(true)
 
-    // Generate random avatar conversations
     const conversationsWithAvatars = getConversationsWithRandomAvatars()
     setRandomConversations(conversationsWithAvatars)
 
-    // Simulate API fetch delay
     setTimeout(() => {
       setHasConversations(true)
       setIsLoading(false)
-      // Don't auto-select a conversation on mobile to avoid hiding the sidebar
+
       if (!isMobileView) {
         setSelectedConversation(conversationsWithAvatars[0])
       } else {
