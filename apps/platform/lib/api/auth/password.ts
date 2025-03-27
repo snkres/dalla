@@ -52,3 +52,28 @@ export async function resetPassword(payload: ResetPasswordPayload) {
 
   return res
 }
+
+interface ChangePasswordPayload {
+  oldPassword: string
+  newPassword: string
+}
+
+export async function changePassword(payload: ChangePasswordPayload) {
+  let res = await axiosInstance
+    .post<{
+      success: boolean
+      message: string
+    }>('/auth/reset-old-password', payload)
+    .then((res) => {
+      return {
+        ...res.data,
+        status: res.status,
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      throw err
+    })
+
+  return res
+}
