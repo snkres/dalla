@@ -10,6 +10,7 @@ import { Globe2 } from 'lucide-react'
 import { Input, Label } from '@dallah/design-system'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
+import { ensureHttpsPrefix } from '@dallah/utils'
 
 export function ProOnboardingTwo({
   data,
@@ -109,6 +110,18 @@ export function ProOnboardingTwo({
                   socialLinks: {
                     ...data.meta.socialLinks,
                     portfolio: e.target.value,
+                  },
+                },
+              })
+            }
+            onBlur={(e) =>
+              updateData({
+                ...data,
+                meta: {
+                  ...data.meta,
+                  socialLinks: {
+                    ...data.meta.socialLinks,
+                    portfolio: ensureHttpsPrefix(e.target.value),
                   },
                 },
               })

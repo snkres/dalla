@@ -10,6 +10,7 @@ import { useAtom } from 'jotai'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { getCompanyMeta } from '@lib/api/company/profile'
 import { getProMeta } from '@lib/api/pro/profile'
+import { ensureHttpsPrefix } from '@dallah/utils'
 
 export interface CompanyOnboardingData {
   // Step 1
@@ -250,7 +251,7 @@ export function useOnboarding() {
           name: ind.name,
           description: ind.description,
         })),
-        website: companyData.website,
+        website: ensureHttpsPrefix(companyData.website),
         location: companyData.address,
         logo: companyData.logo ?? undefined,
         meta: {
