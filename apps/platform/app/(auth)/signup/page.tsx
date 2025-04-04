@@ -18,6 +18,8 @@ import { globalAtom } from '@lib/atoms/global'
 import { redirect } from 'next/navigation'
 import { useState } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { LinkedInIcon } from '@lib/constants/social-media-icons'
+import { GoogleIcon } from '@lib/constants/social-media-icons'
 
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
@@ -252,13 +254,42 @@ export default function SignupPage() {
               'Create account'
             )}
           </Button>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs lowercase">
+              <span className="bg-white px-2 text-gray-400">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { icon: LinkedInIcon, label: 'LinkedIn' },
+              { icon: GoogleIcon, label: 'Google' },
+            ].map(({ icon: Icon, label }) => (
+              <Button
+                key={label}
+                type="button"
+                variant="outline"
+                className="!h-11"
+                onClick={() => {
+                  /* Handle social signup */
+                }}
+              >
+                <Icon className="h-6 w-6" />
+              </Button>
+            ))}
+          </div>
         </form>
 
-        <p className="text-center text-xs text-gray-500">
+        <p className="text-center text-sm text-gray-500">
           Already have an account?{' '}
           <Link
             href={`/login?mode=${mode}`}
-            className="font-medium text-[#234d64] hover:text-[#1a3b4d]"
+            className="font-medium text-[#234d64] hover:text-[#1a3b4d] hover:underline"
           >
             Sign in
           </Link>

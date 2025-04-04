@@ -19,6 +19,7 @@ import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 import { redirect } from 'next/navigation'
 import { useState } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -210,7 +211,6 @@ export default function LoginPage() {
             </Link>
           </div>
         </div>
-
         <Button
           type="submit"
           disabled={isSubmitting}
@@ -225,6 +225,34 @@ export default function LoginPage() {
             'Sign in'
           )}
         </Button>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-xs lowercase">
+            <span className="bg-white px-2 text-gray-400">
+              Or continue with
+            </span>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: LinkedInIcon, label: 'LinkedIn' },
+            { icon: GoogleIcon, label: 'Google' },
+          ].map(({ icon: Icon, label }) => (
+            <Button
+              key={label}
+              type="button"
+              variant="outline"
+              className="!h-11"
+              onClick={() => {
+                //TODO: Implement social login
+              }}
+            >
+              <Icon className="h-6 w-6" />
+            </Button>
+          ))}
+        </div>
       </form>
 
       <div className="mt-6 text-center">
