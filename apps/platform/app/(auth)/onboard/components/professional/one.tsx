@@ -10,8 +10,9 @@ import {
   SelectValue,
   SelectTrigger,
   Textarea,
+  Button,
 } from '@dallah/design-system'
-import { MapPin, UploadCloudIcon } from 'lucide-react'
+import { MapPin, UploadCloudIcon, Linkedin } from 'lucide-react'
 import { useState, type Dispatch } from 'react'
 import AvatarUpload from '@components/shared/avatar-upload'
 import { motion } from 'motion/react'
@@ -20,6 +21,13 @@ import { useProfessionalOnboarding } from '../../hooks/use-professional-onboardi
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
 import { LocationSelector } from '@dallah/components/locationSelector'
+import {
+  calculateYearsOfExperience,
+  extractEducation,
+  extractWorkExperience,
+} from '@lib/utils/parse-cv'
+import { initLinkedInAuth, linkedInToCVFormat } from '@lib/api/auth/linkedin'
+import { useToast } from '@dallah/design-system/ui/toast/use-toast'
 
 export function ProOnboardingOne({
   data,
@@ -38,7 +46,12 @@ export function ProOnboardingOne({
       setIsAbleToProceed,
       currentStep: 1,
     })
+  const { toast } = useToast()
   const [dragActive, setDragActive] = useState(false)
+  const [isLinkedInProcessing, setIsLinkedInProcessing] = useState(false)
+  const [linkedInData, setLinkedInData] = useState<null | {
+    profile: { name: string }
+  }>(null)
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault()
@@ -47,6 +60,74 @@ export function ProOnboardingOne({
       setDragActive(true)
     } else if (e.type === 'dragleave') {
       setDragActive(false)
+    }
+  }
+
+  const handleLinkedInAuth = async () => {
+    if (isLinkedInProcessing) return
+
+    setIsLinkedInProcessing(true)
+
+    try {
+      const linkedInProfile = await initLinkedInAuth()
+
+      const formattedData = linkedInToCVFormat(linkedInProfile)
+
+      setLinkedInData(formattedData.data)
+
+      const cvData = formattedData.data
+      const yoe = calculateYearsOfExperience(cvData.workExperiences)
+      const extractedSkills = cvData.skills.featuredSkills
+        .filter((skill) => skill.skill.length > 0)
+        .map((skill) => skill.skill)
+
+      const educationEntries = extractEducation(cvData.educations)
+      const workExperience = extractWorkExperience(cvData.workExperiences)
+
+      if (extractedSkills.length > 0) {
+        workExperience.forEach((exp) => {
+          exp.meta.skills = extractedSkills.filter(
+            (skill) =>
+              exp.meta.responsibilities
+                .toLowerCase()
+                .includes(skill.toLowerCase()) ||
+              exp.title.toLowerCase().includes(skill.toLowerCase()),
+          )
+        })
+      }
+
+      const bio =
+        cvData.profile.summary ||
+        `Professional with ${yoe} years of experience. ${workExperience[0]?.title || ''} at ${workExperience[0]?.company || ''}.`
+
+      updateData((prev) => ({
+        ...prev,
+        headline: `${cvData.profile.name}'s Professional Profile`,
+        bio,
+        gender: prev.gender,
+        meta: {
+          ...prev.meta,
+          skills: extractedSkills,
+          location: cvData.profile.location || prev.meta.location,
+          yearsOfExperience: yoe,
+          socialLinks: {
+            ...(prev.meta.socialLinks || {}),
+            linkedin: cvData.profile.url || '',
+          },
+        },
+        education: educationEntries,
+        experience: workExperience,
+      }))
+    } catch (error) {
+      console.error('LinkedIn auth error:', error)
+      toast({
+        title: 'Error connecting to LinkedIn',
+        description:
+          error instanceof Error ? error.message : 'Unknown error occurred',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLinkedInProcessing(false)
     }
   }
 
@@ -82,68 +163,113 @@ export function ProOnboardingOne({
             required={true}
           />
         </div>
-        <div
-          className={`w-full flex-1 cursor-pointer rounded-lg border-2 border-solid p-6 transition-colors ${
-            isLoading
-              ? 'border-slate-blue-100 bg-[#f8eacf]/10 opacity-70'
-              : dragActive
-                ? 'border-slate-blue-100 bg-[#f8eacf]/10'
-                : uploadedCV
-                  ? 'border-slate-blue-100 bg-[#f8eacf]/5'
-                  : 'border-[#E4E7EC]'
-          }`}
-          onDragEnter={handleDrag}
-          onDragLeave={handleDrag}
-          onDragOver={handleDrag}
-          onDrop={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            setDragActive(false)
-            const file = e.dataTransfer.files[0]
-            if (file) {
-              setUploadedCV(file)
-            }
-          }}
-          onClick={() => {
-            if (isLoading) return
-            const input = document.createElement('input')
-            input.type = 'file'
-            input.accept = 'application/pdf'
-            input.onchange = (e) => {
-              const file = (e.target as HTMLInputElement).files?.[0]
+
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+          <div
+            className={`w-full flex-1 cursor-pointer rounded-lg border-2 border-solid p-6 transition-colors ${
+              isLoading
+                ? 'border-slate-blue-100 bg-[#f8eacf]/10 opacity-70'
+                : dragActive
+                  ? 'border-slate-blue-100 bg-[#f8eacf]/10'
+                  : uploadedCV
+                    ? 'border-slate-blue-100 bg-[#f8eacf]/5'
+                    : 'border-[#E4E7EC]'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              setDragActive(false)
+              const file = e.dataTransfer.files[0]
               if (file) {
                 setUploadedCV(file)
               }
-            }
-            input.click()
-          }}
-        >
-          <div className="space-y-1 text-center">
-            <div className="mx-auto w-fit rounded-lg border border-[#E4E7EC] p-2 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
-              {isLoading ? (
-                <div className="border-slate-blue-100 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-t-transparent"></div>
-              ) : (
-                <UploadCloudIcon size={24} className="mx-auto" />
+            }}
+            onClick={() => {
+              if (isLoading) return
+              const input = document.createElement('input')
+              input.type = 'file'
+              input.accept = 'application/pdf'
+              input.onchange = (e) => {
+                const file = (e.target as HTMLInputElement).files?.[0]
+                if (file) {
+                  setUploadedCV(file)
+                }
+              }
+              input.click()
+            }}
+          >
+            <div className="space-y-1 text-center">
+              <div className="mx-auto w-fit rounded-lg border border-[#E4E7EC] p-2 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+                {isLoading ? (
+                  <div className="border-slate-blue-100 mx-auto h-6 w-6 animate-spin rounded-full border-4 border-t-transparent"></div>
+                ) : (
+                  <UploadCloudIcon size={24} className="mx-auto" />
+                )}
+              </div>
+              <p>
+                <span className="text-slate-blue-90 font-semibold">
+                  {isLoading
+                    ? 'Processing CV...'
+                    : cvData
+                      ? 'CV Uploaded Successfully'
+                      : 'Upload Your CV'}
+                </span>{' '}
+                {!isLoading && !cvData && 'or drag and drop'}
+              </p>
+              {!isLoading && !cvData && (
+                <p className="text-sm text-[#98a2b3]">PDF (max. 2MB)</p>
+              )}
+              {cvData && (
+                <p className="text-sm text-green-600">
+                  Extracted details from {cvData.profile.name}'s CV
+                </p>
               )}
             </div>
-            <p>
-              <span className="text-slate-blue-90 font-semibold">
-                {isLoading
-                  ? 'Processing CV...'
-                  : cvData
-                    ? 'CV Uploaded Successfully'
-                    : 'Upload Your CV'}
-              </span>{' '}
-              {!isLoading && !cvData && 'or drag and drop'}
-            </p>
-            {!isLoading && !cvData && (
-              <p className="text-sm text-[#98a2b3]">PDF (max. 2MB)</p>
-            )}
-            {cvData && (
-              <p className="text-sm text-green-600">
-                Extracted details from {cvData.profile.name}'s CV
+          </div>
+
+          <div
+            className={`w-full flex-1 cursor-pointer rounded-lg border-2 border-solid p-6 transition-colors ${
+              isLinkedInProcessing
+                ? 'border-[#0077B5] bg-[#0077B5]/5 opacity-70'
+                : linkedInData
+                  ? 'border-[#0077B5] bg-[#0077B5]/5'
+                  : 'border-[#E4E7EC]'
+            }`}
+            onClick={
+              !isLinkedInProcessing && !linkedInData
+                ? handleLinkedInAuth
+                : undefined
+            }
+          >
+            <div className="space-y-1 text-center">
+              <div className="mx-auto w-fit rounded-lg border border-[#E4E7EC] p-2 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">
+                {isLinkedInProcessing ? (
+                  <div className="mx-auto h-6 w-6 animate-spin rounded-full border-4 border-[#0077B5] border-t-transparent"></div>
+                ) : (
+                  <Linkedin size={24} className="mx-auto text-[#0077B5]" />
+                )}
+              </div>
+              <p>
+                <span className="text-slate-blue-90 font-semibold">
+                  {isLinkedInProcessing
+                    ? 'Connecting to LinkedIn...'
+                    : linkedInData
+                      ? 'LinkedIn Connected Successfully'
+                      : 'Import from LinkedIn'}
+                </span>
               </p>
-            )}
+              {!isLinkedInProcessing && !linkedInData && (
+                <p className="text-sm text-[#98a2b3]">Connect your profile</p>
+              )}
+              {linkedInData && (
+                <p className="text-sm text-[#0077B5]">
+                  Imported details from {linkedInData.profile.name}'s LinkedIn
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
