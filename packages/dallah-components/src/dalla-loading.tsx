@@ -1,18 +1,25 @@
 'use client'
 import React from 'react'
-import { fadeInVariants } from '@dallah/utils'
+import { cn, fadeInVariants } from '@dallah/utils'
 import { motion } from 'motion/react'
 import { DallaLogoLottie } from '@dallah/design-system'
 
 export function DallaLoading({
   title = 'Loading',
   description = 'Please wait while we prepare your content',
+  className,
 }: {
   title?: string
   description?: string
+  className?: string
 }) {
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-50">
+    <div
+      className={cn(
+        'flex w-full flex-col items-center justify-center bg-slate-50',
+        className,
+      )}
+    >
       <motion.div
         variants={fadeInVariants}
         initial="initial"

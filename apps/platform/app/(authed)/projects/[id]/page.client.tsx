@@ -13,6 +13,7 @@ import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 import { useTransitionRouter } from 'next-view-transitions'
 import { getProjectProfessionalView } from '@lib/api/pro/projects'
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -36,7 +37,10 @@ export function ProjectPageClient({ id }: { id: string }) {
   if (isLoading) {
     return (
       <div className="flex h-[50vh] w-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#63B7B7]" />
+        <DallaLoading
+          className="mt-64"
+          description="Please wait while we load your project..."
+        />
       </div>
     )
   }
