@@ -20,6 +20,7 @@ import { redirect } from 'next/navigation'
 import { useState } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
+import { useSSO } from '@lib/hooks/use-sso'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -33,6 +34,8 @@ export default function LoginPage() {
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const { handleGoogleSignIn } = useSSO()
 
   if (global.id) {
     return redirect('/')
@@ -246,7 +249,11 @@ export default function LoginPage() {
               variant="outline"
               className="!h-11"
               onClick={() => {
-                //TODO: Implement social login
+                if (label === 'LinkedIn') {
+                  //TODO: Implement LinkedIn login
+                } else if (label === 'Google') {
+                  handleGoogleSignIn()
+                }
               }}
             >
               <Icon className="h-6 w-6" />

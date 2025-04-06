@@ -20,7 +20,7 @@ import { useState } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { LinkedInIcon } from '@lib/constants/social-media-icons'
 import { GoogleIcon } from '@lib/constants/social-media-icons'
-
+import { useSSO } from '@lib/hooks/use-sso'
 const schema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters long'),
   email: z.string().email('Invalid email address'),
@@ -36,6 +36,7 @@ type FormData = z.infer<typeof schema>
 export default function SignupPage() {
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
+  const { handleGoogleSignIn } = useSSO()
 
   if (global.id) {
     return redirect('/')
@@ -276,7 +277,11 @@ export default function SignupPage() {
                 variant="outline"
                 className="!h-11"
                 onClick={() => {
-                  /* Handle social signup */
+                  if (label === 'LinkedIn') {
+                    //TODO: Implement LinkedIn signup
+                  } else if (label === 'Google') {
+                    handleGoogleSignIn()
+                  }
                 }}
               >
                 <Icon className="h-6 w-6" />
