@@ -41,15 +41,25 @@ export interface LinkedInProfile {
   skills: string[]
 }
 
+// LinkedIn OAuth Configuration
+const LINKEDIN_CLIENT_ID = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID || ''
+const LINKEDIN_REDIRECT_URI = 'http://localhost:3000/login'
+// ? `${window.location.origin}/api/auth/linkedin/callback`
+// :
+
+const LINKEDIN_SCOPE = 'openid profile email'
+
 export function initLinkedInAuth() {
-  const clientId = 'your-linkedin-client-id'
-  const redirectUri = `${window.location.origin}/auth/linkedin/callback`
-  const scope = 'r_liteprofile r_emailaddress'
+  if (typeof window === 'undefined') {
+    return Promise.reject(
+      new Error('LinkedIn auth can only be used in browser'),
+    )
+  }
 
   // Generate a random state parameter to prevent CSRF attack
   const state = Math.random().toString(36).substring(2)
 
-  const oauthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&scope=${encodeURIComponent(scope)}`
+  const oauthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${LINKEDIN_CLIENT_ID}&redirect_uri=${encodeURIComponent(LINKEDIN_REDIRECT_URI)}&state=${state}&scope=${encodeURIComponent(LINKEDIN_SCOPE)}`
 
   // OAuth dialog popup window
   const width = 600
@@ -64,78 +74,42 @@ export function initLinkedInAuth() {
   )
 
   return new Promise<LinkedInProfile>((resolve, reject) => {
-    setTimeout(() => {
-      if (popup) popup.close()
+    // Listen for messages from the popup
+    const messageListener = (event: MessageEvent) => {
+      // Verify origin of message for security
+      if (event.origin !== window.location.origin) return
 
-      const mockProfile: LinkedInProfile = {
-        id: 'linkedin123456',
-        firstName: 'John',
-        lastName: 'Doe',
-        profilePicture: 'https://example.com/avatar.jpg',
-        email: 'john.doe@example.com',
-        headline: 'Senior Software Engineer',
-        summary:
-          'Experienced software engineer with a passion for building scalable web applications.',
-        location: {
-          country: 'United States',
-          city: 'San Francisco',
-        },
-        positions: [
-          {
-            companyName: 'Tech Company',
-            title: 'Senior Software Engineer',
-            startDate: {
-              month: 1,
-              year: 2018,
-            },
-            description:
-              'Led development of key features resulting in 30% increase in user engagement. Managed team of 5 engineers. Implemented CI/CD pipeline reducing deployment time by 50%.',
-            location: 'San Francisco, CA',
-          },
-          {
-            companyName: 'Startup Inc.',
-            title: 'Software Developer',
-            startDate: {
-              month: 7,
-              year: 2017,
-            },
-            endDate: {
-              month: 12,
-              year: 2017,
-            },
-            description:
-              'Developed front-end components using React. Collaborated with design team to implement UI/UX improvements.',
-            location: 'San Francisco, CA',
-          },
-        ],
-        educations: [
-          {
-            schoolName: 'Stanford University',
-            degreeName: 'Master',
-            fieldOfStudy: 'Computer Science',
-            startDate: {
-              month: 9,
-              year: 2015,
-            },
-            endDate: {
-              month: 6,
-              year: 2017,
-            },
-            description: 'Focus on AI and Machine Learning',
-          },
-        ],
-        skills: [
-          'JavaScript',
-          'React',
-          'TypeScript',
-          'Node.js',
-          'UI/UX Design',
-          'Team Leadership',
-        ],
+      if (event.data.type === 'linkedin_auth_success') {
+        window.removeEventListener('message', messageListener)
+        if (popup) popup.close()
+        resolve(event.data.profile)
       }
 
-      resolve(mockProfile)
-    }, 2000)
+      if (event.data.type === 'linkedin_auth_error') {
+        window.removeEventListener('message', messageListener)
+        if (popup) popup.close()
+        reject(new Error(event.data.error || 'LinkedIn authentication failed'))
+      }
+    }
+
+    window.addEventListener('message', messageListener)
+
+    // Fallback for when the popup is closed or authentication times out
+    const checkPopupClosed = setInterval(() => {
+      if (!popup || popup.closed) {
+        clearInterval(checkPopupClosed)
+        window.removeEventListener('message', messageListener)
+        reject(new Error('Authentication was cancelled'))
+      }
+    }, 1000)
+
+    // Set a timeout in case authentication takes too long
+    setTimeout(() => {
+      clearInterval(checkPopupClosed)
+      window.removeEventListener('message', messageListener)
+      if (popup) popup.close()
+      reject(new Error('Authentication timed out'))
+    }, 120000) // 2 minutes timeout
   })
 }
 

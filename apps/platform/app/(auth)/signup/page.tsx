@@ -36,7 +36,8 @@ type FormData = z.infer<typeof schema>
 export default function SignupPage() {
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
-  const { handleGoogleSignIn } = useSSO()
+  const { handleGoogleSignIn, handleLinkedInSignIn, isLinkedInLoading } =
+    useSSO()
 
   if (global.id) {
     return redirect('/')
@@ -278,13 +279,18 @@ export default function SignupPage() {
                 className="!h-11"
                 onClick={() => {
                   if (label === 'LinkedIn') {
-                    //TODO: Implement LinkedIn signup
+                    handleLinkedInSignIn()
                   } else if (label === 'Google') {
                     handleGoogleSignIn()
                   }
                 }}
+                disabled={label === 'LinkedIn' && isLinkedInLoading}
               >
-                <Icon className="h-6 w-6" />
+                {label === 'LinkedIn' && isLinkedInLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  <Icon className="h-6 w-6" />
+                )}
               </Button>
             ))}
           </div>

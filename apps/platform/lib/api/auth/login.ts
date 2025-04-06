@@ -58,3 +58,32 @@ export async function loginWithGoogle(payload: {
 
   return res
 }
+
+export async function loginWithLinkedIn(payload: {
+  code: string
+  redirectUri: string
+  userType: 'company' | 'user'
+}) {
+  let res = await axiosInstance
+    .post<{
+      success: boolean
+      message: string
+      data: {
+        id: string
+        access_token: string
+        refresh_token: string
+      }
+    }>('/auth/linkedin', payload)
+    .then((res) => {
+      return {
+        ...res.data,
+        status: res.status,
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      throw err
+    })
+
+  return res
+}

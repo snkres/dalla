@@ -11,13 +11,13 @@ import type { AccountType } from '@lib/types/auth'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { login } from '@lib/api/auth/login'
+import { login, loginWithLinkedIn } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { redirect } from 'next/navigation'
-import { useState } from 'react'
+import { redirect, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
 import { useSSO } from '@lib/hooks/use-sso'
@@ -34,8 +34,79 @@ export default function LoginPage() {
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isProcessingLinkedIn, setIsProcessingLinkedIn] = useState(false)
+  const searchParams = useSearchParams()
+  const { toast } = useToast()
 
-  const { handleGoogleSignIn } = useSSO()
+  const { handleGoogleSignIn, handleLinkedInSignIn, isLinkedInLoading } =
+    useSSO()
+
+  // Handle LinkedIn OAuth callback
+  useEffect(() => {
+    const code = searchParams.get('code')
+    const state = searchParams.get('state')
+
+    if (code && state) {
+      const processLinkedInCallback = async () => {
+        setIsProcessingLinkedIn(true)
+        try {
+          // Call the LinkedIn API to exchange the code for user information
+          // We need to call the server to exchange this code for profile data
+          // For this example, we'll call a new API endpoint we'll create
+          const response = await loginWithLinkedIn({
+            code,
+            redirectUri: 'http://localhost:3000/login',
+            userType: global.mode === 'company' ? 'company' : 'user',
+          })
+
+          if (!response.success) {
+            throw new Error('Failed to authenticate with LinkedIn')
+          }
+
+          const data = response.data
+
+          // Now call the loginWithLinkedIn function with the obtained profile data
+          const loginResponse = await loginWithLinkedIn({
+            code,
+            redirectUri: 'http://localhost:3000/login',
+            userType: global.mode === 'company' ? 'company' : 'user',
+          })
+
+          if (loginResponse.status === 200) {
+            setGlobal({
+              ...global,
+              id: loginResponse.data.id || '',
+              mode: global.mode === 'company' ? 'company' : 'user',
+              // email: data.email,
+            })
+            window.location.href = '/'
+          } else {
+            throw new Error(loginResponse.message || 'Authentication failed')
+          }
+        } catch (error) {
+          console.error('LinkedIn callback processing error:', error)
+          toast({
+            title: 'LinkedIn Sign-In Failed',
+            description:
+              error instanceof Error
+                ? error.message
+                : 'Failed to sign in with LinkedIn',
+            variant: 'destructive',
+          })
+        } finally {
+          setIsProcessingLinkedIn(false)
+
+          // Remove the code and state from the URL to prevent reprocessing on refresh
+          const url = new URL(window.location.href)
+          url.searchParams.delete('code')
+          url.searchParams.delete('state')
+          window.history.replaceState({}, document.title, url.toString())
+        }
+      }
+
+      processLinkedInCallback()
+    }
+  }, [searchParams, global, setGlobal, toast])
 
   if (global.id) {
     return redirect('/')
@@ -51,8 +122,6 @@ export default function LoginPage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
-
-  const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
@@ -250,13 +319,22 @@ export default function LoginPage() {
               className="!h-11"
               onClick={() => {
                 if (label === 'LinkedIn') {
-                  //TODO: Implement LinkedIn login
+                  handleLinkedInSignIn(searchParams.get('code') || '')
                 } else if (label === 'Google') {
                   handleGoogleSignIn()
                 }
               }}
+              disabled={
+                label === 'LinkedIn' &&
+                (isLinkedInLoading || isProcessingLinkedIn)
+              }
             >
-              <Icon className="h-6 w-6" />
+              {label === 'LinkedIn' &&
+              (isLinkedInLoading || isProcessingLinkedIn) ? (
+                <Loader2 className="h-6 w-6 animate-spin" />
+              ) : (
+                <Icon className="h-6 w-6" />
+              )}
             </Button>
           ))}
         </div>
