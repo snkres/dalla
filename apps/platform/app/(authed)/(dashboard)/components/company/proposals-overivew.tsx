@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
-import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
+import { SLIDE_ANIMATION } from '@dallah/utils'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { cn } from '@dallah/utils'

@@ -11,7 +11,7 @@ import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
-import { fadeInVariants } from '@components/aniamtion/animate'
+import { fadeInVariants } from '@dallah/utils'
 import { motion } from 'motion/react'
 import { LogomarkFilled } from '@dallah/design-system'
 

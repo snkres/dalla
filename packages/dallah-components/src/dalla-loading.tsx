@@ -1,8 +1,10 @@
-import { fadeInVariants } from '@components/aniamtion/animate'
-import { LogomarkFilled } from '@dallah/design-system'
+'use client'
+import React from 'react'
+import { fadeInVariants } from '@dallah/utils'
 import { motion } from 'motion/react'
+import { DallaLogoLottie } from '@dallah/design-system'
 
-export function Loading({
+export function DallaLoading({
   title = 'Loading',
   description = 'Please wait while we prepare your content',
 }: {
@@ -18,13 +20,10 @@ export function Loading({
         className="flex flex-col items-center justify-center gap-8"
       >
         <div className="relative">
-          <LogomarkFilled className="h-24 w-24" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-16 w-16 animate-ping rounded-full bg-white opacity-75"></div>
-          </div>
+          <DallaLogoLottie width={500} height={500} />
         </div>
 
-        <div className="flex flex-col items-center gap-2">
+        <div className="-mt-28 flex flex-col items-center gap-2">
           <h1 className="text-2xl font-semibold text-[#234d64]">{title}</h1>
           <p className="text-sm text-gray-500">{description}</p>
           <div className="mt-4 h-1.5 w-48 overflow-hidden rounded-full bg-gray-100">

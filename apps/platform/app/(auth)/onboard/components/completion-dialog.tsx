@@ -7,7 +7,7 @@ import {
 import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import { CompletionDialogProps } from '@lib/types/goals'
-import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
+import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
 
 export const CompletionDialog = ({
   open,

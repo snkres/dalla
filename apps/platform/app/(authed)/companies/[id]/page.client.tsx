@@ -17,8 +17,7 @@ import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loading } from '@components/shared/dalla-loading'
-import { getSizeRangeFromValue } from '@dallah/components/company-sizeSelector'
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -86,7 +85,7 @@ export function CompanyProfileClient({ id }: { id: string }) {
 
   if (isLoading || ownProfileLoading)
     return (
-      <Loading
+      <DallaLoading
         title="Loading profile..."
         description="Please wait while we prepare the profile"
       />

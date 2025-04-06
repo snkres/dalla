@@ -13,7 +13,7 @@ import { Textarea } from '@dallah/design-system'
 import { Label } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { StepOneProps } from '@lib/types/steps'
-import { fadeIn } from '@components/aniamtion/animate'
+import { fadeIn } from '@dallah/utils'
 
 export function StepOne({
   coverLetter,

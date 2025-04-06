@@ -1,6 +1,6 @@
 'use client'
 
-import { fadeInVariants } from '@components/aniamtion/animate'
+import { fadeInVariants } from '@dallah/utils'
 import { SkillSelector } from '@components/shared/skill-selector'
 import PhoneInput from '@dallah/components/phoneInput'
 import { motion } from 'motion/react'

@@ -8,7 +8,7 @@ import { Lock, Eye, EyeOff, CheckCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { fadeInUpVariants } from '@components/aniamtion/animate'
+import { fadeInUpVariants } from '@dallah/utils'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')

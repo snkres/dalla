@@ -20,3 +20,6 @@ export { ListDisplay } from './list-display'
 
 // Utility components
 export { PrefetchCrossZoneLinks } from './prefetch-cross-zone-links'
+
+// Loading component
+export { DallaLoading } from './dalla-loading'

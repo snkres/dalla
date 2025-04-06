@@ -1,6 +1,6 @@
 'use client'
-import { Loading as LoadingComponent } from '@components/shared/dalla-loading'
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 export default function Loading() {
-  return <LoadingComponent />
+  return <DallaLoading />
 }

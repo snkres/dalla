@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@dallah/design-system'
-import { fadeIn } from '@components/aniamtion/animate'
+import { fadeIn } from '@dallah/utils'
 import { StepTwoProps } from '@lib/types/steps'
 
 export function StepTwo({

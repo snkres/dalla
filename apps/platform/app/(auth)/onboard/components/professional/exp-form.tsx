@@ -14,7 +14,7 @@ import {
   Label,
 } from '@dallah/design-system'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@components/aniamtion/animate'
+import { fadeInVariants } from '@dallah/utils'
 import { DatePicker } from './date-picker'
 import { Tag, TagInput } from 'emblor'
 import { LocationSelector } from '@dallah/components/locationSelector'

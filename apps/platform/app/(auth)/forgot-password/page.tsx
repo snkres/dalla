@@ -7,7 +7,7 @@ import { forgotPassword } from '@lib/api/auth/password'
 import { Mail, ArrowRight, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { motion } from 'motion/react'
-import { fadeInUpVariants } from '@components/aniamtion/animate'
+import { fadeInUpVariants } from '@dallah/utils'
 import { AccountType } from '@lib/types/auth'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 
