@@ -109,7 +109,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   const { toast } = useToast()
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false)
-  const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false)
   const [isGoogleInitialized, setIsGoogleInitialized] = useState(false)
   const searchParams = useSearchParams()
 
@@ -485,9 +484,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
         script.async = true
         script.defer = true
         script.onload = () => {
-          console.log('Google Sign-In script loaded successfully')
-          setIsGoogleScriptLoaded(true)
-
           if (window.google?.accounts?.id) {
             setTimeout(() => {
               initializeGoogleSignIn()
@@ -524,13 +520,11 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
     }
   }, [processGoogleResponse, initializeGoogleSignIn, toast])
 
-  // Function to handle LinkedIn sign-in
   const handleLinkedInSignIn = useCallback(
     async (userType: 'company' | 'user' = 'user') => {
       try {
         setIsLinkedInLoading(true)
 
-        // Check if LinkedIn client ID is available
         if (!LINKEDIN_CLIENT_ID) {
           console.error('LinkedIn client ID is not configured')
           toast({
