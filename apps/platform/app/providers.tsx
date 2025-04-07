@@ -7,6 +7,7 @@ import { Provider } from 'jotai'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 import { useEffect, useState } from 'react'
+import Script from 'next/script'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [global] = useAtom(globalAtom)
@@ -32,6 +33,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <ReactQueryDevtools initialIsOpen={false} />
         <NuqsAdapter>{children}</NuqsAdapter>
       </QueryClientProvider>
+      <Script src="https://accounts.google.com/gsi/client" async defer />
     </Provider>
   )
 }

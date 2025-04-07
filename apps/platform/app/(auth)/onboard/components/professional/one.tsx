@@ -26,8 +26,9 @@ import {
   extractEducation,
   extractWorkExperience,
 } from '@lib/utils/parse-cv'
-import { initLinkedInAuth, linkedInToCVFormat } from '@lib/api/auth/linkedin'
+import { linkedInToCVFormat } from '@lib/api/auth/linkedin'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { initLinkedInAuth } from '@lib/hooks/use-sso'
 
 export function ProOnboardingOne({
   data,
@@ -60,74 +61,6 @@ export function ProOnboardingOne({
       setDragActive(true)
     } else if (e.type === 'dragleave') {
       setDragActive(false)
-    }
-  }
-
-  const handleLinkedInAuth = async () => {
-    if (isLinkedInProcessing) return
-
-    setIsLinkedInProcessing(true)
-
-    try {
-      const linkedInProfile = await initLinkedInAuth()
-
-      const formattedData = linkedInToCVFormat(linkedInProfile)
-
-      setLinkedInData(formattedData.data)
-
-      const cvData = formattedData.data
-      const yoe = calculateYearsOfExperience(cvData.workExperiences)
-      const extractedSkills = cvData.skills.featuredSkills
-        .filter((skill) => skill.skill.length > 0)
-        .map((skill) => skill.skill)
-
-      const educationEntries = extractEducation(cvData.educations)
-      const workExperience = extractWorkExperience(cvData.workExperiences)
-
-      if (extractedSkills.length > 0) {
-        workExperience.forEach((exp) => {
-          exp.meta.skills = extractedSkills.filter(
-            (skill) =>
-              exp.meta.responsibilities
-                .toLowerCase()
-                .includes(skill.toLowerCase()) ||
-              exp.title.toLowerCase().includes(skill.toLowerCase()),
-          )
-        })
-      }
-
-      const bio =
-        cvData.profile.summary ||
-        `Professional with ${yoe} years of experience. ${workExperience[0]?.title || ''} at ${workExperience[0]?.company || ''}.`
-
-      updateData((prev) => ({
-        ...prev,
-        headline: `${cvData.profile.name}'s Professional Profile`,
-        bio,
-        gender: prev.gender,
-        meta: {
-          ...prev.meta,
-          skills: extractedSkills,
-          location: cvData.profile.location || prev.meta.location,
-          yearsOfExperience: yoe,
-          socialLinks: {
-            ...(prev.meta.socialLinks || {}),
-            linkedin: cvData.profile.url || '',
-          },
-        },
-        education: educationEntries,
-        experience: workExperience,
-      }))
-    } catch (error) {
-      console.error('LinkedIn auth error:', error)
-      toast({
-        title: 'Error connecting to LinkedIn',
-        description:
-          error instanceof Error ? error.message : 'Unknown error occurred',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLinkedInProcessing(false)
     }
   }
 
@@ -238,11 +171,11 @@ export function ProOnboardingOne({
                   ? 'border-[#0077B5] bg-[#0077B5]/5'
                   : 'border-[#E4E7EC]'
             }`}
-            onClick={
-              !isLinkedInProcessing && !linkedInData
-                ? handleLinkedInAuth
-                : undefined
-            }
+            // onClick={
+            //   !isLinkedInProcessing && !linkedInData
+            //     ? handleLinkedInAuth
+            //     : undefined
+            // }
           >
             <div className="space-y-1 text-center">
               <div className="mx-auto w-fit rounded-lg border border-[#E4E7EC] p-2 shadow-[0px_1px_2px_0px_rgba(16,24,40,0.05)]">

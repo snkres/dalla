@@ -11,7 +11,7 @@ import type { AccountType } from '@lib/types/auth'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { login, loginWithLinkedIn } from '@lib/api/auth/login'
+import { login } from '@lib/api/auth/login'
 import { resendOTP } from '@lib/api/auth/otp-verify'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
@@ -38,82 +38,46 @@ export default function LoginPage() {
   const searchParams = useSearchParams()
   const { toast } = useToast()
 
-  const { handleGoogleSignIn, handleLinkedInSignIn, isLinkedInLoading } =
-    useSSO()
+  const [mode, setMode] = useQueryState('mode', {
+    defaultValue: 'company',
+  })
 
-  // Handle LinkedIn OAuth callback
+  const { triggerGoogleSignIn, isGoogleLoading, isLinkedInLoading } = useSSO({
+    mode: mode as 'company' | 'user',
+  })
+
   useEffect(() => {
-    const code = searchParams.get('code')
-    const state = searchParams.get('state')
+    const error = searchParams.get('error')
+    if (error) {
+      let errorMessage = 'An error occurred during sign-in'
 
-    if (code && state) {
-      const processLinkedInCallback = async () => {
-        setIsProcessingLinkedIn(true)
-        try {
-          // Call the LinkedIn API to exchange the code for user information
-          // We need to call the server to exchange this code for profile data
-          // For this example, we'll call a new API endpoint we'll create
-          const response = await loginWithLinkedIn({
-            code,
-            redirectUri: 'http://localhost:3000/login',
-            userType: global.mode === 'company' ? 'company' : 'user',
-          })
-
-          if (!response.success) {
-            throw new Error('Failed to authenticate with LinkedIn')
-          }
-
-          const data = response.data
-
-          // Now call the loginWithLinkedIn function with the obtained profile data
-          const loginResponse = await loginWithLinkedIn({
-            code,
-            redirectUri: 'http://localhost:3000/login',
-            userType: global.mode === 'company' ? 'company' : 'user',
-          })
-
-          if (loginResponse.status === 200) {
-            setGlobal({
-              ...global,
-              id: loginResponse.data.id || '',
-              mode: global.mode === 'company' ? 'company' : 'user',
-              // email: data.email,
-            })
-            window.location.href = '/'
-          } else {
-            throw new Error(loginResponse.message || 'Authentication failed')
-          }
-        } catch (error) {
-          console.error('LinkedIn callback processing error:', error)
-          toast({
-            title: 'LinkedIn Sign-In Failed',
-            description:
-              error instanceof Error
-                ? error.message
-                : 'Failed to sign in with LinkedIn',
-            variant: 'destructive',
-          })
-        } finally {
-          setIsProcessingLinkedIn(false)
-
-          // Remove the code and state from the URL to prevent reprocessing on refresh
-          const url = new URL(window.location.href)
-          url.searchParams.delete('code')
-          url.searchParams.delete('state')
-          window.history.replaceState({}, document.title, url.toString())
-        }
+      switch (error) {
+        case 'google_auth_failed':
+          errorMessage = 'Google authentication failed. Please try again.'
+          break
+        case 'missing_code':
+          errorMessage = 'Missing authorization code from Google.'
+          break
+        case 'token_exchange_failed':
+          errorMessage =
+            'Failed to process Google authentication. Please try again.'
+          break
+        case 'internal_error':
+          errorMessage = 'An internal error occurred. Please try again later.'
+          break
       }
 
-      processLinkedInCallback()
+      toast({
+        title: 'Sign-In Error',
+        description: errorMessage,
+        variant: 'destructive',
+      })
     }
-  }, [searchParams, global, setGlobal, toast])
+  }, [searchParams, toast])
 
   if (global.id) {
     return redirect('/')
   }
-  const [mode, setMode] = useQueryState('mode', {
-    defaultValue: 'company',
-  })
 
   const {
     register,
@@ -167,6 +131,10 @@ export default function LoginPage() {
     }
   }
 
+  const handleGoogleSignInClick = () => {
+    triggerGoogleSignIn(mode as 'company' | 'user')
+  }
+
   return (
     <motion.div
       variants={fadeInVariants}
@@ -174,6 +142,8 @@ export default function LoginPage() {
       animate="visible"
       className="space-y-8"
     >
+      <div id="google-signin-button" style={{ display: 'none' }}></div>
+
       <div className="flex flex-col items-center justify-center gap-2 space-y-2 text-center">
         <motion.div
           variants={fadeInUpVariants}
@@ -307,36 +277,45 @@ export default function LoginPage() {
             </span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-            { icon: LinkedInIcon, label: 'LinkedIn' },
-            { icon: GoogleIcon, label: 'Google' },
-          ].map(({ icon: Icon, label }) => (
+        <div className="flex w-full items-center justify-center gap-3">
+          <Button
+            key="LinkedIn"
+            type="button"
+            variant="outline"
+            className="!h-11 w-full"
+            // onClick={() => handleLinkedInSignIn()}
+            disabled={isLinkedInLoading || isProcessingLinkedIn}
+          >
+            {isLinkedInLoading || isProcessingLinkedIn ? (
+              <Loader2 className="h-6 w-6 animate-spin" />
+            ) : (
+              <LinkedInIcon className="h-6 w-6" />
+            )}
+          </Button>
+
+          {/* Google Sign-In Button */}
+          <div className="w-full">
             <Button
-              key={label}
+              key="Google"
               type="button"
               variant="outline"
-              className="!h-11"
-              onClick={() => {
-                if (label === 'LinkedIn') {
-                  handleLinkedInSignIn(searchParams.get('code') || '')
-                } else if (label === 'Google') {
-                  handleGoogleSignIn()
-                }
-              }}
-              disabled={
-                label === 'LinkedIn' &&
-                (isLinkedInLoading || isProcessingLinkedIn)
-              }
+              className="flex !h-11 w-full items-center justify-center gap-2"
+              onClick={handleGoogleSignInClick}
+              disabled={isGoogleLoading}
             >
-              {label === 'LinkedIn' &&
-              (isLinkedInLoading || isProcessingLinkedIn) ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
+              {isGoogleLoading ? (
+                <>
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <span>Connecting with Google...</span>
+                </>
               ) : (
-                <Icon className="h-6 w-6" />
+                <>
+                  <GoogleIcon className="h-6 w-6" />
+                  <span>Sign in with Google</span>
+                </>
               )}
             </Button>
-          ))}
+          </div>
         </div>
       </form>
 

@@ -63,6 +63,7 @@ export async function loginWithLinkedIn(payload: {
   code: string
   redirectUri: string
   userType: 'company' | 'user'
+  codeVerifier?: string
 }) {
   let res = await axiosInstance
     .post<{
