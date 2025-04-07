@@ -29,8 +29,8 @@ declare global {
 const LINKEDIN_CLIENT_ID = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID || ''
 const LINKEDIN_REDIRECT_URI =
   process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000/api/auth/linkedin/callback'
-    : 'https://platform.dev.dalla.app/api/auth/linkedin/callback'
+    ? 'http://localhost:3000/login'
+    : 'https://platform.dev.dalla.app/login'
 
 const LINKEDIN_SCOPE = 'openid profile email'
 
@@ -119,7 +119,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
       if (response?.credential) {
         setIsGoogleLoading(true)
         try {
-          // Use the stored user type from the ref
           const userType = mode
 
           loginWithGoogle({
@@ -226,7 +225,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
     [],
   )
 
-  // Function to trigger Google Sign-In
   const triggerGoogleSignIn = useCallback(
     (userType: 'company' | 'user' = 'user') => {
       setIsGoogleLoading(true)
@@ -289,14 +287,22 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   useEffect(() => {
     const processGoogleRedirect = async () => {
       if (typeof window === 'undefined') return
-      if (typeof window === 'undefined') return
 
       const hashParams = new URLSearchParams(window.location.hash.substring(1))
       const idToken = hashParams.get('id_token')
 
       const code = searchParams.get('code')
+      const state = searchParams.get('state')
+      const isGoogleRedirect = (idToken || code) && !state
 
-      if (idToken || code) {
+      console.log('Google auth check:', {
+        idToken: !!idToken,
+        code: !!code,
+        state: !!state,
+        isGoogleRedirect,
+      })
+
+      if (isGoogleRedirect) {
         console.log('Detected Google redirect with authentication data')
         setIsGoogleLoading(true)
 
@@ -367,7 +373,104 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
     }
 
     processGoogleRedirect()
-  }, [searchParams, toast])
+  }, [searchParams, toast, mode])
+
+  useEffect(() => {
+    const processLinkedInRedirect = async () => {
+      if (typeof window === 'undefined') return
+
+      const code = searchParams.get('code')
+      const state = searchParams.get('state')
+
+      let storedState: string | null = null
+      let userType: 'company' | 'user' = 'user'
+      let codeVerifier: string | null = null
+
+      try {
+        storedState = sessionStorage.getItem('linkedin_auth_state')
+        userType =
+          (sessionStorage.getItem('linkedin_user_type') as
+            | 'company'
+            | 'user') || 'user'
+        codeVerifier = sessionStorage.getItem('linkedin_code_verifier')
+      } catch (e) {
+        console.error('Error accessing sessionStorage:', e)
+      }
+
+      const isLinkedInRedirect = code && state && storedState === state
+
+      console.log('LinkedIn auth check:', {
+        code: !!code,
+        state: !!state,
+        storedState: !!storedState,
+        storedStateValue: storedState,
+        stateMatch: state === storedState,
+        isLinkedInRedirect,
+      })
+
+      if (isLinkedInRedirect) {
+        console.log('Detected LinkedIn redirect with authentication data')
+        setIsLinkedInLoading(true)
+
+        try {
+          // Clean up URL to remove sensitive tokens
+          const cleanUrl = new URL(window.location.href)
+          if (cleanUrl.searchParams.has('code')) {
+            cleanUrl.searchParams.delete('code')
+          }
+          if (cleanUrl.searchParams.has('state')) {
+            cleanUrl.searchParams.delete('state')
+          }
+          window.history.replaceState({}, document.title, cleanUrl.toString())
+
+          if (!codeVerifier) {
+            throw new Error('Missing code verifier for LinkedIn authentication')
+          }
+
+          toast({
+            title: 'Authentication Notice',
+            description: 'Finishing LinkedIn authentication...',
+          })
+
+          const result = await loginWithLinkedIn({
+            code,
+            userType,
+            redirectUrl: LINKEDIN_REDIRECT_URI,
+          })
+
+          if (result.success) {
+            // Clean up session storage
+            sessionStorage.removeItem('linkedin_auth_state')
+            sessionStorage.removeItem('linkedin_user_type')
+            sessionStorage.removeItem('linkedin_code_verifier')
+
+            window.location.href = '/'
+          } else {
+            toast({
+              title: 'Sign-In Error',
+              description:
+                result.message || 'Failed to authenticate with LinkedIn',
+              variant: 'destructive',
+            })
+          }
+        } catch (error) {
+          console.error('Error processing LinkedIn redirect:', error)
+          toast({
+            title: 'Authentication Error',
+            description:
+              error instanceof Error
+                ? error.message
+                : 'Failed to complete LinkedIn authentication',
+            variant: 'destructive',
+          })
+        } finally {
+          setIsLinkedInLoading(false)
+        }
+      }
+    }
+
+    processLinkedInRedirect()
+  }, [searchParams, toast, mode])
 
   useEffect(() => {
     window.googleSignInCallback = (response: any) =>
@@ -421,6 +524,52 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
     }
   }, [processGoogleResponse, initializeGoogleSignIn, toast])
 
+  // Function to handle LinkedIn sign-in
+  const handleLinkedInSignIn = useCallback(
+    async (userType: 'company' | 'user' = 'user') => {
+      try {
+        setIsLinkedInLoading(true)
+
+        // Check if LinkedIn client ID is available
+        if (!LINKEDIN_CLIENT_ID) {
+          console.error('LinkedIn client ID is not configured')
+          toast({
+            title: 'LinkedIn Sign-In Error',
+            description:
+              'LinkedIn authentication is not properly configured. Please try another sign-in method.',
+            variant: 'destructive',
+          })
+          setIsLinkedInLoading(false)
+          return
+        }
+
+        await initLinkedInAuth({
+          userType,
+          onError: (error) => {
+            console.error('LinkedIn auth error:', error)
+            toast({
+              title: 'LinkedIn Sign-In Error',
+              description:
+                'Failed to authenticate with LinkedIn. Please try again.',
+              variant: 'destructive',
+            })
+            setIsLinkedInLoading(false)
+          },
+        })
+        // Note: The page will redirect, so we don't need to handle the success case here
+      } catch (error) {
+        console.error('Error initiating LinkedIn sign-in:', error)
+        toast({
+          title: 'LinkedIn Sign-In Error',
+          description: 'Failed to connect to LinkedIn. Please try again.',
+          variant: 'destructive',
+        })
+        setIsLinkedInLoading(false)
+      }
+    },
+    [toast],
+  )
+
   return {
     isGoogleLoading,
     isLinkedInLoading,
@@ -428,6 +577,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
 
     triggerGoogleSignIn,
     handleDirectGoogleAuth,
+    handleLinkedInSignIn,
 
     handleGoogleSignIn: (response: {
       clientId: string
@@ -435,9 +585,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
       credential: string
       select_by: string
     }) => {
-      if (response.select_by === 'company') {
-        processGoogleResponse({ credential: response.credential })
-      }
       processGoogleResponse({ credential: response.credential })
     },
   }

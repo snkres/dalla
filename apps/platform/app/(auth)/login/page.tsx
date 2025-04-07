@@ -42,7 +42,12 @@ export default function LoginPage() {
     defaultValue: 'company',
   })
 
-  const { triggerGoogleSignIn, isGoogleLoading, isLinkedInLoading } = useSSO({
+  const {
+    triggerGoogleSignIn,
+    isGoogleLoading,
+    isLinkedInLoading,
+    handleLinkedInSignIn,
+  } = useSSO({
     mode: mode as 'company' | 'user',
   })
 
@@ -133,6 +138,13 @@ export default function LoginPage() {
 
   const handleGoogleSignInClick = () => {
     triggerGoogleSignIn(mode as 'company' | 'user')
+  }
+
+  const handleLinkedInSignInClick = () => {
+    setIsProcessingLinkedIn(true)
+    handleLinkedInSignIn(mode as 'company' | 'user').catch(() => {
+      setIsProcessingLinkedIn(false)
+    })
   }
 
   return (
@@ -282,18 +294,21 @@ export default function LoginPage() {
             key="LinkedIn"
             type="button"
             variant="outline"
-            className="!h-11 w-full"
-            // onClick={() => handleLinkedInSignIn()}
+            className="flex !h-11 w-full items-center justify-center gap-2"
+            onClick={handleLinkedInSignInClick}
             disabled={isLinkedInLoading || isProcessingLinkedIn}
           >
             {isLinkedInLoading || isProcessingLinkedIn ? (
-              <Loader2 className="h-6 w-6 animate-spin" />
+              <>
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </>
             ) : (
-              <LinkedInIcon className="h-6 w-6" />
+              <>
+                <LinkedInIcon className="h-6 w-6" />
+              </>
             )}
           </Button>
 
-          {/* Google Sign-In Button */}
           <div className="w-full">
             <Button
               key="Google"
@@ -306,12 +321,10 @@ export default function LoginPage() {
               {isGoogleLoading ? (
                 <>
                   <Loader2 className="h-6 w-6 animate-spin" />
-                  <span>Connecting with Google...</span>
                 </>
               ) : (
                 <>
                   <GoogleIcon className="h-6 w-6" />
-                  <span>Sign in with Google</span>
                 </>
               )}
             </Button>

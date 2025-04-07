@@ -61,9 +61,8 @@ export async function loginWithGoogle(payload: {
 
 export async function loginWithLinkedIn(payload: {
   code: string
-  redirectUri: string
+  redirectUrl: string
   userType: 'company' | 'user'
-  codeVerifier?: string
 }) {
   let res = await axiosInstance
     .post<{
