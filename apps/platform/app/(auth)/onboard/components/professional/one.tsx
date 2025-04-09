@@ -150,12 +150,10 @@ export function ProOnboardingOne({
                       ? 'CV Uploaded Successfully'
                       : 'Upload Your CV'}
                 </span>{' '}
-                {!isLoading &&
-                  (!cvData || isLinkedInUpload) &&
-                  'or drag and drop'}
+                {(!cvData || isLinkedInUpload) && 'or drag and drop'}
               </p>
               <div className="h-6">
-                {!isLoading && (!cvData || isLinkedInUpload) && (
+                {(!cvData || isLinkedInUpload) && (
                   <p className="text-sm text-[#98a2b3]">PDF (max. 2MB)</p>
                 )}
                 {cvData && !isLinkedInUpload && (
