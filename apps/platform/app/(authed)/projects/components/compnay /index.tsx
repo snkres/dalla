@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Button } from '@dallah/design-system'
-import { PlusCircle, Briefcase, Search, Loader2 } from 'lucide-react'
+import { PlusCircle, Search, Loader2 } from 'lucide-react'
 import { Input } from '@dallah/design-system'
 import { useQueryState } from 'nuqs'
 import { ProjectFilters } from '../filters'
@@ -13,6 +12,7 @@ import {
   getAllProjects,
 } from '@lib/api/company/projects'
 import { useTransitionRouter } from 'next-view-transitions'
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 const LIMIT = 10
 
@@ -108,7 +108,10 @@ export function CompanyProjectsView() {
           <div className="lg:col-span-3">
             {isLoading ? (
               <div className="flex h-60 items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-[#63B7B7]" />
+                <DallaLoading
+                  className="mt-64"
+                  description="Please wait while we load your projects..."
+                />
               </div>
             ) : error ? (
               <div className="rounded-xl bg-red-50 p-8 text-center">

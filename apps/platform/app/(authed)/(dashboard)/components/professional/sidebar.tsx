@@ -7,13 +7,12 @@ import {
   ArrowUpRight,
   PieChart,
   Search,
-  DollarSign,
   HelpCircle,
   FileText,
   Bell,
   Star,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button, Riyal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { Progress } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
@@ -33,7 +32,7 @@ export function ProfileSidebar() {
 
   const quickLinks: QuickLink[] = [
     {
-      icon: <DollarSign />,
+      icon: <Riyal />,
       label: 'Get Paid',
       href: '#/payments',
       highlight: true,

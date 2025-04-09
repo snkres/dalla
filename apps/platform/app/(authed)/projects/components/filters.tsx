@@ -3,14 +3,8 @@
 import { useState } from 'react'
 import { Button } from '@dallah/design-system'
 import { Checkbox } from '@dallah/design-system'
-import {
-  Filter,
-  DollarSign,
-  Clock,
-  X,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react'
+import { Filter, Clock, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Riyal } from '@dallah/design-system'
 import { SkillSelector } from '@components/shared/skill-selector'
 
 interface ProjectFiltersProps {
@@ -154,7 +148,7 @@ export function ProjectFilters({
                   htmlFor="budget-1"
                   className="ml-2 text-sm text-gray-600"
                 >
-                  Less than $1,000
+                  Less than ﷼1,000
                 </label>
               </div>
               <div className="flex items-center">
@@ -171,7 +165,7 @@ export function ProjectFilters({
                   htmlFor="budget-2"
                   className="ml-2 text-sm text-gray-600"
                 >
-                  $1,000 - $3,000
+                  ﷼1,000 - ﷼3,000
                 </label>
               </div>
               <div className="flex items-center">
@@ -188,7 +182,7 @@ export function ProjectFilters({
                   htmlFor="budget-3"
                   className="ml-2 text-sm text-gray-600"
                 >
-                  $3,000 - $5,000
+                  ﷼3,000 - ﷼5,000
                 </label>
               </div>
               <div className="flex items-center">
@@ -205,7 +199,7 @@ export function ProjectFilters({
                   htmlFor="budget-4"
                   className="ml-2 text-sm text-gray-600"
                 >
-                  More than $5,000
+                  More than ﷼5,000
                 </label>
               </div>
             </div>

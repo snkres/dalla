@@ -1,6 +1,6 @@
 import React from 'react'
-import { Calendar, DollarSign, Clock, Users, ArrowUpRight } from 'lucide-react'
-import { Badge } from '@dallah/design-system'
+import { Calendar, Clock, Users, ArrowUpRight } from 'lucide-react'
+import { Badge, Riyal } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
 import { Progress } from '@dallah/design-system'
 import { Project } from '@lib/types/project'
@@ -61,7 +61,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
 
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="flex items-center gap-1.5">
-            <DollarSign className="h-4 w-4 text-gray-400" />
+            <Riyal className="h-4 w-4 text-gray-400" />
             <span className="text-gray-700">{project.budget}</span>
           </div>
           <div className="flex items-center gap-1.5">

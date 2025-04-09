@@ -163,7 +163,7 @@ export function Sidebar() {
                 <div className="mt-1 flex items-center">
                   <Star className="h-3 w-3 text-amber-400" />
                   <span className="ml-1 text-xs">4.9</span>
-                  <span className="ml-2 text-xs text-gray-500">$65/hr</span>
+                  <span className="ml-2 text-xs text-gray-500">﷼65/hr</span>
                 </div>
               </div>
             </div>

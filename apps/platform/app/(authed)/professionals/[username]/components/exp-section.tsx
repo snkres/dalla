@@ -22,6 +22,13 @@ import type { Position } from '@lib/types/profile'
 import type { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
 import { LocationSelector } from '@dallah/components/locationSelector'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@dallah/design-system'
 
 export function ExperienceSection({
   experiences,
@@ -51,7 +58,7 @@ export function ExperienceSection({
     [key: string]: boolean
   }>({})
 
-  // Add validation state at the top of the component, after other state declarations
+  // Validation state
   const [validationErrors, setValidationErrors] = useState<{
     [key: number]: { [field: string]: boolean }
   }>({})
@@ -78,7 +85,6 @@ export function ExperienceSection({
     }, 0)
   }
 
-  // Replace the handleSave function with this version that includes validation
   const handleSave = () => {
     // Validate required fields
     const errors: { [key: number]: { [field: string]: boolean } } = {}
@@ -158,7 +164,6 @@ export function ExperienceSection({
     setEditedExperiences(editedExperiences.filter((_, i) => i !== index))
   }
 
-  // Modify the updateExperience function to clear validation errors
   const updateExperience = (
     index: number,
     field: string,
@@ -299,6 +304,13 @@ export function ExperienceSection({
     )
   }
 
+  // Common input styling
+  const inputClasses =
+    'h-8 rounded-md border border-gray-200 text-xs focus:border-[#63B7B7] focus:ring-0'
+  const labelClasses =
+    'block text-xs font-medium text-gray-500 mb-1 flex items-center'
+  const iconClasses = 'h-3 w-3 text-gray-400 mr-1.5'
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:col-span-2">
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
@@ -407,7 +419,7 @@ export function ExperienceSection({
                             }}
                             placeholder="Company name"
                             className={cn(
-                              'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                              'h-8 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
                               validationErrors[
                                 editedExperiences.findIndex(
                                   (exp) => exp.company === company,
@@ -426,16 +438,16 @@ export function ExperienceSection({
                                 [companyKey]: !isExpanded,
                               }))
                             }
-                            className="ml-2 h-7 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
+                            className="ml-2 h-8 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
                           >
                             {isExpanded ? (
                               <>
-                                <ChevronUp className="h-3.5 w-3.5" />
+                                <ChevronUp className="mr-1 h-3.5 w-3.5" />
                                 Collapse
                               </>
                             ) : (
                               <>
-                                <ChevronDown className="h-3.5 w-3.5" />
+                                <ChevronDown className="mr-1 h-3.5 w-3.5" />
                                 Expand
                               </>
                             )}
@@ -459,14 +471,12 @@ export function ExperienceSection({
 
                       {/* Only show these fields when expanded */}
                       {isExpanded && (
-                        <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-                          <div className="flex flex-col gap-1">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                              <span className="text-xs text-gray-500">
-                                Location
-                              </span>
-                            </div>
+                        <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+                          <div className="flex flex-col">
+                            <label className={labelClasses}>
+                              <MapPin className={iconClasses} />
+                              Location
+                            </label>
                             <LocationSelector
                               value={companyExps[0].location || ''}
                               onChange={(value) => {
@@ -487,15 +497,20 @@ export function ExperienceSection({
                                 country: 'Country',
                                 city: 'City or Remote',
                               }}
+                              className="flex items-center space-y-1"
+                              selectClassName={inputClasses}
+                              showLabels={false}
                             />
                           </div>
 
-                          <div className="flex items-center gap-1">
-                            <Building className="h-3 w-3 flex-shrink-0 text-gray-400" />
-                            <Input
+                          <div className="flex flex-col">
+                            <label className={labelClasses}>
+                              <Building className={iconClasses} />
+                              Employment Type
+                            </label>
+                            <Select
                               value={companyExps[0].meta.employmentType || ''}
-                              onChange={(e) => {
-                                // For employment type, let each role have its own value
+                              onValueChange={(value) => {
                                 const updatedExperiences = [
                                   ...editedExperiences,
                                 ]
@@ -510,15 +525,33 @@ export function ExperienceSection({
                                     ...updatedExperiences[firstExpIndex],
                                     meta: {
                                       ...updatedExperiences[firstExpIndex].meta,
-                                      employmentType: e.target.value,
+                                      employmentType: value,
                                     },
                                   }
                                   setEditedExperiences(updatedExperiences)
                                 }
                               }}
-                              placeholder="Employment type (optional)"
-                              className="h-7 rounded-none border-0 border-b border-gray-200 px-0 text-xs focus:border-[#63B7B7] focus:ring-0"
-                            />
+                            >
+                              <SelectTrigger className={inputClasses}>
+                                <SelectValue placeholder="Employment type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {[
+                                  'Full-time',
+                                  'Part-time',
+                                  'Self-employed',
+                                  'Freelance',
+                                  'Contract',
+                                  'Internship',
+                                  'Apprenticeship',
+                                  'Seasonal',
+                                ].map((type) => (
+                                  <SelectItem key={type} value={type}>
+                                    {type}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
                         </div>
                       )}
@@ -567,7 +600,7 @@ export function ExperienceSection({
                                     }
                                     placeholder="Position title"
                                     className={cn(
-                                      'h-7 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
+                                      'h-8 w-full flex-1 border-0 bg-transparent p-0 text-sm font-medium focus:ring-0 sm:w-auto',
                                       validationErrors[expIndex]?.title
                                         ? 'border-b-2 border-red-500'
                                         : '',
@@ -582,16 +615,16 @@ export function ExperienceSection({
                                         [roleKey]: !isRoleExpanded,
                                       }))
                                     }
-                                    className="ml-2 h-7 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
+                                    className="ml-2 h-8 rounded-full px-2 text-xs text-gray-400 hover:text-[#63B7B7]"
                                   >
                                     {isRoleExpanded ? (
                                       <>
-                                        <ChevronUp className="h-3.5 w-3.5" />
+                                        <ChevronUp className="mr-1 h-3.5 w-3.5" />
                                         Collapse
                                       </>
                                     ) : (
                                       <>
-                                        <ChevronDown className="h-3.5 w-3.5" />
+                                        <ChevronDown className="mr-1 h-3.5 w-3.5" />
                                         Expand
                                       </>
                                     )}
@@ -609,9 +642,12 @@ export function ExperienceSection({
 
                               {isRoleExpanded && (
                                 <>
-                                  <div className="grid grid-cols-1 gap-x-4 gap-y-2 sm:grid-cols-2">
-                                    <div className="flex items-center gap-1">
-                                      <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                                  <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2">
+                                    <div className="flex flex-col">
+                                      <label className={labelClasses}>
+                                        <Calendar className={iconClasses} />
+                                        Start Date
+                                      </label>
                                       <MonthYearPicker
                                         value={exp.startDate}
                                         onChange={(value) =>
@@ -622,16 +658,20 @@ export function ExperienceSection({
                                           )
                                         }
                                         placeholder="Start date"
-                                        className={
+                                        className={cn(
+                                          inputClasses,
                                           validationErrors[expIndex]?.startDate
                                             ? 'border-red-500'
-                                            : ''
-                                        }
+                                            : '',
+                                        )}
                                       />
                                     </div>
 
-                                    <div className="flex items-center gap-1">
-                                      <Calendar className="h-3 w-3 flex-shrink-0 text-gray-400" />
+                                    <div className="flex flex-col">
+                                      <label className={labelClasses}>
+                                        <Calendar className={iconClasses} />
+                                        End Date
+                                      </label>
                                       <MonthYearPicker
                                         value={exp.endDate || 'Present'}
                                         onChange={(value) =>
@@ -642,13 +682,14 @@ export function ExperienceSection({
                                           )
                                         }
                                         placeholder="End date (or Present)"
+                                        className={inputClasses}
                                       />
                                     </div>
                                   </div>
 
-                                  <div className="mt-3 space-y-3">
-                                    <div className="space-y-1">
-                                      <label className="text-xs font-medium text-gray-500">
+                                  <div className="mt-3 space-y-4">
+                                    <div className="flex flex-col">
+                                      <label className={labelClasses}>
                                         Skills
                                       </label>
                                       <Input
@@ -668,15 +709,15 @@ export function ExperienceSection({
                                           )
                                         }
                                         placeholder="Skills (comma separated)"
-                                        className="h-7 rounded-md border border-gray-200 text-xs focus:border-[#63B7B7] focus:ring-0"
+                                        className={inputClasses}
                                       />
-                                      <p className="text-[10px] italic text-gray-400">
+                                      <p className="mt-1 text-[10px] italic text-gray-400">
                                         Separate skills with commas
                                       </p>
                                     </div>
 
-                                    <div className="space-y-1">
-                                      <label className="text-xs font-medium text-gray-500">
+                                    <div className="flex flex-col">
+                                      <label className={labelClasses}>
                                         Key Achievements
                                       </label>
                                       <Textarea
@@ -692,8 +733,8 @@ export function ExperienceSection({
                                       />
                                     </div>
 
-                                    <div className="space-y-1">
-                                      <label className="text-xs font-medium text-gray-500">
+                                    <div className="flex flex-col">
+                                      <label className={labelClasses}>
                                         Responsibilities
                                       </label>
                                       <Textarea
@@ -720,7 +761,7 @@ export function ExperienceSection({
                           variant="ghost"
                           size="sm"
                           onClick={() => addRole(company)}
-                          className="mt-2 h-7 w-full rounded-md text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
+                          className="mt-2 h-8 w-full rounded-md text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
                         >
                           <Plus className="mr-1 h-3 w-3" />
                           Add Another Role
@@ -756,7 +797,7 @@ export function ExperienceSection({
               variant="ghost"
               size="sm"
               onClick={handleEdit}
-              className="h-7 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
+              className="h-8 rounded-full px-3 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
             >
               <Plus className="mr-1 h-3.5 w-3.5" />
               Add experience

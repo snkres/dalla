@@ -11,9 +11,7 @@ import { cn } from '@dallah/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
-import { fadeInVariants } from '@components/aniamtion/animate'
-import { motion } from 'motion/react'
-import { LogomarkFilled } from '@dallah/design-system'
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)
@@ -69,36 +67,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       try {
         if (global.mode === 'user') {
           const res = await getProMeta()
-          // const res: ProMeta = {
-          //   statusCode: 200,
-          //   success: true,
-          //   message: 'Profile fetched successfully',
-          //   error: null,
-          //   data: {
-          //     id: '123',
-          //     email: 'test@test.com',
-          //     username: 'AmrTamer23',
-          //     name: 'Test',
-          //     onboarded: true,
-          //     _count: {
-          //       proposals: 1,
-          //     },
-          //     UserProfile: {
-          //       avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-          //       headline: 'Test',
-          //       meta: {
-          //         phone: '123',
-          //         skills: ['test'],
-          //         location: 'test',
-          //         socialLinks: { github: 'test', linkedin: 'test' },
-          //         yearsOfExperience: 1,
-          //       },
-          //       precentage: 1,
-          //     },
-          //   },
-          //   path: '',
-          //   timestamp: '',
-          // }
           return res.data
         } else if (global.mode === 'company') {
           const res = await getCompanyMeta()
@@ -131,6 +99,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       return
     }
 
+    if (!data.data.onboarded) {
+      router.push('/onboard')
+    }
+
     try {
       if (global.mode === 'user') {
         const proData = data as ProMeta
@@ -144,9 +116,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           avatar: proData.data.UserProfile.avatar,
         })
         setProMeta(proData)
-        if (!proData.data.onboarded) {
-          router.push('/onboard')
-        }
       } else {
         const companyData = data as CompanyMeta
 
@@ -161,15 +130,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         })
 
         setCompanyMeta(companyData)
-
-        console.log('Company onboarded status:', companyData.data?.onboarded)
-        console.log('Company data:', companyData.data)
-        if (
-          companyData.data?.onboarded !== undefined &&
-          !companyData.data?.onboarded
-        ) {
-          router.push('/onboard')
-        }
       }
     } catch (err) {
       console.error('Error processing profile data:', err)
@@ -179,40 +139,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [data, isFetched, isError, global.mode])
 
   if ((isLoading && Boolean(global.mode)) || !isDbReady) {
-    return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-50">
-        <motion.div
-          variants={fadeInVariants}
-          initial="initial"
-          animate="animate"
-          className="flex flex-col items-center justify-center gap-8"
-        >
-          <div className="relative">
-            <LogomarkFilled className="h-24 w-24" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-16 w-16 animate-ping rounded-full bg-white opacity-75"></div>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-2">
-            <h1 className="text-2xl font-semibold text-[#234d64]">Loading</h1>
-            <p className="text-sm text-gray-500">
-              Please wait while we prepare your dashboard
-            </p>
-            <div className="mt-4 h-1.5 w-48 overflow-hidden rounded-full bg-gray-100">
-              <motion.div
-                className="h-full bg-[#63B7B7]"
-                initial={{ width: '0%' }}
-                animate={{
-                  width: '100%',
-                  transition: { duration: 2, repeat: Infinity },
-                }}
-              />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    )
+    return <DallaLoading />
   }
 
   return (

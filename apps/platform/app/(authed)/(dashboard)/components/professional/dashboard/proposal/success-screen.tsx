@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { CheckCircle } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 // import type { Project } from '@lib/api/company/projects'
-import { scaleIn } from '@components/aniamtion/animate'
+import { scaleIn } from '@dallah/utils'
 
 interface SuccessScreenProps {
   project: any

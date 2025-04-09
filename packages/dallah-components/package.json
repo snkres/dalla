@@ -17,7 +17,8 @@
     "./locationSelector": "./src/location.selector.tsx",
     "./company-sizeSelector": "./src/company-size.select.tsx",
     "./listInput": "./src/list-input.tsx",
-    "./listDisplay": "./src/list-display.tsx"
+    "./listDisplay": "./src/list-display.tsx",
+    "./dalla-loading": "./src/dalla-loading.tsx"
   },
   "typesVersions": {
     "*": {
@@ -53,6 +54,9 @@
       ],
       "listDisplay": [
         "./src/list-display.tsx"
+      ],
+      "dalla-loading": [
+        "./src/dalla-loading.tsx"
       ]
     }
   },

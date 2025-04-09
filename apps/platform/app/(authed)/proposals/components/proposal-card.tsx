@@ -1,19 +1,13 @@
 import { motion } from 'motion/react'
 import { cn } from '@dallah/utils'
 import { Badge } from '@dallah/design-system'
-import {
-  Star,
-  DollarSign,
-  Calendar,
-  Globe,
-  Clock,
-  ChevronRight,
-} from 'lucide-react'
+import { Star, Calendar, Globe, Clock, ChevronRight } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
 
 import StatusBadge from './status-badge'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 const ProposalCard: React.FC<{
   proposal: GetAllProposalsRes['data']['0'][number]
@@ -63,9 +57,8 @@ const ProposalCard: React.FC<{
       </h3>
       <div className="mb-3 flex flex-wrap gap-y-3">
         <div className="mr-4 flex items-center">
-          <DollarSign className="mr-1 h-4 w-4 text-[#63B7B7]" />
           <span className="text-sm font-medium text-gray-700">
-            ${meta.budget?.toLocaleString() || '0'}
+            {formatCurrency(meta.budget || 0)}
           </span>
         </div>
         <div className="mr-4 flex items-center">

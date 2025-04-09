@@ -1,3 +1,5 @@
+import { DallaLogoLottie } from './dalla-lottie'
+
 const LogoHorizontal = ({ className }: { className?: string }) => {
   return (
     <svg
@@ -112,4 +114,10 @@ const Logomark = ({ className }: { className?: string }) => {
   )
 }
 
-export { LogoHorizontal, LogoVertical, Logomark, LogomarkFilled }
+export {
+  LogoHorizontal,
+  LogoVertical,
+  Logomark,
+  LogomarkFilled,
+  DallaLogoLottie,
+}

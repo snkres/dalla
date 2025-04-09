@@ -23,7 +23,7 @@ import { VerificationsSection } from './components/verifications-section'
 import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Loading } from '@components/shared/dalla-loading'
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
@@ -97,7 +97,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
   if (isLoading || ownProfileLoading)
     return (
-      <Loading
+      <DallaLoading
         title="Loading profile..."
         description="Please wait while we prepare the profile"
       />

@@ -2,7 +2,7 @@
 
 import type React from 'react'
 
-import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
+import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
 import {
   Input,
   Textarea,

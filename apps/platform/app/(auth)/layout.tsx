@@ -3,7 +3,7 @@
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
+import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
 
 export default function AuthLayout({
   children,

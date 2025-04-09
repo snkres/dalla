@@ -6,6 +6,7 @@ import { Toaster } from '@dallah/design-system/ui/toast/toaster'
 import { ViewTransitions } from 'next-view-transitions'
 import { Suspense } from 'react'
 import Providers from './providers'
+import Script from 'next/script'
 
 const isProd = process.env.NODE_ENV === 'production'
 

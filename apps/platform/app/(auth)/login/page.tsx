@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import Link from 'next/link'
-import { fadeInVariants, fadeInUpVariants } from '@components/aniamtion/animate'
+import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
 import { useQueryState } from 'nuqs'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 import type { AccountType } from '@lib/types/auth'
@@ -16,9 +16,11 @@ import { resendOTP } from '@lib/api/auth/otp-verify'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { redirect } from 'next/navigation'
-import { useState } from 'react'
+import { redirect, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
+import { useSSO } from '@lib/hooks/use-sso'
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
@@ -32,13 +34,55 @@ export default function LoginPage() {
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isProcessingLinkedIn, setIsProcessingLinkedIn] = useState(false)
+  const searchParams = useSearchParams()
+  const { toast } = useToast()
+
+  const [mode, setMode] = useQueryState('mode', {
+    defaultValue: 'company',
+  })
+
+  const {
+    triggerGoogleSignIn,
+    isGoogleLoading,
+    isLinkedInLoading,
+    handleLinkedInSignIn,
+  } = useSSO({
+    mode: mode as 'company' | 'user',
+  })
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      let errorMessage = 'An error occurred during sign-in'
+
+      switch (error) {
+        case 'google_auth_failed':
+          errorMessage = 'Google authentication failed. Please try again.'
+          break
+        case 'missing_code':
+          errorMessage = 'Missing authorization code from Google.'
+          break
+        case 'token_exchange_failed':
+          errorMessage =
+            'Failed to process Google authentication. Please try again.'
+          break
+        case 'internal_error':
+          errorMessage = 'An internal error occurred. Please try again later.'
+          break
+      }
+
+      toast({
+        title: 'Sign-In Error',
+        description: errorMessage,
+        variant: 'destructive',
+      })
+    }
+  }, [searchParams, toast])
 
   if (global.id) {
     return redirect('/')
   }
-  const [mode, setMode] = useQueryState('mode', {
-    defaultValue: 'company',
-  })
 
   const {
     register,
@@ -47,8 +91,6 @@ export default function LoginPage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   })
-
-  const { toast } = useToast()
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
@@ -94,6 +136,17 @@ export default function LoginPage() {
     }
   }
 
+  const handleGoogleSignInClick = () => {
+    triggerGoogleSignIn(mode as 'company' | 'user')
+  }
+
+  const handleLinkedInSignInClick = () => {
+    setIsProcessingLinkedIn(true)
+    handleLinkedInSignIn(mode as 'company' | 'user').catch(() => {
+      setIsProcessingLinkedIn(false)
+    })
+  }
+
   return (
     <motion.div
       variants={fadeInVariants}
@@ -101,6 +154,8 @@ export default function LoginPage() {
       animate="visible"
       className="space-y-8"
     >
+      <div id="google-signin-button" style={{ display: 'none' }}></div>
+
       <div className="flex flex-col items-center justify-center gap-2 space-y-2 text-center">
         <motion.div
           variants={fadeInUpVariants}
@@ -210,7 +265,6 @@ export default function LoginPage() {
             </Link>
           </div>
         </div>
-
         <Button
           type="submit"
           disabled={isSubmitting}
@@ -225,6 +279,57 @@ export default function LoginPage() {
             'Sign in'
           )}
         </Button>
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-gray-200" />
+          </div>
+          <div className="relative flex justify-center text-xs lowercase">
+            <span className="bg-white px-2 text-gray-400">
+              Or continue with
+            </span>
+          </div>
+        </div>
+        <div className="flex w-full items-center justify-center gap-3">
+          <Button
+            key="LinkedIn"
+            type="button"
+            variant="outline"
+            className="flex !h-11 w-full items-center justify-center gap-2"
+            onClick={handleLinkedInSignInClick}
+            disabled={isLinkedInLoading || isProcessingLinkedIn}
+          >
+            {isLinkedInLoading || isProcessingLinkedIn ? (
+              <>
+                <Loader2 className="h-6 w-6 animate-spin" />
+              </>
+            ) : (
+              <>
+                <LinkedInIcon className="h-6 w-6" />
+              </>
+            )}
+          </Button>
+
+          <div className="w-full">
+            <Button
+              key="Google"
+              type="button"
+              variant="outline"
+              className="flex !h-11 w-full items-center justify-center gap-2"
+              onClick={handleGoogleSignInClick}
+              disabled={isGoogleLoading}
+            >
+              {isGoogleLoading ? (
+                <>
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </>
+              ) : (
+                <>
+                  <GoogleIcon className="h-6 w-6" />
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </form>
 
       <div className="mt-6 text-center">

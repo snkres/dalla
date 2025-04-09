@@ -9,12 +9,12 @@ import {
   Avatar,
   AvatarImage,
   AvatarFallback,
+  Riyal,
 } from '@dallah/design-system'
 import {
   Users,
   FileText,
   Plus,
-  DollarSign,
   ChevronRight,
   Star,
   MessageSquare,
@@ -29,6 +29,7 @@ import {
   GetProjectRes,
 } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
+
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
 import ProposalDetailModal from './proposal-detail-modal'
@@ -71,7 +72,7 @@ export function CompanyProjectView({
               <div className="flex items-center justify-between border-b border-gray-200 p-5">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
-                    <DollarSign className="h-4 w-4 text-[#1D8489]" />
+                    <Riyal className="h-4 w-4 text-[#1D8489]" />
                   </div>
                   <h2 className="font-medium text-gray-900">Budget Overview</h2>
                 </div>
@@ -93,8 +94,8 @@ export function CompanyProjectView({
                     <div className="mb-1 text-xs font-medium text-gray-500">
                       Total Budget
                     </div>
-                    <div className="text-lg font-semibold text-gray-900">
-                      {formatCurrency(project.meta.budget)}
+                    <div className="flex items-center gap-1.5 text-xl font-semibold">
+                      {formatCurrency(project.meta?.budget, 'h-5 w-5')}
                     </div>
                   </div>
 

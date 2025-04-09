@@ -16,71 +16,8 @@ import ProposalList from './proposal-list'
 import ProposalDetails from './proposal-details'
 import FloatingButtons from './floating-buttons'
 import { cn } from '@dallah/utils'
-import { getProfessionalAnalytics } from '@lib/api/pro/analytics'
 
-const getTimeAgo = (date: Date): string => {
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-
-  if (diffDays === 0) {
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-    if (diffHours === 0) {
-      const diffMinutes = Math.floor(diffMs / (1000 * 60))
-      return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`
-    }
-    return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`
-  } else if (diffDays < 7) {
-    return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`
-  } else if (diffDays < 30) {
-    const diffWeeks = Math.floor(diffDays / 7)
-    return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`
-  } else {
-    const diffMonths = Math.floor(diffDays / 30)
-    return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`
-  }
-}
-
-const mapStatus = (
-  status: string | undefined,
-): GetAllProposalsRes['data'][0][number]['status'] => {
-  if (!status) return 'Pending'
-
-  switch (status.toLowerCase()) {
-    case 'accepted':
-      return 'Accepted'
-    case 'rejected':
-      return 'Rejected'
-    case 'viewed':
-    case 'in review':
-    case 'in_review':
-    case 'interviewing':
-    case 'submitted':
-    default:
-      return 'Pending'
-  }
-}
-
-const formatAmount = (budget: any): string => {
-  if (budget === undefined || budget === null) return '$0'
-  const numericBudget =
-    typeof budget === 'string' ? Number.parseFloat(budget) : Number(budget)
-  return isNaN(numericBudget) ? '$0' : `$${numericBudget.toLocaleString()}`
-}
-
-// Function to map API statuses to user-friendly display text
-const getStatusDisplayText = (status: ProposalStatus): string => {
-  switch (status) {
-    case 'Accepted':
-      return 'Interviewing'
-    case 'Rejected':
-      return 'Declined'
-    case 'Pending':
-      return 'Submitted'
-    default:
-      return status
-  }
-}
+import { DallaLoading } from '@dallah/components/dalla-loading'
 
 export function ProfessionalProposals() {
   const {
@@ -202,10 +139,10 @@ export function ProfessionalProposals() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-[#63B7B7]" />
-        <span className="ml-2 text-gray-600">Loading proposals...</span>
-      </div>
+      <DallaLoading
+        className="mt-64"
+        description="Please wait while we load your proposals..."
+      />
     )
   }
 

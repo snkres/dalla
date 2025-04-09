@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-react'
+import { ReactNode } from 'react'
 
 export interface Milestone {
   id: number
@@ -51,7 +52,7 @@ export interface FilterCategory {
 
 export interface BudgetRange {
   value: [number, number]
-  label: string
+  label: string | ReactNode
 }
 
 export interface FilterOption {

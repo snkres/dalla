@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
-import {
-  ArrowLeft,
-  Save,
-  DollarSign,
-  Calendar,
-  Briefcase,
-  AlertCircle,
-} from 'lucide-react'
+import { ArrowLeft, Save, Calendar, Briefcase, AlertCircle } from 'lucide-react'
 import { Button, Modal } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
@@ -24,6 +17,7 @@ import {
   SelectValue,
 } from '@dallah/design-system'
 import { ListInput } from '@dallah/components/listInput'
+import { Riyal } from '@dallah/design-system'
 
 const SLIDE_ANIMATION = {
   initial: { x: '100%' },
@@ -324,13 +318,13 @@ export function EditProject({
                   Budget*
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                  <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                   <Input
                     id="meta.budget"
                     placeholder="e.g. 5000"
                     value={formData.meta.budget}
                     onChange={handleInputChange}
-                    className="pl-9"
+                    className="pl-10"
                     type="number"
                   />
                 </div>

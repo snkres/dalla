@@ -16,7 +16,7 @@ const sampleProposals: ProposalSample[] = [
     },
     coverLetter:
       'I have extensive experience in e-commerce redesigns, having worked with brands like Nike and Adidas. I specialize in creating intuitive user experiences that drive conversion rates. My approach combines data-driven design decisions with aesthetic excellence.',
-    price: '$4,500',
+    price: '﷼4,500',
     deliveryTime: '3 weeks',
     proposalDate: 'Mar 15, 2024',
     status: 'pending',
@@ -37,7 +37,7 @@ const sampleProposals: ProposalSample[] = [
     },
     coverLetter:
       "Having reviewed your project requirements, I believe my expertise in React and Node.js makes me an ideal candidate. I've successfully completed similar projects for e-commerce businesses, focusing on responsive design and performance optimization. I can deliver a solution that not only looks great but also performs exceptionally well.",
-    price: '$5,200',
+    price: '﷼5,200',
     deliveryTime: '4 weeks',
     proposalDate: 'Mar 14, 2024',
     status: 'pending',
@@ -64,7 +64,7 @@ const sampleProposals: ProposalSample[] = [
     },
     coverLetter:
       "With over 10 years of experience in e-commerce platform development, I've helped businesses increase their conversion rates by an average of 35%. I specialize in creating seamless shopping experiences with a focus on mobile optimization and checkout flow improvements. I'd love to bring this expertise to your project.",
-    price: '$4,800',
+    price: '﷼4,800',
     deliveryTime: '3.5 weeks',
     proposalDate: 'Mar 12, 2024',
     status: 'pending',

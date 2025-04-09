@@ -19,7 +19,7 @@ import {
 import { Button, Modal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { getProjectById } from '@lib/api/pro/projects'
-import { SLIDE_ANIMATION } from '@components/aniamtion/animate'
+import { SLIDE_ANIMATION } from '@dallah/utils'
 import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getLocalTimeForLocation } from '@dallah/utils'

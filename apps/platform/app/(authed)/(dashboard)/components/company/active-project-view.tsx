@@ -1,13 +1,11 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import { Badge } from '@dallah/design-system'
+import { Badge, Riyal } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
 import {
   FileText,
   ArrowUpRight,
   Calendar,
-  DollarSign,
-  BarChart,
   Users,
   ChevronRight,
   MessageSquare,
@@ -89,7 +87,7 @@ const ActiveProjectView = ({
           <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
             <div className="border-b border-green-100 bg-green-50 px-4 py-3">
               <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-green-600" />
+                <Riyal className="h-4 w-4 text-green-600" />
                 <h4 className="text-sm font-medium text-green-700">Budget</h4>
               </div>
             </div>
