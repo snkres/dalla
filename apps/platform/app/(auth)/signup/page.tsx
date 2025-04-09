@@ -36,14 +36,21 @@ type FormData = z.infer<typeof schema>
 export default function SignupPage() {
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
-  const { handleGoogleSignIn, handleLinkedInSignIn, isLinkedInLoading } =
-    useSSO()
 
   if (global.id) {
     return redirect('/')
   }
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
+  })
+
+  const {
+    triggerGoogleSignIn,
+    isGoogleLoading,
+    isLinkedInLoading,
+    handleLinkedInSignIn,
+  } = useSSO({
+    mode: mode as 'company' | 'user',
   })
 
   const { toast } = useToast()
@@ -267,32 +274,46 @@ export default function SignupPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { icon: LinkedInIcon, label: 'LinkedIn' },
-              { icon: GoogleIcon, label: 'Google' },
-            ].map(({ icon: Icon, label }) => (
+          <div className="flex w-full items-center justify-center gap-3">
+            <Button
+              key="LinkedIn"
+              type="button"
+              variant="outline"
+              className="flex !h-11 w-full items-center justify-center gap-2"
+              onClick={() => handleLinkedInSignIn()}
+              disabled={isLinkedInLoading}
+            >
+              {isLinkedInLoading ? (
+                <>
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                </>
+              ) : (
+                <>
+                  <LinkedInIcon className="h-6 w-6" />
+                </>
+              )}
+            </Button>
+
+            <div className="w-full">
               <Button
-                key={label}
+                key="Google"
                 type="button"
                 variant="outline"
-                className="!h-11"
-                onClick={() => {
-                  if (label === 'LinkedIn') {
-                    handleLinkedInSignIn()
-                  } else if (label === 'Google') {
-                    handleGoogleSignIn()
-                  }
-                }}
-                disabled={label === 'LinkedIn' && isLinkedInLoading}
+                className="flex !h-11 w-full items-center justify-center gap-2"
+                onClick={() => triggerGoogleSignIn()}
+                disabled={isGoogleLoading}
               >
-                {label === 'LinkedIn' && isLinkedInLoading ? (
-                  <Loader2 className="h-6 w-6 animate-spin" />
+                {isGoogleLoading ? (
+                  <>
+                    <Loader2 className="h-6 w-6 animate-spin" />
+                  </>
                 ) : (
-                  <Icon className="h-6 w-6" />
+                  <>
+                    <GoogleIcon className="h-6 w-6" />
+                  </>
                 )}
               </Button>
-            ))}
+            </div>
           </div>
         </form>
 
