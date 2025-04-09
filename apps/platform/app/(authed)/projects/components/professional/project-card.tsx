@@ -3,11 +3,13 @@
 import { motion } from 'motion/react'
 import { Badge } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
-import { Clock, DollarSign, Calendar, Building } from 'lucide-react'
+import { Clock, Calendar, Building } from 'lucide-react'
 import { calculateDaysSince, cn } from '@dallah/utils'
 import { GetAllProposalsRes, ProposalStatus } from '@lib/api/pro/proposals'
 import { formatCurrency } from '@lib/utils/format-currency'
+
 import { useTransitionRouter } from 'next-view-transitions'
+import { Riyal } from '@dallah/design-system'
 
 interface ProjectCardProps {
   project: GetAllProposalsRes['data'][0][number]['project'] & {
@@ -103,9 +105,13 @@ export function ProjectCardProfessional({ project }: ProjectCardProps) {
         </div>
 
         <div className="mb-4 grid grid-cols-2 gap-3 text-sm text-gray-600">
-          <div className="flex items-center">
-            <DollarSign className="mr-1 h-4 w-4 text-gray-400" />
-            <span>{formatCurrency(project.meta?.budget || 0)}</span>
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-1">
+              {formatCurrency(
+                project.meta?.budget || 0,
+                'h-4 w-4 mr-1 text-gray-400',
+              )}
+            </div>
           </div>
           <div className="flex items-center">
             <Calendar className="mr-1 h-4 w-4 text-gray-400" />

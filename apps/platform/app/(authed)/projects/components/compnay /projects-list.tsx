@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@dallah/design-system'
-import { Briefcase, ArrowUpDown, CalendarDays, DollarSign } from 'lucide-react'
+import { Button, Riyal } from '@dallah/design-system'
+import { ArrowUpDown, CalendarDays } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -83,11 +83,11 @@ export function ProjectsList({
               Oldest First
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setSortBy('budget-high')}>
-              <DollarSign className="mr-2 h-4 w-4 text-gray-500" />
+              <Riyal className="mr-2 h-4 w-4 text-gray-500" />
               Highest Budget
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setSortBy('budget-low')}>
-              <DollarSign className="mr-2 h-4 w-4 text-gray-500" />
+              <Riyal className="mr-2 h-4 w-4 text-gray-500" />
               Lowest Budget
             </DropdownMenuItem>
           </DropdownMenuContent>

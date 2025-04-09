@@ -6,7 +6,6 @@ import { Button } from '@dallah/design-system'
 import {
   Briefcase,
   Clock,
-  DollarSign,
   Users,
   CheckCircle,
   Edit,
@@ -134,7 +133,6 @@ export function ProjectCard({
 
         <div className="mb-4 grid grid-cols-2 gap-3 text-sm text-gray-600">
           <div className="flex items-center">
-            <DollarSign className="mr-1 h-4 w-4 text-gray-400" />
             <span>{formatCurrency(project.meta?.budget || 0)}</span>
           </div>
           <div className="flex items-center">

@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   MoreHorizontal,
   ExternalLink,
-  DollarSign,
   Calendar,
   Globe,
 } from 'lucide-react'
@@ -144,7 +143,6 @@ const ProposalDetails: React.FC<{
               </h1>
               <div className="flex flex-wrap gap-y-2">
                 <div className="mr-4 flex items-center">
-                  <DollarSign className="mr-1 h-4 w-4 text-gray-400" />
                   <span className="text-sm text-gray-700">
                     {formatCurrency(data.data.project.meta.budget)}
                   </span>

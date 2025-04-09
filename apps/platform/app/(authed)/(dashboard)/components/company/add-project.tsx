@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Save, DollarSign, Briefcase, AlertCircle } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Save, Briefcase, AlertCircle } from 'lucide-react'
+import { Button, Riyal } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import {
@@ -279,7 +279,7 @@ export function AddProject({
                   Budget*
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+                  <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                   <Input
                     id="meta.budget"
                     placeholder="e.g. 5000"

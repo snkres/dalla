@@ -1,15 +1,6 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import {
-  Award,
-  Bookmark,
-  DollarSign,
-  Clock,
-  MapPin,
-  CheckCircle,
-  Calendar,
-  Building,
-} from 'lucide-react'
+import { Bookmark, Clock, CheckCircle, Calendar, Building } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import {
@@ -107,7 +98,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex cursor-help items-center gap-1.5">
-                    <DollarSign className="h-4 w-4 text-[#63B7B7]" />
                     <span className="truncate font-medium">
                       {formatCurrency(project.meta.budget || 0)}
                     </span>

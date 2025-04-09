@@ -5,11 +5,12 @@ import { calculateDaysSince, formatDate, getRemainingTime } from '@dallah/utils'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 
+import { Riyal } from '@dallah/design-system'
+
 import {
   Briefcase,
   Calendar,
   Clock,
-  DollarSign,
   Edit,
   MessageCircle,
   Users,
@@ -188,19 +189,21 @@ export function ProjectSharedDetails({
             <div className="col-span-2 h-fit overflow-hidden rounded-xl border shadow-sm">
               <div className={`border-b px-4 py-3`}>
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-[#1D8489]" />
+                  <Riyal className="h-4 w-4 text-[#1D8489]" />
                   <h3 className="text-sm font-medium text-[#1D8489]">Budget</h3>
                 </div>
               </div>
               <div className="bg-white p-4">
                 <div className="flex flex-col">
                   <div className="text-base font-semibold text-[#1D8489]">
-                    {formatCurrency(project.meta?.budget)}
+                    <span className="flex items-center gap-1">
+                      {formatCurrency(project.meta?.budget)}
+                    </span>
                   </div>
                   {isCompany && (
                     <div className="mt-1 text-xs text-gray-500">
-                      {formatCurrency(project.meta?.budget * 0.3)} from total
-                      budget to activate the project
+                      {formatCurrency(project.meta?.budget * 0.3, 'h-3 w-3')}{' '}
+                      from total budget to activate the project
                     </div>
                   )}
                 </div>

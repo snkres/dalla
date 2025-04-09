@@ -1,20 +1,16 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Button, Badge, Modal } from '@dallah/design-system'
+import { Button, Badge, Modal, Riyal } from '@dallah/design-system'
 import {
-  ArrowLeft,
   Star,
-  DollarSign,
   CheckCircle,
   MessageSquare,
-  ThumbsUp,
   ThumbsDown,
   User,
   Briefcase,
   MapPin,
   FileText,
-  ExternalLink,
 } from 'lucide-react'
 import { useState } from 'react'
 import Image from 'next/image'
@@ -304,7 +300,7 @@ const ProposalDetails = ({
             <div className="border-b border-gray-200">
               <div className="flex items-center border-b border-gray-200 p-3">
                 <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
-                  <DollarSign className="h-3.5 w-3.5 text-[#63B7B7]" />
+                  <Riyal className="h-3.5 w-3.5" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-800">
                   Proposal Details

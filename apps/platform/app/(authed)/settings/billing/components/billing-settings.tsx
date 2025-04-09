@@ -133,7 +133,7 @@ export function BillingSettings() {
                     <span>Mar 01, 2025</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-sm">$29.00</TableCell>
+                <TableCell className="text-sm">﷼29.00</TableCell>
                 <TableCell>
                   <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-green-200">
                     Paid
@@ -157,7 +157,7 @@ export function BillingSettings() {
                     <span>Feb 01, 2025</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-sm">$29.00</TableCell>
+                <TableCell className="text-sm">﷼29.00</TableCell>
                 <TableCell>
                   <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-green-200">
                     Paid
@@ -181,7 +181,7 @@ export function BillingSettings() {
                     <span>Jan 01, 2025</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-sm">$29.00</TableCell>
+                <TableCell className="text-sm">﷼29.00</TableCell>
                 <TableCell>
                   <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-green-200">
                     Paid

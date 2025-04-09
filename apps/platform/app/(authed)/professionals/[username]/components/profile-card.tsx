@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@dallah/design-system'
+import { Button, Riyal } from '@dallah/design-system'
 import {
   Edit,
-  DollarSign,
   Clock,
   BadgeCheck,
   Award,
@@ -18,6 +17,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Hourglass,
 } from 'lucide-react'
 import Image from 'next/image'
 import { Input } from '@dallah/design-system'
@@ -30,6 +30,7 @@ import {
 } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 export function ProfileCard({
   profile,
@@ -418,7 +419,7 @@ export function ProfileCard({
           <div className="mb-5 grid w-full grid-cols-2 gap-4">
             <div className="rounded-lg bg-[#63B7B7]/5 p-3 text-center">
               <div className="mb-1 flex items-center justify-center">
-                <DollarSign className="h-4 w-4 text-[#63B7B7]" />
+                <Hourglass className="h-4 w-4 text-[#63B7B7]" />
               </div>
               {isEditing ? (
                 <div>
@@ -444,8 +445,9 @@ export function ProfileCard({
                   )}
                 </div>
               ) : (
-                <div className="text-base font-medium text-[#63B7B7]">
-                  ${profile.hourlyRate || '0'}/hr
+                <div className="flex items-center justify-center gap-1 text-base font-medium text-[#63B7B7]">
+                  {formatCurrency(profile.hourlyRate || 0)}
+                  <span className="text-gray-600">/hr</span>
                 </div>
               )}
               <div className="text-xs text-gray-600">Hourly Rate</div>
@@ -456,8 +458,8 @@ export function ProfileCard({
                 <CreditCard className="h-4 w-4 text-[#63B7B7]" />
               </div>
 
-              <div className="text-base font-medium text-[#63B7B7]">
-                ${profile.totalEarned || '0'}
+              <div className="flex items-center justify-center gap-1 text-base font-medium text-[#63B7B7]">
+                {formatCurrency(profile.totalEarned || 0)}
               </div>
 
               <div className="text-xs text-gray-600">Total Earned</div>

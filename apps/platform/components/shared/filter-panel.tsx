@@ -1,11 +1,13 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import { DollarSign, X, Clock, MapPin, Code } from 'lucide-react'
+import { X, Clock, MapPin, Code } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Slider } from '@dallah/design-system'
 import { Checkbox } from '@dallah/design-system'
+import { Riyal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { FilterPanelProps } from '@lib/types/search'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 const PANEL_ANIMATION = {
   initial: { opacity: 0, y: -10 },
@@ -77,7 +79,7 @@ export function FilterPanel({
       <div className="max-h-[500px] overflow-y-auto p-4">
         <FilterSection
           title="Budget Range"
-          icon={<DollarSign className="mr-1.5 h-4 w-4 text-[#63B7B7]" />}
+          icon={<Riyal className="mr-1.5 h-4 w-4 text-[#63B7B7]" />}
         >
           <div className="px-2">
             <Slider
@@ -92,10 +94,10 @@ export function FilterPanel({
             />
             <div className="mt-3 flex justify-between">
               <div className="rounded bg-[#BEDDF1]/20 px-2 py-1 text-xs text-[#63B7B7]">
-                ${selectedBudgetRange[0].toLocaleString()}
+                {formatCurrency(selectedBudgetRange[0], 'h-3 w-3 mr-0.5')}
               </div>
               <div className="rounded bg-[#BEDDF1]/20 px-2 py-1 text-xs text-[#63B7B7]">
-                ${selectedBudgetRange[1].toLocaleString()}+
+                {formatCurrency(selectedBudgetRange[1], 'h-3 w-3 mr-0.5')}+
               </div>
             </div>
           </div>

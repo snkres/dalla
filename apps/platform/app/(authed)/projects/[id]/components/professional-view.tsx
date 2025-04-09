@@ -6,9 +6,9 @@ import { Button, Tabs, TabsContent } from '@dallah/design-system'
 import { Textarea } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { Riyal } from '@dallah/design-system'
 import {
   Send,
-  DollarSign,
   Calendar,
   FileText,
   CheckCircle,
@@ -137,10 +137,10 @@ export function ProfessionalProjectView({
         <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-700">
-              Your Price (USD)
+              Your Price (﷼)
             </label>
             <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
               <Input
                 type="number"
                 className="pl-10"
@@ -337,7 +337,7 @@ export function ProfessionalProjectView({
                   </p>
                   <div className="mt-3 flex items-center justify-between">
                     <span className="text-sm font-medium text-[#63B7B7]">
-                      {i === 1 ? '$2,800' : '$3,500'}
+                      {i === 1 ? '﷼2,800' : '﷼3,500'}
                     </span>
                     <Button
                       variant="ghost"

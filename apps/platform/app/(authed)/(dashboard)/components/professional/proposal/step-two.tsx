@@ -1,7 +1,6 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import {
-  DollarSign,
   Award,
   Briefcase,
   Clock,
@@ -9,6 +8,7 @@ import {
   Check,
   AlertCircle,
 } from 'lucide-react'
+import { Riyal } from '@dallah/design-system'
 import { Button } from '@dallah/design-system'
 import { Input } from '@dallah/design-system'
 import { Label } from '@dallah/design-system'
@@ -22,6 +22,7 @@ import {
 } from '@dallah/design-system'
 import { fadeIn } from '@dallah/utils'
 import { StepTwoProps } from '@lib/types/steps'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 export function StepTwo({
   bidType,
@@ -67,16 +68,14 @@ export function StepTwo({
                 <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md">
                   <div className="border-b border-gray-100 p-4">
                     <h4 className="flex items-center text-sm font-medium">
-                      <DollarSign className="mr-2 h-4 w-4 text-[#63B7B7]" />
+                      <Riyal className="mr-2 h-4 w-4 text-[#63B7B7]" />
                       Set Your Price
                     </h4>
                   </div>
                   <div className="p-4">
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center">
-                        <span className="mr-1 font-medium text-[#63B7B7]">
-                          $
-                        </span>
+                        <Riyal className="mr-1 h-4 w-4 text-[#63B7B7]" />
                         <Input
                           id="bid-amount"
                           type="number"
@@ -93,11 +92,9 @@ export function StepTwo({
                           <span className="text-gray-600">
                             You&apos;ll receive:{' '}
                           </span>
-                          <span className="font-medium text-[#63B7B7]">
-                            ${youllReceive.toFixed(2)}
-                          </span>
-                          <span className="ml-1 text-xs text-gray-500">
-                            (-${serviceFee.toFixed(2)} fee)
+                          {formatCurrency(youllReceive, 'h-3 w-3 mr-0.5')}
+                          <span className="ml-1 inline-flex items-center text-xs text-gray-500">
+                            ({formatCurrency(serviceFee, 'h-2.5 w-2.5 mr-0.5')})
                           </span>
                         </div>
                       </div>
@@ -112,8 +109,8 @@ export function StepTwo({
                         className="w-full bg-[#63B7B7]/10"
                       />
                       <div className="flex justify-between text-xs text-gray-500">
-                        <span>$100</span>
-                        <span>$2,000</span>
+                        <span>﷼100</span>
+                        <span>﷼2,000</span>
                       </div>
                     </div>
                   </div>
@@ -177,7 +174,7 @@ export function StepTwo({
                     <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {project.meta.budget && (
                         <div className="flex items-center rounded-lg border border-gray-100 bg-white p-3">
-                          <DollarSign className="mr-2 h-4 w-4 text-[#63B7B7]" />
+                          <Riyal className="mr-2 h-4 w-4 text-[#63B7B7]" />
                           <div>
                             <span className="block text-xs text-gray-500">
                               Budget

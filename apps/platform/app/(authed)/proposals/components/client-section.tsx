@@ -2,7 +2,7 @@ import { User } from 'lucide-react'
 import ExpandableSection from './expandable-section'
 import { Avatar, AvatarFallback, AvatarImage } from '@dallah/design-system'
 import { Progress } from '@dallah/design-system'
-import { Star, DollarSign, Globe } from 'lucide-react'
+import { Star, Globe } from 'lucide-react'
 
 interface ClientSectionProps {
   data: {

@@ -3,19 +3,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {
   Briefcase,
-  Award,
   ArrowUpRight,
-  PieChart,
   Search,
-  DollarSign,
   HelpCircle,
   FileText,
   Bell,
-  Star,
 } from 'lucide-react'
 import { Button } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { Progress } from '@dallah/design-system'
+import { Riyal } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import {
   ProjectSidebar,
@@ -36,7 +33,7 @@ export function ProfileSidebar() {
     {
       id: 'p1',
       title: 'Brand Identity Redesign',
-      budget: '$4,200',
+      budget: '﷼4,200',
       match: 95,
       category: 'Branding',
       isNew: true,
@@ -44,14 +41,14 @@ export function ProfileSidebar() {
     {
       id: 'p2',
       title: 'Digital Marketing Campaign',
-      budget: '$2,800',
+      budget: '﷼2,800',
       match: 88,
       category: 'Marketing',
     },
     {
       id: 'p3',
       title: 'E-commerce Website Optimization',
-      budget: '$3,500',
+      budget: '﷼3,500',
       match: 82,
       category: 'E-commerce',
     },
@@ -66,7 +63,7 @@ export function ProfileSidebar() {
 
   const quickLinks: QuickLink[] = [
     {
-      icon: <DollarSign />,
+      icon: <Riyal />,
       label: 'Get Paid',
       href: '#/payments',
       highlight: true,

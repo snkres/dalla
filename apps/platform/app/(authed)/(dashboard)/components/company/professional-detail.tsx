@@ -4,23 +4,21 @@ import Image from 'next/image'
 import {
   Star,
   MapPin,
-  DollarSign,
   MessageSquare,
   Briefcase,
-  ExternalLink,
   Bookmark,
   ChevronRight,
   Shield,
-  X,
   FileText,
   Boxes,
 } from 'lucide-react'
 import { Link, useTransitionRouter } from 'next-view-transitions'
-import { Button, Modal } from '@dallah/design-system'
+import { Button, Modal, Riyal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { useQuery } from '@tanstack/react-query'
 import { getProProfile } from '@lib/api/pro/profile'
 import { formatDate } from '@dallah/utils'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ConsultantDetailProps {
   username: string
@@ -278,7 +276,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             <div className="border-b border-gray-200">
               <div className="flex items-center border-b border-gray-200 p-2">
                 <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
-                  <DollarSign className="h-3.5 w-3.5 text-[#63B7B7]" />
+                  <Riyal className="h-3.5 w-3.5" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-800">
                   Rate & Availability
@@ -287,8 +285,11 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               <div className="space-y-2 p-6 px-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Hourly Rate</span>
-                  <span className="text-sm font-normal text-gray-800">
-                    ${professional?.data?.data?.meta?.hourlyRate}/hr
+                  <span className="flex items-center gap-1 text-sm font-normal text-gray-800">
+                    {formatCurrency(
+                      professional?.data?.data?.meta?.hourlyRate || 0,
+                    )}
+                    <span className="text-gray-600">/hr</span>
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">

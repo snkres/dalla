@@ -6,10 +6,9 @@ import {
   Users,
   ChevronRight,
   FileText,
-  DollarSign,
   Image as ImageIcon,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button, Riyal } from '@dallah/design-system'
 import { Badge } from '@dallah/design-system'
 import { cn } from '@dallah/utils'
 import { motion } from 'motion/react'
@@ -207,7 +206,7 @@ export function ApplicationSidebar({
                     (bidType === 'milestone' && milestones.length > 0)
                       ? `$${bidType === 'fixed' ? bidAmount : totalMilestonesAmount} ${bidType}`
                       : 'Required',
-                  icon: <DollarSign className="h-3.5 w-3.5" />,
+                  icon: <Riyal className="h-3.5 w-3.5" />,
                 },
                 {
                   step: 3,

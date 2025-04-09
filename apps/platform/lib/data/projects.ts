@@ -1,10 +1,13 @@
 import { Briefcase, MapPin, Zap, Code, PaintBucket } from 'lucide-react'
-import {
-  Project,
-  FilterCategory,
-  BudgetRange,
-  FilterOption,
-} from '@lib/types/project'
+import { Project, FilterCategory, FilterOption } from '@lib/types/project'
+import { Riyal } from '@dallah/design-system'
+import React, { ReactNode } from 'react'
+
+// Define the BudgetRange interface here to accept ReactNode
+interface BudgetRange {
+  value: [number, number]
+  label: ReactNode
+}
 
 // Filter categories
 export const filterCategories: FilterCategory[] = [
@@ -42,10 +45,10 @@ export const filterCategories: FilterCategory[] = [
 
 // Budget ranges for filter
 export const budgetRanges: BudgetRange[] = [
-  { value: [0, 10000], label: 'Under $10,000' },
-  { value: [10000, 25000], label: '$10,000 - $25,000' },
-  { value: [25000, 50000], label: '$25,000 - $50,000' },
-  { value: [50000, 100000], label: '$50,000+' },
+  { value: [0, 10000], label: 'Under ﷼10,000' },
+  { value: [10000, 25000], label: '﷼10,000 - ﷼25,000' },
+  { value: [25000, 50000], label: '﷼25,000 - ﷼50,000' },
+  { value: [50000, 100000], label: '﷼50,000+' },
 ]
 
 // Duration options for filter
