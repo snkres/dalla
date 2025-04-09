@@ -19,6 +19,7 @@ interface LocationSelectorProps {
   required?: boolean
   className?: string
   selectClassName?: string
+  showLabels?: boolean
 }
 
 const CODE_TO_COUNTRY_NAME: Record<string, string> = Object.entries(
@@ -42,6 +43,7 @@ export function LocationSelector({
   required = false,
   className,
   selectClassName,
+  showLabels = true,
 }: LocationSelectorProps) {
   const isInternalChange = useRef(false)
 
@@ -143,30 +145,35 @@ export function LocationSelector({
   }
 
   return (
-    <div
-      className={cn(
-        'flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0',
-        className,
-      )}
-    >
+    <div className={cn('flex flex-col gap-2 sm:flex-row sm:gap-3', className)}>
       <div className="w-full flex-1 sm:w-1/2">
+        {showLabels && (
+          <label className="mb-1 block text-xs font-medium text-gray-600">
+            Country
+          </label>
+        )}
         <CountryDropdown
           onChange={handleCountryChange}
           placeholder={placeholder.country}
           disabled={disabled}
           value={location.country?.name}
-          className={cn(selectClassName)}
+          className={cn('w-full', selectClassName)}
         />
       </div>
 
       <div className="w-full flex-1 sm:w-1/2">
+        {showLabels && (
+          <label className="mb-1 block text-xs font-medium text-gray-600">
+            City
+          </label>
+        )}
         <CityDropdown
           countryCode={location.country?.code}
           onChange={handleCityChange}
           value={location.city}
           placeholder={placeholder.city}
           disabled={disabled || !location.country}
-          className={cn(selectClassName)}
+          className={cn('w-full', selectClassName)}
         />
       </div>
     </div>

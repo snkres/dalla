@@ -97,8 +97,13 @@ const CountryDropdownComponent = (
   }: CountryDropdownProps,
   ref: React.ForwardedRef<HTMLButtonElement>,
 ) => {
-  // Prioritize MENA countries
+  // Prioritize Saudi Arabia first, then other MENA countries
   const sortedOptions = [...options].sort((a, b) => {
+    // Saudi Arabia gets top priority
+    if (a.name === 'Saudi Arabia') return -1
+    if (b.name === 'Saudi Arabia') return 1
+
+    // Then other MENA countries
     const aIsMENA = MENA_COUNTRIES.includes(a.name)
     const bIsMENA = MENA_COUNTRIES.includes(b.name)
 
@@ -165,7 +170,7 @@ const CountryDropdownComponent = (
   )
 
   const triggerClasses = cn(
-    'flex h-10 w-full items-center justify-between whitespace-nowrap rounded-3xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+    'flex h-10 w-full items-center justify-between whitespace-nowrap rounded-3xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring hover:border-ring transition-colors disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
     slim ? 'w-20' : '',
     className,
   )
@@ -187,46 +192,53 @@ const CountryDropdownComponent = (
               />
             </div>
             {slim === false && (
-              <span className="overflow-hidden text-ellipsis whitespace-nowrap !text-xs">
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap !text-xs font-medium">
                 {selectedCountry.name}
               </span>
             )}
           </div>
         ) : (
           <div className="flex items-center gap-2">
+            <Globe size={16} className="text-muted-foreground opacity-70" />
             {slim === false && <span className="!text-xs">{placeholder}</span>}
           </div>
         )}
-        <ChevronDown size={16} className="ml-auto shrink-0" />
+        <ChevronDown
+          size={16}
+          className="text-muted-foreground ml-auto shrink-0"
+        />
       </PopoverTrigger>
       <PopoverContent
         collisionPadding={10}
         side="bottom"
-        className="min-w-[--radix-popper-anchor-width] bg-white p-0"
+        className="min-w-[--radix-popper-anchor-width] rounded-xl border border-gray-200 bg-white p-0 shadow-md"
       >
-        <Command className="max-h-[200px] w-full bg-white sm:max-h-[270px]">
+        <Command className="max-h-[250px] w-full bg-white sm:max-h-[300px]">
           <CommandList>
-            <div className="bg-popover sticky top-0 z-10 bg-white">
-              <CommandInput placeholder="Search country..." />
+            <div className="bg-popover sticky top-0 z-10 bg-white p-1.5">
+              <CommandInput
+                placeholder="Search country..."
+                className="rounded-lg border-gray-200"
+              />
             </div>
             <CommandEmpty>No country found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="py-1">
               {sortedOptions
                 .filter((x) => x.name !== 'Israel')
                 .map((option, key: number) => (
                   <CommandItem
-                    className="my-1 flex w-full items-center gap-2 hover:!bg-[#3997A0]"
+                    className="mx-0.5 my-0.5 flex w-full items-center gap-2 rounded-md transition-colors duration-150 hover:!bg-[#3997A0] hover:!text-white"
                     key={key}
                     onSelect={() => handleSelect(option)}
                   >
-                    <div className="flex w-0 flex-grow space-x-2 overflow-hidden">
+                    <div className="flex w-0 flex-grow space-x-2 overflow-hidden py-0.5">
                       <div className="inline-flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full">
                         <CircleFlag
                           countryCode={option.alpha2.toLowerCase()}
                           height={20}
                         />
                       </div>
-                      <span className="overflow-hidden text-ellipsis whitespace-nowrap text-sm hover:text-[#fff]">
+                      <span className="overflow-hidden text-ellipsis whitespace-nowrap text-sm">
                         {option.name}
                       </span>
                     </div>

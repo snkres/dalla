@@ -90,13 +90,23 @@ export function CompanyCard({
     setIsModalOpen(!isModalOpen)
   }
 
+  // Common styling classes
+  const iconContainerClasses =
+    'flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#BEDDF1]/20'
+  const iconClasses = 'h-3 w-3 text-[#3A97A0]'
+  const labelClasses = 'text-xs text-gray-600'
+  const valueClasses = 'text-xs font-medium text-gray-800'
+  const buttonClasses = 'h-8 rounded-full px-3 text-xs'
+  const inputClasses =
+    'h-8 text-xs !rounded-xl border border-gray-200 focus:border-[#3A97A0] focus:ring-0'
+
   return (
     <div className="rounded-xl border border-neutral-100 bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-start justify-between">
         <Badge className="!rounded-full !bg-[#BEDDF1]/20 px-3 py-1 text-xs !text-[#3A97A0]">
           {data.verified ? (
             <>
-              <BadgeCheck className="mr-1 h-4 w-4" />
+              <BadgeCheck className="mr-1.5 h-4 w-4" />
               Verified
             </>
           ) : (
@@ -111,7 +121,7 @@ export function CompanyCard({
                 variant="ghost"
                 size="sm"
                 onClick={onTogglePublicView}
-                className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#3A97A0]"
+                className={`${buttonClasses} text-gray-400 hover:text-[#3A97A0]`}
                 title={
                   isPublicView
                     ? 'Switch to private view'
@@ -119,9 +129,9 @@ export function CompanyCard({
                 }
               >
                 {isPublicView ? (
-                  <EyeOff className="mr-1 !h-4 !w-4" />
+                  <EyeOff className="mr-1.5 h-4 w-4" />
                 ) : (
-                  <Eye className="mr-1 !h-4 !w-4" />
+                  <Eye className="mr-1.5 h-4 w-4" />
                 )}
                 {isPublicView ? 'Private' : 'Public'}
               </Button>
@@ -131,9 +141,9 @@ export function CompanyCard({
                 variant="ghost"
                 size="sm"
                 onClick={handleEdit}
-                className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-[#3A97A0]"
+                className={`${buttonClasses} text-gray-400 hover:text-[#3A97A0]`}
               >
-                <Edit className="mr-1 !h-4 !w-4" />
+                <Edit className="mr-1.5 h-4 w-4" />
                 Edit
               </Button>
             )}
@@ -146,18 +156,18 @@ export function CompanyCard({
               variant="ghost"
               size="sm"
               onClick={handleCancel}
-              className="h-7 rounded-full px-3 text-xs text-gray-400 hover:text-gray-600"
+              className={`${buttonClasses} text-gray-400 hover:text-gray-600`}
             >
-              <X className="mr-1 h-3 w-3" />
+              <X className="mr-1.5 h-3.5 w-3.5" />
               Cancel
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleSave}
-              className="h-7 rounded-full px-3 text-xs text-[#3A97A0] hover:bg-[#3A97A0]/10"
+              className={`${buttonClasses} text-[#3A97A0] hover:bg-[#3A97A0]/10`}
             >
-              <Check className="mr-1 h-3 w-3" />
+              <Check className="mr-1.5 h-3.5 w-3.5" />
               Save
             </Button>
           </div>
@@ -185,7 +195,7 @@ export function CompanyCard({
           <Input
             value={editedCompany.industry}
             onChange={(e) => handleChange('industry', e.target.value)}
-            className="my-2 h-7 text-center text-sm"
+            className="my-2 h-8 text-center text-sm"
             placeholder="Industry"
           />
         ) : (
@@ -229,36 +239,34 @@ export function CompanyCard({
           </div>
         )}
 
-        <div className="mb-5 w-full space-y-3">
+        <div className="mb-5 w-full space-y-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#BEDDF1]/20">
-              <Building className="h-3 w-3 text-[#3A97A0]" />
+            <div className={iconContainerClasses}>
+              <Building className={iconClasses} />
             </div>
-            <div className="w flex w-full items-center justify-between">
-              <span className="text-xs text-gray-600">Company Size</span>
+            <div className="flex w-full items-center justify-between">
+              <span className={labelClasses}>Company Size</span>
               {isEditing ? (
                 <div className="w-4/5">
                   <CompanySizeSelector
                     value={editedCompany.size}
                     onChange={(value: string) => handleChange('size', value)}
                     placeholder="Select company size"
-                    className="text-xs"
+                    className={inputClasses}
                   />
                 </div>
               ) : (
-                <span className="text-xs font-medium text-gray-800">
-                  {data.size}
-                </span>
+                <span className={valueClasses}>{data.size}</span>
               )}
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#BEDDF1]/20">
-              <MapPin className="h-3 w-3 text-[#3A97A0]" />
+            <div className={iconContainerClasses}>
+              <MapPin className={iconClasses} />
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="text-xs text-gray-600">Location</span>
+              <span className={labelClasses}>Location</span>
               {isEditing ? (
                 <div className="w-4/5">
                   <LocationSelector
@@ -268,26 +276,23 @@ export function CompanyCard({
                       country: 'Country',
                       city: 'City',
                     }}
+                    showLabels={false}
+                    selectClassName={inputClasses}
                   />
                 </div>
               ) : (
-                <span className="text-xs font-medium text-gray-800">
-                  {data.location}
-                </span>
+                <span className={valueClasses}>{data.location}</span>
               )}
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[#BEDDF1]/20">
-              <Globe className="h-3 w-3 text-[#3A97A0]" />
+            <div className={iconContainerClasses}>
+              <Globe className={iconClasses} />
             </div>
             <div className="flex w-full items-center justify-between">
-              <span className="text-xs text-gray-600">Joined Dalla since</span>
-
-              <span className="text-xs font-medium text-gray-800">
-                {data.joinedAt}
-              </span>
+              <span className={labelClasses}>Joined Dalla since</span>
+              <span className={valueClasses}>{data.joinedAt}</span>
             </div>
           </div>
         </div>
@@ -324,7 +329,7 @@ export function CompanyCard({
                       {project.description}
                     </p>
 
-                    <div className="mb-3 grid grid-cols-2 gap-x-4 gap-y-2">
+                    <div className="mb-3 grid grid-cols-2 gap-x-4 gap-y-3">
                       <div className="flex items-center gap-1.5">
                         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#BEDDF1]/20">
                           <Building className="h-3 w-3 text-[#3A97A0]" />
@@ -403,10 +408,10 @@ export function CompanyCard({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-xs text-[#3A97A0] hover:bg-[#3A97A0]/10"
+                        className="h-8 text-xs text-[#3A97A0] hover:bg-[#3A97A0]/10"
                       >
                         View Details
-                        <ArrowRight className="ml-1 h-3 w-3" />
+                        <ArrowRight className="ml-1.5 h-3 w-3" />
                       </Button>
                     </div>
                   </div>
