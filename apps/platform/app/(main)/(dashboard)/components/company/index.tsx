@@ -20,7 +20,7 @@ import { ProfessionalDetail } from './professional-detail'
 import { ProfessionalCard } from './professional-card'
 import { useCompanyDashboard } from '../../hooks/use-company-dashboard'
 
-export default function CompanyHome() {
+export function CompanyHome() {
   const {
     projectsOverviewData,
     projectsOverviewLoading,
