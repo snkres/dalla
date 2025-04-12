@@ -1,101 +1,32 @@
 'use client'
 
 import { ProfileCard } from './components/profile-card'
-import { useAtom } from 'jotai'
-import { proMetaAtom, ProProfile } from '@lib/atoms/pro/meta'
-import {
-  createShowCaseProject,
-  getOwnProProfile,
-  getProProfile,
-  updateProProfile,
-  updateShowCaseProject,
-} from '@lib/api/pro/profile'
-import { useQueryState } from 'nuqs'
 import ProfileSummary from './components/profile-summary'
 import { ProjectsSection } from './components/projects-section'
 import { ExperienceSection } from './components/exp-section'
 import { EducationSection } from './components/edu-section'
-import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { LanguagesSection } from './components/langs-section'
 import { SocialsSection } from './components/socials-section'
-import { Language, Social, ShowcaseProject } from '@lib/types/profile'
+import type { Social } from '@lib/types/profile'
 import { VerificationsSection } from './components/verifications-section'
-import { globalAtom } from '@lib/atoms/global'
 import { ReviewsSection } from './components/reviews-section'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { DallaLoading } from '@dalla/components/dalla-loading'
+import { useProfessionalProfile } from './hooks/use-professional-profile'
 
 export function ProProfileClient({ username }: { username: string }) {
-  const [global] = useAtom(globalAtom)
-  const isOwner = global.username === username
-  const queryClient = useQueryClient()
-  const { data: proProfile, isLoading } = useQuery({
-    queryKey: ['pro-profile', username],
-    queryFn: () => getProProfile(username),
-    enabled: !isOwner,
-  })
-  const { data: ownProfile, isLoading: ownProfileLoading } = useQuery({
-    queryKey: ['own-pro-profile', username],
-    queryFn: () => getOwnProProfile(),
-    enabled: isOwner,
-  })
-  const { toast } = useToast()
-  const [isPublicView, setIsPublicView] = useQueryState('publicView', {
-    defaultValue: false,
-    parse: (value) => value === 'true',
-  })
+  const {
+    toast,
+    profile,
+    isLoading,
+    isOwner,
+    profileMutation,
+    createShowCaseProjectMutation,
+    updateShowCaseProjectMutation,
+    isPublicView,
+    handleTogglePublicView,
+  } = useProfessionalProfile({ username })
 
-  const profile = isOwner ? ownProfile?.data : proProfile?.data
-
-  const profileMutation = useMutation({
-    mutationFn: updateProProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
-      toast({
-        title: 'Profile updated successfully',
-        description: 'Your profile has been updated successfully',
-      })
-    },
-    onError: (error) => {
-      console.error('Failed to update profile:', error)
-      toast({
-        title: 'Update failed',
-        description: 'There was a problem updating your profile',
-        variant: 'destructive',
-      })
-    },
-  })
-
-  const createProjectMutation = useMutation({
-    mutationFn: ({ proId, projectData }: { proId: string; projectData: any }) =>
-      createShowCaseProject(proId, projectData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
-    },
-    onError: (error) => {
-      console.error('Failed to create project:', error)
-    },
-  })
-
-  const updateProjectMutation = useMutation({
-    mutationFn: ({
-      proId,
-      projectId,
-      projectData,
-    }: {
-      proId: string
-      projectId: string
-      projectData: any
-    }) => updateShowCaseProject(proId, projectId, projectData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['own-pro-profile', username] })
-    },
-    onError: (error) => {
-      console.error('Failed to update project:', error)
-    },
-  })
-
-  if (isLoading || ownProfileLoading)
+  if (isLoading)
     return (
       <DallaLoading
         title="Loading profile..."
@@ -128,9 +59,7 @@ export function ProProfileClient({ username }: { username: string }) {
             }}
             isPublicView={isPublicView}
             isOwner={isOwner}
-            onTogglePublicView={
-              isOwner ? () => setIsPublicView(!isPublicView) : undefined
-            }
+            onTogglePublicView={handleTogglePublicView}
             onUpdate={(updatedProfile) => {
               profileMutation.mutate({
                 meta: {
@@ -145,13 +74,13 @@ export function ProProfileClient({ username }: { username: string }) {
                   projectCompletion: updatedProfile.projectCompletion || '',
                 },
                 education: [
-                  ...(ownProfile?.data.data.education || []).map(
+                  ...(profile?.data.education || []).map(
                     ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                       cleanedEntry,
                   ),
                 ],
                 experience: [
-                  ...(ownProfile?.data.data.experience || []).map(
+                  ...(profile?.data?.experience || []).map(
                     ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                       cleanedEntry,
                   ),
@@ -177,13 +106,13 @@ export function ProProfileClient({ username }: { username: string }) {
                     languages: languagesObj,
                   },
                   education: [
-                    ...(ownProfile?.data.data.education || []).map(
+                    ...(profile?.data.education || []).map(
                       ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                         cleanedEntry,
                     ),
                   ],
                   experience: [
-                    ...(ownProfile?.data.data.experience || []).map(
+                    ...(profile?.data?.experience || []).map(
                       ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                         cleanedEntry,
                     ),
@@ -220,13 +149,13 @@ export function ProProfileClient({ username }: { username: string }) {
                     socialLinks: socialLinksObj,
                   },
                   education: [
-                    ...(ownProfile?.data.data.education || []).map(
+                    ...(profile?.data.education || []).map(
                       ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                         cleanedEntry,
                     ),
                   ],
                   experience: [
-                    ...(ownProfile?.data.data.experience || []).map(
+                    ...(profile?.data?.experience || []).map(
                       ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                         cleanedEntry,
                     ),
@@ -255,11 +184,11 @@ export function ProProfileClient({ username }: { username: string }) {
                   ...profile?.data?.meta,
                   skills: updatedSummary.skills,
                 },
-                education: ownProfile?.data.data.education.map(
+                education: profile?.data.education.map(
                   ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                     cleanedEntry,
                 ),
-                experience: ownProfile?.data.data.experience.map(
+                experience: profile?.data?.experience.map(
                   ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                     cleanedEntry,
                 ),
@@ -287,8 +216,8 @@ export function ProProfileClient({ username }: { username: string }) {
                   }
 
                   if (project.id) {
-                    await updateProjectMutation.mutateAsync({
-                      proId: ownProfile?.data.data.User.id || '',
+                    await updateShowCaseProjectMutation.mutateAsync({
+                      proId: profile?.data?.User?.id || '',
                       projectId: project.id,
                       projectData,
                     })
@@ -299,10 +228,11 @@ export function ProProfileClient({ username }: { username: string }) {
                     })
                   } else {
                     try {
-                      const response = await createProjectMutation.mutateAsync({
-                        proId: profile?.data?.User?.id,
-                        projectData,
-                      })
+                      const response =
+                        await createShowCaseProjectMutation.mutateAsync({
+                          proId: profile?.data?.User?.id,
+                          projectData,
+                        })
 
                       const newProject = response.data.data
 
@@ -347,7 +277,7 @@ export function ProProfileClient({ username }: { username: string }) {
               )
               profileMutation.mutate({
                 experience: [...cleanedExp],
-                education: ownProfile?.data.data.education.map(
+                education: profile?.data.education.map(
                   ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                     cleanedEntry,
                 ),
@@ -368,7 +298,7 @@ export function ProProfileClient({ username }: { username: string }) {
 
               profileMutation.mutate({
                 education: [...cleanedEducation],
-                experience: ownProfile?.data.data.experience.map(
+                experience: profile?.data?.experience.map(
                   ({ profileId, createdAt, updatedAt, ...cleanedEntry }) =>
                     cleanedEntry,
                 ),
