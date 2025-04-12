@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import {
   AlertCircle,
@@ -9,10 +8,6 @@ import {
   Info,
   X,
   Users,
-  BookOpen,
-  Clock,
-  Award,
-  ArrowUpRight,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
@@ -21,147 +16,35 @@ import { cn } from '@dalla/utils'
 import { ProjectsOverview } from './projects-overview'
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'
-import { useQuery } from '@tanstack/react-query'
-import { getAllProjects } from '@lib/api/company/projects'
-
-import { ConsultantDetail } from 'app/(authed)/(dashboard)/components/company/professional-detail'
-import { parseAsBoolean, useQueryState } from 'nuqs'
-import {
-  getAllProfessionals,
-  GetAllProfessionalsRes,
-} from '@lib/api/company/professionals'
+import { ProfessionalDetail } from './professional-detail'
 import { ProfessionalCard } from './professional-card'
+import { useCompanyDashboard } from '../../hooks/use-company-dashboard'
 
-const LIMIT = 6
 export default function CompanyHome() {
-  const [page, setPage] = useState(1)
-  const [filteredProfessionals, setFilteredProfessionals] = useState<
-    GetAllProfessionalsRes['data'][0]
-  >([])
-  const [selectedProfessional, setSelectedProfessional] = useState<
-    GetAllProfessionalsRes['data'][0][number] | null
-  >(null)
-  const { data: professionals, isFetched: professionalsFetched } = useQuery({
-    queryKey: ['professionals', page],
-    queryFn: () => getAllProfessionals(page, LIMIT),
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    refetchInterval: 1000 * 60 * 10, // 10 minutes
-  })
-  const [showAddProject, setShowAddProject] = useQueryState(
-    'startProject',
-    parseAsBoolean,
-  )
-  const [searchQuery, setSearchQuery] = useState('')
-  const [showFilterPanel, setShowFilterPanel] = useState(false)
-  const [showProfessionalDetail, setShowProfessionalDetail] = useState(false)
-  const [activeFilter, setActiveFilter] = useState('all')
-
   const {
-    data: projectsOverviewData,
-    refetch: refetchProjectsOverview,
-    isLoading: projectsOverviewLoading,
-  } = useQuery({
-    queryKey: ['projects', 'overview'],
-    queryFn: () => getAllProjects(1, 5),
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    refetchOnReconnect: true,
-    refetchInterval: 1000 * 60 * 5, // 5 minutes
-  })
-
-  useEffect(() => {
-    if (professionals?.data[0]) {
-      setFilteredProfessionals(professionals.data[0])
-    }
-  }, [professionalsFetched])
-
-  const filterOptions = [
-    {
-      key: 'all',
-      label: 'All Consultants',
-      icon: <Users className="mr-1.5 h-3.5 w-3.5" />,
-    },
-    {
-      key: 'available',
-      label: 'Available Now',
-      icon: <Clock className="mr-1.5 h-3.5 w-3.5" />,
-    },
-    {
-      key: 'topRated',
-      label: 'Top Rated',
-      icon: <Award className="mr-1.5 h-3.5 w-3.5" />,
-    },
-    {
-      key: 'recent',
-      label: 'Recently Active',
-      icon: <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />,
-    },
-    {
-      key: 'saved',
-      label: 'Saved Profiles',
-      icon: <BookOpen className="mr-1.5 h-3.5 w-3.5" />,
-    },
-  ]
-
-  useEffect(() => {
-    if (!professionals?.data[0]) return
-
-    let results = [...(professionals.data[0] || [])]
-
-    if (searchQuery) {
-      results = results.filter(
-        (consultant) =>
-          consultant.User.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          consultant.meta.skills.some((skill) =>
-            skill.toLowerCase().includes(searchQuery.toLowerCase()),
-          ) ||
-          consultant.meta.location
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()),
-      )
-    }
-
-    if (activeFilter !== 'all') {
-      switch (activeFilter) {
-        case 'available':
-          results = results.filter((c) => c.meta.availability === 'Available')
-          break
-        case 'topRated':
-          results = results.filter((c) => c.meta.successRate >= 4.8)
-          break
-        case 'recent':
-          // In a real app, you'd filter by last active date
-          results = results.slice(0, 3)
-          break
-        case 'saved':
-          // In a real app, you'd have a saved list
-          results = results.filter((_, i) => i % 2 === 0)
-          break
-      }
-    }
-
-    setFilteredProfessionals(results as GetAllProfessionalsRes['data'][0])
-  }, [searchQuery, activeFilter, professionals])
-
-  const handleProfessionalClick = (
-    professional: GetAllProfessionalsRes['data'][0][number],
-  ) => {
-    setSelectedProfessional(professional)
-    setShowProfessionalDetail(true)
-  }
-
-  const handleCloseDetail = () => {
-    setShowProfessionalDetail(false)
-  }
-
-  const clearFilters = () => {
-    setSearchQuery('')
-    setActiveFilter('all')
-  }
+    projectsOverviewData,
+    projectsOverviewLoading,
+    professionals,
+    showAddProject,
+    setShowAddProject,
+    searchQuery,
+    setSearchQuery,
+    showFilterPanel,
+    setShowFilterPanel,
+    activeFilter,
+    setActiveFilter,
+    filterOptions,
+    clearFilters,
+    handleProfessionalClick,
+    handleCloseDetail,
+    filteredProfessionals,
+    page,
+    setPage,
+    LIMIT,
+    showProfessionalDetail,
+    selectedProfessional,
+    refetchProjectsOverview,
+  } = useCompanyDashboard()
 
   return (
     <div>
@@ -298,7 +181,6 @@ export default function CompanyHome() {
                       const visiblePages = Math.min(5, totalPages)
                       let startPage = 1
 
-                      // Determine the starting page based on current page position
                       if (page > 3) {
                         startPage = Math.min(
                           page - 2,
@@ -306,13 +188,11 @@ export default function CompanyHome() {
                         )
                       }
 
-                      // Ensure start page is never less than 1
                       startPage = Math.max(1, startPage)
 
                       return Array.from({ length: visiblePages }, (_, i) => {
                         const pageNum = startPage + i
 
-                        // Don't render if beyond total pages
                         if (pageNum > totalPages) return null
 
                         return (
@@ -382,7 +262,7 @@ export default function CompanyHome() {
       {showProfessionalDetail && selectedProfessional && (
         <>
           <AnimatePresence mode="wait">
-            <ConsultantDetail
+            <ProfessionalDetail
               key={`consultant-detail-${selectedProfessional.userId}`}
               username={selectedProfessional.User.username}
               onClose={handleCloseDetail}
