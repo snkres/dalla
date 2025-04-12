@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { motion } from 'motion/react'
 import Image from 'next/image'
 import {
   Star,
@@ -12,7 +11,7 @@ import {
   FileText,
   Boxes,
 } from 'lucide-react'
-import { Link, useTransitionRouter } from 'next-view-transitions'
+import { useTransitionRouter } from 'next-view-transitions'
 import { Button, Modal, Riyal } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { useQuery } from '@tanstack/react-query'
@@ -20,12 +19,15 @@ import { getProProfile } from '@lib/api/pro/profile'
 import { formatDate } from '@dalla/utils'
 import { formatCurrency } from '@lib/utils/format-currency'
 
-interface ConsultantDetailProps {
+interface ProfessionalDetailProps {
   username: string
   onClose: () => void
 }
 
-export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
+export function ProfessionalDetail({
+  username,
+  onClose,
+}: ProfessionalDetailProps) {
   const router = useTransitionRouter()
   const { data: professional } = useQuery({
     queryKey: ['professional', username],
