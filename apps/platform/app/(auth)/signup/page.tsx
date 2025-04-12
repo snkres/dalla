@@ -263,58 +263,62 @@ export default function SignupPage() {
               'Create account'
             )}
           </Button>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-200" />
-            </div>
-            <div className="relative flex justify-center text-xs lowercase">
-              <span className="bg-white px-2 text-gray-400">
-                Or continue with
-              </span>
-            </div>
-          </div>
+          {mode === 'professional' && (
+            <>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-xs lowercase">
+                  <span className="bg-white px-2 text-gray-400">
+                    Or continue with
+                  </span>
+                </div>
+              </div>
 
-          <div className="flex w-full items-center justify-center gap-3">
-            <Button
-              key="LinkedIn"
-              type="button"
-              variant="outline"
-              className="flex !h-11 w-full items-center justify-center gap-2"
-              onClick={() => handleLinkedInSignIn()}
-              disabled={isLinkedInLoading}
-            >
-              {isLinkedInLoading ? (
-                <>
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                </>
-              ) : (
-                <>
-                  <LinkedInIcon className="h-6 w-6" />
-                </>
-              )}
-            </Button>
+              <div className="flex w-full items-center justify-center gap-3">
+                <Button
+                  key="LinkedIn"
+                  type="button"
+                  variant="outline"
+                  className="flex !h-11 w-full items-center justify-center gap-2"
+                  onClick={() => handleLinkedInSignIn()}
+                  disabled={isLinkedInLoading}
+                >
+                  {isLinkedInLoading ? (
+                    <>
+                      <Loader2 className="h-6 w-6 animate-spin" />
+                    </>
+                  ) : (
+                    <>
+                      <LinkedInIcon className="h-6 w-6" />
+                    </>
+                  )}
+                </Button>
 
-            <div className="w-full">
-              <Button
-                key="Google"
-                type="button"
-                variant="outline"
-                className="flex !h-11 w-full items-center justify-center gap-2"
-                onClick={() => triggerGoogleSignIn()}
-                disabled={isGoogleLoading}
-              >
-                {isGoogleLoading ? (
-                  <>
-                    <Loader2 className="h-6 w-6 animate-spin" />
-                  </>
-                ) : (
-                  <>
-                    <GoogleIcon className="h-6 w-6" />
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
+                <div className="w-full">
+                  <Button
+                    key="Google"
+                    type="button"
+                    variant="outline"
+                    className="flex !h-11 w-full items-center justify-center gap-2"
+                    onClick={() => triggerGoogleSignIn()}
+                    disabled={isGoogleLoading}
+                  >
+                    {isGoogleLoading ? (
+                      <>
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                      </>
+                    ) : (
+                      <>
+                        <GoogleIcon className="h-6 w-6" />
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </form>
 
         <p className="text-center text-sm text-gray-500">
