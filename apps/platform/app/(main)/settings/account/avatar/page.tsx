@@ -1,6 +1,6 @@
 'use client'
 
-import { ProfileAvatar } from 'app/(authed)/settings/account/avatar/components/profile-avatar'
+import { ProfileAvatar } from 'app/(main)/settings/account/avatar/components/profile-avatar'
 
 export default function ProfileAvatarPage() {
   return <ProfileAvatar />

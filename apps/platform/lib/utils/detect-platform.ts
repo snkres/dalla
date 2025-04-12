@@ -1,5 +1,5 @@
 import type { PlatformInfo, SocialLink } from '@lib/types/profile'
-import { SOCIAL_PLATFORMS } from '../../app/(authed)/professionals/[username]/components/platforms-data'
+import { SOCIAL_PLATFORMS } from '../../app/(main)/professionals/[username]/components/platforms-data'
 
 /**
  * Detects the platform from a URL using multiple methods

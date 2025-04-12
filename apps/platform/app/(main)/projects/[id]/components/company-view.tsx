@@ -33,7 +33,7 @@ import { formatCurrency } from '@lib/utils/format-currency'
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
 import ProposalDetailModal from './proposal-detail-modal'
-import StatusBadge from 'app/(authed)/proposals/components/status-badge'
+import StatusBadge from 'app/(main)/proposals/components/status-badge'
 import { ProposalStatus } from '@lib/api/pro/proposals'
 import { ListDisplay } from '@dalla/components/listDisplay'
 
