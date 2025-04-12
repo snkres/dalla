@@ -8,7 +8,7 @@ import {
 import { useAtom } from 'jotai'
 import { useQueryState } from 'nuqs'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
-import { type CompanyProfile, companyMetaAtom } from '@lib/atoms/company/meta'
+import { type CompanyProfile } from '@lib/atoms/company/meta'
 
 export function useCompanyProfile({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)
@@ -26,7 +26,6 @@ export function useCompanyProfile({ id }: { id: string }) {
     enabled: isOwner,
   })
   const profile = isOwner ? ownProfile : data
-  const [meta, setMeta] = useAtom(companyMetaAtom)
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
     defaultValue: false,
     parse: (value) => value === 'true',
