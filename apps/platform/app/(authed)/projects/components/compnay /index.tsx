@@ -1,9 +1,9 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { PlusCircle, Search, Loader2 } from 'lucide-react'
-import { Input } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
 import { useQueryState } from 'nuqs'
 import { ProjectFilters } from '../filters'
 import { ProjectsList } from './projects-list'
@@ -12,7 +12,7 @@ import {
   getAllProjects,
 } from '@lib/api/company/projects'
 import { useTransitionRouter } from 'next-view-transitions'
-import { DallaLoading } from '@dallah/components/dalla-loading'
+import { DallaLoading } from '@dalla/components/dalla-loading'
 
 const LIMIT = 10
 

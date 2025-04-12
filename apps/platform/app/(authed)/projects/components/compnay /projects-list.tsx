@@ -2,14 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button, Riyal } from '@dallah/design-system'
+import { Button, Riyal } from '@dalla/design-system'
 import { ArrowUpDown, CalendarDays } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { ProjectCard } from './project-card'
 import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 

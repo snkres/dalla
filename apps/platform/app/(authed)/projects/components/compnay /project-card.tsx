@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Badge } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Badge } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Briefcase,
   Clock,
@@ -13,7 +13,7 @@ import {
   Star,
   ArrowUpRight,
 } from 'lucide-react'
-import { calculateDaysSince, cn } from '@dallah/utils'
+import { calculateDaysSince, cn } from '@dalla/utils'
 import Image from 'next/image'
 import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { globalAtom } from '@lib/atoms/global'
