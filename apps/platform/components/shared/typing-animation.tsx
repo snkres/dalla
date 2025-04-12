@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { motion, MotionProps } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 

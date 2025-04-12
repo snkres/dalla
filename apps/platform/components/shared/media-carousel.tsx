@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { ChevronLeft, ChevronRight, FileText, Maximize, X } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { motion, AnimatePresence } from 'motion/react'
 

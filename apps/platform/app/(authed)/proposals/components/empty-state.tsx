@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 import { Bell, Gift } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 
 interface EmptyStateProps {
   type: string

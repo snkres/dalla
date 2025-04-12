@@ -12,10 +12,10 @@ import {
   Bell,
   Star,
 } from 'lucide-react'
-import { Button, Riyal } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
-import { Progress } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Button, Riyal } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
+import { Progress } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import {
   ProjectSidebar,
   SkillItem,

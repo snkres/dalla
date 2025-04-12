@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Badge, Button, Textarea, Input } from '@dallah/design-system'
+import { Badge, Button, Textarea, Input } from '@dalla/design-system'
 import { Briefcase, Users, Building, Edit, Check, X } from 'lucide-react'
 import { SkillSelector } from '@components/shared/skill-selector'
 

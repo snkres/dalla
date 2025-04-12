@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 
-import { Button, Tabs, TabsContent } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { Riyal } from '@dallah/design-system'
+import { Button, Tabs, TabsContent } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
+import { Riyal } from '@dalla/design-system'
 import {
   Send,
   Calendar,
@@ -26,7 +26,7 @@ import { proMetaAtom } from '@lib/atoms/pro/meta'
 import { createProjectProposal } from '@lib/api/pro/proposals'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
-import { ListDisplay } from '@dallah/components/listDisplay'
+import { ListDisplay } from '@dalla/components/listDisplay'
 
 export function ProfessionalProjectView({
   project,

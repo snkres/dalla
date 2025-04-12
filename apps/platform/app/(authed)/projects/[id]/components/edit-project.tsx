@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'motion/react'
 import { ArrowLeft, Save, Calendar, Briefcase, AlertCircle } from 'lucide-react'
-import { Button, Modal } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Button, Modal } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
 import { updateProject } from '@lib/api/company/projects'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { SkillSelector } from '@components/shared/skill-selector'
 import MultiImageUpload from '@components/shared/multiImage-upload'
 import type { GetProjectRes } from '@lib/api/company/projects'
@@ -15,9 +15,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
-import { ListInput } from '@dallah/components/listInput'
-import { Riyal } from '@dallah/design-system'
+} from '@dalla/design-system'
+import { ListInput } from '@dalla/components/listInput'
+import { Riyal } from '@dalla/design-system'
 
 const SLIDE_ANIMATION = {
   initial: { x: '100%' },

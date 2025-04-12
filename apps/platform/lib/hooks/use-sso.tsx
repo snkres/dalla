@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { loginWithGoogle, loginWithLinkedIn } from '@lib/api/auth/login'

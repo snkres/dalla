@@ -1,11 +1,11 @@
 import React, { useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Search, Filter, Info } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import { FilterPanel } from '../../../../../components/shared/filter-panel'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { SearchBarProps } from '@lib/types/search'
 const HELP_ANIMATION = {
   initial: { opacity: 0, y: -5 },

@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { Notification } from '@lib/types/navbar'
 import { v4 as uuidv4 } from 'uuid'
 import { atomWithLocalForage } from '../atom-with-localforge'
-import { formatTime } from '@dallah/utils'
+import { formatTime } from '@dalla/utils'
 
 export const notificationsAtom = atomWithLocalForage<Notification[]>(
   'dalla:notifications',

@@ -1,9 +1,9 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { CheckCircle } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 // import type { Project } from '@lib/api/company/projects'
-import { scaleIn } from '@dallah/utils'
+import { scaleIn } from '@dalla/utils'
 
 interface SuccessScreenProps {
   project: any

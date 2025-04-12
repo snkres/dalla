@@ -1,5 +1,5 @@
 import React from 'react'
-import { Riyal } from '@dallah/design-system'
+import { Riyal } from '@dalla/design-system'
 
 /**
  * Formats a number as currency and returns a JSX element with the Riyal icon

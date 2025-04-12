@@ -10,7 +10,7 @@ import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
 import { globalAtom } from '@lib/atoms/global'

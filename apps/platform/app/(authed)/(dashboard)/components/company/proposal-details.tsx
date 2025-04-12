@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Button, Badge, Modal, Riyal } from '@dallah/design-system'
+import { Button, Badge, Modal, Riyal } from '@dalla/design-system'
 import {
   Star,
   CheckCircle,
@@ -15,8 +15,8 @@ import {
 import { useState } from 'react'
 import Image from 'next/image'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
-import { SLIDE_ANIMATION } from '@dallah/utils'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
+import { SLIDE_ANIMATION } from '@dalla/utils'
 import { updateProposalStatus } from '@lib/api/company/proposals'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { Link } from 'next-view-transitions'
@@ -27,7 +27,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { AxiosResponse } from 'axios'
 
 interface ProposalDetailsProps {

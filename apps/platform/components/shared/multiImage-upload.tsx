@@ -19,16 +19,16 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { upload } from '@lib/api/shared/upload'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@dallah/design-system'
-import { Progress } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+} from '@dalla/design-system'
+import { Progress } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 
 interface MultiImageUploadProps {
   images: string[]

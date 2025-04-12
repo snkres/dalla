@@ -2,7 +2,7 @@
 
 import { AccountType } from '@lib/types/auth';
 import { motion } from 'motion/react';
-import { cn } from '@dallah/utils';
+import { cn } from '@dalla/utils';
 
 interface AccountTypeToggleProps {
     value: AccountType;

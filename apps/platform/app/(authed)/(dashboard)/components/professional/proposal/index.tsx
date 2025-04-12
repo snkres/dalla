@@ -9,10 +9,10 @@ import { StepThree } from './step-three'
 import { SuccessScreen } from './success-screen'
 import { ApplicationSidebar } from './sidebar'
 import { NavigationButtons } from './navigation-buttons'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { upload } from '@lib/api/shared/upload'
-import { Modal } from '@dallah/design-system'
+import { Modal } from '@dalla/design-system'
 
 interface ProjectApplicationProps {
   project: GetAllProjectsProfessionalViewRes['data'][0][number]

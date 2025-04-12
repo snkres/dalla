@@ -8,16 +8,16 @@ import {
   Eye,
 } from 'lucide-react'
 import { motion } from 'motion/react'
-import { Badge } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Badge } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@dallah/design-system'
-import { Progress } from '@dallah/design-system'
-import { Card } from '@dallah/design-system'
+} from '@dalla/design-system'
+import { Progress } from '@dalla/design-system'
+import { Card } from '@dalla/design-system'
 
 import { useState } from 'react'
 import { getProfessionalAnalytics } from '@lib/api/pro/analytics'

@@ -2,16 +2,16 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { Search, Loader2 } from 'lucide-react'
-import { Input } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
 import { useQueryState } from 'nuqs'
 import { ProjectFilters } from '../filters'
 import { ProjectsList } from './projects-list'
 import { getAllProjectsProfessionalView } from '@lib/api/pro/projects'
 import { useTransitionRouter } from 'next-view-transitions'
 import { getAllProposals } from '@lib/api/pro/proposals'
-import { DallaLoading } from '@dallah/components/dalla-loading'
+import { DallaLoading } from '@dalla/components/dalla-loading'
 
 const LIMIT = 10
 

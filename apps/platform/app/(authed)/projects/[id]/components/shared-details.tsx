@@ -1,11 +1,11 @@
 'use client'
 
-import { Badge, Button, Tabs, TabsContent } from '@dallah/design-system'
-import { calculateDaysSince, formatDate, getRemainingTime } from '@dallah/utils'
+import { Badge, Button, Tabs, TabsContent } from '@dalla/design-system'
+import { calculateDaysSince, formatDate, getRemainingTime } from '@dalla/utils'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 
-import { Riyal } from '@dallah/design-system'
+import { Riyal } from '@dalla/design-system'
 
 import {
   Briefcase,

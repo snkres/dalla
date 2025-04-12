@@ -1,6 +1,6 @@
 {
-  "name": "dallah-dashboard",
-  "repository": "https://github.com/mahmoudgalalz/dallah.git",
+  "name": "dalla-dashboard",
+  "repository": "https://github.com/mahmoudgalalz/dalla.git",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -13,9 +13,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@dallah/components": "workspace:*",
-    "@dallah/design-system": "workspace:*",
-    "@dallah/utils": "workspace:*",
+    "@dalla/components": "workspace:*",
+    "@dalla/design-system": "workspace:*",
+    "@dalla/utils": "workspace:*",
     "next": "15.0.3",
     "react": "19.0.0",
     "react-dom": "19.0.0"
@@ -25,7 +25,7 @@
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.16.0",
-    "eslint-config-dallah": "workspace:*",
+    "eslint-config-dalla": "workspace:*",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
     "typescript": "5.1.3"

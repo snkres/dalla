@@ -1,5 +1,5 @@
-import { Badge } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Badge } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import { GetAllProposalsRes, ProposalStatus } from '@lib/api/pro/proposals'
 
 // Function to map API statuses to user-friendly display text

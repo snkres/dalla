@@ -8,8 +8,8 @@ import {
   Gift,
   Clock,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 
 import {
   Table,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 
 export function BillingSettings() {
   return (

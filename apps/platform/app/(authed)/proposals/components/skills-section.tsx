@@ -1,6 +1,6 @@
 import { Award } from 'lucide-react'
 import ExpandableSection from './expandable-section'
-import { Badge } from '@dallah/design-system'
+import { Badge } from '@dalla/design-system'
 
 interface SkillsSectionProps {
   data: {

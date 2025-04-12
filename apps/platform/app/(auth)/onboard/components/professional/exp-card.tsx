@@ -1,7 +1,7 @@
 'use client'
 import { Clock, FileText } from 'lucide-react'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dallah/utils'
+import { fadeInVariants } from '@dalla/utils'
 
 interface Tool {
   id: string

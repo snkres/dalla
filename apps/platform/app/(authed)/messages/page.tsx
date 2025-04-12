@@ -27,18 +27,18 @@ import {
   MessageSquare,
   Inbox,
 } from 'lucide-react'
-import { Input } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
-import { ScrollArea } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
+import { ScrollArea } from '@dalla/design-system'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@dallah/design-system'
-import { Popover, PopoverContent, PopoverTrigger } from '@dallah/design-system'
+} from '@dalla/design-system'
+import { Popover, PopoverContent, PopoverTrigger } from '@dalla/design-system'
 import Image from 'next/image'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 
 interface Conversation {
   id: number

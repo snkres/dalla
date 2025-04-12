@@ -12,12 +12,12 @@ import {
   SelectTrigger,
   Textarea,
   Label,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dallah/utils'
+import { fadeInVariants } from '@dalla/utils'
 import { DatePicker } from './date-picker'
 import { Tag, TagInput } from 'emblor'
-import { LocationSelector } from '@dallah/components/locationSelector'
+import { LocationSelector } from '@dalla/components/locationSelector'
 
 interface Tool {
   id: string

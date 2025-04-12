@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Button, Logomark } from '@dallah/design-system'
+import { Button, Logomark } from '@dalla/design-system'
 import { Upload, X } from 'lucide-react'
 
 interface PictureUploadProps {

@@ -8,12 +8,12 @@ import {
   CheckCircle,
   Sparkles,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
-import { Label } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Button } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
+import { Label } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import { StepOneProps } from '@lib/types/steps'
-import { fadeIn } from '@dallah/utils'
+import { fadeIn } from '@dalla/utils'
 
 export function StepOne({
   coverLetter,

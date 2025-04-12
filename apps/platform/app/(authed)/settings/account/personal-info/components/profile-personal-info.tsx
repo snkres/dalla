@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { Check, AlertTriangle } from 'lucide-react'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
-import { Switch } from '@dallah/design-system'
+} from '@dalla/design-system'
+import { Switch } from '@dalla/design-system'
 import { motion } from 'motion/react'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
@@ -21,7 +21,7 @@ import {
   getOwnCompanyProfile,
   updateCompanyProfile,
 } from '@lib/api/company/profile'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
 

@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
 import {
   Award,
   ExternalLink,
@@ -20,7 +20,7 @@ import Link from 'next/link'
 import { PlatformIcon } from '@components/shared/platform-icon'
 import { detectPlatform, enhanceSocialLink } from '@lib/utils/detect-platform'
 import type { SocialLink } from '@lib/types/profile'
-import { LocationSelector } from '@dallah/components/locationSelector'
+import { LocationSelector } from '@dalla/components/locationSelector'
 
 export function ContactInfoCard({
   data,

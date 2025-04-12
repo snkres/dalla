@@ -11,16 +11,16 @@ import {
   Trash2,
   Briefcase,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { motion, AnimatePresence } from 'motion/react'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { Project, ProjectStatus } from '@lib/types/profile'
 import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 

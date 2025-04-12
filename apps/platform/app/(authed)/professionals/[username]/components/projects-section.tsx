@@ -11,13 +11,13 @@ import {
   ImageIcon,
   ChevronLeft,
 } from 'lucide-react'
-import { Button, DialogTitle } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Button, DialogTitle } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
 import { motion, AnimatePresence } from 'motion/react'
 import type { ShowcaseProject } from '@lib/types/profile'
 import { SkillSelector } from '@components/shared/skill-selector'
-import { Dialog, DialogContent, DialogOverlay } from '@dallah/design-system'
+import { Dialog, DialogContent, DialogOverlay } from '@dalla/design-system'
 import ImageUpload from '@components/shared/image-upload'
 import MultiImageUpload from '@components/shared/multiImage-upload'
 import { MediaCarousel } from '@components/shared/media-carousel'
@@ -26,7 +26,7 @@ import {
   updateShowCaseProject,
   createShowCaseProject,
 } from '@lib/api/pro/profile'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 
 interface ProjectsSectionProps {
   projects?: ShowcaseProject[]

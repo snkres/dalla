@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Edit,
   GraduationCap,
@@ -13,9 +13,9 @@ import {
   ChevronDown,
 } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Input } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import type { ProProfile } from '@lib/atoms/pro/meta'
 import { MonthYearPicker } from './month-year-date-picker'
 

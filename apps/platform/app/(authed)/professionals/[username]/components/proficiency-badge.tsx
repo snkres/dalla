@@ -1,4 +1,4 @@
-import { Badge } from '@dallah/design-system'
+import { Badge } from '@dalla/design-system'
 
 export function ProficiencyBadge({ proficiency }: { proficiency: string }) {
   const getColor = () => {

@@ -1,9 +1,9 @@
 import { PieChart, TrendingUp } from 'lucide-react'
 import ExpandableSection from './expandable-section'
-import { Badge } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Badge } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 
-import { Progress } from '@dallah/design-system'
+import { Progress } from '@dalla/design-system'
 
 interface InsightsSectionProps {
   data: {

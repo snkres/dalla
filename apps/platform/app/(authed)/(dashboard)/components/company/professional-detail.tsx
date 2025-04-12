@@ -13,11 +13,11 @@ import {
   Boxes,
 } from 'lucide-react'
 import { Link, useTransitionRouter } from 'next-view-transitions'
-import { Button, Modal, Riyal } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button, Modal, Riyal } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import { useQuery } from '@tanstack/react-query'
 import { getProProfile } from '@lib/api/pro/profile'
-import { formatDate } from '@dallah/utils'
+import { formatDate } from '@dalla/utils'
 import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ConsultantDetailProps {

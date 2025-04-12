@@ -1,15 +1,15 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Badge } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Badge } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import { Clock, Calendar, Building } from 'lucide-react'
-import { calculateDaysSince, cn } from '@dallah/utils'
+import { calculateDaysSince, cn } from '@dalla/utils'
 import { GetAllProposalsRes, ProposalStatus } from '@lib/api/pro/proposals'
 import { formatCurrency } from '@lib/utils/format-currency'
 
 import { useTransitionRouter } from 'next-view-transitions'
-import { Riyal } from '@dallah/design-system'
+import { Riyal } from '@dalla/design-system'
 
 interface ProjectCardProps {
   project: GetAllProposalsRes['data'][0][number]['project'] & {

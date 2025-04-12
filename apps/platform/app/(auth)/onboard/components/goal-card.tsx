@@ -1,4 +1,4 @@
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { GoalOption } from '@lib/types/goals'
 import { motion } from 'motion/react'
 import { Plus } from 'lucide-react'

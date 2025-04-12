@@ -1,4 +1,4 @@
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { CVParseResponse, parseCV } from '@lib/api/pro/parse-cv'
 import { useState, useEffect, Dispatch, useCallback } from 'react'
 import {

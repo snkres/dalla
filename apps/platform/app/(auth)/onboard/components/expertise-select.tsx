@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Popover, PopoverContent, PopoverTrigger } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import { ChevronsUpDown, Check } from 'lucide-react'
 import {
   Command,
@@ -11,8 +11,8 @@ import {
   CommandEmpty,
   CommandGroup,
   CommandItem,
-} from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+} from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 
 interface ExpertiseSelectProps {
   value: { name: string; description: string }[]

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'motion/react'
-import { Tabs, TabsList, TabsTrigger } from '@dallah/design-system'
+import { Tabs, TabsList, TabsTrigger } from '@dalla/design-system'
 import { memo, useMemo, useState, useRef, useEffect } from 'react'
 import { Search, SlidersHorizontal } from 'lucide-react'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'

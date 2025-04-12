@@ -2,9 +2,9 @@
 
 import React, { forwardRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { Check, Bell, X, MessageSquare, Briefcase, Info } from 'lucide-react'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAtom } from 'jotai'
@@ -15,7 +15,7 @@ import {
   unreadNotificationCountAtom,
   markNotificationAsReadAtom,
 } from '@lib/atoms/shared/notifications'
-import { getRelativeTime } from '@dallah/utils'
+import { getRelativeTime } from '@dalla/utils'
 const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
   const [notifications] = useAtom(notificationsAtom)
   const [unreadCount] = useAtom(unreadNotificationCountAtom)

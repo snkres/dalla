@@ -1,4 +1,4 @@
-import { Skeleton } from '@dallah/design-system'
+import { Skeleton } from '@dalla/design-system'
 
 export default function NotificationsLoading() {
   return (

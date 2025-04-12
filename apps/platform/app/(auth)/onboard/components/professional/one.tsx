@@ -11,16 +11,16 @@ import {
   SelectTrigger,
   Textarea,
   Button,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { MapPin, UploadCloudIcon, Linkedin, FileUp } from 'lucide-react'
 import { useState, type Dispatch, useCallback } from 'react'
 import AvatarUpload from '@components/shared/avatar-upload'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dallah/utils'
+import { fadeInVariants } from '@dalla/utils'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
-import { LocationSelector } from '@dallah/components/locationSelector'
+import { LocationSelector } from '@dalla/components/locationSelector'
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 
 export function ProOnboardingOne({
   data,

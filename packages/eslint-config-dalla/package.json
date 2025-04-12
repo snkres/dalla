@@ -1,0 +1,20 @@
+{
+  "name": "eslint-config-dalla",
+  "version": "0.0.1",
+  "repository": "https://github.com/mahmoudgalalz/dalla.git",
+  "license": "MIT",
+  "main": "index.js",
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "eslint": "^8.26.0",
+    "eslint-config-next": "canary",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-turbo": "latest"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}

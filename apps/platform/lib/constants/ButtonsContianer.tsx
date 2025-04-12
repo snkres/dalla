@@ -1,4 +1,4 @@
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { Loader2 } from 'lucide-react'
 
 interface ButtonsContainerProps {

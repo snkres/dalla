@@ -1,15 +1,15 @@
 import React from 'react'
 import { motion } from 'motion/react'
 import { Bookmark, Clock, CheckCircle, Calendar, Building } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@dallah/design-system'
-import { calculateDaysSince, cn } from '@dallah/utils'
+} from '@dalla/design-system'
+import { calculateDaysSince, cn } from '@dalla/utils'
 import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 

@@ -2,9 +2,9 @@
 
 import { useState, useRef } from 'react'
 import { Layers, Edit, Check, X } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Checkbox } from '@dallah/design-system'
-import { toast } from '@dallah/design-system/ui/toast/use-toast'
+import { Button } from '@dalla/design-system'
+import { Checkbox } from '@dalla/design-system'
+import { toast } from '@dalla/design-system/ui/toast/use-toast'
 
 interface Area {
   name: string

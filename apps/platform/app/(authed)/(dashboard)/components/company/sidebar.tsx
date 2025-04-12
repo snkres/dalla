@@ -10,8 +10,8 @@ import {
   HelpCircle,
   Zap,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { useAtom } from 'jotai'
 

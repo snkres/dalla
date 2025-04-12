@@ -2,7 +2,7 @@
 
 import type React from 'react'
 
-import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
+import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
 import {
   Input,
   Textarea,
@@ -12,16 +12,16 @@ import {
   SelectValue,
   SelectTrigger,
   SelectContent,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { MapPin, Globe2 } from 'lucide-react'
 import { motion } from 'motion/react'
 import AvatarUpload from '@components/shared/avatar-upload'
 import { expertiseOptions } from '../data'
 import ExpertiseSelect from '../expertise-select'
 import type { CompanyOnboardingData } from '../../hooks/use-onboarding'
-import PhoneInput from '@dallah/components/phoneInput'
-import { COMPANY_SIZE_RANGES } from '@dallah/components/company-sizeSelector'
-import { LocationSelector } from '@dallah/components/locationSelector'
+import PhoneInput from '@dalla/components/phoneInput'
+import { COMPANY_SIZE_RANGES } from '@dalla/components/company-sizeSelector'
+import { LocationSelector } from '@dalla/components/locationSelector'
 
 export function CompanyOnboardingOne({
   data,

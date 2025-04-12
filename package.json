@@ -1,6 +1,6 @@
 {
-  "name": "dallah",
-  "repository": "https://github.com/mahmoudgalalz/dallah.git",
+  "name": "dalla",
+  "repository": "https://github.com/mahmoudgalalz/dalla.git",
   "license": "MIT",
   "private": true,
   "workspaces": [

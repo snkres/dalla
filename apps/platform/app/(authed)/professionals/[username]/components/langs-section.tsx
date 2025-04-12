@@ -1,13 +1,13 @@
 import { Globe, Edit, X, Plus, Check } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { ProficiencyBadge } from './proficiency-badge'
 import { useRef, useState } from 'react'
 import { Language } from '@lib/types/profile'
