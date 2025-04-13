@@ -1,89 +1,115 @@
-import { useRef, useState } from 'react'
-import { Language } from '@lib/types/profile'
+import { useState, useCallback } from 'react'
+import { useForm } from '@tanstack/react-form'
+import { z } from 'zod'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 
-export function useLangs({
-  languages,
-  onUpdate,
-}: {
-  languages: { [key: string]: string }
-  onUpdate: (languages: { [key: string]: string }) => void
-}) {
-  const [editedLanguages, setEditedLanguages] = useState<Language[]>([])
+interface LanguageEntry {
+  language: string
+  proficiency: string
+}
+
+const languageEntrySchema = z.object({
+  language: z.string().min(1, 'Language name cannot be empty'),
+  proficiency: z.string(),
+})
+
+const languagesSchema = z.object({
+  languages: z.array(languageEntrySchema),
+})
+
+interface UseLangsProps {
+  initialLanguages: { [key: string]: string }
+  onUpdate: (languages: { [key: string]: string }) => Promise<void> | void
+}
+
+function languagesToArray(langs: { [key: string]: string }): LanguageEntry[] {
+  if (!langs || Object.keys(langs).length === 0) {
+    return [{ language: '', proficiency: 'Beginner' }]
+  }
+  return Object.entries(langs).map(([language, proficiency]) => ({
+    language,
+    proficiency,
+  }))
+}
+
+function languagesToObject(langs: LanguageEntry[]): { [key: string]: string } {
+  return langs
+    .filter((lang) => lang.language.trim() !== '')
+    .reduce(
+      (acc, lang) => {
+        acc[lang.language.trim()] = lang.proficiency
+        return acc
+      },
+      {} as { [key: string]: string },
+    )
+}
+
+export function useLangs({ initialLanguages, onUpdate }: UseLangsProps) {
+  const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleEdit = () => {
-    if (!languages || Object.keys(languages).length === 0) {
-      setEditedLanguages([{ language: '', proficiency: 'Beginner' }])
-    } else {
-      setEditedLanguages(
-        Object.entries(languages).map(([language, proficiency]) => ({
-          language,
-          proficiency,
-        })),
-      )
-    }
+  const form = useForm({
+    defaultValues: {
+      languages: languagesToArray(initialLanguages),
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        await onUpdate(languagesToObject(value.languages))
+        setIsEditing(false)
+        toast({
+          title: 'Languages Updated',
+          description: 'Your languages have been successfully updated.',
+        })
+      } catch (error) {
+        console.error('Language Update Failed:', error)
+        toast({
+          title: 'Update Failed',
+          description:
+            error instanceof Error
+              ? error.message
+              : 'An unknown error occurred.',
+          variant: 'destructive',
+        })
+      }
+    },
+
+    validators: {
+      onChange: languagesSchema,
+    },
+  })
+
+  const handleEdit = useCallback(() => {
+    form.reset()
     setIsEditing(true)
-    setTimeout(() => inputRef.current?.focus(), 100)
-  }
+  }, [form])
 
-  const handleSave = () => {
-    // Filter out any languages with empty language names
-    const validLanguages = editedLanguages.filter(
-      (lang) => lang.language.trim() !== '',
-    )
-    setIsEditing(false)
-    onUpdate(
-      validLanguages.reduce(
-        (acc, lang) => ({
-          ...acc,
-          [lang.language]: lang.proficiency,
-        }),
-        {} as { [key: string]: string },
-      ),
-    )
-  }
+  const handleCancel = useCallback(() => {
+    if (form.state.isDirty) {
+      if (
+        window.confirm(
+          'You have unsaved changes. Are you sure you want to cancel?',
+        )
+      ) {
+        form.reset()
+        setIsEditing(false)
+      }
+    } else {
+      setIsEditing(false)
+    }
+  }, [form])
 
-  const handleCancel = () => {
-    setIsEditing(false)
-  }
-
-  const addLanguage = () => {
-    setEditedLanguages([
-      ...editedLanguages,
-      { language: '', proficiency: 'Beginner' },
-    ])
-    setTimeout(() => {
-      const inputs = document.querySelectorAll('input[placeholder="Language"]')
-      const lastInput = inputs[inputs.length - 1] as HTMLInputElement
-      lastInput?.focus()
-    }, 100)
-  }
-
-  const removeLanguage = (index: number) => {
-    const updated = editedLanguages.filter((_, i) => i !== index)
-    setEditedLanguages(updated)
-  }
-
-  const updateLanguage = (
-    index: number,
-    field: keyof Language,
-    value: string,
-  ) => {
-    const updated = [...editedLanguages]
-    updated[index] = { ...updated[index], [field]: value }
-    setEditedLanguages(updated)
-  }
+  const addLanguage = useCallback(() => {
+    form.pushFieldValue('languages', { language: '', proficiency: 'Beginner' })
+  }, [form])
 
   return {
-    editedLanguages,
+    form,
     isEditing,
     handleEdit,
-    handleSave,
     handleCancel,
-    inputRef,
-    updateLanguage,
-    removeLanguage,
     addLanguage,
+    displayLanguages: initialLanguages,
   }
 }
+
+export type LangsFormInstance = ReturnType<typeof useLangs>['form']

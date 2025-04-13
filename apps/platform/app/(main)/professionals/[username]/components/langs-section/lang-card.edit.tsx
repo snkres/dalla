@@ -7,8 +7,7 @@ import {
   SelectValue,
 } from '@dalla/design-system'
 import { X } from 'lucide-react'
-import { Language } from '@lib/types/profile'
-import { RefObject } from 'react'
+import { LangsFormInstance } from '../../hooks/use-langs'
 
 const PROFICIENCY_LEVELS = [
   'Native',
@@ -18,56 +17,81 @@ const PROFICIENCY_LEVELS = [
   'Beginner',
 ]
 
-export function LangCardEdit({
-  language,
-  proficiency,
-  index,
-  inputRef,
-  updateLanguage,
-  removeLanguage,
-}: {
-  language: string
-  proficiency: string
+interface LangCardEditProps {
+  form: LangsFormInstance
   index: number
-  inputRef: RefObject<HTMLInputElement | null>
-  updateLanguage: (index: number, field: keyof Language, value: string) => void
-  removeLanguage: (index: number) => void
-}) {
+}
+
+export function LangCardEdit({ form, index }: LangCardEditProps) {
+  const removeLanguage = () => {
+    form.removeFieldValue('languages', index)
+  }
+
   return (
     <div className="group flex items-center gap-3">
       <div className="flex-1">
-        <Input
-          ref={index === 0 ? inputRef : undefined}
-          value={language}
-          onChange={(e) => updateLanguage(index, 'language', e.target.value)}
-          placeholder="Language"
-          className="h-9 text-sm focus-visible:ring-[#63B7B7]"
+        <form.Field
+          name={`languages[${index}].language`}
+          children={(field) => (
+            <div>
+              <Input
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Language"
+                className="h-9 text-sm focus-visible:ring-[#63B7B7]"
+              />
+              {field.state.meta.errors ? (
+                <em className="mt-1 block text-xs text-red-500">
+                  {Array.isArray(field.state.meta.errors)
+                    ? field.state.meta.errors.join(', ')
+                    : field.state.meta.errors}
+                </em>
+              ) : null}
+            </div>
+          )}
         />
       </div>
       <div className="w-1/3">
-        <Select
-          value={proficiency}
-          onValueChange={(value: string) =>
-            updateLanguage(index, 'proficiency', value)
-          }
-        >
-          <SelectTrigger className="h-9 text-sm focus:ring-[#63B7B7] focus-visible:ring-[#63B7B7]">
-            <SelectValue placeholder="Proficiency" />
-          </SelectTrigger>
-          <SelectContent>
-            {PROFICIENCY_LEVELS.map((level) => (
-              <SelectItem key={level} value={level} className="text-sm">
-                {level}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <form.Field
+          name={`languages[${index}].proficiency`}
+          children={(field) => (
+            <div>
+              <Select
+                name={field.name}
+                value={field.state.value}
+                onValueChange={field.handleChange}
+              >
+                <SelectTrigger className="h-9 text-sm focus:ring-[#63B7B7] focus-visible:ring-[#63B7B7]">
+                  <SelectValue placeholder="Proficiency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROFICIENCY_LEVELS.map((level) => (
+                    <SelectItem key={level} value={level} className="text-sm">
+                      {level}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {field.state.meta.errors ? (
+                <em className="mt-1 block text-xs text-red-500">
+                  {Array.isArray(field.state.meta.errors)
+                    ? field.state.meta.errors.join(', ')
+                    : field.state.meta.errors}
+                </em>
+              ) : null}
+            </div>
+          )}
+        />
       </div>
       <Button
+        type="button"
         variant="ghost"
         size="icon"
-        onClick={() => removeLanguage(index)}
+        onClick={removeLanguage}
         className="h-8 w-8 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500"
+        aria-label={`Remove language at index ${index}`}
       >
         <X className="h-4 w-4" />
       </Button>
