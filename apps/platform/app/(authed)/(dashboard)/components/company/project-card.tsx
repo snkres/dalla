@@ -1,8 +1,8 @@
 import React from 'react'
 import { Calendar, Clock, Users, ArrowUpRight } from 'lucide-react'
-import { Badge, Riyal } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
-import { Progress } from '@dallah/design-system'
+import { Badge, Riyal } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
+import { Progress } from '@dalla/design-system'
 import { Project } from '@lib/types/project'
 
 interface ProjectCardProps {

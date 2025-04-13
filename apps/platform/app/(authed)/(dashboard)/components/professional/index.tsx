@@ -11,7 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { SearchBar } from './search-bar'
 import { ProjectCard } from './project/card'
 import { ProjectDetail } from './project/detail'
@@ -31,7 +31,7 @@ import {
   getAllProjectsProfessionalView,
   GetAllProjectsProfessionalViewRes,
 } from '@lib/api/pro/projects'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { getAllSkills } from '@lib/utils/skill-utils'
 import { useQueryState } from 'nuqs'
 

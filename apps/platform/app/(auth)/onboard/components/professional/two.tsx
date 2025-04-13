@@ -1,16 +1,16 @@
 'use client'
 
-import { fadeInVariants } from '@dallah/utils'
+import { fadeInVariants } from '@dalla/utils'
 import { SkillSelector } from '@components/shared/skill-selector'
-import PhoneInput from '@dallah/components/phoneInput'
+import PhoneInput from '@dalla/components/phoneInput'
 import { motion } from 'motion/react'
 import type { ProOnboardingData } from '../../hooks/use-onboarding'
 import type { Dispatch, SetStateAction } from 'react'
 import { Globe2 } from 'lucide-react'
-import { Input, Label } from '@dallah/design-system'
+import { Input, Label } from '@dalla/design-system'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
-import { ensureHttpsPrefix } from '@dallah/utils'
+import { ensureHttpsPrefix } from '@dalla/utils'
 
 export function ProOnboardingTwo({
   data,

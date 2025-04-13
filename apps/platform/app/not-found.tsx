@@ -1,9 +1,9 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Button } from '@dallah/design-system'
-import { LogoVertical } from '@dallah/design-system'
-import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
+import { Button } from '@dalla/design-system'
+import { LogoVertical } from '@dalla/design-system'
+import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
 import { useTransitionRouter } from 'next-view-transitions'
 
 export default function NotFound() {

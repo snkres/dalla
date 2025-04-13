@@ -1,14 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Input, Button } from '@dallah/design-system'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { Input, Button } from '@dalla/design-system'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { resetPassword } from '@lib/api/auth/password'
 import { Lock, Eye, EyeOff, CheckCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
-import { fadeInUpVariants } from '@dallah/utils'
+import { fadeInUpVariants } from '@dalla/utils'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')

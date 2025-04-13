@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Switch } from '@dallah/design-system'
+import { Switch } from '@dalla/design-system'
 
 interface ModeToggleProps {
   mode: 'company' | 'professional'

@@ -9,11 +9,11 @@ import {
   FileText,
   Bell,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
-import { Progress } from '@dallah/design-system'
-import { Riyal } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
+import { Progress } from '@dalla/design-system'
+import { Riyal } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import {
   ProjectSidebar,
   SkillItem,

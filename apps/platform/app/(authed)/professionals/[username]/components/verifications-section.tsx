@@ -1,9 +1,9 @@
 import { Mail } from 'lucide-react'
 import { ShieldCheck } from 'lucide-react'
 import { motion } from 'motion/react'
-import { Badge } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Badge } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import { useRouter } from 'next/navigation'
 
 export function VerificationsSection({

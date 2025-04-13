@@ -10,22 +10,22 @@ import {
   ExternalLink,
   Search,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import {
   Card,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 
 export default function HelpSupport() {
   const [searchQuery, setSearchQuery] = useState('')

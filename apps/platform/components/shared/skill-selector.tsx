@@ -2,8 +2,8 @@
 
 import * as React from 'react'
 import { X, Check, Plus } from 'lucide-react'
-import { Badge } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Badge } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Command,
   CommandEmpty,
@@ -11,9 +11,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@dallah/design-system'
-import { Popover, PopoverContent, PopoverTrigger } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+} from '@dalla/design-system'
+import { Popover, PopoverContent, PopoverTrigger } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 
 // Sample predefined skills - in a real app, this might come from an API
 const predefinedSkills = [

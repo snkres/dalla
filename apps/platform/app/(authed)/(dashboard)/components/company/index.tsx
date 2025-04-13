@@ -16,8 +16,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import { Button, Input } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+import { Button, Input } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import { ProjectsOverview } from './projects-overview'
 import { Sidebar } from './sidebar'
 import { AddProject } from './add-project'

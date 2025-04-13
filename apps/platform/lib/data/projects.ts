@@ -1,6 +1,6 @@
 import { Briefcase, MapPin, Zap, Code, PaintBucket } from 'lucide-react'
 import { Project, FilterCategory, FilterOption } from '@lib/types/project'
-import { Riyal } from '@dallah/design-system'
+import { Riyal } from '@dalla/design-system'
 import React, { ReactNode } from 'react'
 
 // Define the BudgetRange interface here to accept ReactNode

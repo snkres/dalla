@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@dallah/design-system'
-import { Checkbox } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Checkbox } from '@dalla/design-system'
 import { Filter, Clock, X, ChevronDown, ChevronUp } from 'lucide-react'
-import { Riyal } from '@dallah/design-system'
+import { Riyal } from '@dalla/design-system'
 import { SkillSelector } from '@components/shared/skill-selector'
 
 interface ProjectFiltersProps {

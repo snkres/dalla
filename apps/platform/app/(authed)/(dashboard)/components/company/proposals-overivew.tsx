@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Button, Modal } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button, Modal } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import {
   Star,
   Clock,
@@ -19,13 +19,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { SLIDE_ANIMATION } from '@dallah/utils'
+} from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { SLIDE_ANIMATION } from '@dalla/utils'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 
 interface ProposalsOverivewProps {
   projectTitle: string

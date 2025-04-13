@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { NavigationButtonsProps } from '@lib/types/steps'
 
 export function NavigationButtons({

@@ -5,17 +5,17 @@ import {
   Search,
   SlidersHorizontal,
 } from 'lucide-react'
-import { Input } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { useState } from 'react'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { motion } from 'motion/react'
 import { SearchFilterProps } from '@lib/types/proposals'
 

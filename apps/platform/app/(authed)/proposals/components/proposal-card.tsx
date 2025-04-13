@@ -1,9 +1,9 @@
 import { motion } from 'motion/react'
-import { cn } from '@dallah/utils'
-import { Badge } from '@dallah/design-system'
+import { cn } from '@dalla/utils'
+import { Badge } from '@dalla/design-system'
 import { Star, Calendar, Globe, Clock, ChevronRight } from 'lucide-react'
-import { Avatar, AvatarFallback } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Avatar, AvatarFallback } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 
 import StatusBadge from './status-badge'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'

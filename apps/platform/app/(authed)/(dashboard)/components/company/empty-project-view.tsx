@@ -1,5 +1,5 @@
 import { motion } from 'motion/react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Briefcase,
   Users,

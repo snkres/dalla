@@ -1,7 +1,7 @@
-import dallahConfig from './packages/eslint-config-dallah/index.js'
+import dallaConfig from './packages/eslint-config-dalla/index.js'
 
 export default [
-  dallahConfig,
+  dallaConfig,
   {
     files: ['**/*.js', '**/*.ts', '**/*.tsx'],
     languageOptions: {

@@ -4,8 +4,8 @@ import type React from 'react'
 import ProposalDetailsEmpty from './proposal-details-empty'
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { cn } from '@dallah/utils'
-import { Button } from '@dallah/design-system'
+import { cn } from '@dalla/utils'
+import { Button } from '@dalla/design-system'
 import {
   ChevronLeft,
   MoreHorizontal,
@@ -27,13 +27,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import ClientSection from './client-section'
 import CoverLetterSection from './cover-letter-section'
 import InsightsSection from './inisghts-section'
 import { getProposalById, deleteProposal } from '@lib/api/pro/proposals'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { formatCurrency } from '@lib/utils/format-currency'
 
 const ProposalDetails: React.FC<{

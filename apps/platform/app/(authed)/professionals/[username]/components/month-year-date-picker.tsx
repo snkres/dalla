@@ -1,4 +1,4 @@
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { ChevronDown } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 

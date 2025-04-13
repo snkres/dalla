@@ -8,7 +8,7 @@ import {
   AvatarImage,
   AvatarFallback,
   Badge,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { Star, ChevronRight, MessageSquare, ExternalLink } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Link } from 'next-view-transitions'

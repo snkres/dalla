@@ -3,9 +3,9 @@
 import type React from 'react'
 
 import { useState, useRef, useEffect } from 'react'
-import { Input } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
 import { PlatformIcon } from '@components/shared/platform-icon'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 
 // Common social media platforms
 const COMMON_PLATFORMS = [

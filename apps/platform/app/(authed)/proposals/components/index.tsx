@@ -15,9 +15,9 @@ import TabContainer from './tab-container'
 import ProposalList from './proposal-list'
 import ProposalDetails from './proposal-details'
 import FloatingButtons from './floating-buttons'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 
-import { DallaLoading } from '@dallah/components/dalla-loading'
+import { DallaLoading } from '@dalla/components/dalla-loading'
 
 export function ProfessionalProposals() {
   const {

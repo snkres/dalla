@@ -1,4 +1,4 @@
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { ChevronUp, Briefcase } from 'lucide-react'
 
 const FloatingButtons: React.FC = () => (

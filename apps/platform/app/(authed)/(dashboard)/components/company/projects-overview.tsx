@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { Button, Badge, Skeleton } from '@dallah/design-system'
+import { Button, Badge, Skeleton } from '@dalla/design-system'
 import {
   Briefcase,
   ChevronDown,

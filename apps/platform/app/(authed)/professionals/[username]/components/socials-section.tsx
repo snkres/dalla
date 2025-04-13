@@ -1,8 +1,8 @@
 'use client'
 
 import { Edit, X, Plus, Check, Globe, AlertCircle } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
 import Link from 'next/link'
 import { useRef, useState, useEffect } from 'react'
 import { PlatformIcon } from '@components/shared/platform-icon'

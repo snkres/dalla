@@ -2,9 +2,9 @@ import React from 'react'
 import { motion } from 'motion/react'
 import { CheckCircle } from 'lucide-react'
 import { Link } from 'next-view-transitions'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
-import { scaleIn } from '@dallah/utils'
+import { scaleIn } from '@dalla/utils'
 
 interface SuccessScreenProps {
   project: GetAllProjectsProfessionalViewRes['data'][0][number]

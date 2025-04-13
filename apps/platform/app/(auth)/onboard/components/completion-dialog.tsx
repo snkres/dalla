@@ -3,11 +3,11 @@ import {
   DialogContent,
   Button,
   DialogTitle,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import { CompletionDialogProps } from '@lib/types/goals'
-import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
+import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
 
 export const CompletionDialog = ({
   open,

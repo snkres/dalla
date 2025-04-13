@@ -32,9 +32,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "../../packages/dallah-design-system/src/logo/dalla-lottie.tsx",
-    "../../packages/dallah-components/src/dalla-loading.tsx",
-    "../../packages/dallah-utils/src/currency/format-currency.tsx"
+    "../../packages/dalla-design-system/src/logo/dalla-lottie.tsx",
+    "../../packages/dalla-components/src/dalla-loading.tsx",
+    "../../packages/dalla-utils/src/currency/format-currency.tsx"
   ],
   "exclude": ["node_modules"]
 }

@@ -12,7 +12,7 @@ import {
   updateCompanyProfile,
 } from '@lib/api/company/profile'
 import { getOwnProProfile, updateProProfile } from '@lib/api/pro/profile'
-import { toast } from '@dallah/design-system/ui/toast/use-toast'
+import { toast } from '@dalla/design-system/ui/toast/use-toast'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 

@@ -4,7 +4,7 @@ import type React from 'react'
 import { type Dispatch } from 'react'
 
 import Image from 'next/image'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import { Modal } from '@components/shared/modal'
 import { ExperienceForm } from './exp-form'
 import { ProOnboardingData } from '../../hooks/use-onboarding'

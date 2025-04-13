@@ -1,6 +1,6 @@
 {
   "name": "dalla-platform",
-  "repository": "https://github.com/mahmoudgalalz/dallah.git",
+  "repository": "https://github.com/mahmoudgalalz/dalla.git",
   "license": "MIT",
   "private": true,
   "type": "module",
@@ -13,9 +13,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@dallah/components": "workspace:*",
-    "@dallah/design-system": "workspace:*",
-    "@dallah/utils": "workspace:*",
+    "@dalla/components": "workspace:*",
+    "@dalla/design-system": "workspace:*",
+    "@dalla/utils": "workspace:*",
     "@radix-ui/react-toast": "^1.2.6",
     "class-variance-authority": "^0.7.1",
     "cookies-next": "^5.1.0",
@@ -40,7 +40,7 @@
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.12",
     "eslint": "^9.16.0",
-    "eslint-config-dallah": "workspace:*",
+    "eslint-config-dalla": "workspace:*",
     "postcss": "^8.4.18",
     "tailwindcss": "^3.2.1",
     "tailwindcss-motion": "^1.0.0",

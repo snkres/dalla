@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button, Riyal } from '@dallah/design-system'
+import { Button, Riyal } from '@dalla/design-system'
 import {
   Edit,
   Clock,
@@ -20,16 +20,16 @@ import {
   Hourglass,
 } from 'lucide-react'
 import Image from 'next/image'
-import { Input } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
-import { cn } from '@dallah/utils'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+} from '@dalla/design-system'
+import { cn } from '@dalla/utils'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { formatCurrency } from '@lib/utils/format-currency'
 
 export function ProfileCard({

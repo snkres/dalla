@@ -1,4 +1,4 @@
-import { Modal, Button, Badge, Riyal } from '@dallah/design-system'
+import { Modal, Button, Badge, Riyal } from '@dalla/design-system'
 import { useState } from 'react'
 import {
   Star,
@@ -14,7 +14,7 @@ import Image from 'next/image'
 import { Link } from 'next-view-transitions'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { updateProposalStatus } from '@lib/api/company/proposals'
 import {
   Dialog,
@@ -23,7 +23,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 
 interface ProposalDetailModalProps {
   proposal: GetProjectRes['data']['proposals'][number] | null

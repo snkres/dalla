@@ -14,8 +14,8 @@ import {
   Info,
   Users,
 } from 'lucide-react'
-import { Button, Modal } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button, Modal } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import { Project } from '@lib/types/project'
 
 interface ProjectDetailProps {

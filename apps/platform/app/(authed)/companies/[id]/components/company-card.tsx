@@ -1,8 +1,8 @@
 'use client'
 
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
-import { Modal } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
+import { Modal } from '@dalla/design-system'
 
 import {
   BadgeCheck,
@@ -22,12 +22,12 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Input } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
 import type { CompanyProfile } from '@lib/atoms/company/meta'
 import { Link } from 'next-view-transitions'
-import { LocationSelector } from '@dallah/components/locationSelector'
-import { CompanySizeSelector } from '@dallah/components/company-sizeSelector'
-import { ListDisplay } from '@dallah/components/listDisplay'
+import { LocationSelector } from '@dalla/components/locationSelector'
+import { CompanySizeSelector } from '@dalla/components/company-sizeSelector'
+import { ListDisplay } from '@dalla/components/listDisplay'
 
 export function CompanyCard({
   data,

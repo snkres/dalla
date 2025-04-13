@@ -8,9 +8,9 @@ import {
   dismissNotificationAtom,
   markNotificationAsReadAtom,
 } from '@lib/atoms/shared/notifications'
-import { getRelativeTime } from '@dallah/utils'
+import { getRelativeTime } from '@dalla/utils'
 import { Notification } from '@lib/types/navbar'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Bell,
   Check,
@@ -22,7 +22,7 @@ import {
   Filter,
   Trash2,
 } from 'lucide-react'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import Image from 'next/image'
 import {
   Select,
@@ -30,9 +30,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+} from '@dalla/design-system'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import { motion, AnimatePresence } from 'motion/react'
 
 export default function NotificationsPage() {

@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import { Save, Briefcase, AlertCircle } from 'lucide-react'
-import { Button, Riyal } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
+import { Button, Riyal } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import { createProject, CreateProjectReq } from '@lib/api/company/projects'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { SkillSelector } from '@components/shared/skill-selector'
 import MultiImageUpload from '@components/shared/multiImage-upload'
-import { Modal } from '@dallah/design-system'
-import { ListInput } from '@dallah/components/listInput'
+import { Modal } from '@dalla/design-system'
+import { ListInput } from '@dalla/components/listInput'
 import { useAtom } from 'jotai'
 import {
   addNotificationAtom,

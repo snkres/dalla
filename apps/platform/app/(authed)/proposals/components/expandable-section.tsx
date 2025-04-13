@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { ExpandableSectionProps } from '@lib/types/proposals'
 
 const ExpandableSection: React.FC<ExpandableSectionProps> = ({

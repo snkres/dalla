@@ -7,7 +7,7 @@ import { Camera, Check, UserCircle } from 'lucide-react'
 import Image from 'next/image'
 import { upload } from '@lib/api/shared/upload'
 import { RequiredIndicator } from '@components/shared/required-indicator'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 
 const AvatarUpload = ({
   setUploadedURL,

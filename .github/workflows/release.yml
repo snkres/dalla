@@ -8,7 +8,7 @@ on:
 env:
   FORCE_COLOR: 3
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: dallah
+  TURBO_TEAM: dalla
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

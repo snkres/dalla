@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { AlertTriangle, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
-import { Input } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Input } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import { motion } from 'motion/react'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from '@dallah/design-system/ui/toast/use-toast'
+import { toast } from '@dalla/design-system/ui/toast/use-toast'
 import { changePassword } from '@lib/api/auth/password'
 
 export function ProfilePassword() {

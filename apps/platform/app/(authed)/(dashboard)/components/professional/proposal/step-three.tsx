@@ -9,10 +9,10 @@ import {
   LinkIcon,
   Upload,
 } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
-import { cn } from '@dallah/utils'
-import { fadeIn } from '@dallah/utils'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
+import { cn } from '@dalla/utils'
+import { fadeIn } from '@dalla/utils'
 import { StepThreeProps } from '@lib/types/steps'
 import { useAtom } from 'jotai'
 import { proMetaAtom } from '@lib/atoms/pro/meta'

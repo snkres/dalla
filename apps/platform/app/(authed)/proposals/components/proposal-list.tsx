@@ -1,4 +1,4 @@
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import ProposalCard from './proposal-card'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'
 interface ProposalListProps {

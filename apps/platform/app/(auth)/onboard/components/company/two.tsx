@@ -3,7 +3,7 @@
 import { motion } from 'motion/react'
 import { GoalCard } from '../goal-card'
 import { focusAreaOptions } from '@lib/data/focus-options'
-import { fadeInVariants, fadeInUpVariants } from '@dallah/utils'
+import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
 import { CompanyOnboardingData } from '../../hooks/use-onboarding'
 
 export function CompanyOnboardingTwo({

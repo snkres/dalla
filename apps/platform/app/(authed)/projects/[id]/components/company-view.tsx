@@ -10,7 +10,7 @@ import {
   AvatarImage,
   AvatarFallback,
   Riyal,
-} from '@dallah/design-system'
+} from '@dalla/design-system'
 import {
   Users,
   FileText,
@@ -35,7 +35,7 @@ import { useState } from 'react'
 import ProposalDetailModal from './proposal-detail-modal'
 import StatusBadge from 'app/(authed)/proposals/components/status-badge'
 import { ProposalStatus } from '@lib/api/pro/proposals'
-import { ListDisplay } from '@dallah/components/listDisplay'
+import { ListDisplay } from '@dalla/components/listDisplay'
 
 export function CompanyProjectView({
   project,

@@ -16,14 +16,14 @@ import {
   Eye,
   Download,
 } from 'lucide-react'
-import { Button, Modal } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
+import { Button, Modal } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
 import { getProjectById } from '@lib/api/pro/projects'
-import { SLIDE_ANIMATION } from '@dallah/utils'
+import { SLIDE_ANIMATION } from '@dalla/utils'
 import { useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getLocalTimeForLocation } from '@dallah/utils'
-import { ListDisplay } from '@dallah/components/listDisplay'
+import { getLocalTimeForLocation } from '@dalla/utils'
+import { ListDisplay } from '@dalla/components/listDisplay'
 
 interface ProjectDetailProps {
   projectId: string

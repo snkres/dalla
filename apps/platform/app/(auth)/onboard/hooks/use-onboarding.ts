@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useToast } from '@dallah/design-system/ui/toast/use-toast'
+import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { useTransitionRouter } from 'next-view-transitions'
 import { companyOnboarding } from '@lib/api/company/onboarding'
 import { proOnboarding } from '@lib/api/pro/onboarding'
@@ -10,7 +10,7 @@ import { useAtom } from 'jotai'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { getCompanyMeta } from '@lib/api/company/profile'
 import { getProMeta } from '@lib/api/pro/profile'
-import { ensureHttpsPrefix } from '@dallah/utils'
+import { ensureHttpsPrefix } from '@dalla/utils'
 
 export interface CompanyOnboardingData {
   // Step 1

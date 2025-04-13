@@ -5,7 +5,7 @@ import { useState, useRef } from 'react'
 import { Camera, Check, Image as ImageIcon, X, Plus } from 'lucide-react'
 import Image from 'next/image'
 import { upload } from '@lib/api/shared/upload'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 
 interface ImageUploadProps {
   setUploadedURL: (url: string) => void

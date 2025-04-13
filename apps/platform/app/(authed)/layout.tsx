@@ -7,11 +7,11 @@ import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { useQuery } from '@tanstack/react-query'
-import { cn } from '@dallah/utils'
+import { cn } from '@dalla/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
-import { DallaLoading } from '@dallah/components/dalla-loading'
+import { DallaLoading } from '@dalla/components/dalla-loading'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)

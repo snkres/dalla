@@ -8,12 +8,12 @@ import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company-view'
 import { ProfessionalProjectView } from './components/professional-view'
 import { getProject } from '@lib/api/company/projects'
-import { Tabs, TabsList, TabsTrigger, Button } from '@dallah/design-system'
+import { Tabs, TabsList, TabsTrigger, Button } from '@dalla/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 import { useTransitionRouter } from 'next-view-transitions'
 import { getProjectProfessionalView } from '@lib/api/pro/projects'
-import { DallaLoading } from '@dallah/components/dalla-loading'
+import { DallaLoading } from '@dalla/components/dalla-loading'
 
 export function ProjectPageClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)

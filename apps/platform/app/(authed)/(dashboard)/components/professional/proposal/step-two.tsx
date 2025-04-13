@@ -8,19 +8,19 @@ import {
   Check,
   AlertCircle,
 } from 'lucide-react'
-import { Riyal } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
-import { Label } from '@dallah/design-system'
-import { Slider } from '@dallah/design-system'
+import { Riyal } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
+import { Label } from '@dalla/design-system'
+import { Slider } from '@dalla/design-system'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@dallah/design-system'
-import { fadeIn } from '@dallah/utils'
+} from '@dalla/design-system'
+import { fadeIn } from '@dalla/utils'
 import { StepTwoProps } from '@lib/types/steps'
 import { formatCurrency } from '@lib/utils/format-currency'
 

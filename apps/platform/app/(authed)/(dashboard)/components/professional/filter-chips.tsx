@@ -1,13 +1,13 @@
 import React from 'react'
 import { HelpCircle } from 'lucide-react'
-import { Button } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@dallah/design-system'
-import { cn } from '@dallah/utils'
+} from '@dalla/design-system'
+import { cn } from '@dalla/utils'
 import { FilterCategory } from '@lib/types/project'
 
 interface FilterChipsProps {

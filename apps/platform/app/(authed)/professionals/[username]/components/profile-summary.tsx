@@ -2,10 +2,10 @@
 
 import React, { useState, useRef } from 'react'
 import { Edit, Check, X, User } from 'lucide-react'
-import { Button } from '@dallah/design-system'
-import { Badge } from '@dallah/design-system'
-import { Textarea } from '@dallah/design-system'
-import { Input } from '@dallah/design-system'
+import { Button } from '@dalla/design-system'
+import { Badge } from '@dalla/design-system'
+import { Textarea } from '@dalla/design-system'
+import { Input } from '@dalla/design-system'
 import { SkillSelector } from '@components/shared/skill-selector'
 
 export function ProfileSummary({

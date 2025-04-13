@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import { Badge, Riyal } from '@dallah/design-system'
-import { Button } from '@dallah/design-system'
+import { Badge, Riyal } from '@dalla/design-system'
+import { Button } from '@dalla/design-system'
 import {
   FileText,
   ArrowUpRight,
