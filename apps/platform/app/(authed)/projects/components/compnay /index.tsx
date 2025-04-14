@@ -12,7 +12,7 @@ import {
   getAllProjects,
 } from '@lib/api/company/projects'
 import { useTransitionRouter } from 'next-view-transitions'
-import { DallaLoading } from '@dalla/components/dalla-loading'
+import { DallaLoading } from '@components/shared/dalla-loading'
 
 const LIMIT = 10
 

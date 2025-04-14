@@ -17,7 +17,7 @@ import { GoalsSection } from './components/goals-section'
 import { ContactInfoCard } from './components/contact-info'
 import { globalAtom } from '@lib/atoms/global'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { DallaLoading } from '@dalla/components/dalla-loading'
+import { DallaLoading } from '@components/shared/dalla-loading'
 
 export function CompanyProfileClient({ id }: { id: string }) {
   const [global] = useAtom(globalAtom)

@@ -1,21 +1,18 @@
 'use client'
 import type { FC } from 'react'
-import dynamic from 'next/dynamic'
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false })
 import dallaLottie from './dalla-lottie.json'
-
+import Lottie from 'react-lottie-player'
 export const DallaLogoLottie: FC<{
   width: number
   height: number
-}> = ({ width, height }) => {
+}> = ({ width = 500, height = 500 }) => {
   return (
     <div>
       <Lottie
         animationData={dallaLottie}
         loop={true}
-        autoplay={true}
         style={{ width, height }}
-        size={500}
+        play
       />
     </div>
   )

@@ -11,7 +11,7 @@ import { cn } from '@dalla/utils'
 import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
-import { DallaLoading } from '@dalla/components/dalla-loading'
+import { DallaLoading } from '@components/shared/dalla-loading'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [global, setGlobal] = useAtom(globalAtom)

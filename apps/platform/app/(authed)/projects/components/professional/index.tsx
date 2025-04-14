@@ -11,7 +11,7 @@ import { ProjectsList } from './projects-list'
 import { getAllProjectsProfessionalView } from '@lib/api/pro/projects'
 import { useTransitionRouter } from 'next-view-transitions'
 import { getAllProposals } from '@lib/api/pro/proposals'
-import { DallaLoading } from '@dalla/components/dalla-loading'
+import { DallaLoading } from '@components/shared/dalla-loading'
 
 const LIMIT = 10
 

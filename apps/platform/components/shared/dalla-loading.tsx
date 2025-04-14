@@ -1,8 +1,13 @@
 'use client'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { cn, fadeInVariants } from '@dalla/utils'
 import { motion } from 'motion/react'
-import { DallaLogoLottie } from '@dalla/design-system'
+import dynamic from 'next/dynamic'
+
+const DallaLogoLottie = dynamic(
+  () => import('./dalla-lottie').then((mod) => mod.DallaLogoLottie),
+  { ssr: false },
+)
 
 export function DallaLoading({
   title = 'Loading',
@@ -27,7 +32,9 @@ export function DallaLoading({
         className="flex flex-col items-center justify-center gap-8"
       >
         <div className="relative">
-          <DallaLogoLottie width={500} height={500} />
+          <Suspense>
+            <DallaLogoLottie width={500} height={500} />
+          </Suspense>
         </div>
 
         <div className="-mt-28 flex flex-col items-center gap-2">
