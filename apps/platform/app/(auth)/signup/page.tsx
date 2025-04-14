@@ -50,7 +50,7 @@ export default function SignupPage() {
     isLinkedInLoading,
     handleLinkedInSignIn,
   } = useSSO({
-    mode: mode as 'company' | 'user',
+    mode: mode === 'company' ? 'company' : 'user',
   })
 
   const { toast } = useToast()

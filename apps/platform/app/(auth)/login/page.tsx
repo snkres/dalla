@@ -48,7 +48,7 @@ export default function LoginPage() {
     isLinkedInLoading,
     handleLinkedInSignIn,
   } = useSSO({
-    mode: mode as 'company' | 'user',
+    mode: mode === 'company' ? 'company' : 'user',
   })
 
   useEffect(() => {
@@ -137,12 +137,12 @@ export default function LoginPage() {
   }
 
   const handleGoogleSignInClick = () => {
-    triggerGoogleSignIn(mode as 'company' | 'user')
+    triggerGoogleSignIn(mode === 'company' ? 'company' : 'user')
   }
 
   const handleLinkedInSignInClick = () => {
     setIsProcessingLinkedIn(true)
-    handleLinkedInSignIn(mode as 'company' | 'user').catch(() => {
+    handleLinkedInSignIn(mode === 'company' ? 'company' : 'user').catch(() => {
       setIsProcessingLinkedIn(false)
     })
   }
