@@ -17,7 +17,7 @@ import ProposalDetails from './proposal-details'
 import FloatingButtons from './floating-buttons'
 import { cn } from '@dalla/utils'
 
-import { DallaLoading } from '@dalla/components/dalla-loading'
+import { DallaLoading } from '@components/shared/dalla-loading'
 
 export function ProfessionalProposals() {
   const {

@@ -1,5 +1,5 @@
 'use client'
-import { DallaLoading } from '@dalla/components/dalla-loading'
+import { DallaLoading } from '@components/shared/dalla-loading'
 
 export default function Loading() {
   return <DallaLoading className="h-screen" />

@@ -28,6 +28,7 @@ export default function RootLayout({
           <Suspense>
             <Providers>{children}</Providers>
           </Suspense>
+
           <Toaster />
         </body>
       </html>
