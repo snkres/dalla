@@ -1,0 +1,12 @@
+{
+  "projectId": "prj_l8jsjbai1jaqrdri1xutfkmh",
+  "locale": {
+    "source": "en",
+    "targets": ["ar"]
+  },
+  "files": {
+    "ts": {
+      "include": ["locales/[locale].ts"]
+    }
+  }
+}
