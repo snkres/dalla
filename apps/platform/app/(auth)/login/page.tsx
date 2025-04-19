@@ -195,6 +195,10 @@ export default function LoginPage() {
         value={mode as AccountType}
         onChange={(type) => {
           setMode(type)
+          setGlobal({
+            ...global,
+            mode: type === 'company' ? 'company' : 'user',
+          })
         }}
       />
 

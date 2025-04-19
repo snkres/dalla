@@ -11,5 +11,6 @@ export interface GlobalAtom {
 }
 
 export const globalAtom = atomWithLocalForage<GlobalAtom>('dalla:global', {
+  mode: 'user',
   locale: 'en',
 } as GlobalAtom)

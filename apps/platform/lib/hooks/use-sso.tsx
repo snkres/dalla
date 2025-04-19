@@ -129,10 +129,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
             .then((result) => {
               console.log('Google login result:', result)
               if (result.success) {
-                setGlobal({
-                  ...global,
-                  mode: userType,
-                })
                 router.push('/')
               } else {
                 toast({
