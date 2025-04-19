@@ -61,14 +61,14 @@ export default function RootLayout({
     <ViewTransitions>
       <html className={cn(nebula.className, sora.variable)}>
         <body className="font-sans">
-          <Suspense>
-            <Providers
-              nebulaClassName={nebula.className}
-              madaniArabicClassName={madaniArabic.className}
-            >
-              {children}
-            </Providers>
-          </Suspense>
+          {/* <Suspense> */}
+          <Providers
+            nebulaClassName={nebula.className}
+            madaniArabicClassName={madaniArabic.className}
+          >
+            {children}
+          </Providers>
+          {/* </Suspense> */}
 
           <Toaster />
         </body>
