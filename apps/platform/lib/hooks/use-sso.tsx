@@ -119,6 +119,10 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
         setIsGoogleLoading(true)
         try {
           const userType = mode
+          setGlobal({
+            ...global,
+            mode: userType,
+          })
 
           loginWithGoogle({
             idToken: response.credential,
@@ -226,10 +230,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
 
   const triggerGoogleSignIn = useCallback(
     (userType: 'company' | 'user' = 'user') => {
-      setGlobal({
-        ...global,
-        mode: userType,
-      })
       setIsGoogleLoading(true)
 
       if (window.google?.accounts?.id) {
