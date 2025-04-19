@@ -53,12 +53,10 @@ export default function AuthedLayoutClient({
     }
   }, [])
 
-  // This check is now primarily handled server-side, but we keep client-side logging
   useEffect(() => {
     if (!isDbReady) return
 
     if (!global.mode) {
-      // Server component handles redirect, log potential issues here
       console.log('No auth mode detected client-side despite DB ready')
     } else {
       console.log('Auth mode detected client-side:', global.mode)
@@ -70,7 +68,6 @@ export default function AuthedLayoutClient({
     staleTime: Infinity,
     queryFn: async () => {
       try {
-        // Ensure mode is set before fetching
         if (!global.mode) {
           console.log('Skipping meta fetch: global.mode not set.')
           return null
@@ -85,17 +82,14 @@ export default function AuthedLayoutClient({
         return null
       } catch (err) {
         console.error('Error fetching profile:', err)
-        // Consider how to handle fetch errors, maybe redirect or show error state
         throw err
       }
     },
-    // Only enable query once DB is ready and mode is determined client-side
     enabled: isDbReady && Boolean(global.mode),
     retry: 1,
   })
 
   useEffect(() => {
-    // Initial loading state until first fetch attempt completes or mode is known
     if (!isFetched && Boolean(global.mode) && isDbReady) {
       setIsLoading(true)
       return
@@ -103,30 +97,25 @@ export default function AuthedLayoutClient({
 
     if (isError) {
       console.error('Profile fetch error:', error)
-      // Handle error state appropriately, maybe show an error message
       setIsLoading(false)
       return
     }
 
-    // If fetch hasn't happened, data is not available, or mode isn't set, keep loading or stop
     if (!data || !global.mode) {
       setIsLoading(false)
       return
     }
 
-    // Handle onboarding redirection
     if (!data.data.onboarded) {
-      // Check if already on onboard page to prevent loop
       if (window.location.pathname !== '/onboard') {
         console.log('User not onboarded, redirecting to /onboard')
         router.push('/onboard')
-        // Keep loading until redirect completes
+
         setIsLoading(true)
         return
       }
     }
 
-    // Process fetched data
     try {
       if (global.mode === 'user') {
         const proData = data as ProMeta
@@ -146,7 +135,7 @@ export default function AuthedLayoutClient({
           ...global,
           id: companyData.data?.id || '',
           email: companyData.data?.email || '',
-          username: '', // Company has no username
+          username: '',
           name: companyData.data?.name || 'Company',
           mode: 'company',
           avatar: companyData.data?.CompanyProfile.logo || '',
@@ -156,7 +145,6 @@ export default function AuthedLayoutClient({
     } catch (err) {
       console.error('Error processing profile data:', err)
     } finally {
-      // Loading finished after processing data or encountering final state
       setIsLoading(false)
     }
   }, [
@@ -171,12 +159,10 @@ export default function AuthedLayoutClient({
     setCompanyMeta,
   ])
 
-  // Show loading state while initializing DB, or fetching/processing meta data
   if (isLoading || !isDbReady) {
     return <DallaLoading />
   }
 
-  // Render layout once everything is ready
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
