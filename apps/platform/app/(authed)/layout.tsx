@@ -15,9 +15,11 @@ export default async function Layout({
 
   console.log('isAuthed', isAuthed)
 
-  if (!isAuthed.cookieStore.get('access_token')) {
-    redirect('/login')
-  }
+  // if (!isAuthed.cookieStore.get('access_token')) {
+  //   redirect('/login')
+  // }
+  const cookieStore = await cookies()
+  console.log('cookieStore', cookieStore)
 
   // If authenticated, render the client layout component which handles fetching meta, etc.
   return <AuthedLayoutClient>{children}</AuthedLayoutClient>
