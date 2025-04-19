@@ -9,18 +9,10 @@ export default async function Layout({
 }: {
   children: React.ReactNode
 }) {
-  const isAuthed = await fetch(
-    `${process.env.NODE_ENV === 'production' ? 'https://platform.dev.dalla.app' : 'http://localhost:3000'}/api/isAuthed`,
-  ).then((res) => res.json())
-
-  console.log('isAuthed', isAuthed)
-
-  // if (!isAuthed.cookieStore.get('access_token')) {
-  //   redirect('/login')
-  // }
   const cookieStore = await cookies()
-  console.log('cookieStore', cookieStore)
+  if (!cookieStore.get('access_token')) {
+    redirect('/login')
+  }
 
-  // If authenticated, render the client layout component which handles fetching meta, etc.
   return <AuthedLayoutClient>{children}</AuthedLayoutClient>
 }
