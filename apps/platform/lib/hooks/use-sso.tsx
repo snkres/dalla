@@ -112,7 +112,6 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false)
   const [isGoogleInitialized, setIsGoogleInitialized] = useState(false)
   const searchParams = useSearchParams()
-  const [global, setGlobal] = useAtom(globalAtom)
   const router = useTransitionRouter()
   const processGoogleResponse = useCallback(
     (response: any) => {
