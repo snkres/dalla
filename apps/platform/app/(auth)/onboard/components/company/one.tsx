@@ -23,6 +23,7 @@ import PhoneInput from '@dalla/components/phoneInput'
 import { COMPANY_SIZE_RANGES } from '@dalla/components/company-sizeSelector'
 import { LocationSelector } from '@dalla/components/locationSelector'
 import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function CompanyOnboardingOne({
   data,
@@ -32,6 +33,7 @@ export function CompanyOnboardingOne({
   updateData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
   const t = useTranslation()
+  const { locale } = useLocale()
 
   const formatIndustryLimitText = () => {
     return t.onboarding.companyStep1.targetIndustriesLimit.replace(
@@ -46,6 +48,7 @@ export function CompanyOnboardingOne({
       initial="hidden"
       animate="visible"
       className="mx-auto min-h-full w-full max-w-3xl px-6"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <motion.div variants={fadeInUpVariants} className="mb-12 text-center">
         <h1 className="text-2xl font-semibold text-gray-900">
@@ -97,7 +100,10 @@ export function CompanyOnboardingOne({
                     updateData({ ...data, companySize: value })
                   }
                 >
-                  <SelectTrigger className="!h-11">
+                  <SelectTrigger
+                    className="!h-11"
+                    dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                  >
                     <SelectValue
                       placeholder={
                         t.onboarding.companyStep1.companySizePlaceholder
@@ -125,6 +131,7 @@ export function CompanyOnboardingOne({
               <div className="flex gap-2">
                 <div className="relative w-full">
                   <PhoneInput
+                    dir={locale === 'ar' ? 'rtl' : 'ltr'}
                     defaultValue={data.phoneNumber}
                     onChange={(value) => {
                       updateData({
@@ -158,6 +165,7 @@ export function CompanyOnboardingOne({
                     }}
                     required={false}
                     selectClassName="!rounded-xl h-11"
+                    showLabels={false}
                   />
                 </div>
               </div>
@@ -182,6 +190,7 @@ export function CompanyOnboardingOne({
                     expertiseOptions={expertiseOptions.map(
                       (option) => option.label,
                     )}
+                    dir={locale === 'ar' ? 'rtl' : 'ltr'}
                   />
                   <p className="mt-1 text-xs text-gray-500">
                     {formatIndustryLimitText()}

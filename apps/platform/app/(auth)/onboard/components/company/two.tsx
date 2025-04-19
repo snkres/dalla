@@ -6,6 +6,7 @@ import { focusAreaOptions } from '@lib/data/focus-options'
 import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
 import { CompanyOnboardingData } from '../../hooks/use-onboarding'
 import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function CompanyOnboardingTwo({
   data,
@@ -15,7 +16,7 @@ export function CompanyOnboardingTwo({
   setData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
   const t = useTranslation()
-
+  const { locale } = useLocale()
   const handleToggle = (area: { name: string; description: string }) => {
     setData((prev: CompanyOnboardingData) => {
       if (prev.areas.includes(area)) {
@@ -38,8 +39,8 @@ export function CompanyOnboardingTwo({
 
   const formatSelectedCountText = () => {
     const count = data.areas.length
-    const plural = count > 1 ? 's' : ''
-    const maximum = count === 3 ? '(maximum)' : '(maximum 3)'
+    const plural = count > 1 ? (locale === 'ar' ? '' : 's') : ''
+    const maximum = count === 3 ? (locale === 'ar' ? 'أقصى' : 'maximum') : ''
     return t.onboarding.companyStep2.selectedCount
       .replace('{count}', count.toString())
       .replace('{plural}', plural)
@@ -47,12 +48,13 @@ export function CompanyOnboardingTwo({
   }
 
   return (
-    <div className="bg-gray-50/30">
+    <div>
       <motion.div
         variants={fadeInVariants}
         initial="hidden"
         animate="visible"
         className="container mx-auto max-w-3xl px-4"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
       >
         <motion.div
           variants={fadeInUpVariants}
