@@ -111,7 +111,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false)
   const [isGoogleInitialized, setIsGoogleInitialized] = useState(false)
   const searchParams = useSearchParams()
-
+  const [global, setGlobal] = useAtom(globalAtom)
   const processGoogleResponse = useCallback(
     (response: any) => {
       console.log('Processing Google response:', response)
@@ -226,6 +226,10 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
 
   const triggerGoogleSignIn = useCallback(
     (userType: 'company' | 'user' = 'user') => {
+      setGlobal({
+        ...global,
+        mode: userType,
+      })
       setIsGoogleLoading(true)
 
       if (window.google?.accounts?.id) {

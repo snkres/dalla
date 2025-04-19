@@ -10,10 +10,7 @@ export default async function Layout({
   children: React.ReactNode
 }) {
   const cookieStore = await cookies()
-  console.log('cookieStore', cookieStore)
-  console.log('cookieStore', cookieStore.has('access_token'))
   if (!cookieStore.has('access_token')) {
-    console.log('redirecting to login')
     redirect('/login')
   }
 
