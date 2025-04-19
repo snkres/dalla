@@ -63,6 +63,7 @@ export default {
       fontFamily: {
         sans: ['var(--font-sans)', 'sans-serif'],
         arabic: ['var(--font-arabic)', 'sans-serif'],
+        sora: ['var(--font-sora)', 'sans-serif'],
       },
       keyframes: {
         'accordion-down': {

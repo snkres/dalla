@@ -66,7 +66,7 @@ export default function AuthLayout({
             <h1 className="font-sora mb-2 text-4xl font-bold text-[#f7ca71]">
               Welcome to Dalla Solutions
             </h1>
-            <p className="text-md text-[#f7ca71] opacity-90">
+            <p className="font-sora text-md text-[#f7ca71] opacity-90">
               {welcomeMessage}
             </p>
           </motion.div>

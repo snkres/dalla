@@ -1,13 +1,20 @@
 import type { Metadata } from 'next'
 import '../globals.css'
-import '@fontsource-variable/sora'
+import { Sora } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Toaster } from '@dalla/design-system/ui/toast/toaster'
 import { ViewTransitions } from 'next-view-transitions'
 import { Suspense } from 'react'
 import Providers from './providers'
+import { cn } from '@dalla/utils'
 
-// Define nebula font with correct variable name
+const sora = Sora({
+  subsets: ['latin'],
+  variable: '--font-sora',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+})
+
 const nebula = localFont({
   src: [
     {
@@ -30,7 +37,6 @@ const nebula = localFont({
   display: 'swap',
 })
 
-// Define madaniArabic font with correct variable name
 const madaniArabic = localFont({
   src: '../public/fonts/madani/Madani-Arabic-Regular.woff2',
   variable: '--font-arabic',
@@ -55,7 +61,10 @@ export default function RootLayout({
 
   return (
     <ViewTransitions>
-      <html lang={defaultLocale} className={nebula.className}>
+      <html
+        lang={defaultLocale}
+        className={cn(nebula.className, sora.variable)}
+      >
         <body className="font-sans">
           <Suspense>
             <Providers
