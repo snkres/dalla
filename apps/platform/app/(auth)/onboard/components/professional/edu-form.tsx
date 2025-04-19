@@ -16,6 +16,7 @@ import {
 import { motion } from 'motion/react'
 import { fadeInVariants } from '@dalla/utils'
 import { DatePicker } from './date-picker'
+import { useTranslation } from '@hooks/use-translation'
 
 interface EducationFormProps {
   onSubmit: (education: any) => void
@@ -28,6 +29,7 @@ export function EducationForm({
   onCancel,
   initialData,
 }: EducationFormProps) {
+  const t = useTranslation()
   const [school, setSchool] = useState(initialData?.school || '')
   const [degree, setDegree] = useState(initialData?.degree || '')
   const [field, setField] = useState(initialData?.field || '')
@@ -54,14 +56,14 @@ export function EducationForm({
   const [degreeTypeOpen, setDegreeTypeOpen] = useState(false)
 
   const degreeTypes = [
-    "Bachelor's",
-    "Master's",
-    'Ph.D.',
-    'Associate',
-    'Diploma',
-    'Certificate',
-    'High School',
-    'Other',
+    t.onboarding.proStep4.educationForm.degreeTypeBachelors,
+    t.onboarding.proStep4.educationForm.degreeTypeMasters,
+    t.onboarding.proStep4.educationForm.degreeTypePhd,
+    t.onboarding.proStep4.educationForm.degreeTypeAssociate,
+    t.onboarding.proStep4.educationForm.degreeTypeDiploma,
+    t.onboarding.proStep4.educationForm.degreeTypeCertificate,
+    t.onboarding.proStep4.educationForm.degreeTypeHighSchool,
+    t.onboarding.proStep4.educationForm.degreeTypeOther,
   ]
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -76,7 +78,7 @@ export function EducationForm({
       !startYear ||
       ((!endMonth || !endYear) && !isCurrentlyStudying)
     ) {
-      alert('Please fill in all required fields')
+      alert(t.onboarding.proStep4.educationForm.validationAlert)
       return
     }
 
@@ -106,22 +108,27 @@ export function EducationForm({
         </div>
       </div>
 
-      <h2 className="mb-1 text-center text-xl font-semibold">Add education</h2>
+      <h2 className="mb-1 text-center text-xl font-semibold">
+        {t.onboarding.proStep4.educationForm.title}
+      </h2>
       <p className="mb-6 text-center text-gray-600">
-        Share your educational background on your profile.
+        {t.onboarding.proStep4.educationForm.description}
       </p>
 
       <div className="space-y-6">
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            School <span className="text-red-500">*</span>
+            {t.onboarding.proStep4.educationForm.schoolLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <div className="relative">
             <Input
               type="text"
               value={school}
               onChange={(e) => setSchool(e.target.value)}
-              placeholder="School name"
+              placeholder={
+                t.onboarding.proStep4.educationForm.schoolPlaceholder
+              }
               required
             />
           </div>
@@ -129,11 +136,16 @@ export function EducationForm({
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Degree <span className="text-red-500">*</span>
+            {t.onboarding.proStep4.educationForm.degreeLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Select value={degree} onValueChange={(value) => setDegree(value)}>
             <SelectTrigger className="!h-11 w-full rounded-xl">
-              <SelectValue placeholder="Select degree type" />
+              <SelectValue
+                placeholder={
+                  t.onboarding.proStep4.educationForm.degreePlaceholder
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               {degreeTypes.map((type) => (
@@ -147,25 +159,29 @@ export function EducationForm({
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Field of Study <span className="text-red-500">*</span>
+            {t.onboarding.proStep4.educationForm.fieldLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Input
             type="text"
             value={field}
             onChange={(e) => setField(e.target.value)}
-            placeholder="e.g. Computer Science, Business Administration"
+            placeholder={t.onboarding.proStep4.educationForm.fieldPlaceholder}
             required
           />
         </div>
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Description <span className="text-red-500">*</span>
+            {t.onboarding.proStep4.educationForm.descriptionLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="e.g. Activities, societies, achievements, or relevant coursework"
+            placeholder={
+              t.onboarding.proStep4.educationForm.descriptionPlaceholder
+            }
             rows={4}
           />
         </div>
@@ -177,12 +193,14 @@ export function EducationForm({
               checked={isCurrentlyStudying}
               onChange={(e) => setIsCurrentlyStudying(e.target.checked)}
             />
-            <span className="text-gray-700">I'm currently studying here</span>
+            <span className="text-gray-700">
+              {t.onboarding.proStep4.educationForm.currentlyStudyingLabel}
+            </span>
           </Label>
 
           <div className="grid grid-cols-2 gap-4">
             <DatePicker
-              label="Start Date"
+              label={t.onboarding.proStep4.educationForm.startDateLabel}
               selectedMonth={startMonth}
               selectedYear={startYear}
               onMonthChange={setStartMonth}
@@ -192,7 +210,7 @@ export function EducationForm({
             />
 
             <DatePicker
-              label="End Date"
+              label={t.onboarding.proStep4.educationForm.endDateLabel}
               selectedMonth={endMonth}
               selectedYear={endYear}
               onMonthChange={setEndMonth}
@@ -212,7 +230,7 @@ export function EducationForm({
             className="w-full"
             type="button"
           >
-            Cancel
+            {t.onboarding.proStep4.educationForm.cancelButton}
           </Button>
           <Button
             variant="default"
@@ -220,7 +238,9 @@ export function EducationForm({
             className="text-sunshine-yellow-10 bg-coral-red-100 w-full border-[#CEB67B]"
             type="submit"
           >
-            {initialData ? 'Update education' : 'Add education'}
+            {initialData
+              ? t.onboarding.proStep4.educationForm.updateButton
+              : t.onboarding.proStep4.educationForm.addButton}
           </Button>
         </div>
       </div>

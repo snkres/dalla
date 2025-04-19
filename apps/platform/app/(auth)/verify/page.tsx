@@ -10,8 +10,10 @@ import { verify } from '@lib/api/auth/otp-verify'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
+import { useTranslation } from '@hooks/use-translation'
 
 export default function VerifyPage() {
+  const t = useTranslation()
   const router = useRouter()
   const [global] = useAtom(globalAtom)
   const { toast } = useToast()
@@ -31,8 +33,8 @@ export default function VerifyPage() {
     if (isSubmitting) return
     if (verificationCode.length !== 4) {
       toast({
-        title: 'Invalid code',
-        description: 'Please enter a 4-digit verification code',
+        title: t.verify.errorInvalidCodeTitle,
+        description: t.verify.errorInvalidCodeDescription,
         variant: 'destructive',
       })
       return
@@ -51,12 +53,16 @@ export default function VerifyPage() {
       if (res.success) {
         router.push('/onboard')
       } else {
-        throw new Error('Verification failed')
+        toast({
+          title: t.verify.errorVerificationFailedTitle,
+          description: t.verify.errorVerificationFailedDescription,
+          variant: 'destructive',
+        })
       }
     } catch (error) {
       toast({
-        title: 'Verification failed',
-        description: 'Please try again',
+        title: t.verify.errorVerificationFailedTitle,
+        description: t.verify.errorVerificationFailedDescription,
         variant: 'destructive',
       })
     } finally {
@@ -84,10 +90,10 @@ export default function VerifyPage() {
           className="space-y-3 text-center"
         >
           <h1 className="text-2xl font-semibold text-gray-900">
-            Check your email
+            {t.verify.title}
           </h1>
           <p className="text-sm font-light text-gray-500">
-            We&apos;ve sent a verification code to your email
+            {t.verify.description}
           </p>
         </motion.div>
 
@@ -106,7 +112,7 @@ export default function VerifyPage() {
             className="space-y-4"
           >
             <label className="block text-center text-sm font-medium text-gray-700">
-              Enter verification code
+              {t.verify.label}
             </label>
             <InputOTP
               maxLength={4}
@@ -130,8 +136,8 @@ export default function VerifyPage() {
           <ButtonsContainer
             handlePrevious={handlePrevious}
             isSubmitting={isSubmitting}
-            previousText="Back"
-            continueText="Verify email"
+            previousText={t.verify.buttonBack}
+            continueText={t.verify.buttonVerify}
             handleSubmit={handleVerificationSubmit}
             isAbleToProceed={verificationCode.length === 4}
             isNextDisabled={verificationCode.length !== 4}

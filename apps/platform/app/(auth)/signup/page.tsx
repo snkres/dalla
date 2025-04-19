@@ -5,7 +5,7 @@ import { Button } from '@dalla/design-system'
 import { Input } from '@dalla/design-system'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 import type { AccountType } from '@lib/types/auth'
-import { fadeInUpVariants, fadeInVariants } from '@dalla/utils'
+import { fadeInUpVariants, fadeInVariants, cn } from '@dalla/utils'
 import { Link } from 'next-view-transitions'
 import { z } from 'zod'
 import { register } from '@lib/api/auth/register'
@@ -16,24 +16,34 @@ import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
 import { redirect } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { LinkedInIcon } from '@lib/constants/social-media-icons'
 import { GoogleIcon } from '@lib/constants/social-media-icons'
 import { useSSO } from '@lib/hooks/use-sso'
-const schema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters long'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters long'),
-  username: z
-    .string()
-    .min(2, 'Username must be at least 2 characters long')
-    .optional(),
-})
+import { useTranslation } from '../../../hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
-type FormData = z.infer<typeof schema>
+type FormData = z.infer<ReturnType<typeof createSignupSchema>>
+
+function createSignupSchema(
+  t: ReturnType<typeof useTranslation>,
+  mode: string,
+) {
+  return z.object({
+    name: z.string().min(2, t.signup.validationNameMinLength),
+    email: z.string().email(t.signup.validationEmailInvalid),
+    password: z.string().min(8, t.signup.validationPasswordMinLength),
+    username: z
+      .string()
+      .min(2, t.signup.validationUsernameMinLength)
+      .optional(),
+  })
+}
 
 export default function SignupPage() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
 
@@ -43,6 +53,8 @@ export default function SignupPage() {
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })
+
+  const signupSchema = useMemo(() => createSignupSchema(t, mode), [t, mode])
 
   const {
     triggerGoogleSignIn,
@@ -60,32 +72,34 @@ export default function SignupPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signupSchema),
   })
 
   const onSubmit = async (data: FormData) => {
     console.log(data)
     try {
+      const userType = mode === 'company' ? 'company' : 'user'
       const res = await register({
         ...data,
-        userType: mode === 'company' ? 'company' : 'user',
-        username: data.username || '',
+        userType: userType,
+        username: userType === 'user' ? data.username || '' : '',
       })
       if (res.success) {
         setGlobal({
+          ...global,
           id: '',
-          mode: mode === 'company' ? 'company' : 'user',
+          mode: userType,
           email: data.email,
           name: data.name,
-          username: data.username || '',
+          username: userType === 'user' ? data.username || '' : '',
         })
         window.location.href = '/verify'
       }
     } catch (error) {
       toast({
-        title: 'Error',
+        title: t.signup.errorTitle,
         description:
-          error instanceof Error ? error.message : 'An unknown error occurred',
+          error instanceof Error ? error.message : t.signup.errorUnknown,
         variant: 'destructive',
       })
     }
@@ -120,10 +134,10 @@ export default function SignupPage() {
             </svg>
           </motion.div>
           <h1 className="text-2xl font-semibold text-gray-900">
-            Create your account
+            {t.signup.title}
           </h1>
           <p className="text-sm font-light text-gray-500">
-            Join Dalla Solutions and start your journey
+            {t.signup.description}
           </p>
         </div>
 
@@ -138,19 +152,24 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-6">
           <div className="space-y-4">
-            <div className="space-y-2">
+            <div
+              className={cn('space-y-2', locale === 'ar' ? 'text-right' : '')}
+            >
               <label
                 htmlFor="email"
                 className="text-sm font-medium text-gray-700"
               >
-                Email address
+                {t.signup.emailLabel}
               </label>
               <Input
                 id="email"
                 type="email"
                 {...registerField('email')}
-                placeholder="Enter your email"
-                className="h-11 w-full"
+                placeholder={t.signup.emailPlaceholder}
+                className={cn(
+                  'h-11 w-full',
+                  locale === 'ar' ? 'text-right' : '',
+                )}
               />
               {errors.email && (
                 <p className="mt-1 text-xs text-red-500">
@@ -160,19 +179,27 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-1.5 sm:flex sm:gap-1.5 sm:space-y-0">
-              <div className="w-full space-y-2">
+              <div
+                className={cn(
+                  'w-full space-y-2',
+                  locale === 'ar' ? 'text-right' : '',
+                )}
+              >
                 <label
                   htmlFor="name"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Name
+                  {t.signup.nameLabel}
                 </label>
                 <Input
                   id="name"
                   type="text"
                   {...registerField('name')}
-                  placeholder="Enter your name"
-                  className="h-11 w-full"
+                  placeholder={t.signup.namePlaceholder}
+                  className={cn(
+                    'h-11 w-full',
+                    locale === 'ar' ? 'text-right' : '',
+                  )}
                 />
                 {errors.name && (
                   <p className="mt-1 text-xs text-red-500">
@@ -184,7 +211,10 @@ export default function SignupPage() {
               <AnimatePresence mode="sync">
                 {mode === 'professional' && (
                   <motion.div
-                    className="w-full space-y-2"
+                    className={cn(
+                      'w-full space-y-2',
+                      locale === 'ar' ? 'text-right' : '',
+                    )}
                     initial={{ opacity: 0, x: 20, height: 0 }}
                     animate={{ opacity: 1, x: 0, height: 'auto' }}
                     exit={{ opacity: 0, x: -20, height: 0 }}
@@ -194,14 +224,17 @@ export default function SignupPage() {
                       htmlFor="username"
                       className="text-sm font-medium text-gray-700"
                     >
-                      Username
+                      {t.signup.usernameLabel}
                     </label>
                     <Input
                       id="username"
                       type="text"
                       {...registerField('username')}
-                      placeholder="Enter your username"
-                      className="h-11 w-full"
+                      placeholder={t.signup.usernamePlaceholder}
+                      className={cn(
+                        'h-11 w-full',
+                        locale === 'ar' ? 'text-right' : '',
+                      )}
                     />
                     {errors.username && (
                       <p className="mt-1 text-xs text-red-500">
@@ -213,12 +246,14 @@ export default function SignupPage() {
               </AnimatePresence>
             </div>
 
-            <div className="space-y-2">
+            <div
+              className={cn('space-y-2', locale === 'ar' ? 'text-right' : '')}
+            >
               <label
                 htmlFor="password"
                 className="text-sm font-medium text-gray-700"
               >
-                Password
+                {t.signup.passwordLabel}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -226,8 +261,11 @@ export default function SignupPage() {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   {...registerField('password')}
-                  placeholder="Enter password"
-                  className="h-11 w-full pl-10 pr-10"
+                  placeholder={t.signup.passwordPlaceholder}
+                  className={cn(
+                    'h-11 w-full pl-10 pr-10',
+                    locale === 'ar' ? 'text-right' : '',
+                  )}
                 />
                 <button
                   type="button"
@@ -257,10 +295,10 @@ export default function SignupPage() {
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Creating account...
+                {t.signup.creatingAccountButton}
               </>
             ) : (
-              'Create account'
+              t.signup.createAccountButton
             )}
           </Button>
           {mode === 'professional' && (
@@ -271,7 +309,7 @@ export default function SignupPage() {
                 </div>
                 <div className="relative flex justify-center text-xs lowercase">
                   <span className="bg-white px-2 text-gray-400">
-                    Or continue with
+                    {t.signup.continueWith}
                   </span>
                 </div>
               </div>
@@ -322,23 +360,23 @@ export default function SignupPage() {
         </form>
 
         <p className="text-center text-sm text-gray-500">
-          Already have an account?{' '}
+          {t.signup.alreadyHaveAccount}{' '}
           <Link
             href={`/login?mode=${mode}`}
             className="font-medium text-[#234d64] hover:text-[#1a3b4d] hover:underline"
           >
-            Sign in
+            {t.signup.signInLink}
           </Link>
         </p>
 
         <p className="text-center text-xs text-gray-500">
-          By creating an account, you agree to our{' '}
+          {t.signup.termsAgreement}{' '}
           <Link href="/terms" className="text-[#234d64] hover:text-[#1a3b4d]">
-            Terms of Service
+            {t.signup.termsLink}
           </Link>{' '}
-          and{' '}
+          {locale === 'ar' ? 'و' : 'and'}{' '}
           <Link href="/privacy" className="text-[#234d64] hover:text-[#1a3b4d]">
-            Privacy Policy
+            {t.signup.privacyLink}
           </Link>
         </p>
       </motion.div>

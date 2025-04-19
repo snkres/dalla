@@ -11,6 +11,7 @@ import { Input, Label } from '@dalla/design-system'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ensureHttpsPrefix } from '@dalla/utils'
+import { useTranslation } from '@hooks/use-translation'
 
 export function ProOnboardingTwo({
   data,
@@ -21,6 +22,7 @@ export function ProOnboardingTwo({
   updateData: Dispatch<SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<SetStateAction<boolean>>
 }) {
+  const t = useTranslation()
   const { handleSkills, phoneError } = useProfessionalOnboarding({
     data,
     updateData,
@@ -37,17 +39,16 @@ export function ProOnboardingTwo({
     >
       <div className="mt-4 flex flex-col items-center gap-1 px-6 text-center">
         <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
-          Professional Details
+          {t.onboarding.proStep2.title}
         </h2>
         <p className="text-slate-blue-70 mt-1 text-xs">
-          Fields marked with <span className="text-red-500">*</span> are
-          required
+          {t.onboarding.requiredFieldsNote}
         </p>
       </div>
 
       <div className="w-full">
         <div className="mb-1 flex items-center">
-          <Label htmlFor="skills">Skills</Label>
+          <Label htmlFor="skills">{t.onboarding.proStep2.skillsLabel}</Label>
           <RequiredIndicator />
         </div>
         <SkillSelector
@@ -57,7 +58,7 @@ export function ProOnboardingTwo({
         />
         {data.meta.skills.length === 0 && (
           <p className="mt-1 text-xs text-red-500">
-            Please add at least one skill
+            {t.onboarding.proStep2.skillsError}
           </p>
         )}
       </div>
@@ -65,13 +66,13 @@ export function ProOnboardingTwo({
       <div className="flex w-full gap-4">
         <div className="relative w-full">
           <Label htmlFor="yearsOfExperience">
-            Years of Experience <RequiredIndicator />
+            {t.onboarding.proStep2.yearsExperienceLabel} <RequiredIndicator />
           </Label>
 
           <Input
             id="yearsOfExperience"
             className="h-11"
-            placeholder="Years of Experience"
+            placeholder={t.onboarding.proStep2.yearsExperiencePlaceholder}
             type="number"
             min="0"
             value={
@@ -91,13 +92,15 @@ export function ProOnboardingTwo({
           />
           {data.meta.yearsOfExperience <= 0 && (
             <p className="mt-1 text-xs text-red-500">
-              Please enter your years of experience
+              {t.onboarding.proStep2.yearsExperienceError}
             </p>
           )}
         </div>
 
         <div className="relative w-full">
-          <Label htmlFor="portfolio">Portfolio</Label>
+          <Label htmlFor="portfolio">
+            {t.onboarding.proStep2.portfolioLabel}
+          </Label>
           <Globe2 className="absolute left-3 top-9 h-5 w-5 text-gray-400" />
           <Input
             id="portfolio"
@@ -126,7 +129,7 @@ export function ProOnboardingTwo({
                 },
               })
             }
-            placeholder="Portfolio URL"
+            placeholder={t.onboarding.proStep2.portfolioPlaceholder}
             className="h-11 pl-10"
           />
         </div>
@@ -134,7 +137,7 @@ export function ProOnboardingTwo({
 
       <div className="relative w-full">
         <div className="mb-1 flex items-center">
-          <Label htmlFor="phone">Phone Number</Label>
+          <Label htmlFor="phone">{t.onboarding.proStep2.phoneLabel}</Label>
           <RequiredIndicator />
         </div>
         <PhoneInput
@@ -154,7 +157,7 @@ export function ProOnboardingTwo({
         )}
         {!data.meta.phone && (
           <p className="mt-1 text-xs text-red-500">
-            Please enter your phone number
+            {t.onboarding.proStep2.phoneErrorRequired}
           </p>
         )}
       </div>

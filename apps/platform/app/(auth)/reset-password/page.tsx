@@ -9,8 +9,10 @@ import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { fadeInUpVariants } from '@dalla/utils'
+import { useTranslation } from '../../../hooks/use-translation'
 
 export default function ResetPasswordPage() {
+  const t = useTranslation()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -32,7 +34,7 @@ export default function ResetPasswordPage() {
     const modeParam = searchParams.get('mode')
 
     if (!emailParam || !codeParam || !modeParam) {
-      setError('Invalid reset link. Please request a new password reset.')
+      setError(t.resetPassword.errorInvalidLinkDescription)
     } else {
       setEmail(emailParam)
       setCode(codeParam)
@@ -40,11 +42,11 @@ export default function ResetPasswordPage() {
     }
 
     setIsLoading(false)
-  }, [searchParams])
+  }, [searchParams, t])
 
   const validatePassword = (password: string) => {
     if (password.length < 8) {
-      return 'Password must be at least 8 characters long'
+      return t.resetPassword.errorValidationPasswordLength
     }
     return ''
   }
@@ -64,8 +66,8 @@ export default function ResetPasswordPage() {
 
     if (password !== confirmPassword) {
       toast({
-        title: 'Passwords do not match',
-        description: 'Please make sure both passwords match',
+        title: t.resetPassword.errorValidationPasswordMatchTitle,
+        description: t.resetPassword.errorValidationPasswordMatchDescription,
         variant: 'destructive',
       })
       return
@@ -83,20 +85,18 @@ export default function ResetPasswordPage() {
 
       setIsSuccess(true)
       toast({
-        title: 'Password reset successful',
-        description: 'Your password has been successfully reset.',
+        title: t.resetPassword.successToastTitle,
+        description: t.resetPassword.successToastDescription,
       })
 
-      // Redirect to login after 3 seconds
       setTimeout(() => {
         router.push('/login')
       }, 3000)
     } catch (error) {
       console.error(error)
       toast({
-        title: 'Password reset failed',
-        description:
-          'Unable to reset your password. Please try again or request a new reset link.',
+        title: t.resetPassword.errorResetFailedTitle,
+        description: t.resetPassword.errorResetFailedDescription,
         variant: 'destructive',
       })
     } finally {
@@ -143,7 +143,7 @@ export default function ResetPasswordPage() {
           <div className="space-y-6">
             <div className="mb-6 text-center">
               <h1 className="mb-2 text-2xl font-semibold text-gray-900">
-                Invalid Reset Link
+                {t.resetPassword.errorInvalidLinkTitle}
               </h1>
               <p className="text-sm text-gray-600">{error}</p>
             </div>
@@ -152,7 +152,7 @@ export default function ResetPasswordPage() {
               className="bg-slate-blue-100 hover:bg-slate-blue-100/90 w-full text-white"
               onClick={() => router.push('/forgot-password')}
             >
-              Request new reset link
+              {t.resetPassword.buttonRequestNewLink}
             </Button>
           </div>
         ) : isSuccess ? (
@@ -161,11 +161,10 @@ export default function ResetPasswordPage() {
 
             <div>
               <h1 className="mb-2 text-2xl font-semibold text-gray-900">
-                Password Reset Complete
+                {t.resetPassword.successTitle}
               </h1>
               <p className="text-sm text-gray-600">
-                Your password has been reset successfully. You'll be redirected
-                to the login page in a moment.
+                {t.resetPassword.successDescription}
               </p>
             </div>
 
@@ -173,17 +172,17 @@ export default function ResetPasswordPage() {
               className="bg-slate-blue-100 hover:bg-slate-blue-100/90 w-full text-white"
               onClick={() => router.push('/login')}
             >
-              Go to login
+              {t.resetPassword.buttonGoToLogin}
             </Button>
           </div>
         ) : (
           <>
             <div className="mb-6 text-center">
               <h1 className="mb-2 text-2xl font-semibold text-gray-900">
-                Set new password
+                {t.resetPassword.title}
               </h1>
               <p className="text-sm text-gray-600">
-                Create a new password for your account
+                {t.resetPassword.description}
                 <br />
                 <span className="font-medium">{email}</span>
               </p>
@@ -195,7 +194,7 @@ export default function ResetPasswordPage() {
                   htmlFor="password"
                   className="text-sm font-medium text-gray-700"
                 >
-                  New Password
+                  {t.resetPassword.newPasswordLabel}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -204,7 +203,7 @@ export default function ResetPasswordPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter new password"
+                    placeholder={t.resetPassword.newPasswordPlaceholder}
                     className="pl-10 pr-10"
                     disabled={isSubmitting}
                     required
@@ -222,7 +221,7 @@ export default function ResetPasswordPage() {
                   </button>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Password must be at least 8 characters long
+                  {t.resetPassword.passwordHint}
                 </p>
               </div>
 
@@ -231,7 +230,7 @@ export default function ResetPasswordPage() {
                   htmlFor="confirmPassword"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Confirm Password
+                  {t.resetPassword.confirmPasswordLabel}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -240,7 +239,7 @@ export default function ResetPasswordPage() {
                     type={showPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm new password"
+                    placeholder={t.resetPassword.confirmPasswordPlaceholder}
                     className="pl-10"
                     disabled={isSubmitting}
                     required
@@ -258,7 +257,9 @@ export default function ResetPasswordPage() {
                 ) : (
                   <CheckCircle className="mr-2 h-4 w-4" />
                 )}
-                {isSubmitting ? 'Resetting password...' : 'Reset password'}
+                {isSubmitting
+                  ? t.resetPassword.buttonResetting
+                  : t.resetPassword.buttonReset}
               </Button>
             </form>
           </>

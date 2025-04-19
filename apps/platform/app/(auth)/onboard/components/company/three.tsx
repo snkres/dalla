@@ -7,6 +7,7 @@ import { GoalCard } from '../goal-card'
 import { GoalOption } from '@lib/types/goals'
 import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
 import { CompanyOnboardingData } from '../../hooks/use-onboarding'
+import { useTranslation } from '@hooks/use-translation'
 
 export function CompanyOnboardingThree({
   data,
@@ -15,6 +16,8 @@ export function CompanyOnboardingThree({
   data: CompanyOnboardingData
   setData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
+  const t = useTranslation()
+
   const handleToggle = (pref: { name: string; description: string }) => {
     setData((prev) => {
       if (prev.goals.includes(pref)) {
@@ -47,10 +50,10 @@ export function CompanyOnboardingThree({
           className="mb-12 space-y-4 text-center"
         >
           <h1 className="text-2xl font-semibold text-gray-900">
-            What are your Company Goals?
+            {t.onboarding.companyStep3.title}
           </h1>
           <p className="text-sm font-light text-gray-500">
-            Select up to 3 Goals that align with your Company Goals
+            {t.onboarding.companyStep3.description}
           </p>
         </motion.div>
 

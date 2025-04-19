@@ -8,12 +8,15 @@ import { motion } from 'motion/react'
 import { ArrowRight } from 'lucide-react'
 import { CompletionDialogProps } from '@lib/types/goals'
 import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
+import { useTranslation } from '../../../../hooks/use-translation'
 
 export const CompletionDialog = ({
   open,
   onOpenChange,
   onComplete,
 }: CompletionDialogProps) => {
+  const t = useTranslation()
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[400px] overflow-hidden border-0 p-0">
@@ -51,11 +54,10 @@ export const CompletionDialog = ({
                   className="mb-6 space-y-2 text-center"
                 >
                   <h2 className="text-xl font-semibold text-[#234d64]">
-                    All Set and Ready!
+                    {t.onboarding.completionDialog.title}
                   </h2>
                   <p className="text-sm font-light text-gray-500">
-                    Your goals are locked in. Time to discover opportunities
-                    that match your aspirations.
+                    {t.onboarding.completionDialog.description}
                   </p>
                 </motion.div>
 
@@ -63,7 +65,7 @@ export const CompletionDialog = ({
                   onClick={onComplete}
                   className="h-12 w-full rounded-lg bg-[#234d64] text-sm font-medium text-white hover:bg-[#1a3b4d]"
                 >
-                  View Opportunities
+                  {t.onboarding.completionDialog.button}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>

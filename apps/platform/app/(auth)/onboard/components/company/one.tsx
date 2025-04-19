@@ -22,6 +22,7 @@ import type { CompanyOnboardingData } from '../../hooks/use-onboarding'
 import PhoneInput from '@dalla/components/phoneInput'
 import { COMPANY_SIZE_RANGES } from '@dalla/components/company-sizeSelector'
 import { LocationSelector } from '@dalla/components/locationSelector'
+import { useTranslation } from '@hooks/use-translation'
 
 export function CompanyOnboardingOne({
   data,
@@ -30,6 +31,15 @@ export function CompanyOnboardingOne({
   data: CompanyOnboardingData
   updateData: React.Dispatch<React.SetStateAction<CompanyOnboardingData>>
 }) {
+  const t = useTranslation()
+
+  const formatIndustryLimitText = () => {
+    return t.onboarding.companyStep1.targetIndustriesLimit.replace(
+      '{count}',
+      data.targetIndustries.length.toString(),
+    )
+  }
+
   return (
     <motion.div
       variants={fadeInVariants}
@@ -39,10 +49,10 @@ export function CompanyOnboardingOne({
     >
       <motion.div variants={fadeInUpVariants} className="mb-12 text-center">
         <h1 className="text-2xl font-semibold text-gray-900">
-          Complete your profile
+          {t.onboarding.companyStep1.title}
         </h1>
         <p className="text-sm font-light text-gray-500">
-          This information will help us personalize your experience
+          {t.onboarding.companyStep1.description}
         </p>
       </motion.div>
 
@@ -51,8 +61,6 @@ export function CompanyOnboardingOne({
           <AvatarUpload
             setUploadedURL={(url) => {
               updateData({ ...data, logo: url })
-              console.log(url)
-              console.log(data)
             }}
             required={false}
           />
@@ -61,7 +69,7 @@ export function CompanyOnboardingOne({
         <div className="flex w-full flex-col gap-8">
           <motion.div variants={fadeInUpVariants} className="w-full gap-8">
             <div className="space-y-4">
-              <Label>Basic Information</Label>
+              <Label>{t.onboarding.companyStep1.basicInfoLabel}</Label>
               <div className="flex gap-4">
                 <Input
                   value={data.headline}
@@ -71,7 +79,7 @@ export function CompanyOnboardingOne({
                       headline: e.target.value,
                     })
                   }
-                  placeholder="Headline"
+                  placeholder={t.onboarding.companyStep1.headlinePlaceholder}
                   className="h-11"
                 />
 
@@ -80,7 +88,7 @@ export function CompanyOnboardingOne({
                   onChange={(e) =>
                     updateData({ ...data, industry: e.target.value })
                   }
-                  placeholder="Industry"
+                  placeholder={t.onboarding.companyStep1.industryPlaceholder}
                   className="h-11"
                 />
                 <Select
@@ -90,7 +98,11 @@ export function CompanyOnboardingOne({
                   }
                 >
                   <SelectTrigger className="!h-11">
-                    <SelectValue placeholder="Company size" />
+                    <SelectValue
+                      placeholder={
+                        t.onboarding.companyStep1.companySizePlaceholder
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {COMPANY_SIZE_RANGES.map((option) => (
@@ -109,7 +121,7 @@ export function CompanyOnboardingOne({
             className="w-full min-w-full gap-8"
           >
             <div className="space-y-4">
-              <Label>Company Details</Label>
+              <Label>{t.onboarding.companyStep1.companyDetailsLabel}</Label>
               <div className="flex gap-2">
                 <div className="relative w-full">
                   <PhoneInput
@@ -129,7 +141,7 @@ export function CompanyOnboardingOne({
                     onChange={(e) =>
                       updateData({ ...data, website: e.target.value })
                     }
-                    placeholder="Website"
+                    placeholder={t.onboarding.companyStep1.websitePlaceholder}
                     className="h-11 pl-10"
                   />
                 </div>
@@ -140,8 +152,9 @@ export function CompanyOnboardingOne({
                       updateData({ ...data, address: value })
                     }
                     placeholder={{
-                      country: 'Select country',
-                      city: 'Select city',
+                      country:
+                        t.onboarding.companyStep1.locationCountryPlaceholder,
+                      city: t.onboarding.companyStep1.locationCityPlaceholder,
                     }}
                     required={false}
                     selectClassName="!rounded-xl h-11"
@@ -152,10 +165,12 @@ export function CompanyOnboardingOne({
           </motion.div>
           <motion.div variants={fadeInUpVariants} className="w-full gap-8">
             <div className="w-full space-y-4">
-              <Label>Preferences</Label>
+              <Label>{t.onboarding.companyStep1.preferencesLabel}</Label>
               <div className="flex w-full gap-2">
                 <div className="w-full space-y-2">
-                  <Label>Target Industries</Label>
+                  <Label>
+                    {t.onboarding.companyStep1.targetIndustriesLabel}
+                  </Label>
                   <ExpertiseSelect
                     value={data.targetIndustries}
                     onChange={(
@@ -169,8 +184,7 @@ export function CompanyOnboardingOne({
                     )}
                   />
                   <p className="mt-1 text-xs text-gray-500">
-                    Maximum 5 industries allowed {data.targetIndustries.length}
-                    /5
+                    {formatIndustryLimitText()}
                   </p>
                 </div>
               </div>
@@ -178,11 +192,11 @@ export function CompanyOnboardingOne({
           </motion.div>
 
           <motion.div variants={fadeInUpVariants} className="mt-8 space-y-2">
-            <Label>Bio</Label>
+            <Label>{t.onboarding.companyStep1.bioLabel}</Label>
             <Textarea
               value={data.bio}
               onChange={(e) => updateData({ ...data, bio: e.target.value })}
-              placeholder="Tell us about the company..."
+              placeholder={t.onboarding.companyStep1.bioPlaceholder}
               className="h-28"
             />
           </motion.div>
