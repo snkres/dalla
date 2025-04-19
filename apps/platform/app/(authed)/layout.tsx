@@ -15,7 +15,7 @@ export default async function Layout({
 
   console.log('isAuthed', isAuthed)
 
-  if (!isAuthed.ok) {
+  if (!isAuthed.cookieStore.get('access_token')) {
     redirect('/login')
   }
 
