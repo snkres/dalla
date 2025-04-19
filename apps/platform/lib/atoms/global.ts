@@ -7,9 +7,9 @@ export interface GlobalAtom {
   username?: string
   name: string
   avatar?: string
+  locale: 'en' | 'ar'
 }
 
-export const globalAtom = atomWithLocalForage<GlobalAtom>(
-  'dalla:global',
-  {} as GlobalAtom,
-)
+export const globalAtom = atomWithLocalForage<GlobalAtom>('dalla:global', {
+  locale: 'en',
+} as GlobalAtom)

@@ -14,10 +14,12 @@ import {
   Label,
 } from '@dalla/design-system'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dalla/utils'
+import { cn, fadeInVariants } from '@dalla/utils'
 import { DatePicker } from './date-picker'
 import { Tag, TagInput } from 'emblor'
 import { LocationSelector } from '@dalla/components/locationSelector'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface Tool {
   id: string
@@ -47,11 +49,14 @@ export function ExperienceForm({
   onCancel,
   initialData,
 }: ExperienceFormProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [title, setTitle] = useState(initialData?.title || '')
   const [company, setCompany] = useState(initialData?.company || '')
   const [location, setLocation] = useState(initialData?.location || '')
   const [employmentType, setEmploymentType] = useState(
-    initialData?.meta?.employmentType || 'Full time',
+    initialData?.meta?.employmentType ||
+      t.onboarding.proStep3.experienceForm.employmentTypeFullTime,
   )
   const [responsibilities, setResponsibilities] = useState(
     initialData?.meta?.responsibilities || '',
@@ -83,14 +88,14 @@ export function ExperienceForm({
   )
 
   const employmentTypes = [
-    'Full-time',
-    'Part-time',
-    'Self-employed',
-    'Freelance',
-    'Contract',
-    'Internship',
-    'Apprenticeship',
-    'Seasonal',
+    t.onboarding.proStep3.experienceForm.employmentTypeFullTime,
+    t.onboarding.proStep3.experienceForm.employmentTypePartTime,
+    t.onboarding.proStep3.experienceForm.employmentTypeSelfEmployed,
+    t.onboarding.proStep3.experienceForm.employmentTypeFreelance,
+    t.onboarding.proStep3.experienceForm.employmentTypeContract,
+    t.onboarding.proStep3.experienceForm.employmentTypeInternship,
+    t.onboarding.proStep3.experienceForm.employmentTypeApprenticeship,
+    t.onboarding.proStep3.experienceForm.employmentTypeSeasonal,
   ]
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -104,7 +109,7 @@ export function ExperienceForm({
       !startYear ||
       ((!endMonth || !endYear) && !isCurrentlyWorking)
     ) {
-      alert('Please fill in all required fields')
+      alert(t.onboarding.proStep3.experienceForm.validationAlert)
       return
     }
 
@@ -140,35 +145,43 @@ export function ExperienceForm({
         </div>
       </div>
 
-      <h2 className="mb-1 text-center text-xl font-semibold">Add experience</h2>
+      <h2 className="mb-1 text-center text-xl font-semibold">
+        {t.onboarding.proStep3.experienceForm.title}
+      </h2>
       <p className="mb-6 text-center text-gray-600">
-        Share where you've worked on your profile.
+        {t.onboarding.proStep3.experienceForm.description}
       </p>
 
       <div className="space-y-6">
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Job Title <span className="text-red-500">*</span>
+            {t.onboarding.proStep3.experienceForm.jobTitleLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="What is your job title?"
+            placeholder={
+              t.onboarding.proStep3.experienceForm.jobTitlePlaceholder
+            }
             required
           />
         </div>
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Company <span className="text-red-500">*</span>
+            {t.onboarding.proStep3.experienceForm.companyLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <div className="relative">
             <Input
               type="text"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              placeholder="Search for company"
+              placeholder={
+                t.onboarding.proStep3.experienceForm.companyPlaceholder
+              }
               required
             />
           </div>
@@ -177,35 +190,53 @@ export function ExperienceForm({
         <div className="grid gap-4">
           <div>
             <Label className="mb-1 block text-sm font-medium text-gray-700">
-              Location <span className="text-red-500">*</span>
+              {t.onboarding.proStep3.experienceForm.locationLabel}{' '}
+              <span className="text-red-500">*</span>
             </Label>
             <LocationSelector
               value={location}
               onChange={setLocation}
               placeholder={{
-                country: 'Select country',
-                city: "Select city or 'Remote'",
+                country:
+                  t.onboarding.proStep3.experienceForm
+                    .locationCountryPlaceholder,
+                city: t.onboarding.proStep3.experienceForm
+                  .locationCityPlaceholder,
               }}
               required={true}
-              selectClassName="!rounded-xl h-11 [&_span]:!text-sm"
+              selectClassName="!rounded-xl h-11 [&_span]:!text-sm "
+              showLabels={false}
             />
           </div>
         </div>
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Employment Type <span className="text-red-500">*</span>
+            {t.onboarding.proStep3.experienceForm.employmentTypeLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Select
             value={employmentType}
             onValueChange={(value) => setEmploymentType(value)}
           >
-            <SelectTrigger className="!h-11 w-full rounded-xl">
-              <SelectValue placeholder="Select employment type" />
+            <SelectTrigger
+              className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+            >
+              <SelectValue
+                placeholder={
+                  t.onboarding.proStep3.experienceForm.employmentTypePlaceholder
+                }
+              />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+              className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+            >
               {employmentTypes.map((type) => (
-                <SelectItem key={type} value={type}>
+                <SelectItem
+                  key={type}
+                  value={type}
+                  className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+                >
                   {type}
                 </SelectItem>
               ))}
@@ -214,7 +245,7 @@ export function ExperienceForm({
         </div>
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Tools & Skills
+            {t.onboarding.proStep3.experienceForm.skillsLabel}
           </Label>
           <TagInput
             id="skills"
@@ -222,7 +253,7 @@ export function ExperienceForm({
             setTags={(newTags) => {
               setSelectedTools(newTags)
             }}
-            placeholder="Add tools or skills, separated by comma"
+            placeholder={t.onboarding.proStep3.experienceForm.skillsPlaceholder}
             styleClasses={{
               tagList: {
                 container: 'gap-1',
@@ -244,30 +275,36 @@ export function ExperienceForm({
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Responsibilities <span className="text-red-500">*</span>
+            {t.onboarding.proStep3.experienceForm.responsibilitiesLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Textarea
             value={responsibilities}
             onChange={(e) => setResponsibilities(e.target.value)}
-            placeholder="e.g. I joined Stripe's Customer Success team to help them scale their checkout product. I focused mainly on onboarding new customers and resolving complaints."
+            placeholder={
+              t.onboarding.proStep3.experienceForm.responsibilitiesPlaceholder
+            }
             rows={4}
           />
         </div>
 
         <div>
           <Label className="mb-1 block text-sm font-medium text-gray-700">
-            Achievements <span className="text-red-500">*</span>
+            {t.onboarding.proStep3.experienceForm.achievementsLabel}{' '}
+            <span className="text-red-500">*</span>
           </Label>
           <Textarea
             value={achievements}
             onChange={(e) => setAchievements(e.target.value)}
-            placeholder="e.g. Increased customer satisfaction by 25% through implementing a new onboarding process."
+            placeholder={
+              t.onboarding.proStep3.experienceForm.achievementsPlaceholder
+            }
             rows={4}
           />
         </div>
 
         <div>
-          <Label className="mb-4 flex items-center space-x-2">
+          <Label className="mb-4 flex items-center gap-2">
             <input
               type="checkbox"
               checked={isCurrentlyWorking}
@@ -275,13 +312,13 @@ export function ExperienceForm({
               className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
             <span className="text-gray-700">
-              I'm currently still working here
+              {t.onboarding.proStep3.experienceForm.currentlyWorkingLabel}
             </span>
           </Label>
 
           <div className="grid grid-cols-2 gap-4">
             <DatePicker
-              label="Start Date"
+              label={t.onboarding.proStep3.experienceForm.startDateLabel}
               selectedMonth={startMonth}
               selectedYear={startYear}
               onMonthChange={setStartMonth}
@@ -291,7 +328,7 @@ export function ExperienceForm({
             />
 
             <DatePicker
-              label="End Date"
+              label={t.onboarding.proStep3.experienceForm.endDateLabel}
               selectedMonth={endMonth}
               selectedYear={endYear}
               onMonthChange={setEndMonth}
@@ -303,7 +340,12 @@ export function ExperienceForm({
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div
+          className={cn(
+            locale === 'ar' ? 'flex-row-reverse' : '',
+            'flex gap-2',
+          )}
+        >
           <Button
             onClick={onCancel}
             variant="outline"
@@ -311,7 +353,7 @@ export function ExperienceForm({
             className="w-full"
             type="button"
           >
-            Cancel
+            {t.onboarding.proStep3.experienceForm.cancelButton}
           </Button>
           <Button
             variant="default"
@@ -319,7 +361,9 @@ export function ExperienceForm({
             className="text-sunshine-yellow-10 bg-coral-red-100 w-full border-[#CEB67B]"
             type="submit"
           >
-            {initialData ? 'Update experience' : 'Add experience'}
+            {initialData
+              ? t.onboarding.proStep3.experienceForm.updateButton
+              : t.onboarding.proStep3.experienceForm.addButton}
           </Button>
         </div>
       </div>

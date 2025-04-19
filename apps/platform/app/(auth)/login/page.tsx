@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { Button } from '@dalla/design-system'
 import { Input } from '@dalla/design-system'
 import Link from 'next/link'
-import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
+import { fadeInVariants, fadeInUpVariants, cn } from '@dalla/utils'
 import { useQueryState } from 'nuqs'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 import type { AccountType } from '@lib/types/auth'
@@ -17,20 +17,26 @@ import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { redirect, useSearchParams } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
 import { useSSO } from '@lib/hooks/use-sso'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
-const schema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters long'),
-  rememberMe: z.boolean(),
-})
+type FormData = z.infer<ReturnType<typeof createLoginSchema>>
 
-type FormData = z.infer<typeof schema>
+function createLoginSchema(t: ReturnType<typeof useTranslation>) {
+  return z.object({
+    email: z.string().email(t.login.validationEmailInvalid),
+    password: z.string().min(8, t.login.validationPasswordMinLength),
+    rememberMe: z.boolean(),
+  })
+}
 
 export default function LoginPage() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -40,6 +46,16 @@ export default function LoginPage() {
 
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'professional',
+  })
+
+  const loginSchema = useMemo(() => createLoginSchema(t), [t])
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(loginSchema),
   })
 
   const {
@@ -54,43 +70,34 @@ export default function LoginPage() {
   useEffect(() => {
     const error = searchParams.get('error')
     if (error) {
-      let errorMessage = 'An error occurred during sign-in'
+      let errorMessage = t.login.errorInternal
 
       switch (error) {
         case 'google_auth_failed':
-          errorMessage = 'Google authentication failed. Please try again.'
+          errorMessage = t.login.errorGoogleAuthFailed
           break
         case 'missing_code':
-          errorMessage = 'Missing authorization code from Google.'
+          errorMessage = t.login.errorMissingCode
           break
         case 'token_exchange_failed':
-          errorMessage =
-            'Failed to process Google authentication. Please try again.'
+          errorMessage = t.login.errorTokenExchangeFailed
           break
         case 'internal_error':
-          errorMessage = 'An internal error occurred. Please try again later.'
+          errorMessage = t.login.errorInternal
           break
       }
 
       toast({
-        title: 'Sign-In Error',
+        title: t.login.errorTitle,
         description: errorMessage,
         variant: 'destructive',
       })
     }
-  }, [searchParams, toast])
+  }, [searchParams, toast, t])
 
   if (global.id) {
     return redirect('/')
   }
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  })
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
@@ -119,14 +126,14 @@ export default function LoginPage() {
           window.location.href = '/verify'
         } else if (e.status === 422) {
           toast({
-            title: 'Invalid Mode',
-            description: 'Please select the correct mode of your account.',
+            title: t.login.errorInvalidModeTitle,
+            description: t.login.errorInvalidModeDescription,
             variant: 'destructive',
           })
         } else {
           toast({
-            title: 'Invalid credentials',
-            description: 'Please check your email and password and try again.',
+            title: t.login.errorInvalidCredentialsTitle,
+            description: t.login.errorInvalidCredentialsDescription,
             variant: 'destructive',
           })
         }
@@ -176,9 +183,11 @@ export default function LoginPage() {
             </g>
           </svg>
         </motion.div>
-        <h1 className="text-2xl font-semibold text-gray-900">Welcome back</h1>
+        <h1 className="text-2xl font-semibold text-gray-900">
+          {t.login.welcome}
+        </h1>
         <p className="text-sm font-light text-gray-500">
-          Sign in to your Dalla Solutions account
+          {t.login.description}
         </p>
       </div>
 
@@ -191,19 +200,19 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <div className="space-y-2">
+          <div className={cn('space-y-2', locale === 'ar' ? 'text-right' : '')}>
             <label
               htmlFor="email"
               className="text-sm font-medium text-gray-700"
             >
-              Email address
+              {t.login.emailLabel}
             </label>
             <Input
               id="email"
               type="email"
               {...register('email')}
-              placeholder="Enter your email"
-              className="h-11"
+              placeholder={t.login.emailPlaceholder}
+              className={cn('h-11', locale === 'ar' ? 'text-right' : '')}
             />
             {errors.email && (
               <p className="mt-1 text-xs text-red-500">
@@ -212,12 +221,12 @@ export default function LoginPage() {
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className={cn('space-y-2', locale === 'ar' ? 'text-right' : '')}>
             <label
               htmlFor="password"
               className="text-sm font-medium text-gray-700"
             >
-              Password
+              {t.login.passwordLabel}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -225,8 +234,11 @@ export default function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 {...register('password')}
-                placeholder="Enter your password"
-                className="h-11 pl-10 pr-10"
+                placeholder={t.login.passwordPlaceholder}
+                className={cn(
+                  'h-11 pl-10 pr-10',
+                  locale === 'ar' ? 'text-right' : '',
+                )}
               />
               <button
                 type="button"
@@ -247,21 +259,33 @@ export default function LoginPage() {
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2">
+          <div
+            className={cn(
+              'flex items-center justify-between',
+              locale === 'ar' ? 'flex-row-reverse' : '',
+            )}
+          >
+            <label
+              className={cn(
+                'flex items-center gap-2',
+                locale === 'ar' ? 'flex-row-reverse' : '',
+              )}
+            >
               <input
                 type="checkbox"
                 className="rounded border-gray-300"
                 {...register('rememberMe')}
               />
-              <span className="text-sm text-gray-700">Remember me</span>
+              <span className="text-sm text-gray-700">
+                {t.login.rememberMe}
+              </span>
             </label>
 
             <Link
               href="/forgot-password"
               className="text-sm font-medium text-[#234d64] hover:text-[#1a3b4d]"
             >
-              Forgot password?
+              {t.login.forgotPassword}
             </Link>
           </div>
         </div>
@@ -273,10 +297,10 @@ export default function LoginPage() {
           {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Signing in...
+              {t.login.signingInButton}
             </>
           ) : (
-            'Sign in'
+            t.login.signInButton
           )}
         </Button>
         {mode === 'professional' && (
@@ -287,7 +311,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-xs lowercase">
                 <span className="bg-white px-2 text-gray-400">
-                  Or continue with
+                  {t.login.continueWith}
                 </span>
               </div>
             </div>
@@ -338,24 +362,24 @@ export default function LoginPage() {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-slate-600">
-          Don't have an account?{' '}
+          {t.login.noAccount}{' '}
           <Link
             href={`/signup?mode=${mode}`}
             className="text-slate-blue-90 font-medium hover:underline"
           >
-            Sign up
+            {t.login.signUpLink}
           </Link>
         </p>
       </div>
 
       <p className="text-center text-xs text-gray-500">
-        By signing in, you agree to our{' '}
+        {t.login.termsAgreement}{' '}
         <Link href="/terms" className="text-[#234d64] hover:text-[#1a3b4d]">
-          Terms of Service
+          {t.login.termsLink}
         </Link>{' '}
-        and{' '}
+        {locale === 'ar' ? 'و' : 'and'}{' '}
         <Link href="/privacy" className="text-[#234d64] hover:text-[#1a3b4d]">
-          Privacy Policy
+          {t.login.privacyLink}
         </Link>
       </p>
     </motion.div>

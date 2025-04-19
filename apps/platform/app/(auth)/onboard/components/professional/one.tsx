@@ -12,11 +12,11 @@ import {
   Textarea,
   Button,
 } from '@dalla/design-system'
-import { MapPin, UploadCloudIcon, Linkedin, FileUp } from 'lucide-react'
-import { useState, type Dispatch, useCallback } from 'react'
+import { UploadCloudIcon, Linkedin, FileUp } from 'lucide-react'
+import { useState, type Dispatch } from 'react'
 import AvatarUpload from '@components/shared/avatar-upload'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dalla/utils'
+import { fadeInVariants, cn } from '@dalla/utils'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
@@ -29,6 +29,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@dalla/design-system'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function ProOnboardingOne({
   data,
@@ -36,10 +38,11 @@ export function ProOnboardingOne({
   setIsAbleToProceed,
 }: {
   data: ProOnboardingData
-
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const { isLoading, uploadedCV, setUploadedCV, cvData } =
     useProfessionalOnboarding({
       data,
@@ -64,28 +67,46 @@ export function ProOnboardingOne({
     }
   }
 
+  const formatExtractedText = (template: string, name: string | undefined) => {
+    return name ? template.replace('{name}', name) : ''
+  }
+
   return (
     <motion.div
       variants={fadeInVariants}
       initial="hidden"
       animate="visible"
-      className="mx-auto flex min-h-full w-full max-w-3xl flex-col gap-8 px-6"
+      className={cn(
+        'mx-auto flex min-h-full w-full max-w-3xl flex-col gap-8 px-6',
+        locale === 'ar' ? 'text-right' : '',
+      )}
     >
       <div className="mt-4 flex flex-col items-center gap-1 px-6 text-center">
-        <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
-          Finalize Your Profile
+        <h2 className={cn('text-heading-sm mb-2 font-semibold text-[#1F4D5D]')}>
+          {t.onboarding.proStep1.title}
         </h2>
-        <p className="text-slate-blue-70 mt-1 text-xs">
-          Fields marked with <span className="text-red-500">*</span> are
-          required
+        <p
+          className={cn(
+            'text-slate-blue-70 mt-1 text-xs',
+            locale === 'ar' ? 'text-right' : '',
+          )}
+        >
+          {t.onboarding.requiredFieldsNote}
         </p>
-        <p className="text-paragraph-md text-slate-blue-90">
-          Whether you're a professional or a company, Dalla connects you to
-          endless opportunities in consulting and collaboration.
+        <p
+          className={cn(
+            'text-paragraph-md text-slate-blue-90',
+            locale === 'ar' ? 'text-right' : '',
+          )}
+        >
+          {t.onboarding.proStep1.description}
         </p>
       </div>
       <div className="flex w-full flex-col items-center justify-center gap-8">
         <div className="flex flex-col items-center">
+          <Label className={cn('mb-1', locale === 'ar' ? 'text-right' : '')}>
+            {t.onboarding.proStep1.avatarLabel}
+          </Label>
           <AvatarUpload
             setUploadedURL={(url: string) => {
               updateData({ ...data, avatar: url })
@@ -145,20 +166,26 @@ export function ProOnboardingOne({
               <p>
                 <span className="text-slate-blue-90 font-semibold">
                   {isLoading && !isLinkedInUpload
-                    ? 'Processing CV...'
+                    ? t.onboarding.proStep1.uploadCVProcessing
                     : cvData && !isLinkedInUpload
-                      ? 'CV Uploaded Successfully'
-                      : 'Upload Your CV'}
+                      ? t.onboarding.proStep1.uploadCVSuccess
+                      : t.onboarding.proStep1.uploadCVLabel}
                 </span>{' '}
-                {(!cvData || isLinkedInUpload) && 'or drag and drop'}
+                {(!cvData || isLinkedInUpload) &&
+                  t.onboarding.proStep1.uploadCVHelpText}
               </p>
               <div className="h-6">
                 {(!cvData || isLinkedInUpload) && (
-                  <p className="text-sm text-[#98a2b3]">PDF (max. 2MB)</p>
+                  <p className="text-sm text-[#98a2b3]">
+                    {t.onboarding.proStep1.uploadCVFormat}
+                  </p>
                 )}
                 {cvData && !isLinkedInUpload && (
                   <p className="text-sm text-green-600">
-                    Extracted details from {cvData.profile.name}'s CV
+                    {formatExtractedText(
+                      t.onboarding.proStep1.uploadCVExtracted,
+                      cvData.profile.name,
+                    )}
                   </p>
                 )}
               </div>
@@ -190,12 +217,12 @@ export function ProOnboardingOne({
               <p>
                 <span className="text-slate-blue-90 font-semibold">
                   {isLoading && isLinkedInUpload
-                    ? 'Processing LinkedIn PDF...'
+                    ? t.onboarding.proStep1.importLinkedInProcessing
                     : cvData && isLinkedInUpload
-                      ? 'LinkedIn Profile Imported'
+                      ? t.onboarding.proStep1.importLinkedInSuccess
                       : linkedInData
-                        ? 'LinkedIn Profile Imported'
-                        : 'Import from LinkedIn'}
+                        ? t.onboarding.proStep1.importLinkedInSuccess
+                        : t.onboarding.proStep1.importLinkedInLabel}
                 </span>
               </p>
               <div className="h-6">
@@ -203,17 +230,18 @@ export function ProOnboardingOne({
                   !linkedInData &&
                   !(cvData && isLinkedInUpload) && (
                     <p className="text-sm text-[#98a2b3]">
-                      Download and upload your LinkedIn profile
+                      {t.onboarding.proStep1.importLinkedInHelpText}
                     </p>
                   )}
                 {!isLoading &&
                   (linkedInData || (cvData && isLinkedInUpload)) && (
                     <p className="text-sm text-[#0077B5]">
-                      Imported details from{' '}
-                      {cvData && isLinkedInUpload
-                        ? cvData.profile.name
-                        : linkedInData?.profile.name}
-                      's LinkedIn
+                      {formatExtractedText(
+                        t.onboarding.proStep1.importLinkedInExtracted,
+                        cvData && isLinkedInUpload
+                          ? cvData.profile.name
+                          : linkedInData?.profile.name,
+                      )}
                     </p>
                   )}
               </div>
@@ -224,22 +252,39 @@ export function ProOnboardingOne({
 
       <div className="flex w-full items-center gap-2">
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
-            <Label htmlFor="headline">Headline</Label>
+          <div
+            className={cn(
+              'mb-1 flex w-full items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label
+              htmlFor="headline"
+              className={cn('mb-1', locale === 'ar' ? 'text-right' : '')}
+            >
+              {t.onboarding.proStep1.headlineLabel}
+            </Label>
             <RequiredIndicator />
           </div>
           <Input
             id="headline"
-            className="h-11"
-            placeholder="Headline"
+            className={cn('h-11', locale === 'ar' ? 'text-right' : '')}
+            placeholder={t.onboarding.proStep1.headlinePlaceholder}
             type="name"
             value={data.headline}
             onChange={(e) => updateData({ ...data, headline: e.target.value })}
           />
         </div>
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
-            <Label htmlFor="location">Location</Label>
+          <div
+            className={cn(
+              'mb-1 flex w-full items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label htmlFor="location">
+              {t.onboarding.proStep1.locationLabel}
+            </Label>
             <RequiredIndicator />
           </div>
           <LocationSelector
@@ -251,16 +296,26 @@ export function ProOnboardingOne({
               })
             }
             placeholder={{
-              country: 'Country',
-              city: 'City',
+              country: t.onboarding.proStep1.locationCountryPlaceholder,
+              city: t.onboarding.proStep1.locationCityPlaceholder,
             }}
             required={true}
-            selectClassName="!rounded-xl h-11"
+            className={cn(locale === 'ar' ? '!flex-row-reverse' : '')}
+            selectClassName={cn(
+              '!rounded-xl h-11',
+              locale === 'ar' ? '!text-right flex-row-reverse gap-2' : '',
+            )}
+            showLabels={false}
           />
         </div>
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
-            <Label htmlFor="gender">Gender</Label>
+          <div
+            className={cn(
+              'mb-1 flex w-full items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label htmlFor="gender">{t.onboarding.proStep1.genderLabel}</Label>
             <RequiredIndicator />
           </div>
           <Select
@@ -269,12 +324,25 @@ export function ProOnboardingOne({
               updateData({ ...data, gender: value })
             }
           >
-            <SelectTrigger id="gender" className="!h-11">
-              <SelectValue placeholder="Select Gender" />
+            <SelectTrigger
+              id="gender"
+              className={cn(
+                '!h-11',
+                locale === 'ar' ? 'flex-row-reverse !text-right' : '',
+              )}
+            >
+              <SelectValue
+                placeholder={t.onboarding.proStep1.genderPlaceholder}
+                className={cn(locale === 'ar' ? '!text-right' : '')}
+              />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Male">Male</SelectItem>
-              <SelectItem value="Female">Female</SelectItem>
+            <SelectContent className={cn(locale === 'ar' ? 'text-end' : '')}>
+              <SelectItem value="Male">
+                {t.onboarding.proStep1.genderMale}
+              </SelectItem>
+              <SelectItem value="Female">
+                {t.onboarding.proStep1.genderFemale}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -282,16 +350,21 @@ export function ProOnboardingOne({
 
       <div className="flex w-full gap-4">
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
-            <Label htmlFor="bio">Bio</Label>
+          <div
+            className={cn(
+              'mb-1 flex items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label htmlFor="bio">{t.onboarding.proStep1.bioLabel}</Label>
             <RequiredIndicator />
           </div>
           <Textarea
             id="bio"
             value={data.bio}
             onChange={(e) => updateData({ ...data, bio: e.target.value })}
-            placeholder="Tell us about yourself..."
-            className="h-28"
+            placeholder={t.onboarding.proStep1.bioPlaceholder}
+            className={cn('h-28', locale === 'ar' ? 'text-right' : '')}
           />
         </div>
       </div>
@@ -299,9 +372,11 @@ export function ProOnboardingOne({
       <Dialog open={showLinkedInDialog} onOpenChange={setShowLinkedInDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Import LinkedIn Profile</DialogTitle>
+            <DialogTitle>
+              {t.onboarding.proStep1.linkedInDialog.title}
+            </DialogTitle>
             <DialogDescription>
-              Follow these steps to import your LinkedIn profile data
+              {t.onboarding.proStep1.linkedInDialog.description}
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-4">
@@ -310,15 +385,21 @@ export function ProOnboardingOne({
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0077B5] text-xs text-white">
                   1
                 </span>
-                Download your profile from LinkedIn
+                {t.onboarding.proStep1.linkedInDialog.downloadStepTitle}
               </h3>
               <ol className="ml-7 list-decimal text-sm text-gray-600">
-                <li className="mb-1">Go to your LinkedIn profile</li>
                 <li className="mb-1">
-                  Click the "Resources" button below your profile header
+                  {t.onboarding.proStep1.linkedInDialog.downloadStep1}
                 </li>
-                <li className="mb-1">Select "Save to PDF"</li>
-                <li className="mb-1">Save the PDF file to your computer</li>
+                <li className="mb-1">
+                  {t.onboarding.proStep1.linkedInDialog.downloadStep2}
+                </li>
+                <li className="mb-1">
+                  {t.onboarding.proStep1.linkedInDialog.downloadStep3}
+                </li>
+                <li className="mb-1">
+                  {t.onboarding.proStep1.linkedInDialog.downloadStep4}
+                </li>
               </ol>
               <div className="mt-2 text-center">
                 <Button
@@ -329,7 +410,7 @@ export function ProOnboardingOne({
                   className="mt-2 gap-2 text-sm"
                 >
                   <Linkedin size={16} className="text-[#0077B5]" />
-                  Go to LinkedIn
+                  {t.onboarding.proStep1.linkedInDialog.goToLinkedInButton}
                 </Button>
               </div>
             </div>
@@ -339,10 +420,10 @@ export function ProOnboardingOne({
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0077B5] text-xs text-white">
                   2
                 </span>
-                Upload your LinkedIn PDF
+                {t.onboarding.proStep1.linkedInDialog.uploadStepTitle}
               </h3>
               <p className="mb-3 text-sm text-gray-600">
-                Upload the PDF to automatically fill your profile information
+                {t.onboarding.proStep1.linkedInDialog.uploadStepDescription}
               </p>
               <div className="text-center">
                 <Button
@@ -364,7 +445,7 @@ export function ProOnboardingOne({
                   className="gap-2"
                 >
                   <FileUp size={16} />
-                  Upload LinkedIn PDF
+                  {t.onboarding.proStep1.linkedInDialog.uploadButton}
                 </Button>
               </div>
             </div>
@@ -372,8 +453,8 @@ export function ProOnboardingOne({
 
           <div className="mt-2 rounded-md bg-blue-50 p-3 text-xs text-blue-800">
             <p>
-              <strong>Tip:</strong> LinkedIn PDFs contain your complete
-              professional history including education and experience details.
+              <strong>{t.onboarding.proStep1.linkedInDialog.tipTitle}</strong>{' '}
+              {t.onboarding.proStep1.linkedInDialog.tipDescription}
             </p>
           </div>
 
@@ -382,7 +463,7 @@ export function ProOnboardingOne({
               variant="outline"
               onClick={() => setShowLinkedInDialog(false)}
             >
-              Close
+              {t.onboarding.proStep1.linkedInDialog.closeButton}
             </Button>
           </DialogFooter>
         </DialogContent>

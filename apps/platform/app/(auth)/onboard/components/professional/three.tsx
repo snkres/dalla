@@ -10,6 +10,8 @@ import { ExperienceForm } from './exp-form'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function ProOnboardingThree({
   data,
@@ -20,6 +22,8 @@ export function ProOnboardingThree({
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const {
     isExpOpen,
     setIsExpOpen,
@@ -45,16 +49,17 @@ export function ProOnboardingThree({
 
   console.log(data.experience)
   return (
-    <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
+    <div
+      className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       <div className="flex flex-col items-center justify-center gap-1">
-        <h1 className="text-text-xl font-semibold">Add Experience</h1>
-        <p className="text-[#475467]">
-          Share your work history on your profile.
-        </p>
+        <h1 className="text-text-xl font-semibold">
+          {t.onboarding.proStep3.title}
+        </h1>
+        <p className="text-[#475467]">{t.onboarding.proStep3.description}</p>
         {!isAllValid && (
-          <p className="text-red-500">
-            Please make sure all fields are filled.
-          </p>
+          <p className="text-red-500">{t.onboarding.validationError}</p>
         )}
       </div>
 
@@ -76,7 +81,9 @@ export function ProOnboardingThree({
                       {exp.startDate} - {exp.endDate}
                     </p>
                     <p className="mt-1 text-sm text-gray-700">
-                      {exp.location} • {exp.meta.employmentType}
+                      {exp.location}{' '}
+                      {t.onboarding.proStep3.experienceCardLocationSeparator}{' '}
+                      {exp.meta.employmentType}
                     </p>
                     {exp.meta.responsibilities && (
                       <p className="mt-2 line-clamp-2 text-sm text-gray-600">
@@ -99,7 +106,7 @@ export function ProOnboardingThree({
                       size="sm"
                       className="text-gray-500 hover:text-gray-700"
                     >
-                      Edit
+                      {t.onboarding.proStep3.editButton}
                     </Button>
                   </div>
                 </div>
@@ -132,8 +139,8 @@ export function ProOnboardingThree({
         >
           <PlusIcon className="h-4 w-4" />
           {data.experience.length > 0
-            ? 'Add another Experience'
-            : 'Add Experience'}
+            ? t.onboarding.proStep3.addAnotherExperienceButton
+            : t.onboarding.proStep3.addExperienceButton}
         </Button>
       </div>
 

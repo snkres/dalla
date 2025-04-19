@@ -18,12 +18,14 @@ interface ExpertiseSelectProps {
   value: { name: string; description: string }[]
   onChange: (value: { name: string; description: string }[]) => void
   expertiseOptions: string[]
+  dir?: 'ltr' | 'rtl'
 }
 
 const ExpertiseSelect = ({
   value,
   onChange,
   expertiseOptions,
+  dir = 'ltr',
 }: ExpertiseSelectProps) => {
   const [open, setOpen] = useState(false)
 
@@ -47,7 +49,11 @@ const ExpertiseSelect = ({
                 </span>
               ))
             ) : (
-              <span className="text-gray-500">Select Target Industries...</span>
+              <span className="text-gray-500">
+                {dir === 'ltr'
+                  ? 'Select Target Industries...'
+                  : 'حدد الصناعات المستهدفة...'}
+              </span>
             )}
           </div>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

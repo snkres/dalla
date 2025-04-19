@@ -11,7 +11,9 @@ import { Input, Label } from '@dalla/design-system'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ensureHttpsPrefix } from '@dalla/utils'
-
+import { useTranslation } from '@hooks/use-translation'
+import { cn } from '@dalla/utils'
+import { useLocale } from '@hooks/use-locale'
 export function ProOnboardingTwo({
   data,
   updateData,
@@ -21,6 +23,8 @@ export function ProOnboardingTwo({
   updateData: Dispatch<SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<SetStateAction<boolean>>
 }) {
+  const { locale } = useLocale()
+  const t = useTranslation()
   const { handleSkills, phoneError } = useProfessionalOnboarding({
     data,
     updateData,
@@ -37,41 +41,59 @@ export function ProOnboardingTwo({
     >
       <div className="mt-4 flex flex-col items-center gap-1 px-6 text-center">
         <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
-          Professional Details
+          {t.onboarding.proStep2.title}
         </h2>
         <p className="text-slate-blue-70 mt-1 text-xs">
-          Fields marked with <span className="text-red-500">*</span> are
-          required
+          {t.onboarding.requiredFieldsNote}
         </p>
       </div>
 
       <div className="w-full">
-        <div className="mb-1 flex items-center">
-          <Label htmlFor="skills">Skills</Label>
+        <div
+          className={cn(
+            'mb-1 flex items-center',
+            locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+          )}
+        >
+          <Label htmlFor="skills">{t.onboarding.proStep2.skillsLabel}</Label>
           <RequiredIndicator />
         </div>
         <SkillSelector
-          className="w-full"
+          isArabic={locale === 'ar'}
+          className={cn('w-full', locale === 'ar' ? '!text-right' : '')}
           skills={data.meta.skills}
           handleSkills={handleSkills}
         />
         {data.meta.skills.length === 0 && (
-          <p className="mt-1 text-xs text-red-500">
-            Please add at least one skill
+          <p
+            className={cn(
+              'mt-1 text-xs text-red-500',
+              locale === 'ar' ? 'text-right' : '',
+            )}
+          >
+            {t.onboarding.proStep2.skillsError}
           </p>
         )}
       </div>
 
       <div className="flex w-full gap-4">
         <div className="relative w-full">
-          <Label htmlFor="yearsOfExperience">
-            Years of Experience <RequiredIndicator />
-          </Label>
+          <div
+            className={cn(
+              'mb-1 flex items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label htmlFor="yearsOfExperience">
+              {t.onboarding.proStep2.yearsExperienceLabel} <RequiredIndicator />
+            </Label>
+          </div>
 
           <Input
             id="yearsOfExperience"
-            className="h-11"
-            placeholder="Years of Experience"
+            className={cn('h-11', locale === 'ar' ? '!text-right' : '')}
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            placeholder={t.onboarding.proStep2.yearsExperiencePlaceholder}
             type="number"
             min="0"
             value={
@@ -90,14 +112,21 @@ export function ProOnboardingTwo({
             }
           />
           {data.meta.yearsOfExperience <= 0 && (
-            <p className="mt-1 text-xs text-red-500">
-              Please enter your years of experience
+            <p
+              className={cn(
+                'mt-1 text-xs text-red-500',
+                locale === 'ar' ? 'text-right' : '',
+              )}
+            >
+              {t.onboarding.proStep2.yearsExperienceError}
             </p>
           )}
         </div>
 
-        <div className="relative w-full">
-          <Label htmlFor="portfolio">Portfolio</Label>
+        <div className="relative w-full" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+          <Label htmlFor="portfolio">
+            {t.onboarding.proStep2.portfolioLabel}
+          </Label>
           <Globe2 className="absolute left-3 top-9 h-5 w-5 text-gray-400" />
           <Input
             id="portfolio"
@@ -126,15 +155,20 @@ export function ProOnboardingTwo({
                 },
               })
             }
-            placeholder="Portfolio URL"
+            placeholder={t.onboarding.proStep2.portfolioPlaceholder}
             className="h-11 pl-10"
           />
         </div>
       </div>
 
       <div className="relative w-full">
-        <div className="mb-1 flex items-center">
-          <Label htmlFor="phone">Phone Number</Label>
+        <div
+          className={cn(
+            'mb-1 flex items-center',
+            locale === 'ar' ? 'flex-row-reverse gap-0.5 text-right' : '',
+          )}
+        >
+          <Label htmlFor="phone">{t.onboarding.proStep2.phoneLabel}</Label>
           <RequiredIndicator />
         </div>
         <PhoneInput
@@ -148,13 +182,26 @@ export function ProOnboardingTwo({
               },
             })
           }}
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
         />
         {phoneError && (
-          <p className="mt-1 text-xs text-red-500">{phoneError}</p>
+          <p
+            className={cn(
+              'mt-1 w-full text-xs text-red-500',
+              locale === 'ar' ? 'text-right' : '',
+            )}
+          >
+            {phoneError}
+          </p>
         )}
         {!data.meta.phone && (
-          <p className="mt-1 text-xs text-red-500">
-            Please enter your phone number
+          <p
+            className={cn(
+              'mt-1 w-full text-xs text-red-500',
+              locale === 'ar' ? 'text-right' : '',
+            )}
+          >
+            {t.onboarding.proStep2.phoneErrorRequired}
           </p>
         )}
       </div>

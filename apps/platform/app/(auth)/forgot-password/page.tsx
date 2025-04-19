@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Input, Button, Logomark } from '@dalla/design-system'
+import { Input, Button } from '@dalla/design-system'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { forgotPassword } from '@lib/api/auth/password'
 import { Mail, ArrowRight, Loader2 } from 'lucide-react'
@@ -10,8 +10,10 @@ import { motion } from 'motion/react'
 import { fadeInUpVariants } from '@dalla/utils'
 import { AccountType } from '@lib/types/auth'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
+import { useTranslation } from '../../../hooks/use-translation'
 
 export default function ForgotPasswordPage() {
+  const t = useTranslation()
   const [email, setEmail] = useState('')
   const [mode, setMode] = useState<AccountType>('company')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -23,8 +25,8 @@ export default function ForgotPasswordPage() {
 
     if (!email) {
       toast({
-        title: 'Email required',
-        description: 'Please enter your email address',
+        title: t.forgotPassword.errorEmailRequiredTitle,
+        description: t.forgotPassword.errorEmailRequiredDescription,
         variant: 'destructive',
       })
       return
@@ -36,28 +38,17 @@ export default function ForgotPasswordPage() {
       await forgotPassword({
         email,
         userType: mode === 'professional' ? 'user' : 'company',
-        redirectTo: `${
-          process.env.NODE_ENV === 'development' ? 'http' : 'https'
-        }://${
-          process.env.NODE_ENV === 'development'
-            ? 'localhost:3000'
-            : window.location.hostname
-        }/reset-password`,
-      }).then((res) => {
-        if (res.status === 200) {
-          setIsSuccess(true)
-          toast({
-            title: 'Password reset email sent',
-            description:
-              'Please check your email for password reset instructions',
-          })
-        }
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+      setIsSuccess(true)
+      toast({
+        title: t.forgotPassword.successToastTitle,
+        description: t.forgotPassword.successToastDescription,
       })
     } catch (error) {
       toast({
-        title: 'Request failed',
-        description:
-          'Double check your email and mode then try again. If the issue persists, contact support.',
+        title: t.forgotPassword.errorRequestFailedTitle,
+        description: t.forgotPassword.errorRequestFailedDescription,
         variant: 'destructive',
       })
     } finally {
@@ -94,12 +85,12 @@ export default function ForgotPasswordPage() {
 
         <div className="mb-6 w-full text-center">
           <h1 className="mb-2 text-2xl font-semibold text-gray-900">
-            Reset your password
+            {t.forgotPassword.title}
           </h1>
           <p className="text-sm text-gray-600">
             {isSuccess
-              ? "We've sent you an email with a link to reset your password."
-              : "Enter your email and we'll send you instructions to reset your password."}
+              ? t.forgotPassword.descriptionSuccess
+              : t.forgotPassword.description}
           </p>
         </div>
 
@@ -107,7 +98,7 @@ export default function ForgotPasswordPage() {
           <div className="w-full space-y-6">
             <div className="rounded-lg bg-green-50 p-4 text-center">
               <p className="text-sm text-green-800">
-                Password reset link has been sent to{' '}
+                {t.forgotPassword.successMessage}{' '}
                 <span className="font-medium">{email}</span>
               </p>
             </div>
@@ -118,14 +109,14 @@ export default function ForgotPasswordPage() {
                 className="w-full"
                 onClick={() => setIsSuccess(false)}
               >
-                Try different email
+                {t.forgotPassword.buttonTryDifferentEmail}
               </Button>
               <div className="text-center">
                 <Link
                   href="/login"
                   className="text-slate-blue-90 text-sm hover:underline"
                 >
-                  Back to login
+                  {t.forgotPassword.backToLogin}
                 </Link>
               </div>
             </div>
@@ -144,7 +135,7 @@ export default function ForgotPasswordPage() {
                   htmlFor="email"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Email address
+                  {t.forgotPassword.emailLabel}
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -153,7 +144,7 @@ export default function ForgotPasswordPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email address"
+                    placeholder={t.forgotPassword.emailPlaceholder}
                     className="pl-10"
                     disabled={isSubmitting}
                     required
@@ -171,7 +162,9 @@ export default function ForgotPasswordPage() {
                 ) : (
                   <ArrowRight className="mr-2 h-4 w-4" />
                 )}
-                {isSubmitting ? 'Sending...' : 'Send reset link'}
+                {isSubmitting
+                  ? t.forgotPassword.buttonSending
+                  : t.forgotPassword.buttonSend}
               </Button>
 
               <div className="text-center">
@@ -179,7 +172,7 @@ export default function ForgotPasswordPage() {
                   href="/login"
                   className="text-slate-blue-90 text-sm hover:underline"
                 >
-                  Back to login
+                  {t.forgotPassword.backToLogin}
                 </Link>
               </div>
             </form>

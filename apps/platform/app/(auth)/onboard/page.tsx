@@ -11,8 +11,10 @@ import { ProOnboardingOne } from './components/professional/one'
 import { ProOnboardingTwo } from './components/professional/two'
 import { ProOnboardingThree } from './components/professional/three'
 import { ProOnboardingFour } from './components/professional/four'
+import { useTranslation } from '../../../hooks/use-translation'
 
 export default function Page() {
+  const t = useTranslation()
   const {
     step,
     mode,
@@ -108,9 +110,15 @@ export default function Page() {
             </AnimatePresence>
           </div>
           <ButtonsContainer
-            continueText={step === 3 ? 'Submit' : 'Proceed'}
+            continueText={
+              step === 3
+                ? t.onboarding.buttonSubmit
+                : t.onboarding.buttonProceed
+            }
             handlePrevious={handlePrevious}
-            previousText={step === 1 ? 'Skip' : 'Back'}
+            previousText={
+              step === 1 ? t.onboarding.buttonSkip : t.onboarding.buttonBack
+            }
             handleSubmit={handleStepAction}
             isSubmitting={isSubmitting}
             isAbleToProceed={true}
@@ -203,10 +211,14 @@ export default function Page() {
           </div>
           <div className="w-full">
             <ButtonsContainer
-              continueText={step === 4 ? 'Submit' : 'Proceed'}
+              continueText={
+                step === 4
+                  ? t.onboarding.buttonSubmit
+                  : t.onboarding.buttonProceed
+              }
               handlePrevious={handlePrevious}
               isAbleToProceed={isAbleToProceed}
-              previousText={step === 1 ? null : 'Back'}
+              previousText={step === 1 ? null : t.onboarding.buttonBack}
               handleSubmit={handleStepAction}
               isSubmitting={isSubmitting}
               isLoading={isLoading}

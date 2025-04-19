@@ -9,6 +9,8 @@ import { EducationForm } from './edu-form'
 import type { ProOnboardingData } from '../../hooks/use-onboarding'
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function ProOnboardingFour({
   data,
@@ -19,6 +21,8 @@ export function ProOnboardingFour({
   updateData: Dispatch<React.SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const {
     isEduOpen,
     setIsEduOpen,
@@ -43,16 +47,17 @@ export function ProOnboardingFour({
   }
 
   return (
-    <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
+    <div
+      className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       <div className="flex flex-col items-center justify-center gap-1">
-        <h1 className="text-text-xl font-semibold">Add Education</h1>
-        <p className="text-[#475467]">
-          Share your educational background to complete your profile.
-        </p>
+        <h1 className="text-text-xl font-semibold">
+          {t.onboarding.proStep4.title}
+        </h1>
+        <p className="text-[#475467]">{t.onboarding.proStep4.description}</p>
         {!isAllValid ? (
-          <p className="text-red-500">
-            Please make sure all fields are filled.
-          </p>
+          <p className="text-red-500">{t.onboarding.validationError}</p>
         ) : null}
       </div>
 
@@ -95,7 +100,7 @@ export function ProOnboardingFour({
                         size="sm"
                         className="h-8 rounded-full hover:bg-slate-100"
                       >
-                        Edit
+                        {t.onboarding.proStep3.editButton}
                       </Button>
                     </div>
                   </div>
@@ -129,8 +134,8 @@ export function ProOnboardingFour({
         >
           <PlusIcon className="h-4 w-4" />
           {data.education.length > 0
-            ? 'Add another Education'
-            : 'Add Education'}
+            ? t.onboarding.proStep4.addAnotherEducationButton
+            : t.onboarding.proStep4.addEducationButton}
         </Button>
       </div>
 

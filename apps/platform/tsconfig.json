@@ -17,7 +17,8 @@
     "paths": {
       "@lib/*": ["lib/*"],
       "@components": ["components/index"],
-      "@components/*": ["components/*"]
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"]
     },
     "incremental": true,
     "plugins": [
