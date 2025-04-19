@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import AuthedLayoutClient from './AuthedLayoutClient' // Import the new client component
+import AuthedLayoutClient from './AuthedLayoutClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,7 +10,10 @@ export default async function Layout({
   children: React.ReactNode
 }) {
   const cookieStore = await cookies()
-  if (!cookieStore.get('access_token')) {
+  console.log('cookieStore', cookieStore)
+  console.log('cookieStore', cookieStore.has('access_token'))
+  if (!cookieStore.has('access_token')) {
+    console.log('redirecting to login')
     redirect('/login')
   }
 
