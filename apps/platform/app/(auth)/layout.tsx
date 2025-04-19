@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { fadeInVariants, fadeInUpVariants } from '@dalla/utils'
+import { LangToggle } from './components/lang-toggle'
 
 export default function AuthLayout({
   children,
@@ -11,6 +12,10 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+
+  const welcomeMessage = pathname.includes('login')
+    ? 'Welcome back! Please sign in to continue'
+    : 'Start your journey with us today'
 
   return (
     <div className="flex h-screen flex-col p-0 sm:p-2 lg:flex-row">
@@ -62,15 +67,16 @@ export default function AuthLayout({
               Welcome to Dalla Solutions
             </h1>
             <p className="text-md text-[#f7ca71] opacity-90">
-              {pathname.includes('login')
-                ? 'Welcome back! Please sign in to continue'
-                : 'Start your journey with us today'}
+              {welcomeMessage}
             </p>
           </motion.div>
         </div>
       </motion.div>
 
       <div className="relative flex h-full flex-1 flex-col">
+        <div className="absolute right-4 top-4 z-20 sm:right-6 sm:top-6">
+          <LangToggle />
+        </div>
         <div className="flex-1 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4 sm:p-8">
             {children}
