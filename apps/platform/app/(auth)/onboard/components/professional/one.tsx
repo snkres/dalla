@@ -12,11 +12,11 @@ import {
   Textarea,
   Button,
 } from '@dalla/design-system'
-import { MapPin, UploadCloudIcon, Linkedin, FileUp } from 'lucide-react'
-import { useState, type Dispatch, useCallback } from 'react'
+import { UploadCloudIcon, Linkedin, FileUp } from 'lucide-react'
+import { useState, type Dispatch } from 'react'
 import AvatarUpload from '@components/shared/avatar-upload'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dalla/utils'
+import { fadeInVariants, cn } from '@dalla/utils'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ProOnboardingData } from '../../hooks/use-onboarding'
@@ -30,6 +30,7 @@ import {
   DialogFooter,
 } from '@dalla/design-system'
 import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function ProOnboardingOne({
   data,
@@ -41,6 +42,7 @@ export function ProOnboardingOne({
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
   const t = useTranslation()
+  const { locale } = useLocale()
   const { isLoading, uploadedCV, setUploadedCV, cvData } =
     useProfessionalOnboarding({
       data,
@@ -74,22 +76,37 @@ export function ProOnboardingOne({
       variants={fadeInVariants}
       initial="hidden"
       animate="visible"
-      className="mx-auto flex min-h-full w-full max-w-3xl flex-col gap-8 px-6"
+      className={cn(
+        'mx-auto flex min-h-full w-full max-w-3xl flex-col gap-8 px-6',
+        locale === 'ar' ? 'text-right' : '',
+      )}
     >
       <div className="mt-4 flex flex-col items-center gap-1 px-6 text-center">
-        <h2 className="text-heading-sm mb-2 font-semibold text-[#1F4D5D]">
+        <h2 className={cn('text-heading-sm mb-2 font-semibold text-[#1F4D5D]')}>
           {t.onboarding.proStep1.title}
         </h2>
-        <p className="text-slate-blue-70 mt-1 text-xs">
+        <p
+          className={cn(
+            'text-slate-blue-70 mt-1 text-xs',
+            locale === 'ar' ? 'text-right' : '',
+          )}
+        >
           {t.onboarding.requiredFieldsNote}
         </p>
-        <p className="text-paragraph-md text-slate-blue-90">
+        <p
+          className={cn(
+            'text-paragraph-md text-slate-blue-90',
+            locale === 'ar' ? 'text-right' : '',
+          )}
+        >
           {t.onboarding.proStep1.description}
         </p>
       </div>
       <div className="flex w-full flex-col items-center justify-center gap-8">
         <div className="flex flex-col items-center">
-          <Label className="mb-1">{t.onboarding.proStep1.avatarLabel}</Label>
+          <Label className={cn('mb-1', locale === 'ar' ? 'text-right' : '')}>
+            {t.onboarding.proStep1.avatarLabel}
+          </Label>
           <AvatarUpload
             setUploadedURL={(url: string) => {
               updateData({ ...data, avatar: url })
@@ -235,15 +252,23 @@ export function ProOnboardingOne({
 
       <div className="flex w-full items-center gap-2">
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
-            <Label htmlFor="headline">
+          <div
+            className={cn(
+              'mb-1 flex w-full items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label
+              htmlFor="headline"
+              className={cn('mb-1', locale === 'ar' ? 'text-right' : '')}
+            >
               {t.onboarding.proStep1.headlineLabel}
             </Label>
             <RequiredIndicator />
           </div>
           <Input
             id="headline"
-            className="h-11"
+            className={cn('h-11', locale === 'ar' ? 'text-right' : '')}
             placeholder={t.onboarding.proStep1.headlinePlaceholder}
             type="name"
             value={data.headline}
@@ -251,7 +276,12 @@ export function ProOnboardingOne({
           />
         </div>
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
+          <div
+            className={cn(
+              'mb-1 flex w-full items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
             <Label htmlFor="location">
               {t.onboarding.proStep1.locationLabel}
             </Label>
@@ -270,11 +300,21 @@ export function ProOnboardingOne({
               city: t.onboarding.proStep1.locationCityPlaceholder,
             }}
             required={true}
-            selectClassName="!rounded-xl h-11"
+            className={cn(locale === 'ar' ? '!flex-row-reverse' : '')}
+            selectClassName={cn(
+              '!rounded-xl h-11',
+              locale === 'ar' ? '!text-right flex-row-reverse gap-2' : '',
+            )}
+            showLabels={false}
           />
         </div>
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
+          <div
+            className={cn(
+              'mb-1 flex w-full items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
             <Label htmlFor="gender">{t.onboarding.proStep1.genderLabel}</Label>
             <RequiredIndicator />
           </div>
@@ -284,12 +324,19 @@ export function ProOnboardingOne({
               updateData({ ...data, gender: value })
             }
           >
-            <SelectTrigger id="gender" className="!h-11">
+            <SelectTrigger
+              id="gender"
+              className={cn(
+                '!h-11',
+                locale === 'ar' ? 'flex-row-reverse !text-right' : '',
+              )}
+            >
               <SelectValue
                 placeholder={t.onboarding.proStep1.genderPlaceholder}
+                className={cn(locale === 'ar' ? '!text-right' : '')}
               />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={cn(locale === 'ar' ? 'text-end' : '')}>
               <SelectItem value="Male">
                 {t.onboarding.proStep1.genderMale}
               </SelectItem>
@@ -303,7 +350,12 @@ export function ProOnboardingOne({
 
       <div className="flex w-full gap-4">
         <div className="relative w-full">
-          <div className="mb-1 flex items-center">
+          <div
+            className={cn(
+              'mb-1 flex items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
             <Label htmlFor="bio">{t.onboarding.proStep1.bioLabel}</Label>
             <RequiredIndicator />
           </div>
@@ -312,7 +364,7 @@ export function ProOnboardingOne({
             value={data.bio}
             onChange={(e) => updateData({ ...data, bio: e.target.value })}
             placeholder={t.onboarding.proStep1.bioPlaceholder}
-            className="h-28"
+            className={cn('h-28', locale === 'ar' ? 'text-right' : '')}
           />
         </div>
       </div>

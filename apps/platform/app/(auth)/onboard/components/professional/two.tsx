@@ -12,7 +12,8 @@ import { useProfessionalOnboarding } from '../../hooks/use-professional-onboardi
 import { RequiredIndicator } from '@components/shared/required-indicator'
 import { ensureHttpsPrefix } from '@dalla/utils'
 import { useTranslation } from '@hooks/use-translation'
-
+import { cn } from '@dalla/utils'
+import { useLocale } from '@hooks/use-locale'
 export function ProOnboardingTwo({
   data,
   updateData,
@@ -22,6 +23,7 @@ export function ProOnboardingTwo({
   updateData: Dispatch<SetStateAction<ProOnboardingData>>
   setIsAbleToProceed: Dispatch<SetStateAction<boolean>>
 }) {
+  const { locale } = useLocale()
   const t = useTranslation()
   const { handleSkills, phoneError } = useProfessionalOnboarding({
     data,
@@ -47,17 +49,28 @@ export function ProOnboardingTwo({
       </div>
 
       <div className="w-full">
-        <div className="mb-1 flex items-center">
+        <div
+          className={cn(
+            'mb-1 flex items-center',
+            locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+          )}
+        >
           <Label htmlFor="skills">{t.onboarding.proStep2.skillsLabel}</Label>
           <RequiredIndicator />
         </div>
         <SkillSelector
-          className="w-full"
+          isArabic={locale === 'ar'}
+          className={cn('w-full', locale === 'ar' ? '!text-right' : '')}
           skills={data.meta.skills}
           handleSkills={handleSkills}
         />
         {data.meta.skills.length === 0 && (
-          <p className="mt-1 text-xs text-red-500">
+          <p
+            className={cn(
+              'mt-1 text-xs text-red-500',
+              locale === 'ar' ? 'text-right' : '',
+            )}
+          >
             {t.onboarding.proStep2.skillsError}
           </p>
         )}
@@ -65,13 +78,21 @@ export function ProOnboardingTwo({
 
       <div className="flex w-full gap-4">
         <div className="relative w-full">
-          <Label htmlFor="yearsOfExperience">
-            {t.onboarding.proStep2.yearsExperienceLabel} <RequiredIndicator />
-          </Label>
+          <div
+            className={cn(
+              'mb-1 flex items-center',
+              locale === 'ar' ? 'flex-row-reverse gap-0.5' : '',
+            )}
+          >
+            <Label htmlFor="yearsOfExperience">
+              {t.onboarding.proStep2.yearsExperienceLabel} <RequiredIndicator />
+            </Label>
+          </div>
 
           <Input
             id="yearsOfExperience"
-            className="h-11"
+            className={cn('h-11', locale === 'ar' ? '!text-right' : '')}
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
             placeholder={t.onboarding.proStep2.yearsExperiencePlaceholder}
             type="number"
             min="0"
@@ -91,13 +112,18 @@ export function ProOnboardingTwo({
             }
           />
           {data.meta.yearsOfExperience <= 0 && (
-            <p className="mt-1 text-xs text-red-500">
+            <p
+              className={cn(
+                'mt-1 text-xs text-red-500',
+                locale === 'ar' ? 'text-right' : '',
+              )}
+            >
               {t.onboarding.proStep2.yearsExperienceError}
             </p>
           )}
         </div>
 
-        <div className="relative w-full">
+        <div className="relative w-full" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
           <Label htmlFor="portfolio">
             {t.onboarding.proStep2.portfolioLabel}
           </Label>
@@ -136,7 +162,12 @@ export function ProOnboardingTwo({
       </div>
 
       <div className="relative w-full">
-        <div className="mb-1 flex items-center">
+        <div
+          className={cn(
+            'mb-1 flex items-center',
+            locale === 'ar' ? 'flex-row-reverse gap-0.5 text-right' : '',
+          )}
+        >
           <Label htmlFor="phone">{t.onboarding.proStep2.phoneLabel}</Label>
           <RequiredIndicator />
         </div>
@@ -151,12 +182,25 @@ export function ProOnboardingTwo({
               },
             })
           }}
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
         />
         {phoneError && (
-          <p className="mt-1 text-xs text-red-500">{phoneError}</p>
+          <p
+            className={cn(
+              'mt-1 w-full text-xs text-red-500',
+              locale === 'ar' ? 'text-right' : '',
+            )}
+          >
+            {phoneError}
+          </p>
         )}
         {!data.meta.phone && (
-          <p className="mt-1 text-xs text-red-500">
+          <p
+            className={cn(
+              'mt-1 w-full text-xs text-red-500',
+              locale === 'ar' ? 'text-right' : '',
+            )}
+          >
             {t.onboarding.proStep2.phoneErrorRequired}
           </p>
         )}

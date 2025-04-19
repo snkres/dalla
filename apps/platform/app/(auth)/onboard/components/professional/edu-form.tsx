@@ -17,7 +17,8 @@ import { motion } from 'motion/react'
 import { fadeInVariants } from '@dalla/utils'
 import { DatePicker } from './date-picker'
 import { useTranslation } from '@hooks/use-translation'
-
+import { useLocale } from '@hooks/use-locale'
+import { cn } from '@dalla/utils'
 interface EducationFormProps {
   onSubmit: (education: any) => void
   onCancel: () => void
@@ -30,6 +31,7 @@ export function EducationForm({
   initialData,
 }: EducationFormProps) {
   const t = useTranslation()
+  const { locale } = useLocale()
   const [school, setSchool] = useState(initialData?.school || '')
   const [degree, setDegree] = useState(initialData?.degree || '')
   const [field, setField] = useState(initialData?.field || '')
@@ -140,16 +142,30 @@ export function EducationForm({
             <span className="text-red-500">*</span>
           </Label>
           <Select value={degree} onValueChange={(value) => setDegree(value)}>
-            <SelectTrigger className="!h-11 w-full rounded-xl">
+            <SelectTrigger
+              className={cn(
+                locale === 'ar' ? 'flex-row-reverse' : '',
+                '!h-11 w-full rounded-xl',
+              )}
+            >
               <SelectValue
                 placeholder={
                   t.onboarding.proStep4.educationForm.degreePlaceholder
                 }
               />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+              className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+            >
               {degreeTypes.map((type) => (
-                <SelectItem key={type} value={type}>
+                <SelectItem
+                  key={type}
+                  value={type}
+                  className={cn(
+                    locale === 'ar' ? 'flex-row-reverse' : '',
+                    '!h-11 w-full rounded-xl',
+                  )}
+                >
                   {type}
                 </SelectItem>
               ))}
@@ -187,7 +203,7 @@ export function EducationForm({
         </div>
 
         <div>
-          <Label className="mb-4 flex items-center space-x-2">
+          <Label className="mb-4 flex items-center gap-2">
             <input
               type="checkbox"
               checked={isCurrentlyStudying}
@@ -222,7 +238,12 @@ export function EducationForm({
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div
+          className={cn(
+            locale === 'ar' ? 'flex-row-reverse' : '',
+            'flex gap-2',
+          )}
+        >
           <Button
             onClick={onCancel}
             variant="outline"

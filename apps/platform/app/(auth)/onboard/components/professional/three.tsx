@@ -11,6 +11,7 @@ import { ProOnboardingData } from '../../hooks/use-onboarding'
 import { PlusIcon, Trash2 } from 'lucide-react'
 import { useProfessionalOnboarding } from '../../hooks/use-professional-onboarding'
 import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function ProOnboardingThree({
   data,
@@ -22,6 +23,7 @@ export function ProOnboardingThree({
   setIsAbleToProceed: Dispatch<React.SetStateAction<boolean>>
 }) {
   const t = useTranslation()
+  const { locale } = useLocale()
   const {
     isExpOpen,
     setIsExpOpen,
@@ -47,7 +49,10 @@ export function ProOnboardingThree({
 
   console.log(data.experience)
   return (
-    <div className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6">
+    <div
+      className="flex w-[43rem] flex-col items-center justify-center gap-4 px-6"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       <div className="flex flex-col items-center justify-center gap-1">
         <h1 className="text-text-xl font-semibold">
           {t.onboarding.proStep3.title}

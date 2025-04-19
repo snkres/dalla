@@ -277,14 +277,14 @@ const CityDropdownComponent = (
         {...props}
       >
         {selectedCity ? (
-          <div className="flex w-0 flex-grow items-center gap-2 overflow-hidden">
+          <div className="flex w-0 flex-grow items-center justify-between gap-2 overflow-hidden">
             <Map size={16} className="text-muted-foreground shrink-0" />
             <span className="overflow-hidden text-ellipsis whitespace-nowrap text-xs font-medium">
               {selectedCity}
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             <Map size={16} className="text-muted-foreground opacity-70" />
             <span className="!text-xs">{placeholder}</span>
           </div>

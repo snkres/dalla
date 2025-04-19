@@ -45,6 +45,7 @@ interface SkillSelectorProps {
   className?: string
   skills: string[]
   handleSkills?: (skills: string[]) => void
+  isArabic?: boolean
 }
 
 export function SkillSelector({
@@ -53,6 +54,7 @@ export function SkillSelector({
   onSkillsChange,
   maxSkills = 10,
   className,
+  isArabic = false,
 }: SkillSelectorProps) {
   const [open, setOpen] = React.useState(false)
   const [selectedSkills, setSelectedSkills] = React.useState<Skill[]>(
@@ -169,12 +171,19 @@ export function SkillSelector({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="!h-11 w-full justify-between rounded-xl hover:bg-transparent"
+            className={cn(
+              'flex !h-11 w-full justify-between rounded-xl hover:bg-transparent',
+              isArabic ? 'flex-row-reverse !text-right' : '',
+            )}
             disabled={selectedSkills.length >= maxSkills}
           >
-            {selectedSkills.length >= maxSkills
-              ? `Maximum of ${maxSkills} skills reached`
-              : 'Select or add skills...'}
+            <span>
+              {isArabic
+                ? 'اختر المهارات'
+                : selectedSkills.length >= maxSkills
+                  ? `Maximum of ${maxSkills} skills reached`
+                  : 'Select or add skills...'}
+            </span>
             <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>

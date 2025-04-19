@@ -14,11 +14,12 @@ import {
   Label,
 } from '@dalla/design-system'
 import { motion } from 'motion/react'
-import { fadeInVariants } from '@dalla/utils'
+import { cn, fadeInVariants } from '@dalla/utils'
 import { DatePicker } from './date-picker'
 import { Tag, TagInput } from 'emblor'
 import { LocationSelector } from '@dalla/components/locationSelector'
 import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface Tool {
   id: string
@@ -49,6 +50,7 @@ export function ExperienceForm({
   initialData,
 }: ExperienceFormProps) {
   const t = useTranslation()
+  const { locale } = useLocale()
   const [title, setTitle] = useState(initialData?.title || '')
   const [company, setCompany] = useState(initialData?.company || '')
   const [location, setLocation] = useState(initialData?.location || '')
@@ -202,7 +204,8 @@ export function ExperienceForm({
                   .locationCityPlaceholder,
               }}
               required={true}
-              selectClassName="!rounded-xl h-11 [&_span]:!text-sm"
+              selectClassName="!rounded-xl h-11 [&_span]:!text-sm "
+              showLabels={false}
             />
           </div>
         </div>
@@ -216,16 +219,24 @@ export function ExperienceForm({
             value={employmentType}
             onValueChange={(value) => setEmploymentType(value)}
           >
-            <SelectTrigger className="!h-11 w-full rounded-xl">
+            <SelectTrigger
+              className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+            >
               <SelectValue
                 placeholder={
                   t.onboarding.proStep3.experienceForm.employmentTypePlaceholder
                 }
               />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent
+              className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+            >
               {employmentTypes.map((type) => (
-                <SelectItem key={type} value={type}>
+                <SelectItem
+                  key={type}
+                  value={type}
+                  className={cn(locale === 'ar' ? 'flex-row-reverse' : '')}
+                >
                   {type}
                 </SelectItem>
               ))}
@@ -293,7 +304,7 @@ export function ExperienceForm({
         </div>
 
         <div>
-          <Label className="mb-4 flex items-center space-x-2">
+          <Label className="mb-4 flex items-center gap-2">
             <input
               type="checkbox"
               checked={isCurrentlyWorking}
@@ -329,7 +340,12 @@ export function ExperienceForm({
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div
+          className={cn(
+            locale === 'ar' ? 'flex-row-reverse' : '',
+            'flex gap-2',
+          )}
+        >
           <Button
             onClick={onCancel}
             variant="outline"

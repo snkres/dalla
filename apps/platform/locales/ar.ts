@@ -189,7 +189,7 @@ export default {
       genderMale: 'ذكر',
       genderFemale: 'أنثى',
       bioLabel: 'السيرة الذاتية',
-      bioPlaceholder: 'أخبرنا عن نفسك...',
+      bioPlaceholder: '...أخبرنا عن نفسك',
       linkedInDialog: {
         title: 'استيراد ملف لينكد إن',
         description: 'اتبع هذه الخطوات لاستيراد بيانات ملف لينكد إن الخاص بك',
