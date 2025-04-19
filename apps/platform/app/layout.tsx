@@ -57,14 +57,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const defaultLocale = 'en'
-
   return (
     <ViewTransitions>
-      <html
-        lang={defaultLocale}
-        className={cn(nebula.className, sora.variable)}
-      >
+      <html className={cn(nebula.className, sora.variable)}>
         <body className="font-sans">
           <Suspense>
             <Providers

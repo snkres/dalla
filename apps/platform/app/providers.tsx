@@ -46,7 +46,20 @@ export default function Providers({
 }: ProvidersProps) {
   const [global] = useAtom(globalAtom)
   const [isReady, setIsReady] = useState(false)
-  const { setLocale } = useLocale()
+  const { locale, setLocale } = useLocale()
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const initialLoadTimer = setTimeout(() => {
+      if (locale) {
+        console.log('[Providers] Initial font setup for locale:', locale)
+        updateFontsForLocale(locale, nebulaClassName, madaniArabicClassName)
+      }
+    }, 50)
+
+    return () => clearTimeout(initialLoadTimer)
+  }, [nebulaClassName, madaniArabicClassName, locale])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -68,6 +81,12 @@ export default function Providers({
       setIsReady(true)
     }
   }, [global.mode])
+
+  useEffect(() => {
+    if (locale && typeof window !== 'undefined') {
+      updateFontsForLocale(locale, nebulaClassName, madaniArabicClassName)
+    }
+  }, [locale, nebulaClassName, madaniArabicClassName])
 
   const queryClient = new QueryClient({
     defaultOptions: {
