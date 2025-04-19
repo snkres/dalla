@@ -146,6 +146,10 @@ export default function SignupPage() {
             value={mode as AccountType}
             onChange={(type) => {
               setMode(type)
+              setGlobal({
+                ...global,
+                mode: type === 'company' ? 'company' : 'user',
+              })
             }}
           />
         </div>

@@ -5,6 +5,7 @@ import { useAtom } from 'jotai'
 import { loginWithGoogle, loginWithLinkedIn } from '@lib/api/auth/login'
 import { LinkedInProfile } from '@lib/api/auth/linkedin'
 import { useSearchParams } from 'next/navigation'
+import { useTransitionRouter } from 'next-view-transitions'
 
 const GOOGLE_CLIENT_ID =
   '633251838183-s9eaujn7vg0iv32ovdbg4fql9a5i2o50.apps.googleusercontent.com'
@@ -111,7 +112,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   const [isLinkedInLoading, setIsLinkedInLoading] = useState(false)
   const [isGoogleInitialized, setIsGoogleInitialized] = useState(false)
   const searchParams = useSearchParams()
-
+  const router = useTransitionRouter()
   const processGoogleResponse = useCallback(
     (response: any) => {
       console.log('Processing Google response:', response)
@@ -127,7 +128,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
             .then((result) => {
               console.log('Google login result:', result)
               if (result.success) {
-                window.location.href = '/'
+                router.push('/')
               } else {
                 toast({
                   title: 'Sign-In Error',
