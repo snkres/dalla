@@ -1,8 +1,5 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import AuthedLayoutClient from './layout.client'
-
-export const dynamic = 'force-dynamic'
 
 export default async function Layout({
   children,
@@ -14,5 +11,5 @@ export default async function Layout({
     redirect('/login')
   }
 
-  return <AuthedLayoutClient>{children}</AuthedLayoutClient>
+  return <>{children}</>
 }
