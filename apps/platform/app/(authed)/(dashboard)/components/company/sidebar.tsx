@@ -14,22 +14,37 @@ import { Button } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { useAtom } from 'jotai'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function Sidebar() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [profile] = useAtom(companyMetaAtom)
   const quickLinks = [
     {
       icon: <FileText />,
-      label: 'Start a Project',
+      label: t.dashboard.companyComponents.sidebar.startProjectLink,
       href: '/?startProject=true',
       highlight: true,
     },
-    { icon: <Bell />, label: 'Notifications', href: '#/notifications' },
-    { icon: <HelpCircle />, label: 'Help Center', href: '#/help' },
+    {
+      icon: <Bell />,
+      label: t.dashboard.companyComponents.sidebar.notificationsLink,
+      href: '#/notifications',
+    },
+    {
+      icon: <HelpCircle />,
+      label: t.dashboard.companyComponents.sidebar.helpCenterLink,
+      href: '#/help',
+    },
   ]
 
   return (
-    <div className="w-full space-y-5 md:w-[320px] lg:sticky lg:top-6 lg:self-start">
+    <div
+      className="w-full space-y-5 md:w-[320px] lg:sticky lg:top-6 lg:self-start"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="p-5">
           <div className="mb-4 flex flex-col items-center">
@@ -56,13 +71,17 @@ export function Sidebar() {
               <div className="text-base font-medium text-[#63B7B7]">
                 {profile?.data?._count?.projects}
               </div>
-              <div className="text-xs text-gray-600">Active Projects</div>
+              <div className="text-xs text-gray-600">
+                {t.dashboard.companyComponents.sidebar.activeProjects}
+              </div>
             </div>
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
               <div className="text-base font-medium text-[#63B7B7]">
                 {profile?.data?._count?.projects}
               </div>
-              <div className="text-xs text-gray-600">Hired Professionals</div>
+              <div className="text-xs text-gray-600">
+                {t.dashboard.companyComponents.sidebar.hiredProfessionals}
+              </div>
             </div>
           </div>
 
@@ -70,7 +89,9 @@ export function Sidebar() {
             className="h-9 w-full !bg-[#63B7B7] text-sm font-normal transition-colors duration-200 hover:!bg-[#63B7B7]/90"
             asChild
           >
-            <Link href={`/companies/${profile?.data?.id}`}>View Profile</Link>
+            <Link href={`/companies/${profile?.data?.id}`}>
+              {t.dashboard.companyComponents.sidebar.viewProfileButton}
+            </Link>
           </Button>
         </div>
       </div>
@@ -86,7 +107,7 @@ export function Sidebar() {
             ) : (
               <Zap />
             )}
-            Quick Actions
+            {t.dashboard.companyComponents.sidebar.quickActionsTitle}
           </h2>
         </div>
         <div className="p-2">

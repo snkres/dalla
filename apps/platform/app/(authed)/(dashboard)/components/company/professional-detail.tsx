@@ -19,6 +19,8 @@ import { useQuery } from '@tanstack/react-query'
 import { getProProfile } from '@lib/api/pro/profile'
 import { formatDate } from '@dalla/utils'
 import { formatCurrency } from '@lib/utils/format-currency'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface ConsultantDetailProps {
   username: string
@@ -26,6 +28,8 @@ interface ConsultantDetailProps {
 }
 
 export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const router = useTransitionRouter()
   const { data: professional } = useQuery({
     queryKey: ['professional', username],
@@ -45,14 +49,17 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Professional Profile"
+      title={t.dashboard.companyComponents.professionalDetail.modalTitle}
       showExternalLink
       onExternalLinkClick={() => {
         router.push(`/professionals/${username}`)
       }}
       width="lg"
     >
-      <div className="flex h-full flex-col overflow-hidden md:flex-row">
+      <div
+        className="flex h-full flex-col overflow-hidden md:flex-row"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      >
         <div className="flex-1 overflow-y-auto">
           <div className="border-b border-gray-100 p-5">
             <div className="mb-4 flex items-start gap-4">
@@ -114,7 +121,11 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                   <div className="flex items-center">
                     <Briefcase className="mr-1 h-3.5 w-3.5" />
                     <span>
-                      {professional?.data?.data?.meta?.yearsOfExperience} yrs
+                      {professional?.data?.data?.meta?.yearsOfExperience}{' '}
+                      {
+                        t.dashboard.companyComponents.professionalDetail
+                          .yearsExperienceSuffix
+                      }
                     </span>
                   </div>
                 </div>
@@ -148,7 +159,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                     className="cursor-pointer !rounded-md !border-none !bg-gray-50 !px-2 !py-0.5 !text-xs !font-normal !text-gray-600 hover:!bg-gray-100"
                     onClick={() => setShowAllSkills(false)}
                   >
-                    Show less
+                    {
+                      t.dashboard.companyComponents.professionalDetail
+                        .showLessSkillsButton
+                    }
                   </Badge>
                 )}
             </div>
@@ -157,11 +171,25 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
           <div className="border-b border-gray-100 bg-[#63B7B7]/5 px-5 py-3">
             <div className="flex items-center text-xs text-gray-700">
               <Shield className="mr-2 h-3.5 w-3.5 text-[#63B7B7]" />
-              <span>Match score: </span>
-              <span className="ml-1 font-medium text-[#63B7B7]">
-                {matchPercentage}%
+              <span>
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .matchScorePrefix
+                }
               </span>
-              <span className="ml-1">for your project requirements</span>
+              <span className="ml-1 font-medium text-[#63B7B7]">
+                {matchPercentage}
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .matchScoreSuffix
+                }
+              </span>
+              <span className="ml-1">
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .matchScoreRequirementText
+                }
+              </span>
             </div>
           </div>
 
@@ -170,7 +198,9 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <FileText className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
-              <h2 className="text-sm font-medium text-gray-800">About</h2>
+              <h2 className="text-sm font-medium text-gray-800">
+                {t.dashboard.companyComponents.professionalDetail.aboutTitle}
+              </h2>
             </div>
             <p className="p-6 px-4 text-sm leading-relaxed text-gray-600">
               {professional?.data?.data?.bio}
@@ -183,7 +213,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 <Briefcase className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
               <h2 className="text-sm font-medium text-gray-800">
-                Work History
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .workHistoryTitle
+                }
               </h2>
             </div>
             <div className="space-y-4 p-6 px-4">
@@ -198,9 +231,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                     </h3>
                     <div className="mb-2 flex items-center text-xs text-gray-500">
                       <span>
-                        {formatDate(new Date(exp.startDate))} -{' '}
+                        {formatDate(new Date(exp.startDate))} -
                         {exp.endDate === 'present'
-                          ? 'Present'
+                          ? t.dashboard.companyComponents.professionalDetail
+                              .endDatePresent
                           : formatDate(new Date(exp.endDate))}
                       </span>
                       <span className="mx-2">•</span>
@@ -215,7 +249,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               {(!professional?.data?.data?.experience ||
                 professional?.data?.data?.experience.length === 0) && (
                 <p className="text-sm text-gray-500">
-                  No work history available
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .noWorkHistory
+                  }
                 </p>
               )}
             </div>
@@ -227,7 +264,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 <Boxes className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
               <h2 className="text-sm font-medium text-gray-800">
-                Portfolio & Projects
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .portfolioTitle
+                }
               </h2>
               <Button
                 variant="ghost"
@@ -239,7 +279,8 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                   )
                 }
               >
-                View all <ChevronRight className="ml-1 h-3 w-3" />
+                {t.dashboard.companyComponents.professionalDetail.viewAllButton}
+                <ChevronRight className="ml-1 h-3 w-3" />
               </Button>
             </div>
             <div className="grid grid-cols-1 gap-3 p-6 px-4">
@@ -286,9 +327,11 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Hourly Rate</span>
                   <span className="flex items-center gap-1 text-sm font-normal text-gray-800">
-                    {formatCurrency(
-                      professional?.data?.data?.meta?.hourlyRate || 0,
-                    )}
+                    {professional?.data?.data?.meta?.hourlyRate &&
+                      formatCurrency(
+                        professional.data.data.meta.hourlyRate,
+                        locale,
+                      )}
                     <span className="text-gray-600">/hr</span>
                   </span>
                 </div>
@@ -347,7 +390,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
             <div className="border-b border-gray-200 p-2">
               <Button className="mb-2 h-9 w-full !bg-[#63B7B7] text-white hover:!bg-[#63B7B7]/90">
-                Hire Professional
+                {t.dashboard.companyComponents.professionalDetail.hireButton}
               </Button>
 
               <Button
@@ -355,7 +398,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 className="mb-2 h-9 w-full !border-[#63B7B7] !text-[#63B7B7] hover:!bg-[#63B7B7]/5"
               >
                 <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
-                Message
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .sendMessageButton
+                }
               </Button>
 
               <Button
@@ -363,7 +409,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 className="h-9 w-full !text-gray-700 hover:!bg-gray-100"
               >
                 <Bookmark className="mr-1.5 h-3.5 w-3.5" />
-                Save Profile
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .saveProfileButton
+                }
               </Button>
             </div>
           </div>

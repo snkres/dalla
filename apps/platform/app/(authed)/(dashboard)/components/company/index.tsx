@@ -31,9 +31,13 @@ import {
   GetAllProfessionalsRes,
 } from '@lib/api/company/professionals'
 import { ProfessionalCard } from './professional-card'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 const LIMIT = 6
 export default function CompanyHome() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [page, setPage] = useState(1)
   const [filteredProfessionals, setFilteredProfessionals] = useState<
     GetAllProfessionalsRes['data'][0]
@@ -80,27 +84,27 @@ export default function CompanyHome() {
   const filterOptions = [
     {
       key: 'all',
-      label: 'All Consultants',
+      label: t.dashboard.companyHome.filterAllConsultants,
       icon: <Users className="mr-1.5 h-3.5 w-3.5" />,
     },
     {
       key: 'available',
-      label: 'Available Now',
+      label: t.dashboard.companyHome.filterAvailableNow,
       icon: <Clock className="mr-1.5 h-3.5 w-3.5" />,
     },
     {
       key: 'topRated',
-      label: 'Top Rated',
+      label: t.dashboard.companyHome.filterTopRated,
       icon: <Award className="mr-1.5 h-3.5 w-3.5" />,
     },
     {
       key: 'recent',
-      label: 'Recently Active',
+      label: t.dashboard.companyHome.filterRecentlyActive,
       icon: <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />,
     },
     {
       key: 'saved',
-      label: 'Saved Profiles',
+      label: t.dashboard.companyHome.filterSavedProfiles,
       icon: <BookOpen className="mr-1.5 h-3.5 w-3.5" />,
     },
   ]
@@ -164,7 +168,7 @@ export default function CompanyHome() {
   }
 
   return (
-    <div>
+    <div dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="mx-auto max-w-[1200px] px-4 py-6 lg:max-w-[1350px]">
         <div className="flex flex-col gap-6 lg:flex-row">
           <div className="flex-1">
@@ -181,10 +185,10 @@ export default function CompanyHome() {
               <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h1 className="text-xl font-medium text-gray-900">
-                    Find Professionals
+                    {t.dashboard.companyHome.findProfessionalsTitle}
                   </h1>
                   <p className="mt-1 text-sm text-gray-600">
-                    Discover and connect with top talent for your projects
+                    {t.dashboard.companyHome.findProfessionalsDescription}
                   </p>
                 </div>
                 <Button
@@ -192,7 +196,7 @@ export default function CompanyHome() {
                   onClick={() => setShowAddProject(true)}
                 >
                   <Users className="mr-1.5 h-4 w-4" />
-                  Start a Project
+                  {t.dashboard.companyHome.startProjectButton}
                 </Button>
               </div>
               <div className="relative">
@@ -201,7 +205,9 @@ export default function CompanyHome() {
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <Input
                       type="text"
-                      placeholder="Search by skill, expertise, or location..."
+                      placeholder={
+                        t.dashboard.companyHome.searchInputPlaceholder
+                      }
                       className="h-10 w-full border-0 py-2 pl-9 pr-4 focus-visible:ring-0 focus-visible:ring-offset-0"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -219,7 +225,7 @@ export default function CompanyHome() {
                     onClick={() => setShowFilterPanel(!showFilterPanel)}
                   >
                     <Filter className="mr-1.5 h-3.5 w-3.5" />
-                    Filters
+                    {t.dashboard.shared.filters}
                   </Button>
                 </div>
               </div>
@@ -248,22 +254,18 @@ export default function CompanyHome() {
             {searchQuery && (
               <div className="mb-5 flex items-start rounded-lg bg-[#63B7B7]/5 p-3 text-sm text-[#63B7B7]">
                 <Info className="mr-2 mt-0.5 h-4 w-4 flex-shrink-0" />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <p>
-                      Showing results for{' '}
-                      <strong>&quot;{searchQuery}&quot;</strong>
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 w-7 rounded-full p-0 text-gray-400 hover:text-gray-600"
-                      onClick={clearFilters}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                <span>
+                  {t.dashboard.shared.showingResultsFor.replace(
+                    '{searchQuery}',
+                    searchQuery,
+                  )}{' '}
+                  <button
+                    onClick={clearFilters}
+                    className="ml-1 font-medium text-[#63B7B7] underline hover:text-[#509a9a]"
+                  >
+                    {t.dashboard.shared.clearFilters}
+                  </button>
+                </span>
               </div>
             )}
 
@@ -287,7 +289,7 @@ export default function CompanyHome() {
                     className="flex items-center gap-1"
                   >
                     <ChevronLeft className="h-4 w-4" />
-                    Previous
+                    {t.dashboard.shared.previous}
                   </Button>
 
                   <div className="flex items-center gap-1">
@@ -345,7 +347,7 @@ export default function CompanyHome() {
                     }
                     className="flex items-center gap-1"
                   >
-                    Next
+                    {t.dashboard.shared.next}
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
@@ -356,18 +358,17 @@ export default function CompanyHome() {
                   <AlertCircle className="h-10 w-10 text-gray-400" />
                 </div>
                 <h3 className="mb-2 text-lg font-medium text-gray-900">
-                  No consultants found
+                  {t.dashboard.companyHome.noProfessionalsFound}
                 </h3>
                 <p className="mx-auto mb-5 max-w-md text-sm text-gray-500">
-                  We couldn&apos;t find any consultants matching your search
-                  criteria. Try adjusting your search or filters.
+                  {t.dashboard.shared.tryAdjustingFilters}
                 </p>
                 <Button
                   className="h-9 bg-[#63B7B7] text-sm hover:bg-[#63B7B7]/90"
                   onClick={clearFilters}
                 >
                   <X className="mr-1.5 h-4 w-4" />
-                  Clear All Filters
+                  {t.dashboard.shared.clearFilters}
                 </Button>
               </div>
             )}

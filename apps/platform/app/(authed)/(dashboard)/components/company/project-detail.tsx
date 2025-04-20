@@ -17,6 +17,8 @@ import {
 import { Button, Modal } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { Project } from '@lib/types/project'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface ProjectDetailProps {
   project: Project
@@ -29,6 +31,9 @@ export function ProjectDetail({
   onClose,
   onApplyClick,
 }: ProjectDetailProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   const attachments = [
     { name: 'detail_mockup.html', size: '10 KB' },
     { name: 'home_mockup.html', size: '9 KB' },
@@ -38,39 +43,71 @@ export function ProjectDetail({
 
   const skillCategories = [
     {
-      title: 'Front-End Development Languages',
+      title:
+        t.dashboard.companyComponents.projectDetail.skillCategoryFrontendLang,
       skills: ['CSS'],
     },
     {
-      title: 'Front-End Development Deliverables',
+      title:
+        t.dashboard.companyComponents.projectDetail
+          .skillCategoryFrontendDeliverables,
       skills: ['Website'],
     },
     {
-      title: 'Other',
+      title: t.dashboard.companyComponents.projectDetail.skillCategoryOther,
       skills: ['HTML5', 'Hugo'],
     },
     {
-      title: 'Required Skills',
+      title: t.dashboard.companyComponents.projectDetail.skillCategoryRequired,
       skills: project.skills,
     },
   ]
 
   const clientStats = [
-    { label: 'Hire rate:', value: '0%' },
-    { label: 'Open jobs:', value: '1' },
-    { label: 'Member since:', value: 'Mar 3, 2025' },
+    {
+      label: t.dashboard.companyComponents.projectDetail.clientStatHireRate,
+      value: '0%',
+    },
+    {
+      label: t.dashboard.companyComponents.projectDetail.clientStatOpenJobs,
+      value: '1',
+    },
+    {
+      label: t.dashboard.companyComponents.projectDetail.clientStatMemberSince,
+      value: 'Mar 3, 2025',
+    },
   ]
 
   const activityStats = [
-    { label: 'Proposals:', value: 'Less than 5' },
-    { label: 'Last viewed by client:', value: '6 minutes ago' },
-    { label: 'Interviewing:', value: '0' },
-    { label: 'Invites sent:', value: '1' },
-    { label: 'Unanswered invites:', value: '1' },
+    {
+      label: t.dashboard.companyComponents.projectDetail.activityProposals,
+      value: t.dashboard.companyComponents.projectDetail.activityProposalsValue,
+    },
+    {
+      label: t.dashboard.companyComponents.projectDetail.activityLastViewed,
+      value:
+        t.dashboard.companyComponents.projectDetail.activityLastViewedValue.replace(
+          '{time}',
+          '6 minutes',
+        ),
+    },
+    {
+      label: t.dashboard.companyComponents.projectDetail.activityInterviewing,
+      value: '0',
+    },
+    {
+      label: t.dashboard.companyComponents.projectDetail.activityInvitesSent,
+      value: '1',
+    },
+    {
+      label:
+        t.dashboard.companyComponents.projectDetail.activityUnansweredInvites,
+      value: '1',
+    },
   ]
 
   return (
-    <Modal isOpen={true} onClose={onClose} title={project.title}>
+    <Modal isOpen={true} onClose={onClose} title={project.title} width="xl">
       {/* <div className="sticky top-0 z-10 flex items-center border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
         <button
           onClick={onClose}
@@ -90,7 +127,10 @@ export function ProjectDetail({
         </div>
       </div> */}
 
-      <div className="flex h-full flex-col md:flex-row">
+      <div
+        className="flex h-full flex-col md:flex-row"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      >
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6">
             <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-0">
@@ -101,7 +141,10 @@ export function ProjectDetail({
                 <div className="flex flex-wrap gap-3 text-xs text-gray-600 sm:text-sm">
                   <span className="flex items-center">
                     <Clock className="mr-1 h-3.5 w-3.5 text-gray-400" />
-                    Posted {project.postedDate}
+                    {t.dashboard.companyComponents.projectDetail.postedDate.replace(
+                      '{postedDate}',
+                      project.postedDate ?? '',
+                    )}
                   </span>
                   <span className="flex items-center">
                     <Globe className="mr-1 h-3.5 w-3.5 text-gray-400" />
@@ -109,28 +152,41 @@ export function ProjectDetail({
                   </span>
                   <span className="flex items-center">
                     <Briefcase className="mr-1 h-3.5 w-3.5 text-gray-400" />
-                    Project Type
+                    {
+                      t.dashboard.companyComponents.projectDetail
+                        .projectTypeLabel
+                    }
                   </span>
                 </div>
               </div>
               <Badge className="border-1 rounded-md bg-[#edecea]/30 text-xs text-[#234d64]/80 shadow-none hover:bg-[#BEDDF1]/60">
-                Fixed-Price
+                {t.dashboard.companyComponents.projectDetail.fixedPriceBadge}
               </Badge>
             </div>
             <div className="mb-6 rounded-lg bg-[#BEDDF1]/20 p-3 sm:p-4">
               <div className="flex items-center">
                 <Info className="mr-2 h-4 w-4 flex-shrink-0 text-[#63B7B7]" />
                 <span className="text-xs text-gray-700 sm:text-sm">
-                  Create a{' '}
+                  {
+                    t.dashboard.companyComponents.projectDetail
+                      .customProfileInfoStart
+                  }
                 </span>
                 <a
                   href="#"
                   className="ml-1 text-xs font-medium text-[#63B7B7] hover:underline sm:text-sm"
                 >
-                  custom profile
+                  {
+                    t.dashboard.companyComponents.projectDetail
+                      .customProfileInfoLink
+                  }
                 </a>
                 <span className="ml-1 text-xs text-gray-700 sm:text-sm">
-                  to highlight your expertise for this type of work.
+                  {' '}
+                  {
+                    t.dashboard.companyComponents.projectDetail
+                      .customProfileInfoEnd
+                  }
                 </span>
               </div>
             </div>
@@ -168,25 +224,36 @@ export function ProjectDetail({
             </div>
             <div className="mb-6 grid grid-cols-1 gap-3 sm:mb-8 sm:grid-cols-3 sm:gap-4">
               <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
-                <div className="mb-1 text-xs text-gray-500">Budget</div>
+                <div className="mb-1 text-xs text-gray-500">
+                  {t.dashboard.companyComponents.projectDetail.budgetLabel}
+                </div>
                 <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
                   {project.budget}
                 </div>
               </div>
               <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
                 <div className="mb-1 text-xs text-gray-500">
-                  Experience Level
+                  {
+                    t.dashboard.companyComponents.projectDetail
+                      .experienceLevelLabel
+                  }
                 </div>
                 <div className="text-sm font-medium text-gray-900 sm:text-base">
-                  Intermediate
+                  {
+                    t.dashboard.companyComponents.projectDetail
+                      .experienceLevelValue
+                  }
                 </div>
                 <div className="mt-1 text-xs text-gray-500">
-                  Mix of experience and value
+                  {
+                    t.dashboard.companyComponents.projectDetail
+                      .experienceLevelDescription
+                  }
                 </div>
               </div>
               <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
                 <div className="mb-1 text-xs text-gray-500">
-                  Project Duration
+                  {t.dashboard.companyComponents.projectDetail.durationLabel}
                 </div>
                 <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
                   <Clock className="mr-1 h-4 w-4 text-gray-500" />
@@ -199,7 +266,10 @@ export function ProjectDetail({
               <div className="mb-3 flex items-center gap-2 sm:mb-4">
                 <FileText className="h-4 w-4 text-[#63B7B7]" />
                 <h2 className="text-sm font-medium text-gray-900 sm:text-base">
-                  Attachments ({attachments.length})
+                  {t.dashboard.companyComponents.projectDetail.attachmentsTitle.replace(
+                    '{count}',
+                    attachments.length.toString(),
+                  )}
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -225,7 +295,7 @@ export function ProjectDetail({
               <div className="mb-3 flex items-center gap-2 sm:mb-4">
                 <Info className="h-4 w-4 text-[#63B7B7]" />
                 <h2 className="text-sm font-medium text-gray-900 sm:text-base">
-                  Skills and Expertise
+                  {t.dashboard.companyComponents.projectDetail.skillsTitle}
                 </h2>
               </div>
 
@@ -254,6 +324,57 @@ export function ProjectDetail({
 
         <div className="w-full border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
           <div className="sticky top-[73px] p-4 sm:p-5">
+            <div className="mb-5 space-x-2">
+              <Button
+                onClick={onApplyClick}
+                className="flex-1 !bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90"
+              >
+                {t.dashboard.companyComponents.projectDetail.applyButton}
+              </Button>
+              <Button variant="outline" className="px-3">
+                <Bookmark className="h-4 w-4" />
+                <span className="sr-only">
+                  {t.dashboard.companyComponents.projectDetail.saveButton}
+                </span>
+              </Button>
+            </div>
+
+            <div className="mb-5">
+              <h3 className="mb-3 text-sm font-medium text-gray-900">
+                {t.dashboard.companyComponents.projectDetail.aboutClientTitle}
+              </h3>
+              <div className="space-y-2">
+                <div className="flex items-center text-xs text-gray-700">
+                  <CheckCircle className="mr-1.5 h-4 w-4 text-green-500" />
+                  {t.dashboard.companyComponents.projectDetail.paymentVerified}
+                </div>
+                {clientStats.map((stat) => (
+                  <div key={stat.label} className="flex items-center text-xs">
+                    <span className="w-24 text-gray-500">{stat.label}</span>
+                    <span className="font-medium text-gray-800">
+                      {stat.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="mb-3 text-sm font-medium text-gray-900">
+                {t.dashboard.companyComponents.projectDetail.activityTitle}
+              </h3>
+              <div className="space-y-2">
+                {activityStats.map((stat) => (
+                  <div key={stat.label} className="flex items-center text-xs">
+                    <span className="w-24 text-gray-500">{stat.label}</span>
+                    <span className="font-medium text-gray-800">
+                      {stat.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <Button
               className="mb-3 w-full bg-[#63B7B7] py-5 text-sm font-medium text-white hover:bg-[#63B7B7]/90 sm:py-6 sm:text-base"
               onClick={onApplyClick}

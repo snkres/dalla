@@ -21,6 +21,8 @@ import {
   addNotificationAtom,
   createProjectNotification,
 } from '@lib/atoms/shared/notifications'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function AddProject({
   onClose,
@@ -29,6 +31,8 @@ export function AddProject({
   onClose: () => void
   onProjectCreated?: () => void
 }) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [, addNotification] = useAtom(addNotificationAtom)
@@ -103,8 +107,13 @@ export function AddProject({
     for (const field of requiredFields) {
       if (!formData[field as keyof typeof formData]) {
         toast({
-          title: 'Missing required field',
-          description: `Please fill in the ${field} field.`,
+          title:
+            t.dashboard.companyComponents.addProject.toastMissingFieldTitle,
+          description:
+            t.dashboard.companyComponents.addProject.toastMissingFieldDescription.replace(
+              '{field}',
+              field,
+            ),
           variant: 'destructive',
         })
         return false
@@ -114,8 +123,13 @@ export function AddProject({
     for (const field of requiredMetaFields) {
       if (!formData.meta[field as keyof typeof formData.meta]) {
         toast({
-          title: 'Missing required field',
-          description: `Please fill in the ${field.replace('Value', '')} field.`,
+          title:
+            t.dashboard.companyComponents.addProject.toastMissingFieldTitle,
+          description:
+            t.dashboard.companyComponents.addProject.toastMissingFieldDescription.replace(
+              '{field}',
+              field.replace('Value', ''),
+            ),
           variant: 'destructive',
         })
         return false
@@ -124,8 +138,11 @@ export function AddProject({
 
     if (formData.skills.length === 0) {
       toast({
-        title: 'Skills required',
-        description: 'Please add at least one skill for the project.',
+        title:
+          t.dashboard.companyComponents.addProject.toastSkillsRequiredTitle,
+        description:
+          t.dashboard.companyComponents.addProject
+            .toastSkillsRequiredDescription,
         variant: 'destructive',
       })
       return false
@@ -161,8 +178,9 @@ export function AddProject({
       addNotification(createProjectNotification(formData.title))
 
       toast({
-        title: 'Project created successfully',
-        description: 'Your new project has been created.',
+        title: t.dashboard.companyComponents.addProject.toastSuccessTitle,
+        description:
+          t.dashboard.companyComponents.addProject.toastSuccessDescription,
       })
 
       if (onProjectCreated) {
@@ -173,9 +191,9 @@ export function AddProject({
     } catch (error) {
       console.error('Error creating project:', error)
       toast({
-        title: 'Error creating project',
+        title: t.dashboard.companyComponents.addProject.toastErrorTitle,
         description:
-          'There was an error creating your project. Please try again.',
+          t.dashboard.companyComponents.addProject.toastErrorDescription,
         variant: 'destructive',
       })
     } finally {
@@ -184,14 +202,21 @@ export function AddProject({
   }
 
   return (
-    <Modal isOpen onClose={onClose} title={`Start a Project`}>
-      <div className="flex-1 overflow-y-auto">
+    <Modal
+      isOpen
+      onClose={onClose}
+      title={t.dashboard.companyComponents.addProject.modalTitle}
+      width="xl"
+    >
+      <div
+        className="flex-1 overflow-y-auto"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      >
         <div className="p-4 sm:p-6">
           <div className="mb-6 flex items-center rounded-lg bg-[#BEDDF1]/10 p-4">
             <AlertCircle className="mr-2 h-5 w-5 text-[#63B7B7]" />
             <p className="text-sm text-gray-700">
-              Fill in the project details below. Fields marked with * are
-              required.
+              {t.dashboard.companyComponents.addProject.requiredFieldsInfo}
             </p>
           </div>
 
@@ -202,11 +227,14 @@ export function AddProject({
                   htmlFor="title"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Project Title*
+                  {t.dashboard.companyComponents.addProject.projectTitleLabel}
                 </label>
                 <Input
                   id="title"
-                  placeholder="Enter project title"
+                  placeholder={
+                    t.dashboard.companyComponents.addProject
+                      .projectTitlePlaceholder
+                  }
                   value={formData.title}
                   onChange={handleInputChange}
                   className="w-full"
@@ -218,13 +246,16 @@ export function AddProject({
                   htmlFor="jobTitle"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Job Title
+                  {t.dashboard.companyComponents.addProject.jobTitleLabel}
                 </label>
                 <div className="relative">
                   <Briefcase className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                   <Input
                     id="jobTitle"
-                    placeholder="e.g. Frontend Developer"
+                    placeholder={
+                      t.dashboard.companyComponents.addProject
+                        .jobTitlePlaceholder
+                    }
                     value={formData.jobTitle}
                     onChange={handleInputChange}
                     className="pl-9"
@@ -238,11 +269,14 @@ export function AddProject({
                 htmlFor="description"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                Project Description*
+                {t.dashboard.companyComponents.addProject.descriptionLabel}
               </label>
               <Textarea
                 id="description"
-                placeholder="Describe the project in detail"
+                placeholder={
+                  t.dashboard.companyComponents.addProject
+                    .descriptionPlaceholder
+                }
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={3}
@@ -255,19 +289,52 @@ export function AddProject({
                 htmlFor="scope"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                Project Scope
+                {t.dashboard.companyComponents.addProject.scopeLabel}
               </label>
-              <ListInput
+              <Textarea
+                id="scope"
+                placeholder={
+                  t.dashboard.companyComponents.addProject.scopePlaceholder
+                }
                 value={formData.scope}
-                onChange={(value) => setFormData({ ...formData, scope: value })}
-                placeholder="Add scope item"
-                label="Scope Items"
-                addItemText="Add Scope Item"
-                maxItems={10}
+                onChange={handleInputChange}
+                rows={2}
+                className="w-full"
               />
-              <p className="mt-1 text-xs text-gray-500">
-                Add specific items that define the scope of this project
-              </p>
+            </div>
+
+            <div>
+              <label
+                htmlFor="deliverables"
+                className="mb-1 block text-sm font-medium text-gray-700"
+              >
+                {t.dashboard.companyComponents.addProject.deliverablesLabel}
+              </label>
+              <Textarea
+                id="deliverables"
+                placeholder={
+                  t.dashboard.companyComponents.addProject
+                    .deliverablesPlaceholder
+                }
+                value={formData.deliverables}
+                onChange={handleInputChange}
+                rows={3}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="skills"
+                className="mb-1 block text-sm font-medium text-gray-700"
+              >
+                {t.dashboard.companyComponents.addProject.skillsLabel}
+              </label>
+              <SkillSelector
+                skills={formData.skills}
+                handleSkills={handleSkillsChange}
+                maxSkills={10}
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -276,82 +343,76 @@ export function AddProject({
                   htmlFor="meta.budget"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Budget*
+                  {t.dashboard.companyComponents.addProject.budgetLabel}
                 </label>
                 <div className="relative">
                   <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
                   <Input
                     id="meta.budget"
-                    placeholder="e.g. 5000"
+                    type="number"
+                    placeholder={
+                      t.dashboard.companyComponents.addProject.budgetPlaceholder
+                    }
                     value={formData.meta.budget}
                     onChange={handleInputChange}
                     className="pl-9"
-                    type="number"
                   />
                 </div>
               </div>
-
               <div>
                 <label
-                  htmlFor="meta.timeline"
+                  htmlFor="meta.timelineValue"
                   className="mb-1 block text-sm font-medium text-gray-700"
                 >
-                  Timeline*
+                  {t.dashboard.companyComponents.addProject.timelineLabel}
                 </label>
                 <div className="flex gap-2">
-                  <div className="relative w-1/3">
-                    <Input
-                      id="meta.timelineValue"
-                      placeholder="e.g. 3"
-                      value={formData.meta.timelineValue}
-                      onChange={handleInputChange}
-                      className="w-full"
-                      type="number"
-                      min="1"
-                    />
-                  </div>
-                  <div className="w-2/3">
-                    <Select
-                      value={formData.meta.timelineUnit}
-                      onValueChange={handleTimelineUnitChange}
-                    >
-                      <SelectTrigger className="!h-10 w-full">
-                        <SelectValue placeholder="Select unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="days">Days</SelectItem>
-                        <SelectItem value="weeks">Weeks</SelectItem>
-                        <SelectItem value="months">Months</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <Input
+                    id="meta.timelineValue"
+                    type="number"
+                    value={formData.meta.timelineValue}
+                    onChange={handleInputChange}
+                    className="w-24"
+                  />
+                  <Select
+                    value={formData.meta.timelineUnit}
+                    onValueChange={handleTimelineUnitChange}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Select unit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="days">
+                        {
+                          t.dashboard.companyComponents.addProject
+                            .timelineUnitDays
+                        }
+                      </SelectItem>
+                      <SelectItem value="weeks">
+                        {
+                          t.dashboard.companyComponents.addProject
+                            .timelineUnitWeeks
+                        }
+                      </SelectItem>
+                      <SelectItem value="months">
+                        {
+                          t.dashboard.companyComponents.addProject
+                            .timelineUnitMonths
+                        }
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
 
             <div>
               <label
-                htmlFor="deliverables"
+                htmlFor="media"
                 className="mb-1 block text-sm font-medium text-gray-700"
               >
-                Deliverables
+                {t.dashboard.companyComponents.addProject.mediaLabel}
               </label>
-              <ListInput
-                value={formData.deliverables}
-                onChange={(value) =>
-                  setFormData({ ...formData, deliverables: value })
-                }
-                placeholder="Add deliverable"
-                label="Project Deliverables"
-                addItemText="Add Deliverable"
-                maxItems={10}
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                List the expected deliverables for this project
-              </p>
-            </div>
-
-            <div>
               <MultiImageUpload
                 images={formData.media}
                 onImagesChange={handleMediaChange}
@@ -359,41 +420,26 @@ export function AddProject({
                 label="Project Media"
                 allowAllFileTypes
               />
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Skills Required*
-              </label>
-              <SkillSelector
-                skills={formData.skills}
-                handleSkills={handleSkillsChange}
-                maxSkills={10}
-              />
               <p className="mt-1 text-xs text-gray-500">
-                Add up to 10 skills that are required for this project
+                {t.dashboard.companyComponents.addProject.mediaHelpText}
               </p>
             </div>
-
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                variant="outline"
-                className="!border-gray-300 !text-gray-500 hover:!bg-gray-50"
-                onClick={onClose}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="!bg-[#63B7B7] !text-white hover:!bg-[#63B7B7]/90"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-              >
-                <Save className="mr-2 h-4 w-4" />
-                {isSubmitting ? 'Saving...' : 'Save Project'}
-              </Button>
-            </div>
           </div>
+        </div>
+        <div className="flex justify-end gap-3 border-t border-gray-200 bg-gray-50 p-4">
+          <Button variant="outline" onClick={onClose}>
+            {t.dashboard.companyComponents.addProject.cancelButton}
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="!bg-[#63B7B7] hover:!bg-[#63B7B7]/90"
+          >
+            <Save className="mr-2 h-4 w-4" />
+            {isSubmitting
+              ? t.dashboard.companyComponents.addProject.creatingButton
+              : t.dashboard.companyComponents.addProject.createButton}
+          </Button>
         </div>
       </div>
     </Modal>

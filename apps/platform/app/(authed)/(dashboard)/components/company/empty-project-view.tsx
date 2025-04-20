@@ -7,6 +7,8 @@ import {
   FileText,
   ArrowRight,
 } from 'lucide-react'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface EmptyProjectViewProps {
   onPostJob: () => void
@@ -17,6 +19,9 @@ const EmptyProjectView = ({
   onPostJob,
   onHireConsultant,
 }: EmptyProjectViewProps) => {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -24,6 +29,7 @@ const EmptyProjectView = ({
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
       className="p-6 text-center"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="mb-5 flex justify-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
@@ -32,11 +38,10 @@ const EmptyProjectView = ({
       </div>
 
       <h3 className="mb-2 text-lg font-medium text-gray-900">
-        No active projects
+        {t.dashboard.companyComponents.emptyProjectView.title}
       </h3>
       <p className="mx-auto mb-6 max-w-md text-sm text-gray-600">
-        You don&apos;t have any active projects yet. Start by posting a job or
-        hiring a consultant to kick-off your first project.
+        {t.dashboard.companyComponents.emptyProjectView.description}
       </p>
 
       <div className="mx-auto grid max-w-lg grid-cols-1 gap-4 sm:grid-cols-2">
@@ -45,11 +50,15 @@ const EmptyProjectView = ({
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm">
               <FileText className="h-4 w-4 text-[#1D8489]" />
             </div>
-            <h4 className="text-sm font-medium text-gray-900">Post a Job</h4>
+            <h4 className="text-sm font-medium text-gray-900">
+              {t.dashboard.companyComponents.emptyProjectView.postJobCardTitle}
+            </h4>
           </div>
           <p className="mb-4 text-xs text-gray-600">
-            Create a job listing to find the perfect consultant for your project
-            needs.
+            {
+              t.dashboard.companyComponents.emptyProjectView
+                .postJobCardDescription
+            }
           </p>
           <Button
             variant="outline"
@@ -58,7 +67,7 @@ const EmptyProjectView = ({
             className="w-full border-[#63B7B7]/30 bg-white text-xs text-[#1D8489] hover:bg-white"
           >
             <PlusCircle className="mr-1.5 h-3.5 w-3.5" />
-            Start a Project
+            {t.dashboard.companyComponents.emptyProjectView.postJobCardButton}
           </Button>
         </div>
 
@@ -68,19 +77,18 @@ const EmptyProjectView = ({
               <Users className="h-4 w-4 text-[#1D8489]" />
             </div>
             <h4 className="text-sm font-medium text-gray-900">
-              Hire Professionals
+              {t.dashboard.companyComponents.emptyProjectView.hireCardTitle}
             </h4>
           </div>
           <p className="mb-4 text-center text-xs text-gray-600">
-            Browse our talent pool and hire professionals directly for your
-            projects.
+            {t.dashboard.companyComponents.emptyProjectView.hireCardDescription}
           </p>
           <Button
             size="sm"
             onClick={onHireConsultant}
             className="w-full !bg-[#63B7B7] text-xs text-white hover:!bg-[#1D8489]"
           >
-            Find Professionals
+            {t.dashboard.companyComponents.emptyProjectView.hireCardButton}
             <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
           </Button>
         </div>

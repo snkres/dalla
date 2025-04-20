@@ -24,8 +24,9 @@ import { Input } from '@dalla/design-system'
 import { SLIDE_ANIMATION } from '@dalla/utils'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
-
 import { cn } from '@dalla/utils'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface ProposalsOverivewProps {
   projectTitle: string
@@ -41,6 +42,8 @@ const ProposalsOverivewModal = ({
   handleViewProposal,
   proposals,
 }: ProposalsOverivewProps) => {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [sortBy, setSortBy] = useState<'match' | 'date' | 'price'>('match')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -71,11 +74,29 @@ const ProposalsOverivewModal = ({
       }
     })
 
+  // Helper to get sort button label
+  const getSortLabel = () => {
+    switch (sortBy) {
+      case 'match':
+        return t.dashboard.companyComponents.proposalsOverview.sortBestMatch
+      case 'date':
+        return t.dashboard.companyComponents.proposalsOverview.sortNewest
+      case 'price':
+        return t.dashboard.companyComponents.proposalsOverview.sortLowestPrice
+      default:
+        return ''
+    }
+  }
+
   return (
     <Modal
-      title={`Proposals for ${projectTitle}`}
+      title={t.dashboard.companyComponents.proposalsOverview.modalTitle.replace(
+        '{projectTitle}',
+        projectTitle,
+      )}
       isOpen={true}
       onClose={onBack}
+      width="lg"
     >
       <motion.div
         key="overview"
@@ -84,26 +105,33 @@ const ProposalsOverivewModal = ({
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         className="flex h-full flex-col"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
       >
         <div className="sticky z-10 border-b border-gray-100 bg-white p-4 pb-0">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Badge className="!border-amber-200 !bg-amber-50 !text-amber-700">
-                {proposals.length} Proposals
+                {t.dashboard.companyComponents.proposalsOverview.proposalsCountBadge.replace(
+                  '{count}',
+                  proposals.length.toString(),
+                )}
               </Badge>
-              <span className="text-xs text-gray-500">for {projectTitle}</span>
+              <span className="text-xs text-gray-500">
+                {t.dashboard.companyComponents.proposalsOverview.forProjectText.replace(
+                  '{projectTitle}',
+                  projectTitle,
+                )}
+              </span>
             </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 text-xs">
                   <Filter className="mr-1.5 h-3.5 w-3.5" />
-                  Sort by:{' '}
-                  {sortBy === 'match'
-                    ? 'Best Match'
-                    : sortBy === 'date'
-                      ? 'Newest'
-                      : 'Lowest Price'}
+                  {
+                    t.dashboard.companyComponents.proposalsOverview.sortByPrefix
+                  }{' '}
+                  {getSortLabel()}
                   <ChevronDown className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               </DropdownMenuTrigger>
@@ -112,19 +140,28 @@ const ProposalsOverivewModal = ({
                   className="cursor-pointer text-xs"
                   onClick={() => setSortBy('match')}
                 >
-                  Best Match
+                  {
+                    t.dashboard.companyComponents.proposalsOverview
+                      .sortBestMatch
+                  }
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer text-xs"
                   onClick={() => setSortBy('date')}
                 >
-                  Newest First
+                  {
+                    t.dashboard.companyComponents.proposalsOverview
+                      .sortNewestFirst
+                  }
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer text-xs"
                   onClick={() => setSortBy('price')}
                 >
-                  Lowest Price
+                  {
+                    t.dashboard.companyComponents.proposalsOverview
+                      .sortLowestPrice
+                  }
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -179,21 +216,27 @@ const ProposalsOverivewModal = ({
                             </span>
                           </div>
                           <Badge className="!rounded-full !border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-xs !text-[#63B7B7]">
-                            {Math.floor(70 + Math.random() * 30)}% Match
+                            {Math.floor(70 + Math.random() * 30)}
+                            {
+                              t.dashboard.companyComponents.proposalsOverview
+                                .matchBadgeSuffix
+                            }
                           </Badge>
                         </div>
                         <p className="mt-0.5 text-xs text-gray-500">
                           {proposal.professional.UserProfile?.headline ||
-                            'Consultant'}{' '}
+                            t.dashboard.companyComponents.proposalsOverview
+                              .fallbackHeadline}{' '}
                           •{' '}
                           {proposal.professional.UserProfile?.meta?.location ||
-                            'Remote'}
+                            t.dashboard.companyComponents.proposalsOverview
+                              .fallbackLocation}
                         </p>
                       </div>
 
                       <div className="flex flex-col items-end gap-1">
                         <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-sm font-semibold !text-[#63B7B7]">
-                          {formatCurrency(proposal.price || 0)}
+                          {formatCurrency(proposal.price || 0, locale)}
                         </Badge>
                         <div className="mt-0.5 flex items-center text-xs text-gray-500">
                           <Clock className="mr-1 h-3 w-3" />
