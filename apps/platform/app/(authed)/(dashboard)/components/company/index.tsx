@@ -281,12 +281,17 @@ export default function CompanyHome() {
                   ))}
                 </div>
 
-                <div className="mt-4 flex w-full items-center justify-between gap-2">
+                <div
+                  className="mt-4 flex w-full items-center justify-between gap-2"
+                  // dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                  dir={'ltr'}
+                >
                   <Button
                     variant="outline"
                     onClick={() => setPage(Math.max(1, page - 1))}
                     disabled={page === 1}
                     className="flex items-center gap-1"
+                    dir={'ltr'}
                   >
                     <ChevronLeft className="h-4 w-4" />
                     {t.dashboard.shared.previous}
@@ -346,6 +351,7 @@ export default function CompanyHome() {
                       )
                     }
                     className="flex items-center gap-1"
+                    dir={'ltr'}
                   >
                     {t.dashboard.shared.next}
                     <ChevronRight className="h-4 w-4" />

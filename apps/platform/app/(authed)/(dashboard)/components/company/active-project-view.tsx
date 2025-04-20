@@ -91,7 +91,7 @@ const ActiveProjectView = ({
                       .durationLabel
                   }
                 </span>
-                <span className="text-xs font-medium text-gray-700">
+                <span className="text-xs font-medium text-gray-700" dir={'ltr'}>
                   {project.meta.timeline ?? project.meta.duration}
                 </span>
               </div>

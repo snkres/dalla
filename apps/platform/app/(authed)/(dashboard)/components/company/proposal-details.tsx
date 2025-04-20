@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'motion/react'
 import { Button, Badge, Modal, Riyal } from '@dalla/design-system'
 import {
   Star,
@@ -16,7 +15,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
-import { SLIDE_ANIMATION } from '@dalla/utils'
+import { detectLanguage } from '@dalla/utils'
 import { updateProposalStatus } from '@lib/api/company/proposals'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { Link } from 'next-view-transitions'
@@ -182,9 +181,12 @@ const ProposalDetails = ({
       >
         <div
           className="flex h-full flex-col overflow-hidden md:flex-row"
-          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          dir={'ltr'}
         >
-          <div className="flex-1 overflow-y-auto">
+          <div
+            className="flex-1 overflow-y-auto"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
             <div className="border-b border-gray-100 p-5">
               <div className="mb-4 flex items-start gap-4">
                 <div className="relative">
@@ -223,7 +225,7 @@ const ProposalDetails = ({
                   </p>
 
                   <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1">
                       <Star className="mr-1 h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                       <span className="font-medium text-gray-700">
                         {selectedProposalData?.professional?.UserProfile?.meta
@@ -231,7 +233,7 @@ const ProposalDetails = ({
                           t.dashboard.companyComponents.proposalDetails.textNA}
                       </span>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1">
                       <MapPin className="mr-1 h-3.5 w-3.5" />
                       <span>
                         {selectedProposalData?.professional?.UserProfile?.meta
@@ -239,7 +241,7 @@ const ProposalDetails = ({
                           t.dashboard.companyComponents.proposalDetails.textNA}
                       </span>
                     </div>
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-1">
                       <Briefcase className="mr-1 h-3.5 w-3.5" />
                       <span>
                         {selectedProposalData?.professional?.UserProfile?.meta
@@ -283,7 +285,18 @@ const ProposalDetails = ({
                 </h2>
               </div>
               <div className="p-5">
-                <p className="text-sm leading-relaxed text-gray-600">
+                <p
+                  className="text-sm leading-relaxed text-gray-600"
+                  dir={
+                    detectLanguage(
+                      selectedProposalData?.description ||
+                        t.dashboard.companyComponents.proposalDetails
+                          .noCoverLetter,
+                    ) === 'arabic'
+                      ? 'rtl'
+                      : 'ltr'
+                  }
+                >
                   {selectedProposalData?.description ||
                     t.dashboard.companyComponents.proposalDetails.noCoverLetter}
                 </p>
@@ -300,7 +313,7 @@ const ProposalDetails = ({
                 </h2>
               </div>
               <div className="p-5">
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-gray-700" dir={'ltr'}>
                   {selectedProposalData?.timeline}
                 </p>
               </div>
@@ -376,7 +389,10 @@ const ProposalDetails = ({
             </div>
           </div>
 
-          <div className="w-full overflow-y-auto rounded-r-3xl border-r border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72">
+          <div
+            className="w-full overflow-y-auto rounded-r-3xl border-r border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
             <div className="space-y-3">
               <div className="border-b border-gray-200">
                 <div className="flex items-center border-b border-gray-200 p-3">
@@ -384,25 +400,49 @@ const ProposalDetails = ({
                     <Riyal className="h-3.5 w-3.5" />
                   </div>
                   <h3 className="text-sm font-medium text-gray-800">
-                    Proposal Details
+                    {t.dashboard.companyComponents.proposalDetails.actionsTitle}
                   </h3>
                 </div>
                 <div className="space-y-3 p-6 px-4">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Price</span>
+                    <span className="text-gray-600">
+                      {t.dashboard.companyComponents.proposalDetails.rateTitle}
+                    </span>
                     <span className="font-semibold text-gray-800">
-                      $ {selectedProposalData?.price}
+                      {formatCurrency(selectedProposalData?.price || 0, locale)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Delivery Time</span>
-                    <span className="font-normal text-gray-800">
-                      {selectedProposalData?.timeline || 'N/A'}
+                    <span className="text-gray-600">
+                      {
+                        t.dashboard.companyComponents.proposalDetails
+                          .timelineTitle
+                      }
+                    </span>
+                    <span
+                      className="font-normal text-gray-800"
+                      dir={
+                        detectLanguage(
+                          selectedProposalData?.timeline ||
+                            t.dashboard.companyComponents.proposalDetails
+                              .textNA,
+                        ) === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
+                      {selectedProposalData?.timeline ||
+                        t.dashboard.companyComponents.proposalDetails.textNA}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Submitted</span>
-                    <span className="font-normal text-gray-800">
+                    <span className="text-gray-600">
+                      {
+                        t.dashboard.companyComponents.proposalDetails
+                          .timelineTitle
+                      }
+                    </span>
+                    <span className="font-normal text-gray-800" dir="ltr">
                       {selectedProposalData?.createdAt
                         ? new Date(
                             selectedProposalData.createdAt,
@@ -411,12 +451,17 @@ const ProposalDetails = ({
                             day: 'numeric',
                             year: 'numeric',
                           })
-                        : 'N/A'}
+                        : t.dashboard.companyComponents.proposalDetails.textNA}
                     </span>
                   </div>
                   <div className="my-2 !h-0.5 !w-full !bg-gray-200" />
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Status</span>
+                    <span className="text-gray-600">
+                      {
+                        t.dashboard.companyComponents.proposalDetails
+                          .statusTitle
+                      }
+                    </span>
                     <Badge
                       className={
                         selectedProposalData?.status === 'Rejected'
@@ -427,11 +472,14 @@ const ProposalDetails = ({
                       }
                     >
                       {selectedProposalData?.status === 'Rejected'
-                        ? 'Rejected'
+                        ? t.dashboard.companyComponents.proposalDetails
+                            .statusRejected
                         : selectedProposalData?.status === 'Accepted'
-                          ? 'Accepted'
+                          ? t.dashboard.companyComponents.proposalDetails
+                              .statusAccepted
                           : selectedProposalData?.status === 'Pending'
-                            ? 'Pending Review'
+                            ? t.dashboard.companyComponents.proposalDetails
+                                .statusPending
                             : selectedProposalData?.status}
                     </Badge>
                   </div>
@@ -449,7 +497,9 @@ const ProposalDetails = ({
                     selectedProposalData?.status === 'Accepted'
                   }
                 >
-                  {hireProposalMutation.isPending ? 'Processing...' : 'Hire'}
+                  {hireProposalMutation.isPending
+                    ? 'Processing...'
+                    : t.dashboard.companyComponents.proposalDetails.hireButton}
                 </Button>
 
                 <Button
@@ -457,7 +507,7 @@ const ProposalDetails = ({
                   className="mb-2 h-9 w-full border-[#63B7B7] text-[#63B7B7] hover:bg-[#63B7B7]/5"
                 >
                   <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
-                  Message
+                  {t.dashboard.companyComponents.proposalDetails.messageButton}
                 </Button>
 
                 <div className="mt-3 flex gap-2">
@@ -475,7 +525,8 @@ const ProposalDetails = ({
                     <ThumbsDown className="mr-1.5 h-3.5 w-3.5" />
                     {declineProposalMutation.isPending
                       ? 'Processing...'
-                      : 'Decline'}
+                      : t.dashboard.companyComponents.proposalDetails
+                          .declineButton}
                   </Button>
                 </div>
               </div>
@@ -483,11 +534,16 @@ const ProposalDetails = ({
               <div className="p-4">
                 <div className="rounded-lg border border-gray-200 bg-white p-3">
                   <h4 className="mb-2 text-xs font-medium text-gray-800">
-                    View Full Profile
+                    {
+                      t.dashboard.companyComponents.proposalDetails
+                        .viewProfileButton
+                    }
                   </h4>
                   <p className="mb-3 text-xs text-gray-600">
-                    See this consultant&apos;s complete work history, portfolio,
-                    and reviews.
+                    {
+                      t.dashboard.companyComponents.proposalDetails
+                        .viewProfileButtonDescription
+                    }
                   </p>
                   <Button
                     variant="outline"

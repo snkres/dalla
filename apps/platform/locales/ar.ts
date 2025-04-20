@@ -505,7 +505,12 @@ export default {
         toastDeclineSuccessTitle: "تم رفض العرض",
         toastDeclineSuccessDescription: "لقد رفضت هذا العرض.",
         toastDeclineErrorTitle: "خطأ في رفض العرض",
-        toastGenericErrorDescription: "حدث خطأ غير معروف"
+        toastGenericErrorDescription: "حدث خطأ غير معروف",
+        statusTitle: "الحالة",
+        statusRejected: "مرفوض",
+        statusAccepted: "مقبول",
+        statusPending: "قيد المراجعة",
+        viewProfileButtonDescription: "اطلع على السيرة الذاتية الكاملة لهذا المستشار، ومحفظته، وتقييماته."
       },
       emptyProjectView: {
         title: "لا توجد مشاريع نشطة",

@@ -572,6 +572,9 @@ export const en = {
           'Are you sure you want to decline this proposal? This action cannot be undone.',
         confirmDeclineButton: 'Confirm Decline',
         decliningButton: 'Declining...',
+        // View Profile section
+        viewProfileButtonDescription:
+          "See this consultant's complete work history, portfolio, and reviews.",
         // Toasts
         toastHireSuccessTitle: 'Proposal accepted',
         toastHireSuccessDescription:
@@ -581,6 +584,10 @@ export const en = {
         toastDeclineSuccessDescription: 'You have declined this proposal.',
         toastDeclineErrorTitle: 'Error declining proposal',
         toastGenericErrorDescription: 'An unknown error occurred',
+        statusTitle: 'Status',
+        statusRejected: 'Rejected',
+        statusAccepted: 'Accepted',
+        statusPending: 'Pending Review',
       },
       emptyProjectView: {
         title: 'No active projects',

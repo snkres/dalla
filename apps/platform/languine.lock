@@ -437,6 +437,7 @@ files:
     dashboard.companyComponents.proposalDetails.declineDialogDescription: 4161a94f5c5623aa4bc30838e658045d
     dashboard.companyComponents.proposalDetails.confirmDeclineButton: 8442d82581a6481d3bd2d773148c1afb
     dashboard.companyComponents.proposalDetails.decliningButton: 6540200dfb5ccea5bb2caefee1371a20
+    dashboard.companyComponents.proposalDetails.viewProfileButtonDescription: 77b5f199e03c0297a1fa64632d8ab487
     dashboard.companyComponents.proposalDetails.toastHireSuccessTitle: 5378aa64e7d8253f9cc98db113003937
     dashboard.companyComponents.proposalDetails.toastHireSuccessDescription: 584c1d2ce42d82e3643e35c88b25ffc9
     dashboard.companyComponents.proposalDetails.toastHireErrorTitle: d0786d1d8a01986d4558b349942d237e
@@ -444,6 +445,10 @@ files:
     dashboard.companyComponents.proposalDetails.toastDeclineSuccessDescription: 60770eaf2482be09caa3323c063de75f
     dashboard.companyComponents.proposalDetails.toastDeclineErrorTitle: 6360c5bac6a53a035282c5e6767ba553
     dashboard.companyComponents.proposalDetails.toastGenericErrorDescription: 390c95fb109995a2a126d2edfdb287af
+    dashboard.companyComponents.proposalDetails.statusTitle: ec53a8c4f07baed5d8825072c89799be
+    dashboard.companyComponents.proposalDetails.statusRejected: d37b1f6c0512e2118cee17fea015b699
+    dashboard.companyComponents.proposalDetails.statusAccepted: 382ab522931673c11e398ead1b7b1678
+    dashboard.companyComponents.proposalDetails.statusPending: 00b38f89b377390e7c1d74d82cc2f858
     dashboard.companyComponents.emptyProjectView.title: 22df442bfed9b81b43dc0b9effab8fdf
     dashboard.companyComponents.emptyProjectView.description: 65cb7ae74d8e73b8773193f571db66b5
     dashboard.companyComponents.emptyProjectView.postJobCardTitle: 026c9c23d2a3ee8a19e8248ab434680c

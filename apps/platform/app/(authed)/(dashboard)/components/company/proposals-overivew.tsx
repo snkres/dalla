@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@dalla/design-system'
 import { Input } from '@dalla/design-system'
-import { SLIDE_ANIMATION } from '@dalla/utils'
+import { detectLanguage, SLIDE_ANIMATION } from '@dalla/utils'
 import type { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { cn } from '@dalla/utils'
@@ -208,7 +208,7 @@ const ProposalsOverivewModal = ({
                           <h4 className="text-sm font-medium text-gray-900">
                             {proposal.professional.name}
                           </h4>
-                          <div className="flex items-center !rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
+                          <div className="flex items-center justify-center gap-1 !rounded-full border border-amber-100 bg-amber-50 px-1.5 py-0.5">
                             <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
                             <span className="ml-0.5 text-xs font-medium text-amber-700">
                               {proposal.professional.UserProfile?.meta
@@ -223,14 +223,19 @@ const ProposalsOverivewModal = ({
                             }
                           </Badge>
                         </div>
-                        <p className="mt-0.5 text-xs text-gray-500">
-                          {proposal.professional.UserProfile?.headline ||
-                            t.dashboard.companyComponents.proposalsOverview
-                              .fallbackHeadline}{' '}
+                        <p className="mt-0.5 flex items-center gap-1 text-xs text-gray-500">
+                          <span>
+                            {proposal.professional.UserProfile?.headline ||
+                              t.dashboard.companyComponents.proposalsOverview
+                                .fallbackHeadline}{' '}
+                          </span>
                           •{' '}
-                          {proposal.professional.UserProfile?.meta?.location ||
-                            t.dashboard.companyComponents.proposalsOverview
-                              .fallbackLocation}
+                          <span>
+                            {proposal.professional.UserProfile?.meta
+                              ?.location ||
+                              t.dashboard.companyComponents.proposalsOverview
+                                .fallbackLocation}
+                          </span>
                         </p>
                       </div>
 
@@ -238,7 +243,14 @@ const ProposalsOverivewModal = ({
                         <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 text-sm font-semibold !text-[#63B7B7]">
                           {formatCurrency(proposal.price || 0, locale)}
                         </Badge>
-                        <div className="mt-0.5 flex items-center text-xs text-gray-500">
+                        <div
+                          className="mt-0.5 flex items-center justify-center text-xs text-gray-500"
+                          dir={
+                            detectLanguage(proposal.timeline || '') === 'arabic'
+                              ? 'rtl'
+                              : 'ltr'
+                          }
+                        >
                           <Clock className="mr-1 h-3 w-3" />
                           {proposal.timeline}
                         </div>
@@ -246,12 +258,20 @@ const ProposalsOverivewModal = ({
                     </div>
 
                     <div className="mt-2">
-                      <p className="line-clamp-2 text-xs text-gray-600">
+                      <p
+                        className="line-clamp-2 text-xs text-gray-600"
+                        dir={
+                          detectLanguage(proposal.description || '') ===
+                          'arabic'
+                            ? 'rtl'
+                            : 'ltr'
+                        }
+                      >
                         {proposal.description}
                       </p>
                     </div>
 
-                    <div className="mt-2 flex flex-wrap gap-1">
+                    <div className="mt-2 flex flex-wrap gap-1" dir={'ltr'}>
                       {proposal.professional.UserProfile?.meta?.skills
                         ?.slice(0, 3)
                         .map((skill, index) => (
@@ -285,7 +305,11 @@ const ProposalsOverivewModal = ({
                               : '!border-green-200 !bg-green-50 !text-green-700'
                           }
                         >
-                          {proposal.status}
+                          {proposal.status === 'Rejected'
+                            ? t.dashboard.companyComponents.proposalDetails
+                                .statusRejected
+                            : t.dashboard.companyComponents.proposalDetails
+                                .statusAccepted}
                         </Badge>
                       </div>
                     )}
