@@ -70,7 +70,7 @@ export default function FilterChips({
       <Button
         variant="ghost"
         size="sm"
-        className="h-7 rounded-full px-3 text-xs text-[#1D8489] transition-colors duration-200 hover:bg-[#BEDDF1]/15"
+        className="h-7 rounded-full px-3 text-xs !text-[#1D8489] transition-colors duration-200 hover:!bg-[#BEDDF1]/15"
         onClick={() => setShowSearchHelp(!showSearchHelp)}
       >
         <HelpCircle

@@ -344,7 +344,7 @@ export function ProfessionalHome() {
       size="sm"
       className={`!rounded-md px-3 py-1 text-sm ${
         sortBy === option
-          ? '!bg-[#234d64] text-white'
+          ? '!bg-[#64B7B7] text-white'
           : '!bg-gray-100 !text-gray-700 hover:!bg-gray-200'
       }`}
       onClick={() => setSortBy(option)}
@@ -534,20 +534,26 @@ export function ProfessionalHome() {
 
             {filteredProjects.length > 0 && totalPages > 1 && (
               <div
-                className="mt-8 flex w-full items-center justify-between gap-2"
-                dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                className={cn(
+                  'mt-8 flex w-full items-center justify-between gap-2',
+                  locale === 'ar' ? 'flex-row-reverse' : 'flex-row',
+                )}
               >
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page === 1 || isLoading || isRefreshing}
                   className="flex items-center gap-1"
+                  dir={locale === 'ar' ? 'ltr' : 'rtl'}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   {t.dashboard.shared.previous}
                 </Button>
 
-                <div className="flex items-center gap-1">
+                <div
+                  className="flex items-center gap-1"
+                  dir={locale === 'ar' ? 'ltr' : 'rtl'}
+                >
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     let pageNum = page
                     if (page <= 3) {
@@ -565,7 +571,7 @@ export function ProfessionalHome() {
                           variant={page === pageNum ? 'default' : 'outline'}
                           onClick={() => handlePageChange(pageNum)}
                           disabled={isLoading || isRefreshing}
-                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#234d64] text-white' : ''}`}
+                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#64B7B7] text-white' : ''}`}
                         >
                           {pageNum}
                         </Button>
@@ -582,6 +588,7 @@ export function ProfessionalHome() {
                   }
                   disabled={page === totalPages || isLoading || isRefreshing}
                   className="flex items-center gap-1"
+                  dir={locale === 'ar' ? 'ltr' : 'rtl'}
                 >
                   {t.dashboard.shared.next}
                   <ChevronRight className="h-4 w-4" />
