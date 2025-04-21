@@ -9,6 +9,7 @@ import { Consultant } from '@lib/types/company'
 import { GetAllProfessionalsRes } from '@lib/api/company/professionals'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ProfessionalCardProps {
   professional: GetAllProfessionalsRes['data'][0][number]
@@ -72,7 +73,7 @@ export function ProfessionalCard({
     >
       <div className="flex h-full flex-col justify-between p-4">
         <div>
-          <div className="mb-3 flex items-center gap-3">
+          <div className="mb-3 flex items-center gap-3" dir="ltr">
             <div className="relative flex-shrink-0">
               <div className="h-10 w-10 overflow-hidden rounded-full bg-[#63B7B7]/10 ring-1 ring-[#63B7B7]/20">
                 <Image
@@ -116,7 +117,10 @@ export function ProfessionalCard({
             </Badge>
           </div>
 
-          <div className="mb-3 flex items-center justify-between text-xs">
+          <div
+            className="mb-3 flex items-center justify-between text-xs"
+            dir="ltr"
+          >
             <div className="flex items-center gap-2">
               <div className="flex items-center">
                 <Star className="mr-0.5 h-3 w-3 fill-amber-400 text-amber-400" />
@@ -136,8 +140,8 @@ export function ProfessionalCard({
             </div>
 
             {professional.meta.hourlyRate && (
-              <div className="font-medium text-gray-700">
-                ${professional.meta.hourlyRate}
+              <div className="flex font-medium text-gray-700">
+                {formatCurrency(professional.meta.hourlyRate, 'h-4 w-4')}
                 {
                   t.dashboard.companyComponents.professionalCard
                     .hourlyRateSuffix
@@ -146,7 +150,7 @@ export function ProfessionalCard({
             )}
           </div>
 
-          <div className="mb-3 flex flex-wrap gap-1">
+          <div className="mb-3 flex flex-wrap gap-1" dir="ltr">
             {professional.meta.skills.slice(0, 2).map((skill, index) => (
               <Badge
                 key={index}

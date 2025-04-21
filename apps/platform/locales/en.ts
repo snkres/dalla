@@ -473,6 +473,13 @@ export const en = {
         hireButton: 'Hire',
         sendMessageButton: 'Send Message',
         saveProfileButton: 'Save Profile',
+        // Sidebar Labels
+        rateAvailabilityTitle: 'Rate & Availability',
+        hourlyRateLabel: 'Hourly Rate',
+        hourlyRateSuffix: '/hr',
+        availabilityLabel: 'Availability',
+        availabilitySuffix: 'hrs/week',
+        ratingTitle: 'Professional Rating',
       },
       addProject: {
         modalTitle: 'Start a Project',

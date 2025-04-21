@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { motion } from 'motion/react'
 import Image from 'next/image'
 import {
   Star,
@@ -17,7 +16,7 @@ import { Button, Modal, Riyal } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { useQuery } from '@tanstack/react-query'
 import { getProProfile } from '@lib/api/pro/profile'
-import { formatDate } from '@dalla/utils'
+import { cn, detectLanguage, formatDate } from '@dalla/utils'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
@@ -56,10 +55,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
       }}
       width="lg"
     >
-      <div
-        className="flex h-full flex-col overflow-hidden md:flex-row"
-        dir={locale === 'ar' ? 'rtl' : 'ltr'}
-      >
+      <div className="flex h-full flex-col overflow-hidden md:flex-row">
         <div className="flex-1 overflow-y-auto">
           <div className="border-b border-gray-100 p-5">
             <div className="mb-4 flex items-start gap-4">
@@ -120,7 +116,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                   </div>
                   <div className="flex items-center">
                     <Briefcase className="mr-1 h-3.5 w-3.5" />
-                    <span>
+                    <span dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                       {professional?.data?.data?.meta?.yearsOfExperience}{' '}
                       {
                         t.dashboard.companyComponents.professionalDetail
@@ -168,8 +164,11 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
           </div>
 
-          <div className="border-b border-gray-100 bg-[#63B7B7]/5 px-5 py-3">
-            <div className="flex items-center text-xs text-gray-700">
+          <div
+            className="border-b border-gray-100 bg-[#63B7B7]/5 px-5 py-3"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <div className="flex items-center gap-1 text-xs text-gray-700">
               <Shield className="mr-2 h-3.5 w-3.5 text-[#63B7B7]" />
               <span>
                 {
@@ -193,7 +192,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
           </div>
 
-          <div className="border-b border-gray-100">
+          <div
+            className="border-b border-gray-100"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
             <div className="flex items-center border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <FileText className="h-3.5 w-3.5 text-[#63B7B7]" />
@@ -202,12 +204,22 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 {t.dashboard.companyComponents.professionalDetail.aboutTitle}
               </h2>
             </div>
-            <p className="p-6 px-4 text-sm leading-relaxed text-gray-600">
+            <p
+              className="p-6 px-4 text-sm leading-relaxed text-gray-600"
+              dir={
+                detectLanguage(professional?.data?.data?.bio || '') === 'arabic'
+                  ? 'rtl'
+                  : 'ltr'
+              }
+            >
               {professional?.data?.data?.bio}
             </p>
           </div>
 
-          <div className="border-b border-gray-100">
+          <div
+            className="border-b border-gray-100"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
             <div className="flex items-center border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <Briefcase className="h-3.5 w-3.5 text-[#63B7B7]" />
@@ -219,12 +231,20 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 }
               </h2>
             </div>
-            <div className="space-y-4 p-6 px-4">
+            <div
+              className="space-y-4 p-6 px-4"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
               {professional?.data?.data?.experience?.map(
                 (exp: any, index: number) => (
                   <div
                     key={index}
                     className="border-b border-gray-100 pb-4 last:border-0 last:pb-0"
+                    dir={
+                      detectLanguage(exp.title || '') === 'arabic'
+                        ? 'rtl'
+                        : 'ltr'
+                    }
                   >
                     <h3 className="mb-1 text-sm font-medium text-gray-800">
                       {exp.title} at {exp.company}
@@ -258,61 +278,130 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
           </div>
 
-          <div className="border-gray-100">
-            <div className="flex items-center border-b border-gray-200 p-3">
-              <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
-                <Boxes className="h-3.5 w-3.5 text-[#63B7B7]" />
+          <div
+            className="w-full border-gray-100"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <div className="flex w-full items-center justify-between border-b border-gray-200 p-3">
+              <div className="flex w-full items-center gap-2">
+                <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
+                  <Boxes className="h-3.5 w-3.5 text-[#63B7B7]" />
+                </div>
+                <span className="text-sm font-medium text-gray-800">
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .portfolioTitle
+                  }
+                </span>
               </div>
-              <h2 className="text-sm font-medium text-gray-800">
-                {
-                  t.dashboard.companyComponents.professionalDetail
-                    .portfolioTitle
-                }
-              </h2>
               <Button
                 variant="ghost"
                 size="sm"
-                className="ml-auto h-7 text-xs text-[#63B7B7]"
+                className={cn(
+                  'ml-auto flex h-7 items-center gap-1 text-xs text-[#63B7B7]',
+                  // locale === 'ar' ? 'flex-row-reverse' : '',
+                )}
                 onClick={() =>
                   router.push(
                     `/professionals/${professional?.data.data.User.username}`,
                   )
                 }
               >
-                {t.dashboard.companyComponents.professionalDetail.viewAllButton}
-                <ChevronRight className="ml-1 h-3 w-3" />
+                <span>
+                  {' '}
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .viewAllButton
+                  }
+                </span>
+                <ChevronRight
+                  className={cn(
+                    'ml-1 h-3 w-3',
+                    locale === 'ar' ? 'rotate-180' : '',
+                  )}
+                />
               </Button>
             </div>
-            <div className="grid grid-cols-1 gap-3 p-6 px-4">
+            <div
+              className="grid grid-cols-1 gap-3 p-6 px-4"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
               {professional?.data?.data?.projects?.slice(0, 3).map((p: any) => (
                 <div className="rounded-lg bg-[#63B7B7]/10 p-3" key={p.id}>
-                  <h4 className="mb-1 text-xs font-medium text-gray-800">
+                  <h4
+                    className="mb-1 text-xs font-medium text-gray-800"
+                    dir={
+                      detectLanguage(p.title || '') === 'arabic' ? 'rtl' : 'ltr'
+                    }
+                  >
                     {p.title}
                   </h4>
-                  <p className="mb-1 text-[11px] text-gray-500">
+                  <p
+                    className="mb-1 text-[11px] text-gray-500"
+                    dir={
+                      detectLanguage(p.skills.join(', ') || '') === 'arabic'
+                        ? 'rtl'
+                        : 'ltr'
+                    }
+                  >
                     {p.skills.join(', ')}
                   </p>
-                  <p className="text-xs text-gray-600">{p.description}</p>
+                  <p
+                    className="text-xs text-gray-600"
+                    dir={
+                      detectLanguage(p.description || '') === 'arabic'
+                        ? 'rtl'
+                        : 'ltr'
+                    }
+                  >
+                    {p.description}
+                  </p>
                 </div>
               ))}
               {professional?.data?.data?.User.projects
                 ?.slice(0, 3)
                 .map((p: any) => (
                   <div className="rounded-lg bg-[#63B7B7]/10 p-3" key={p.id}>
-                    <h4 className="mb-1 text-xs font-medium text-gray-800">
+                    <h4
+                      className="mb-1 text-xs font-medium text-gray-800"
+                      dir={
+                        detectLanguage(p.title || '') === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
                       {p.title}
                     </h4>
-                    <p className="mb-1 text-[11px] text-gray-500">
+                    <p
+                      className="mb-1 text-[11px] text-gray-500"
+                      dir={
+                        detectLanguage(p.skills.join(', ') || '') === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
                       {p.skills.join(', ')}
                     </p>
-                    <p className="text-xs text-gray-600">{p.description}</p>
+                    <p
+                      className="text-xs text-gray-600"
+                      dir={
+                        detectLanguage(p.description || '') === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
+                      {p.description}
+                    </p>
                   </div>
                 ))}
             </div>
           </div>
         </div>
 
-        <div className="h-full w-full rounded-ee-3xl border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72">
+        <div
+          className="h-full w-full rounded-ee-3xl border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72"
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+        >
           <div className="space-y-3">
             <div className="border-b border-gray-200">
               <div className="flex items-center border-b border-gray-200 p-2">
@@ -320,27 +409,56 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                   <Riyal className="h-3.5 w-3.5" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-800">
-                  Rate & Availability
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .rateAvailabilityTitle
+                  }
                 </h3>
               </div>
               <div className="space-y-2 p-6 px-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Hourly Rate</span>
-                  <span className="flex items-center gap-1 text-sm font-normal text-gray-800">
-                    {professional?.data?.data?.meta?.hourlyRate &&
-                      formatCurrency(
-                        professional.data.data.meta.hourlyRate,
-                        locale,
-                      )}
-                    <span className="text-gray-600">/hr</span>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">
+                    {
+                      t.dashboard.companyComponents.professionalDetail
+                        .hourlyRateLabel
+                    }
                   </span>
+                  <div className="flex items-center justify-between gap-1 text-sm font-normal text-gray-800">
+                    <span>
+                      {(professional?.data?.data?.meta?.hourlyRate &&
+                        formatCurrency(
+                          professional.data.data.meta.hourlyRate,
+                          locale,
+                        )) ||
+                        t.dashboard.companyComponents.proposalDetails.textNA}
+                    </span>
+                    <span>
+                      {professional.data.data.meta.hourlyRate &&
+                        t.dashboard.companyComponents.professionalDetail
+                          .hourlyRateSuffix}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Availability</span>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">
+                    {
+                      t.dashboard.companyComponents.professionalDetail
+                        .availabilityLabel
+                    }
+                  </span>
                   <span className="text-sm font-normal text-gray-800">
                     {professional?.data?.data?.meta?.weeklyAvailability ??
-                      'N/A'}{' '}
-                    hrs/week
+                      t.dashboard.companyComponents.proposalDetails.textNA}
+
+                    {professional?.data?.data?.meta?.weeklyAvailability && (
+                      <>
+                        {' '}
+                        {
+                          t.dashboard.companyComponents.professionalDetail
+                            .availabilitySuffix
+                        }
+                      </>
+                    )}
                   </span>
                 </div>
               </div>
@@ -348,14 +466,17 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
 
             <div className="border-b border-gray-200">
               <div className="flex items-center justify-between border-b border-gray-200 p-3 pt-0">
-                <div className="flex items-center justify-start">
+                <div className="flex items-center justify-start gap-2">
                   <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                     <Star className="h-3.5 w-3.5 text-[#63B7B7]" />
                   </div>
                   <div className="flex flex-col items-start justify-center">
-                    <h3 className="text-sm font-medium text-gray-800">
-                      Professional Rating
-                    </h3>
+                    <span className="text-sm font-medium text-gray-800">
+                      {
+                        t.dashboard.companyComponents.professionalDetail
+                          .ratingTitle
+                      }
+                    </span>
                     <div className="flex items-center justify-center">
                       <div className="mr-1 flex items-center">
                         {Array.from(
@@ -370,9 +491,6 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                           />
                         ))}
                       </div>
-                      <span className="text-xs font-normal">
-                        {professional?.data?.data?.meta?.successRate}
-                      </span>
                     </div>
                   </div>
                 </div>
