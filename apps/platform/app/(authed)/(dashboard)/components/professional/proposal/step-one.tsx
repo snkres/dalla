@@ -14,6 +14,7 @@ import { Label } from '@dalla/design-system'
 import { cn } from '@dalla/utils'
 import { StepOneProps } from '@lib/types/steps'
 import { fadeIn } from '@dalla/utils'
+import { useTranslation } from '@hooks/use-translation'
 
 export function StepOne({
   coverLetter,
@@ -25,26 +26,29 @@ export function StepOne({
   setShowAiSuggestions,
   simulateAiSuggestions,
 }: StepOneProps) {
+  const translations = useTranslation()
+  const t = translations.dashboard.applyProposal
+
   return (
     <motion.div {...fadeIn} className="mx-auto max-w-3xl space-y-6">
       <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="absolute left-0 top-0 h-1 w-full bg-[#63B7B7]"></div>
         <div className="p-6">
-          <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-800">
+          <h3 className="mb-6 flex items-center gap-1 text-lg font-semibold text-gray-800">
             <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#63B7B7] text-sm text-white">
               1
             </span>
-            Introduce Yourself
+            {t.step1Title}
           </h3>
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Label
               htmlFor="cover-letter"
-              className="flex items-center text-sm font-medium text-gray-700"
+              className="flex items-center gap-1 text-sm font-medium text-gray-700"
             >
               <span className="mr-2 rounded-full bg-[#63B7B7]/10 p-1.5">
                 <span className="block h-3 w-3 rounded-full bg-[#63B7B7]"></span>
               </span>
-              Explain why you&apos;re perfect for this project
+              {t.step1Label}
             </Label>
             <motion.button
               whileHover={{ scale: 1.02 }}
@@ -53,7 +57,7 @@ export function StepOne({
               className="flex items-center rounded-lg border border-[#63B7B7]/20 bg-[#63B7B7]/5 px-3 py-1.5 text-xs font-medium text-[#63B7B7] transition-colors hover:bg-[#63B7B7]/10"
             >
               <Sparkles className="mr-2 h-3.5 w-3.5" />
-              Get AI suggestions
+              {t.aiSuggestionsButton}
             </motion.button>
           </div>
 
@@ -62,7 +66,7 @@ export function StepOne({
               id="cover-letter"
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
-              placeholder="Dear client, I'm excited about your project because..."
+              placeholder={t.coverLetterPlaceholder}
               className="h-52 resize-none rounded-xl border-gray-100 bg-[#BEDDF1]/5 p-4 text-sm transition-colors hover:border-[#63B7B7]/30 focus:border-[#63B7B7] focus:ring-[#63B7B7]"
             />
           </div>
@@ -80,7 +84,7 @@ export function StepOne({
                   <div className="mb-3 flex items-center justify-between">
                     <span className="flex items-center text-sm font-medium text-[#63B7B7]">
                       <Sparkles className="mr-2 h-3.5 w-3.5" />
-                      Suggested talking points
+                      {t.suggestedPointsTitle}
                     </span>
                     <Button
                       variant="ghost"
@@ -126,7 +130,10 @@ export function StepOne({
                       : 'text-gray-500',
                 )}
               >
-                {coverLetter.length} characters
+                {t.charactersCount.replace(
+                  '{count}',
+                  coverLetter.length.toString(),
+                )}
               </span>
               <span className="mx-2 text-gray-300">|</span>
               <button
@@ -134,7 +141,7 @@ export function StepOne({
                 onClick={() => setShowCoverLetterTips(!showCoverLetterTips)}
               >
                 <HelpCircle className="mr-1.5 h-3.5 w-3.5" />
-                <span>Writing tips</span>
+                <span>{t.writingTipsLink}</span>
                 {showCoverLetterTips ? (
                   <ChevronUp className="ml-1.5 h-3 w-3" />
                 ) : (
@@ -154,7 +161,7 @@ export function StepOne({
                   coverLetter.length > 150 ? 'text-green-600' : 'text-gray-500'
                 }
               >
-                Recommended: 150+ characters
+                {t.recommendedLength}
               </span>
             </div>
           </div>
@@ -171,24 +178,20 @@ export function StepOne({
                 <div className="rounded-xl border border-[#63B7B7]/10 bg-[#63B7B7]/5 p-4">
                   <h4 className="mb-3 flex items-center text-sm font-medium text-[#63B7B7]">
                     <HelpCircle className="mr-2 h-4 w-4" />
-                    Tips for a successful proposal
+                    {t.tipsTitle}
                   </h4>
                   <div className="rounded-lg border border-gray-100 bg-white p-3">
                     <ul className="space-y-2.5 text-xs text-gray-700">
-                      {[
-                        'Mention relevant experience with Hugo and Tailwind CSS',
-                        "Reference similar projects you've completed successfully",
-                        "Show understanding of the client's needs for inspiring single moms",
-                        'Highlight your design skills and ability to create smooth transitions',
-                        'Explain your process for creating filterable business idea cards',
-                      ].map((tip, index) => (
-                        <li key={index} className="flex items-start">
-                          <span className="mr-2 mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-[#63B7B7]/10">
-                            <span className="block h-1.5 w-1.5 rounded-full bg-[#63B7B7]"></span>
-                          </span>
-                          <span>{tip}</span>
-                        </li>
-                      ))}
+                      {[t.tip1, t.tip2, t.tip3, t.tip4, t.tip5].map(
+                        (tip, index) => (
+                          <li key={index} className="flex items-start">
+                            <span className="mr-2 mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-[#63B7B7]/10">
+                              <span className="block h-1.5 w-1.5 rounded-full bg-[#63B7B7]"></span>
+                            </span>
+                            <span>{tip}</span>
+                          </li>
+                        ),
+                      )}
                     </ul>
                   </div>
                 </div>

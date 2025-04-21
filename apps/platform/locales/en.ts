@@ -466,6 +466,140 @@ export const en = {
       clearFiltersSearchButton: 'Clear Filters & Search',
       clearAllFiltersButton: 'Clear All',
     },
+    // Add keys for proposal application flow below
+    applyProposal: {
+      modalTitle: 'Submit a Proposal',
+      stepCounter: 'Step {activeStep} of 3',
+      step1Name: 'Cover letter',
+      step2Name: 'Pricing',
+      step3Name: 'Experience & Attachments',
+      applyingTo: "You're applying to: {title}",
+      // Step 1: Introduce Yourself
+      step1Title: 'Introduce Yourself',
+      step1Label: "Explain why you're perfect for this project",
+      aiSuggestionsButton: 'Get AI suggestions',
+      coverLetterPlaceholder:
+        "Dear client, I'm excited about your project because...",
+      suggestedPointsTitle: 'Suggested talking points',
+      charactersCount: '{count} characters',
+      writingTipsLink: 'Writing tips',
+      recommendedLength: 'Recommended: 150+ characters',
+      tipsTitle: 'Tips for a successful proposal',
+      tip1: 'Mention relevant experience with Hugo and Tailwind CSS', // Placeholder, adjust based on actual project context
+      tip2: "Reference similar projects you've completed successfully",
+      tip3: "Show understanding of the client's needs for inspiring single moms", // Placeholder, adjust based on actual project context
+      tip4: 'Highlight your design skills and ability to create smooth transitions',
+      tip5: 'Explain your process for creating filterable business idea cards', // Placeholder, adjust based on actual project context
+      // Default/Example content (Consider moving static examples outside locale files if complex)
+      defaultMilestone1Name: 'Initial design mockups',
+      defaultMilestone1Duration: '1 week',
+      defaultMilestone2Name: 'Implementation',
+      defaultMilestone2Duration: '1-2 weeks',
+      newMilestoneDefaultName: 'New milestone',
+      newMilestoneDefaultDuration: '1 week',
+      aiSuggestion1:
+        "I noticed your project requires a blend of design expertise and Hugo implementation. I've created 5+ websites with Hugo and have experience with Tailwind CSS for responsive designs.",
+      aiSuggestion2:
+        'As a frontend developer specializing in fast, accessible websites, I can deliver your project with optimized performance and SEO best practices built-in.',
+      aiSuggestion3:
+        'My background working with parent-focused websites gives me unique insight into creating engaging, intuitive interfaces that will resonate with your target audience.',
+      // Step 2: Pricing Details
+      step2Title: 'Pricing Details',
+      bidTypeFixed: 'Fixed Bid',
+      bidTypeMilestones: 'By Milestone',
+      setPriceTitle: 'Set Your Price',
+      bidAmountLabel: 'Bid Amount',
+      youllReceiveLabel: "You'll receive:",
+      serviceFeeLabel: 'Service Fee:',
+      timelineTitle: 'Timeline',
+      timelinePlaceholder: 'e.g. 3',
+      timelineUnitPlaceholder: 'Select unit',
+      timelineUnitDays: 'Days',
+      timelineUnitWeeks: 'Weeks',
+      timelineUnitMonths: 'Months',
+      addMilestoneButton: 'Add Milestone',
+      milestoneNamePlaceholder: 'Milestone name',
+      milestonePriceLabel: 'Price',
+      milestoneDurationLabel: 'Duration',
+      removeMilestoneAriaLabel: 'Remove milestone',
+      milestoneValidationError:
+        'Milestone name, price, and duration are required',
+      totalMilestonesAmount: 'Total Milestones Amount',
+      clientExpectationsTitle: 'Client Expectations',
+      clientBudgetLabel: 'Budget',
+      clientTimelineLabel: 'Timeline',
+      // Step 3: Showcase Your Work
+      step3Title: 'Showcase Your Work',
+      relevantProjectsTitle: 'Relevant Projects',
+      portfolioSelectionPrompt:
+        'Select projects from your portfolio that showcase your skills for this job.',
+      noPortfolioProjects: "Your profile doesn't have any projects yet.",
+      attachmentsTitle: 'Attachments',
+      dragDropPrompt: 'Drag and drop your files here',
+      fileTypesPrompt: 'PDF, DOC, DOCX, JPG, PNG up to 5MB',
+      uploadButton: 'Upload Files',
+      totalSizeLabel: 'Total size:',
+      maxSizeLabel: 'Maximum:',
+      fileSizeError: 'Total file size exceeds the {limit}MB limit',
+      maxFilesError: 'You can upload a maximum of 5 files',
+      // Sidebar
+      submitButton: 'Submit Proposal',
+      submittingButton: 'Submitting...',
+      completionTitle: 'Completion',
+      sidebarStep1Title: 'Cover Letter',
+      sidebarStep2Title: 'Pricing',
+      sidebarStep3Title: 'Portfolio & Files',
+      statusAdded: 'Added',
+      statusRequired: 'Required',
+      statusComplete: 'Complete',
+      statusRecommended: 'Recommended',
+      statusPortfolioAdded: 'Portfolio added',
+      statusFilesAdded: '{count} file{plural}', // plural: '' or 's'
+      statusBidTypeFixed: 'Fixed',
+      statusBidTypeMilestone: 'Milestones',
+      projectInfoTitle: 'Project Information',
+      skillsRequiredTitle: 'Skills Required',
+      viewAllSkills: 'View all {count} skills',
+      showLessSkills: 'Show less',
+      aboutClientTitle: 'About the client',
+      paymentVerified: 'Payment method verified',
+      paymentNotVerified: 'Payment method not verified',
+      clientLocation: 'Location',
+      clientLocalTime: 'Local Time',
+      clientTimeZoneNotAvailable: 'Time zone not available',
+      // Success Screen
+      successTitle: 'Application Submitted!',
+      successDescription:
+        'Your proposal for {title} has been successfully submitted. The client will be notified and review your application.',
+      returnToProjectButton: 'Return to project',
+      viewProposalsButton: 'View your proposals',
+      // Sidebar Success State
+      submittedTitle: 'Proposal submitted',
+      submittedDescription: 'The client will review it shortly',
+      submittedNotification:
+        "You'll be notified when they respond to your application.",
+      whatHappensNextTitle: 'What happens next',
+      nextStep1Title: 'Client reviews your proposal',
+      nextStep1Desc: 'This typically takes 1-3 days',
+      nextStep2Title: "If interested, they'll message you",
+      nextStep2Desc: "You'll receive an email notification",
+      nextStep3Title: 'Discuss project details',
+      nextStep3Desc: 'Clarify any questions about the work',
+      nextStep4Title: 'Client makes hiring decision',
+      nextStep4Desc: "If selected, you'll begin work on the project",
+      // Navigation Buttons
+      previousButton: 'Previous',
+      cancelButton: 'Cancel',
+      continueButton: 'Continue',
+      // Toast Messages
+      toastSubmitErrorTitle: 'Cannot Submit Proposal',
+      toastSubmitErrorDesc:
+        'Please complete all required fields before submitting.',
+      toastGenericErrorTitle: 'Error',
+      toastGenericErrorDesc: 'Failed to submit proposal. Please try again.',
+      agreementText:
+        'By submitting, you agree to the Terms of Service and Code of Conduct.',
+    },
     // Add keys for company child components
     companyComponents: {
       projectsOverview: {

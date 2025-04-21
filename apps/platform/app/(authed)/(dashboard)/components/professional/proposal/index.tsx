@@ -13,6 +13,8 @@ import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { upload } from '@lib/api/shared/upload'
 import { Modal } from '@dalla/design-system'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface ProjectApplicationProps {
   project: GetAllProjectsProfessionalViewRes['data'][0][number]
@@ -20,6 +22,11 @@ interface ProjectApplicationProps {
 }
 
 export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
+  const translations = useTranslation()
+  const t = translations.dashboard.applyProposal
+  const t_shared = translations.dashboard.shared
+  const t_proHome = translations.dashboard.professionalHome
+
   const { toast } = useToast()
   const [activeStep, setActiveStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -34,18 +41,21 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   const [estimatedDuration, setEstimatedDuration] = useState(
     project.meta?.duration || '2 weeks',
   )
-  const defaultMilestones = [
-    {
-      name: 'Initial design mockups',
-      price: Math.round(bidAmount * 0.3),
-      duration: '1 week',
-    },
-    {
-      name: 'Implementation',
-      price: Math.round(bidAmount * 0.5),
-      duration: '1-2 weeks',
-    },
-  ]
+  const defaultMilestones = useMemo(
+    () => [
+      {
+        name: t.defaultMilestone1Name,
+        price: Math.round(bidAmount * 0.3),
+        duration: t.defaultMilestone1Duration,
+      },
+      {
+        name: t.defaultMilestone2Name,
+        price: Math.round(bidAmount * 0.5),
+        duration: t.defaultMilestone2Duration,
+      },
+    ],
+    [bidAmount, t],
+  )
   const [milestones, setMilestones] = useState(defaultMilestones)
   const [relatedProjects, setRelatedProjects] = useState<
     Array<{ title: string; selected: boolean }>
@@ -154,8 +164,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   const handleSubmit = useCallback(async () => {
     if (!canSubmit) {
       toast({
-        title: 'Cannot Submit Proposal',
-        description: 'Please complete all required fields before submitting.',
+        title: t.toastSubmitErrorTitle,
+        description: t.toastSubmitErrorDesc,
         variant: 'destructive',
       })
       return
@@ -175,7 +185,6 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
         description: coverLetter,
         relevantProjects: [],
         media: media.map((m) => m.data.fileUrl),
-        // media: ['https://placehold  .co/80x80/e6f3f3/63B7B7?text=Media'],
       }
 
       // Submit the proposal
@@ -184,14 +193,14 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
       // Handle successful submission
       setIsSubmitted(true)
       toast({
-        title: 'Proposal Submitted',
-        description: 'Your proposal has been submitted successfully!',
+        title: t_proHome.proposalSuccessToastTitle,
+        description: t_proHome.proposalSuccessToastDescription,
       })
     } catch (error) {
       console.error('Error submitting proposal:', error)
       toast({
-        title: 'Error',
-        description: 'Failed to submit proposal. Please try again.',
+        title: t.toastGenericErrorTitle,
+        description: t.toastGenericErrorDesc,
         variant: 'destructive',
       })
     } finally {
@@ -205,18 +214,16 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     estimatedDuration,
     milestones,
     coverLetter,
-    relatedProjects,
     project.id,
+    files,
+    toast,
+    t,
   ])
 
   const simulateAiSuggestions = useCallback(() => {
     setShowAiSuggestions(true)
-    setAiSuggestions([
-      "I noticed your project requires a blend of design expertise and Hugo implementation. I've created 5+ websites with Hugo and have experience with Tailwind CSS for responsive designs.",
-      'As a frontend developer specializing in fast, accessible websites, I can deliver your project with optimized performance and SEO best practices built-in.',
-      'My background working with parent-focused websites gives me unique insight into creating engaging, intuitive interfaces that will resonate with your target audience.',
-    ])
-  }, [])
+    setAiSuggestions([t.aiSuggestion1, t.aiSuggestion2, t.aiSuggestion3])
+  }, [t])
 
   const handleBidChange = useCallback((value: number) => {
     setBidAmount(value)
@@ -247,13 +254,13 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
       setMilestones([
         ...milestones,
         {
-          name: 'New milestone',
+          name: t.newMilestoneDefaultName,
           price: Math.round(bidAmount * 0.1),
-          duration: '1 week',
+          duration: t.newMilestoneDefaultDuration,
         },
       ])
     }
-  }, [milestones, bidAmount])
+  }, [milestones, bidAmount, t])
 
   const handleRemoveMilestone = useCallback(
     (index: number) => {
@@ -274,22 +281,26 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     },
     [],
   )
+  const { locale } = useLocale()
 
   return (
-    <Modal isOpen={true} onClose={onClose} title="Submit a Proposal" width="xl">
+    <Modal isOpen={true} onClose={onClose} title={t.modalTitle} width="xl">
       <ApplicationHeader activeStep={activeStep} isSubmitted={isSubmitted} />
       <div className="flex h-full flex-col justify-end md:flex-row">
-        <div className="relative w-[70%] overflow-y-auto p-4 sm:p-6">
+        <div
+          className="relative w-[70%] overflow-y-auto p-4 sm:p-6"
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+        >
           <div className="max-w-3xl">
             {isSubmitted ? (
               <SuccessScreen project={project} onClose={onClose} />
             ) : (
               <div className="space-y-6">
                 <h1 className="mb-2 text-xl font-semibold text-gray-900">
-                  Submit a Proposal
+                  {t.modalTitle}
                 </h1>
                 <p className="mb-6 text-sm text-gray-600">
-                  You&apos;re applying to:{' '}
+                  {t.applyingTo.replace('{title}', '')}
                   <span className="font-medium text-gray-800">
                     {project.title}
                   </span>
@@ -333,7 +344,7 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
                   />
                 )}
 
-                <div className="flex justify-end">
+                <div className="flex justify-end" dir={'ltr'}>
                   <NavigationButtons
                     activeStep={activeStep}
                     setActiveStep={setActiveStep}
