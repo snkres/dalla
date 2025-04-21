@@ -258,7 +258,17 @@ const ProposalDetails = ({
                 </div>
               </div>
 
-              <div className="mb-1 flex flex-wrap gap-1.5">
+              <div
+                className="mb-1 flex flex-wrap gap-1.5"
+                dir={
+                  detectLanguage(
+                    selectedProposalData?.professional?.UserProfile?.meta
+                      ?.skills?.[0] || '',
+                  ) === 'arabic'
+                    ? 'rtl'
+                    : 'ltr'
+                }
+              >
                 {selectedProposalData?.professional?.UserProfile?.meta?.skills?.map(
                   (skill: string, index: number) => (
                     <Badge

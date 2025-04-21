@@ -56,7 +56,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
       width="lg"
     >
       <div className="flex h-full flex-col overflow-hidden md:flex-row">
-        <div className="flex-1 overflow-y-auto">
+        <div
+          className="flex-1 overflow-y-auto"
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+        >
           <div className="border-b border-gray-100 p-5">
             <div className="mb-4 flex items-start gap-4">
               <div className="relative">
@@ -82,9 +85,9 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
 
               <div className="flex-1">
                 <div className="mb-1 flex items-start justify-between">
-                  <h1 className="text-lg font-medium text-gray-800">
+                  <span className="text-lg font-medium text-gray-800">
                     {professional?.data?.data?.User?.name}
-                  </h1>
+                  </span>
                   <Badge
                     className={`!rounded-full !px-2 !py-0.5 !text-xs !font-medium capitalize ${
                       professional?.data?.data?.meta?.availability ===
@@ -104,17 +107,17 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 </p>
 
                 <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <Star className="mr-1 h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     <span className="font-medium text-gray-700">
                       {professional?.data?.data?.meta?.successRate ?? 5}
                     </span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <MapPin className="mr-1 h-3.5 w-3.5" />
                     <span>{professional?.data?.data?.meta?.location}</span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <Briefcase className="mr-1 h-3.5 w-3.5" />
                     <span dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                       {professional?.data?.data?.meta?.yearsOfExperience}{' '}
@@ -128,7 +131,16 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               </div>
             </div>
 
-            <div className="mb-1 flex flex-wrap gap-1.5">
+            <div
+              className="mb-1 flex flex-wrap gap-1.5"
+              dir={
+                detectLanguage(
+                  professional?.data?.data?.meta?.skills?.[0] || '',
+                ) === 'arabic'
+                  ? 'rtl'
+                  : 'ltr'
+              }
+            >
               {(showAllSkills
                 ? professional?.data?.data?.meta?.skills
                 : professional?.data?.data?.meta?.skills?.slice(0, 5)
