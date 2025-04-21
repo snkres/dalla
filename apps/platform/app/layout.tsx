@@ -61,7 +61,7 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html
-        className={cn(nebula.variable, sora.variable, madaniArabic.className)}
+        className={cn(nebula.variable, sora.variable, madaniArabic.variable)}
       >
         <body className="font-nebula">
           {/* <Suspense> */}

@@ -543,17 +543,16 @@ export function ProfessionalHome() {
                   variant="outline"
                   onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page === 1 || isLoading || isRefreshing}
-                  className="flex items-center gap-1"
-                  dir={locale === 'ar' ? 'ltr' : 'rtl'}
+                  className={cn(
+                    'flex items-center gap-1',
+                    locale === 'ar' ? 'flex-row-reverse' : 'flex-row',
+                  )}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   {t.dashboard.shared.previous}
                 </Button>
 
-                <div
-                  className="flex items-center gap-1"
-                  dir={locale === 'ar' ? 'ltr' : 'rtl'}
-                >
+                <div className="flex items-center gap-1">
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     let pageNum = page
                     if (page <= 3) {
@@ -587,8 +586,10 @@ export function ProfessionalHome() {
                     handlePageChange(Math.min(totalPages, page + 1))
                   }
                   disabled={page === totalPages || isLoading || isRefreshing}
-                  className="flex items-center gap-1"
-                  dir={locale === 'ar' ? 'ltr' : 'rtl'}
+                  className={cn(
+                    'flex items-center gap-1',
+                    locale === 'ar' ? 'flex-row-reverse' : 'flex-row',
+                  )}
                 >
                   {t.dashboard.shared.next}
                   <ChevronRight className="h-4 w-4" />

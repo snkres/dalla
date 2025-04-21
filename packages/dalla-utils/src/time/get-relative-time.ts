@@ -15,9 +15,20 @@ export interface GetRelativeTimeOptions {
 
 export function getRelativeTime(
   timestamp: string,
-  options: GetRelativeTimeOptions,
+  options?: GetRelativeTimeOptions,
 ): string {
-  const { locale, translations } = options
+  const { locale, translations } = options ?? {
+    locale: 'en',
+    translations: {
+      justNow: 'now',
+      minuteAgo: '1 minute ago',
+      minutesAgo: '{count} minutes ago',
+      hourAgo: '1 hour ago',
+      hoursAgo: '{count} hours ago',
+      dayAgo: '1 day ago',
+      daysAgo: '{count} days ago',
+    },
+  }
   const now = new Date()
   const past = new Date(timestamp)
   const diffMs = now.getTime() - past.getTime()

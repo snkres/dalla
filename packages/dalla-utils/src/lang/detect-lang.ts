@@ -7,6 +7,9 @@ export function detectLanguage(text: string): 'english' | 'arabic' | 'mixed' {
   const hasArabic = arabicRegex.test(text)
   const hasEnglish = englishRegex.test(text)
 
+  console.log('hasArabic', hasArabic, text)
+  console.log('hasEnglish', hasEnglish)
+
   if (hasArabic && hasEnglish) {
     return 'mixed'
   } else if (hasArabic) {

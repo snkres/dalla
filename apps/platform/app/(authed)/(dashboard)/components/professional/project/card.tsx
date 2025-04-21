@@ -76,7 +76,9 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             <h3
               className={cn(
                 'text-base font-medium text-gray-900 transition-colors group-hover:text-[#1D8489]',
-                detectLanguage(title) === 'english' ? '!font-nebula' : '',
+                detectLanguage(title) === 'english'
+                  ? '!font-nebula'
+                  : 'font-arabic',
               )}
             >
               {title}
@@ -88,7 +90,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                   'text-sm text-gray-500',
                   detectLanguage(company.name) === 'english'
                     ? 'font-nebula'
-                    : '',
+                    : 'font-arabic',
                 )}
               >
                 {company.name}
@@ -120,7 +122,9 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
         <p
           className={cn(
             'mb-5 line-clamp-3 overflow-hidden text-ellipsis text-sm',
-            detectLanguage(description) === 'english' ? 'font-nebula' : '',
+            detectLanguage(description) === 'english'
+              ? 'font-nebula'
+              : 'font-arabic',
           )}
           dir={detectLanguage(description) === 'arabic' ? 'rtl' : 'ltr'}
         >
@@ -132,7 +136,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
             'mb-5 flex flex-wrap gap-2',
             detectLanguage(skills?.[0] || '') === 'english'
               ? 'font-nebula'
-              : '',
+              : 'font-arabic',
           )}
           dir={detectLanguage(skills?.[0] || '') === 'arabic' ? 'rtl' : 'ltr'}
         >

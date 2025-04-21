@@ -131,7 +131,7 @@ export function ProjectDetail({
                     'mb-2 text-lg font-semibold text-gray-900 sm:text-xl',
                     detectLanguage(data?.title || '') === 'english'
                       ? 'font-nebula'
-                      : '',
+                      : 'font-arabic',
                   )}
                 >
                   {data?.title}
@@ -164,7 +164,7 @@ export function ProjectDetail({
                   'prose max-w-none text-sm text-gray-700 sm:text-base',
                   detectLanguage(data?.description || '') === 'english'
                     ? 'font-nebula'
-                    : '',
+                    : 'font-arabic',
                 )}
                 dir={
                   detectLanguage(data?.description || '') === 'arabic'
@@ -399,7 +399,7 @@ export function ProjectDetail({
                         'text-base font-semibold text-gray-800 underline underline-offset-2 hover:text-[#63B7B7]',
                         detectLanguage(data.company.name) === 'english'
                           ? 'font-nebula'
-                          : '',
+                          : 'font-arabic',
                       )}
                     >
                       {data.company.name}

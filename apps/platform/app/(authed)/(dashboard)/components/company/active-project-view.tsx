@@ -16,7 +16,7 @@ import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
-import { detectLanguage } from '@dalla/utils'
+import { detectLanguage, translateDuration } from '@dalla/utils'
 
 const ActiveProjectView = ({
   project,
@@ -97,8 +97,8 @@ const ActiveProjectView = ({
                       .durationLabel
                   }
                 </span>
-                <span className="text-xs font-medium text-gray-700" dir={'ltr'}>
-                  {project.meta.timeline ?? project.meta.duration}
+                <span className="text-xs font-medium text-gray-700">
+                  {translateDuration(project.meta.duration, locale)}
                 </span>
               </div>
               {/* {project.assignedProfessionalId && (
