@@ -15,7 +15,7 @@ const sora = Sora({
   display: 'swap',
 })
 
-const nebula = localFont({
+export const nebula = localFont({
   src: [
     {
       path: '../public/fonts/nebula/NebulaSans-Book.woff2',
@@ -33,11 +33,12 @@ const nebula = localFont({
       style: 'normal',
     },
   ],
-  variable: '--font-sans',
+  variable: '--font-nebula',
+
   display: 'swap',
 })
 
-const madaniArabic = localFont({
+export const madaniArabic = localFont({
   src: '../public/fonts/madani/Madani-Arabic-Regular.woff2',
   variable: '--font-arabic',
   weight: '400',
@@ -59,8 +60,10 @@ export default function RootLayout({
 }>) {
   return (
     <ViewTransitions>
-      <html className={cn(nebula.className, sora.variable)}>
-        <body className="font-sans">
+      <html
+        className={cn(nebula.variable, sora.variable, madaniArabic.className)}
+      >
+        <body className="font-nebula">
           {/* <Suspense> */}
           <Providers
             nebulaClassName={nebula.className}

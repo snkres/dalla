@@ -17,32 +17,54 @@ import { Badge } from '@dalla/design-system'
 import { Progress } from '@dalla/design-system'
 import { cn } from '@dalla/utils'
 import {
-  ProjectSidebar,
+  ProjectSidebar as ProjectSidebarType,
   SkillItem,
-  QuickLink,
+  QuickLink as QuickLinkType,
   SidebarCardProps,
   SidebarHeaderProps,
 } from '@lib/types/profile'
 import { useAtom } from 'jotai'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function ProfileSidebar() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [profile] = useAtom(proMetaAtom)
   if (!profile) return null
 
-  const quickLinks: QuickLink[] = [
+  const projects: ProjectSidebarType[] = []
+  const skillData: SkillItem[] = []
+
+  const quickLinks: QuickLinkType[] = [
     {
       icon: <Riyal />,
-      label: 'Get Paid',
+      label: t.dashboard.professionalSidebar.quickLinks.getPaid,
       href: '#/payments',
       highlight: true,
     },
-    { icon: <HelpCircle />, label: 'Help Center', href: '#/help' },
-    { icon: <FileText />, label: 'Direct Contract', href: '#/contracts' },
-    { icon: <Bell />, label: 'Alerts', href: '#/alerts' },
+    {
+      icon: <HelpCircle />,
+      label: t.dashboard.professionalSidebar.quickLinks.helpCenter,
+      href: '#/help',
+    },
+    {
+      icon: <FileText />,
+      label: t.dashboard.professionalSidebar.quickLinks.directContract,
+      href: '#/contracts',
+    },
+    {
+      icon: <Bell />,
+      label: t.dashboard.professionalSidebar.quickLinks.alerts,
+      href: '#/alerts',
+    },
   ]
 
-  const handleProjectClick = (project: ProjectSidebar, e: React.MouseEvent) => {
+  const handleProjectClick = (
+    project: ProjectSidebarType,
+    e: React.MouseEvent,
+  ) => {
     e.preventDefault()
     console.log('Project clicked:', project)
   }
@@ -61,7 +83,12 @@ export function ProfileSidebar() {
         {React.isValidElement(icon)
           ? React.cloneElement(
               icon as React.ReactElement<React.SVGProps<SVGSVGElement>>,
-              { className: 'h-3.5 w-3.5 mr-1.5 text-[#63B7B7]' },
+              {
+                className: cn(
+                  'h-3.5 w-3.5 text-[#63B7B7]',
+                  locale === 'ar' ? 'ml-1.5' : 'mr-1.5',
+                ),
+              },
             )
           : icon}
         {title}
@@ -72,22 +99,34 @@ export function ProfileSidebar() {
 
   console.log(profile?.data?.UserProfile)
 
+  const getDemandLabel = (demand: string | undefined) => {
+    if (!demand) return ''
+    const demandLower = demand.toLowerCase()
+    if (demandLower === 'high')
+      return t.dashboard.professionalSidebar.skillsExpertise.demandHigh
+    if (demandLower === 'medium')
+      return t.dashboard.professionalSidebar.skillsExpertise.demandMedium
+    if (demandLower === 'low')
+      return t.dashboard.professionalSidebar.skillsExpertise.demandLow
+    return demand
+  }
+
   return (
-    <div className="space-y-5 lg:sticky lg:top-6 lg:self-start">
+    <div
+      className="space-y-5 lg:sticky lg:top-6 lg:self-start"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       <SidebarCard>
         <div className="p-5">
           <div className="mb-4 flex flex-col items-center">
             <div className="relative mb-3 h-20 w-20 rounded-full bg-[#63B7B7]/10 shadow-sm ring-2 ring-white ring-offset-1">
               <Image
                 src={profile?.data?.UserProfile?.avatar || '/avatar.png'}
-                alt="Profile"
+                alt={t.dashboard.professionalSidebar.viewProfileButton}
                 width={80}
                 height={80}
                 className="rounded-full object-cover"
               />
-              {/* <div className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm">
-                <Star className="h-4 w-4 text-amber-400" />
-              </div> */}
             </div>
             <h3 className="mb-0.5 text-base font-medium text-gray-800">
               {profile?.data?.name}
@@ -102,19 +141,25 @@ export function ProfileSidebar() {
               <div className="text-base font-medium text-[#63B7B7]">
                 {profile?.data?._count?.proposals}
               </div>
-              <div className="text-xs text-gray-600">Active Proposals</div>
+              <div className="text-xs text-gray-600">
+                {t.dashboard.professionalSidebar.activeProposals}
+              </div>
             </div>
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
               <div className="text-base font-medium text-[#63B7B7]">
                 {profile?.data?.UserProfile?.meta?.skills?.length}
               </div>
-              <div className="text-xs text-gray-600">Skills</div>
+              <div className="text-xs text-gray-600">
+                {t.dashboard.professionalSidebar.skills}
+              </div>
             </div>
           </div>
 
           <div className="mb-4 space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-600">Profile Completion</span>
+              <span className="text-gray-600">
+                {t.dashboard.professionalSidebar.profileCompletion}
+              </span>
               <span className="font-medium text-[#63B7B7]">
                 {profile?.data?.UserProfile?.percentage}%
               </span>
@@ -133,152 +178,174 @@ export function ProfileSidebar() {
             asChild
           >
             <Link href={`/professionals/${profile?.data?.username}`}>
-              View Profile
+              {t.dashboard.professionalSidebar.viewProfileButton}
             </Link>
           </Button>
         </div>
       </SidebarCard>
 
-      {/* TODO: EndPoint not ready */}
-      {/* <SidebarCard>
-        <SidebarHeader
-          icon={<Briefcase />}
-          title="Recommended Projects"
-          action={
-            <Link
-              href="#"
-              className="flex items-center text-xs text-[#63B7B7] transition-colors hover:text-[#63B7B7]/80"
-            >
-              View all
-              <ArrowUpRight className="ml-0.5 h-3 w-3" />
-            </Link>
-          }
-        />
-        <div className="divide-y divide-gray-100">
-          {/* {projects.map((project) => (
-            <Link
-              key={`project-${project.id}`}
-              href={`#project-${project.id}`}
-              onClick={(e) => handleProjectClick(project, e)}
-              className="block p-4 transition-colors hover:bg-gray-50/80"
-            >
-              <div className="mb-1.5 flex items-center justify-between">
-                <Badge
+      {projects.length > 0 && (
+        <SidebarCard>
+          <SidebarHeader
+            icon={<Briefcase />}
+            title={t.dashboard.professionalSidebar.recommendedProjects.title}
+            action={
+              <Link
+                href="#"
+                className="flex items-center text-xs text-[#63B7B7] transition-colors hover:text-[#63B7B7]/80"
+              >
+                {t.dashboard.professionalSidebar.recommendedProjects.viewAll}
+                <ArrowUpRight
                   className={cn(
-                    '!rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
-                    project.match >= 90
-                      ? '!bg-[#63B7B7]/20 !text-[#166534]'
-                      : project.match >= 80
-                        ? '!bg-[#FEF9C3]/50 !text-[#854D0E]'
-                        : '!bg-[#F3F4F6]/50 !text-[#4B5563]',
+                    'h-3 w-3',
+                    locale === 'ar' ? 'mr-0.5' : 'ml-0.5',
                   )}
-                >
-                  {project.match}% match
-                </Badge>
-
-                {project.isNew && (
-                  <Badge className="!rounded-full border-none !bg-[#DBEAFE] !px-1.5 !py-0.5 !text-[10px] !font-normal !text-[#1E40AF]">
-                    New
+                />
+              </Link>
+            }
+          />
+          <div className="divide-y divide-gray-100">
+            {projects.map((project) => (
+              <Link
+                key={`project-${project.id}`}
+                href={`#project-${project.id}`}
+                onClick={(e) => handleProjectClick(project, e)}
+                className="block p-4 transition-colors hover:bg-gray-50/80"
+              >
+                <div className="mb-1.5 flex items-center justify-between">
+                  <Badge
+                    className={cn(
+                      '!rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
+                      project.match >= 90
+                        ? '!bg-[#63B7B7]/20 !text-[#166534]'
+                        : project.match >= 80
+                          ? '!bg-[#FEF9C3]/50 !text-[#854D0E]'
+                          : '!bg-[#F3F4F6]/50 !text-[#4B5563]',
+                    )}
+                  >
+                    {t.dashboard.professionalSidebar.recommendedProjects.matchBadge.replace(
+                      '{percent}',
+                      String(project.match),
+                    )}
                   </Badge>
-                )}
-              </div>
 
-              <h4 className="mb-1 line-clamp-1 text-sm font-medium text-gray-800">
-                {project.title}
-              </h4>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">
-                    {project.category}
-                  </span>
-                  <span className="text-xs font-medium text-[#63B7B7]">
-                    {project.budget}
-                  </span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 w-6 rounded-full p-0 hover:bg-[#63B7B7]/10"
-                >
-                  <ArrowUpRight className="h-3.5 w-3.5 text-[#63B7B7]" />
-                </Button>
-              </div>
-            </Link>
-          ))} */}
-      {/* </div> */}
-      {/* </SidebarCard>  */}
-
-      {/* <SidebarCard>
-        <SidebarHeader
-          icon={<PieChart />}
-          title="Skills & Expertise"
-          action={
-            <Link
-              href="#"
-              className="flex items-center text-xs text-[#63B7B7] transition-colors hover:text-[#63B7B7]/80"
-            >
-              View all
-              <ArrowUpRight className="ml-0.5 h-3 w-3" />
-            </Link>
-          }
-        />
-        <div className="p-4">
-          <div className="mb-4 space-y-4">
-            {skillData.map((item, index) => (
-              <div key={`skill-${index}`} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm font-medium text-gray-800">
-                      {item.skill}
-                    </span>
-                    <Badge
-                      className={cn(
-                        'ml-1 !rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
-                        item.demand === 'High'
-                          ? '!bg-[#63B7B7]/20 !text-[#166534]'
-                          : item.demand === 'Medium'
-                            ? '!bg-[#FEF9C3]/50 !text-[#854D0E]'
-                            : '!bg-[#FEEBC8]/50 !text-[#9A3412]',
-                      )}
-                    >
-                      {item.demand}
+                  {project.isNew && (
+                    <Badge className="!rounded-full border-none !bg-[#DBEAFE] !px-1.5 !py-0.5 !text-[10px] !font-normal !text-[#1E40AF]">
+                      {
+                        t.dashboard.professionalSidebar.recommendedProjects
+                          .newBadge
+                      }
                     </Badge>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Award className="h-3 w-3 text-[#63B7B7]" />
-                    <span className="text-xs text-gray-600">
-                      {item.endorsed}
-                    </span>
-                  </div>
+                  )}
                 </div>
 
-                <div className="flex items-center gap-2.5">
-                  <div className="relative h-2 w-full flex-1 overflow-hidden rounded-full bg-gray-100">
-                    <div
-                      style={{ width: `${item.strength}%` }}
-                      className={cn(
-                        'absolute left-0 top-0 h-full',
-                        item.demand === 'High'
-                          ? 'bg-[#63B7B7]'
-                          : item.demand === 'Medium'
-                            ? 'bg-[#EAB308]/50'
-                            : 'bg-[#F97316]/50',
-                      )}
-                    />
+                <h4 className="mb-1 line-clamp-1 text-sm font-medium text-gray-800">
+                  {project.title}
+                </h4>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">
+                      {project.category}
+                    </span>
+                    <span className="text-xs font-medium text-[#63B7B7]">
+                      {project.budget}
+                    </span>
                   </div>
-                  <span className="text-xs font-medium text-gray-700">
-                    {item.strength}%
-                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 w-6 rounded-full p-0 hover:bg-[#63B7B7]/10"
+                  >
+                    <ArrowUpRight className="h-3.5 w-3.5 text-[#63B7B7]" />
+                  </Button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
-        </div>
-      </SidebarCard> */}
+        </SidebarCard>
+      )}
+
+      {skillData.length > 0 && (
+        <SidebarCard>
+          <SidebarHeader
+            icon={<PieChart />}
+            title={t.dashboard.professionalSidebar.skillsExpertise.title}
+            action={
+              <Link
+                href="#"
+                className="flex items-center text-xs text-[#63B7B7] transition-colors hover:text-[#63B7B7]/80"
+              >
+                {t.dashboard.professionalSidebar.skillsExpertise.viewAll}
+                <ArrowUpRight
+                  className={cn(
+                    'h-3 w-3',
+                    locale === 'ar' ? 'mr-0.5' : 'ml-0.5',
+                  )}
+                />
+              </Link>
+            }
+          />
+          <div className="p-4">
+            <div className="mb-4 space-y-4">
+              {skillData.map((item, index) => (
+                <div key={`skill-${index}`} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm font-medium text-gray-800">
+                        {item.skill}
+                      </span>
+                      <Badge
+                        className={cn(
+                          'ml-1 !rounded-full border-none px-1.5 py-0.5 text-[10px] font-normal',
+                          item.demand === 'High'
+                            ? '!bg-[#63B7B7]/20 !text-[#166534]'
+                            : item.demand === 'Medium'
+                              ? '!bg-[#FEF9C3]/50 !text-[#854D0E]'
+                              : '!bg-[#FEEBC8]/50 !text-[#9A3412]',
+                        )}
+                      >
+                        {getDemandLabel(item.demand)}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Award className="h-3 w-3 text-[#63B7B7]" />
+                      <span className="text-xs text-gray-600">
+                        {item.endorsed}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <div className="relative h-2 w-full flex-1 overflow-hidden rounded-full bg-gray-100">
+                      <div
+                        style={{ width: `${item.strength}%` }}
+                        className={cn(
+                          'absolute left-0 top-0 h-full',
+                          item.demand === 'High'
+                            ? 'bg-[#63B7B7]'
+                            : item.demand === 'Medium'
+                              ? 'bg-[#EAB308]/50'
+                              : 'bg-[#F97316]/50',
+                        )}
+                      />
+                    </div>
+                    <span className="text-xs font-medium text-gray-700">
+                      {item.strength}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </SidebarCard>
+      )}
 
       <SidebarCard>
-        <SidebarHeader icon={<Search />} title="Quick Actions" />
+        <SidebarHeader
+          icon={<Search />}
+          title={t.dashboard.professionalSidebar.quickLinks.title}
+        />
         <div className="p-2">
           <div className="grid grid-cols-2 gap-2">
             {quickLinks.map((link, index) => (

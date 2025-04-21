@@ -346,6 +346,15 @@ export const en = {
       tryAdjustingFilters: 'Try adjusting your search or filters.',
       filtersApplied: 'Filters applied.',
       errorLoading: 'Error loading data. Please try again.',
+      relativeTime: {
+        justNow: 'just now',
+        minuteAgo: '1 minute ago',
+        minutesAgo: '{count} minutes ago',
+        hourAgo: '1 hour ago',
+        hoursAgo: '{count} hours ago',
+        dayAgo: '1 day ago',
+        daysAgo: '{count} days ago',
+      },
     },
     companyHome: {
       // Filter options
@@ -383,7 +392,7 @@ export const en = {
       filterSavedProjects: 'Saved Projects',
       filterMyApplications: 'My Applications',
       // Header/Search
-      searchProjectsTitle: 'Search Projects', // Assuming this text exists implicitly
+      searchProjectsTitle: 'Search Projects',
       searchInputPlaceholder: 'Search by title, skill, or company...',
       // Sort options
       sortByLabel: 'Sort by:',
@@ -436,6 +445,26 @@ export const en = {
       requiredSkillsLabel: 'Required Skills',
       applyFiltersButton: 'Apply Filters',
       resetFiltersButton: 'Reset Filters',
+
+      // Add new keys below
+      availableProjectsTitle: 'Available Projects',
+      refreshButton: 'Refresh',
+      refreshingButton: 'Refreshing...',
+      retryButton: 'Retry',
+      showingProjectsCount: 'Showing {count} projects',
+      filteredByLabel: 'Filtered by: {filter}',
+      searchLabel: 'Search: "{query}"',
+      skillsLabel: 'Skills: {count} selected',
+      sortBudgetHighLowArrow: 'Budget ↓',
+      sortBudgetLowHighArrow: 'Budget ↑',
+      errorLoadingTitle: 'Error loading projects',
+      errorLoadingDescription:
+        'We encountered an error while loading projects. Please try again.',
+      noProjectsFoundTitleAlt: 'No projects found matching criteria',
+      noProjectsFoundDescriptionAlt:
+        "We couldn't find any projects matching your search criteria. Try adjusting your filters or search terms.",
+      clearFiltersSearchButton: 'Clear Filters & Search',
+      clearAllFiltersButton: 'Clear All',
     },
     // Add keys for company child components
     companyComponents: {
@@ -660,6 +689,107 @@ export const en = {
         notificationsLink: 'Notifications',
         helpCenterLink: 'Help Center',
       },
+    },
+    // Moved filterCategoriesData inside dashboard
+    filterCategoriesData: {
+      all: { label: 'All Projects', tooltip: 'Show all available projects' },
+      recommended: {
+        label: 'Recommended For You',
+        tooltip: 'Projects matched to your profile',
+      },
+      viewed: {
+        label: 'Recently Viewed',
+        tooltip: 'Projects you recently looked at',
+      },
+      saved: {
+        label: 'Saved Projects',
+        tooltip: 'Projects you saved for later',
+      },
+      applied: {
+        label: 'My Applications',
+        tooltip: 'Projects you have applied to',
+      },
+    },
+    // Add keys for Professional Sidebar
+    professionalSidebar: {
+      activeProposals: 'Active Proposals',
+      skills: 'Skills',
+      profileCompletion: 'Profile Completion',
+      viewProfileButton: 'View Profile',
+      quickLinks: {
+        title: 'Quick Actions',
+        getPaid: 'Get Paid',
+        helpCenter: 'Help Center',
+        directContract: 'Direct Contract',
+        alerts: 'Alerts',
+      },
+      recommendedProjects: {
+        title: 'Recommended Projects',
+        viewAll: 'View all',
+        matchBadge: '{percent}% match',
+        newBadge: 'New',
+      },
+      skillsExpertise: {
+        title: 'Skills & Expertise',
+        viewAll: 'View all',
+        demandHigh: 'High Demand',
+        demandMedium: 'Medium Demand',
+        demandLow: 'Low Demand',
+      },
+    },
+    // Add keys for Search Bar INSIDE dashboard
+    searchBar: {
+      placeholder: 'Search for projects, skills, or companies...',
+      searchTipsTitle: 'Search Tips:',
+      searchTip1: "Try searching for skills like 'React' or 'Design'",
+      searchTip2: "Search for job types like 'Remote' or 'Full-time'",
+      searchTip3: 'Enter company names to see their projects',
+      searchHelpButton: 'Search Help',
+    },
+    // Add keys for Project Card
+    projectCard: {
+      appliedBadge: 'Applied',
+      saveButtonAriaLabel: 'Save this project',
+      budgetTooltip: 'Project Budget',
+      durationTooltip: 'Project Duration',
+      durationNotSpecified: 'Not specified',
+      postedAgo: 'Posted {days} days ago',
+    },
+    // Add keys for Project Detail
+    projectDetail: {
+      modalTitle: '{projectTitle} - Project Details',
+      postedDate: 'Posted {date}',
+      postedRecently: 'Posted Recently',
+      fixedPriceBadge: 'Fixed-Price',
+      noDescription: 'No description provided.',
+      budgetLabel: 'Budget',
+      wantedTitleLabel: 'Wanted Title',
+      durationLabel: 'Project Duration',
+      notSpecified: 'Not specified',
+      skillsTitle: 'Skills and Expertise',
+      deliverablesTitle: 'Deliverables',
+      deliverablesEmpty: 'No deliverables specified',
+      scopeTitle: 'Project Scope',
+      scopeEmpty: 'No scope details provided',
+      filesTitle: 'Project Files',
+      previewButton: 'Preview',
+      downloadButton: 'Download',
+      aboutClientTitle: 'About the client',
+      paymentVerified: 'Payment method verified',
+      paymentNotVerified: 'Payment method not verified',
+      clientLocationTime: '{location} - {time}',
+      clientProjectsPosted: '{count} projects posted',
+      clientHireRate: '{rate}% Hire rate',
+      clientMemberSince: 'Member since {date}',
+      activityTitle: 'Activity on this job',
+      activityProposals: 'Proposals: {count}',
+      activityInterviewing: 'Interviewing: {count}',
+      activityInvitesSent: 'Invites sent: {count}',
+      activityUnansweredInvites: 'Unanswered invites: {count}',
+      applyButton: 'Apply Now',
+      saveButton: 'Save Job',
+      savedButton: 'Saved',
+      flagLink: 'Flag as inappropriate',
     },
   },
   navbar: {

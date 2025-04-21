@@ -9,21 +9,26 @@ import {
   CheckCircle,
   MapPin,
   Briefcase,
-  Link,
+  Link as LinkIcon, // Renamed to avoid conflict
   Info,
   Users,
   FileText,
   Eye,
   Download,
+  Calendar,
 } from 'lucide-react'
 import { Button, Modal } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { getProjectById } from '@lib/api/pro/projects'
 import { SLIDE_ANIMATION } from '@dalla/utils'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react' // Added useState
 import { useQuery } from '@tanstack/react-query'
-import { getLocalTimeForLocation } from '@dalla/utils'
+import { getLocalTimeForLocation, cn, getRelativeTime } from '@dalla/utils' // Added cn, getRelativeTime
 import { ListDisplay } from '@dalla/components/listDisplay'
+import { useTranslation } from '@hooks/use-translation' // Added
+import { useLocale } from '@hooks/use-locale' // Added
+import { formatCurrency } from '@lib/utils/format-currency' // Added
+import Link from 'next/link' // Added
 
 interface ProjectDetailProps {
   projectId: string
@@ -36,6 +41,9 @@ export function ProjectDetail({
   onClose,
   onApplyClick,
 }: ProjectDetailProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   const { data } = useQuery({
     queryKey: ['project', projectId, 'professional'],
     queryFn: () => getProjectById(projectId),
@@ -67,16 +75,48 @@ export function ProjectDetail({
     }
   }, [])
 
+  // Prepare translations for getRelativeTime
+  const relativeTimeTranslations = {
+    justNow: t.dashboard.shared.relativeTime.justNow,
+    minuteAgo: t.dashboard.shared.relativeTime.minuteAgo,
+    minutesAgo: t.dashboard.shared.relativeTime.minutesAgo,
+    hourAgo: t.dashboard.shared.relativeTime.hourAgo,
+    hoursAgo: t.dashboard.shared.relativeTime.hoursAgo,
+    dayAgo: t.dashboard.shared.relativeTime.dayAgo,
+    daysAgo: t.dashboard.shared.relativeTime.daysAgo,
+  }
+
+  const dateLocale = locale === 'ar' ? 'ar-SA' : 'en-GB'
+
+  // Basic pluralization helper (replace with i18n library for full support)
+  const formatPlural = (
+    key: keyof typeof t.dashboard.projectDetail,
+    count: number,
+  ) => {
+    // This is a simplified example. Real pluralization is complex.
+    // For demo, just replacing {count}
+    const translation = t.dashboard.projectDetail[key] as string
+    return translation.replace('{count}', String(count))
+  }
+
   return (
     <Modal
       isOpen={true}
       onClose={onClose}
-      title={`${data?.title} - Project Details`}
+      title={t.dashboard.projectDetail.modalTitle.replace(
+        '{projectTitle}',
+        data?.title || '',
+      )}
       width="xl"
     >
-      <div className="flex h-[calc(100%-57px)] flex-col overflow-hidden md:flex-row">
+      <div
+        className="flex h-[calc(100%-57px)] flex-col overflow-hidden md:flex-row"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      >
+        {/* Main Content Scroll Area */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 sm:p-6">
+            {/* Header */}
             <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-0">
               <div>
                 <h1 className="mb-2 text-lg font-semibold text-gray-900 sm:text-xl">
@@ -84,69 +124,95 @@ export function ProjectDetail({
                 </h1>
                 <div className="flex flex-wrap gap-3 text-xs text-gray-600 sm:text-sm">
                   <span className="flex items-center">
-                    <Clock className="mr-1 h-3.5 w-3.5 text-gray-400" />
-                    Posted{' '}
+                    <Clock
+                      className={cn(
+                        'h-3.5 w-3.5 text-gray-400',
+                        locale === 'ar' ? 'ml-1' : 'mr-1', // Adjust icon margin
+                      )}
+                    />
                     {data?.createdAt
-                      ? new Date(data.createdAt).toLocaleString(undefined, {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
+                      ? getRelativeTime(data.createdAt, {
+                          locale,
+                          translations: relativeTimeTranslations,
                         })
-                      : 'Recently'}
+                      : t.dashboard.projectDetail.postedRecently}
                   </span>
                 </div>
               </div>
-              <Badge className="border-1 rounded-md !bg-[#edecea]/30 text-xs !text-[#234d64]/80 shadow-none hover:!bg-[#BEDDF1]/60">
-                Fixed-Price
+              <Badge className="border-1 w-fit rounded-md !bg-[#edecea]/30 text-xs !text-[#234d64]/80 shadow-none hover:!bg-[#BEDDF1]/60">
+                {t.dashboard.projectDetail.fixedPriceBadge}
               </Badge>
             </div>
 
+            {/* Description */}
             <div className="mb-6 sm:mb-8">
               <div className="prose max-w-none text-sm text-gray-700 sm:text-base">
-                {data?.description || 'No description provided.'}
+                {data?.description || t.dashboard.projectDetail.noDescription}
+                {/* Localized */}
               </div>
             </div>
+
+            {/* Budget, Title, Duration Cards */}
             <div className="mb-6 grid grid-cols-1 gap-3 sm:mb-8 sm:grid-cols-3 sm:gap-4">
-              <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
-                <div className="mb-1 text-xs text-gray-500">Budget</div>
-                <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
-                  {data?.meta?.budget
-                    ? `$${data.meta.budget}`
-                    : 'Not specified'}
-                </div>
-              </div>
-              <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
-                <div className="mb-1 text-xs text-gray-500">Wanted Title</div>
-                <div className="text-sm font-medium text-gray-900 sm:text-base">
-                  {data?.jobTitle || 'Not specified'}
-                </div>
-              </div>
+              {/* Budget Card */}
               <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
                 <div className="mb-1 text-xs text-gray-500">
-                  Project Duration
+                  {t.dashboard.projectDetail.budgetLabel}
                 </div>
                 <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
-                  <Clock className="mr-1 h-4 w-4 text-gray-500" />
-                  {data?.meta?.duration || 'Not specified'}
+                  {data?.meta?.budget
+                    ? formatCurrency(data.meta.budget, locale)
+                    : t.dashboard.projectDetail.notSpecified}
+                  {/* Localized */}
+                </div>
+              </div>
+              {/* Wanted Title Card */}
+              <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
+                <div className="mb-1 text-xs text-gray-500">
+                  {t.dashboard.projectDetail.wantedTitleLabel}
+                </div>
+                <div className="text-sm font-medium text-gray-900 sm:text-base">
+                  {data?.jobTitle || t.dashboard.projectDetail.notSpecified}
+                  {/* Localized */}
+                </div>
+              </div>
+              {/* Duration Card */}
+              <div className="rounded-lg border border-gray-100 bg-white p-3 shadow-sm sm:p-4">
+                <div className="mb-1 text-xs text-gray-500">
+                  {t.dashboard.projectDetail.durationLabel}
+                </div>
+                <div className="flex items-center text-sm font-medium text-gray-900 sm:text-base">
+                  <Clock
+                    className={cn(
+                      'h-4 w-4 text-gray-500',
+                      locale === 'ar' ? 'ml-1' : 'mr-1', // Adjust icon margin
+                    )}
+                  />
+                  {data?.meta?.duration ||
+                    t.dashboard.projectDetail.notSpecified}
+                  {/* Localized */}
                 </div>
               </div>
             </div>
 
+            {/* Skills */}
             <div className="mb-6 sm:mb-8">
               <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                <Info className="h-4 w-4 text-[#63B7B7]" />
+                <Info
+                  className={cn(
+                    'h-4 w-4 text-[#63B7B7]',
+                    locale === 'ar' ? 'ml-2' : 'mr-2', // Adjust icon margin
+                  )}
+                />
                 <h2 className="text-sm font-medium text-gray-900 sm:text-base">
-                  Skills and Expertise
+                  {t.dashboard.projectDetail.skillsTitle}
                 </h2>
               </div>
-
               {data?.skills && data.skills.length > 0 && (
                 <div className="mb-4 space-y-4 sm:space-y-5">
                   <div>
                     <div className="flex flex-wrap gap-2">
-                      {data.skills.map((skill) => (
+                      {data.skills.map((skill: string) => (
                         <Badge
                           key={skill}
                           className="border-1 rounded-md !bg-[#edecea]/30 text-xs !text-[#234d64]/80 shadow-none hover:!bg-[#BEDDF1]/60"
@@ -160,55 +226,77 @@ export function ProjectDetail({
               )}
             </div>
 
+            {/* Deliverables */}
             {data?.deliverables && (
               <div className="mb-6 sm:mb-8">
                 <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                  <CheckCircle className="h-4 w-4 text-[#63B7B7]" />
+                  <CheckCircle
+                    className={cn(
+                      'h-4 w-4 text-[#63B7B7]',
+                      locale === 'ar' ? 'ml-2' : 'mr-2',
+                    )}
+                  />
                   <h2 className="text-sm font-medium text-gray-900 sm:text-base">
-                    Deliverables
+                    {t.dashboard.projectDetail.deliverablesTitle}
                   </h2>
                 </div>
                 <ListDisplay
                   value={data.deliverables}
-                  emptyText="No deliverables specified"
+                  emptyText={t.dashboard.projectDetail.deliverablesEmpty}
                   className="text-gray-600"
                 />
               </div>
             )}
 
+            {/* Scope */}
             {data?.scope && (
               <div className="mb-6 sm:mb-8">
                 <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                  <Briefcase className="h-4 w-4 text-[#63B7B7]" />
+                  <Briefcase
+                    className={cn(
+                      'h-4 w-4 text-[#63B7B7]',
+                      locale === 'ar' ? 'ml-2' : 'mr-2',
+                    )}
+                  />
                   <h2 className="text-sm font-medium text-gray-900 sm:text-base">
-                    Project Scope
+                    {t.dashboard.projectDetail.scopeTitle}
                   </h2>
                 </div>
-
                 <ListDisplay
                   value={data.scope}
-                  emptyText="No scope details provided"
+                  emptyText={t.dashboard.projectDetail.scopeEmpty}
                   className="text-gray-600"
                 />
               </div>
             )}
 
+            {/* Files */}
             {data?.media && data.media.length > 0 && (
               <div className="mb-6 sm:mb-8">
                 <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                  <FileText className="h-4 w-4 text-[#63B7B7]" />
+                  <FileText
+                    className={cn(
+                      'h-4 w-4 text-[#63B7B7]',
+                      locale === 'ar' ? 'ml-2' : 'mr-2',
+                    )}
+                  />
                   <h2 className="text-sm font-medium text-gray-900 sm:text-base">
-                    Project Files
+                    {t.dashboard.projectDetail.filesTitle}
                   </h2>
                 </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  {data.media.map((file) => (
+                  {data.media.map((file: string) => (
                     <div
                       key={file}
                       className="rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50"
                     >
                       <div className="mb-3 flex items-center">
-                        <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#BEDDF1]/20 shadow-sm">
+                        <div
+                          className={cn(
+                            'flex h-10 w-10 items-center justify-center rounded-lg bg-[#BEDDF1]/20 shadow-sm',
+                            locale === 'ar' ? 'ml-3' : 'mr-3', // Adjust icon margin
+                          )}
+                        >
                           <FileText className="h-5 w-5 text-[#63B7B7]" />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -225,8 +313,13 @@ export function ProjectDetail({
                           className="h-8 gap-1.5 text-xs text-[#63B7B7] hover:bg-[#BEDDF1]/20"
                           onClick={() => window.open(file, '_blank')}
                         >
-                          <Eye className="h-3.5 w-3.5" />
-                          Preview
+                          <Eye
+                            className={cn(
+                              'h-3.5 w-3.5',
+                              locale === 'ar' ? 'ml-1.5' : 'mr-1.5',
+                            )}
+                          />
+                          {t.dashboard.projectDetail.previewButton}
                         </Button>
                         <Button
                           variant="ghost"
@@ -241,8 +334,13 @@ export function ProjectDetail({
                             document.body.removeChild(link)
                           }}
                         >
-                          <Download className="h-3.5 w-3.5" />
-                          Download
+                          <Download
+                            className={cn(
+                              'h-3.5 w-3.5',
+                              locale === 'ar' ? 'ml-1.5' : 'mr-1.5',
+                            )}
+                          />
+                          {t.dashboard.projectDetail.downloadButton}
                         </Button>
                       </div>
                     </div>
@@ -253,124 +351,214 @@ export function ProjectDetail({
           </div>
         </div>
 
-        <div className="w-full border-t border-gray-100 bg-white md:w-[320px] md:overflow-y-auto md:border-l md:border-t-0">
-          <div className="p-4 sm:p-5 md:sticky md:top-0">
-            {data?.applied ? (
-              <div className="mb-4 rounded-lg bg-[#BEDDF1]/10 p-4 text-center">
-                <CheckCircle className="mx-auto mb-2 h-6 w-6 text-[#63B7B7]" />
-                <p className="text-sm font-medium text-gray-800">
-                  You've already applied to this project
-                </p>
-                <p className="mt-1 text-xs text-gray-600">
-                  Check your proposals section for status updates
-                </p>
+        {/* Sidebar */}
+        <div
+          className={cn(
+            'w-full shrink-0 overflow-y-auto border-gray-200 md:w-72 lg:w-80 xl:w-96',
+            locale === 'ar' ? 'border-r' : 'border-l',
+          )}
+        >
+          <div className="p-4 sm:p-6">
+            {/* Client Info */}
+            {data?.company && (
+              <div className="mb-6 rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+                <div className="mb-3 flex items-center gap-2">
+                  <Users
+                    className={cn(
+                      'h-4 w-4 text-[#63B7B7]',
+                      locale === 'ar' ? 'ml-2' : 'mr-2',
+                    )}
+                  />
+                  <h3 className="text-sm font-medium text-gray-900">
+                    {t.dashboard.projectDetail.aboutClientTitle}
+                  </h3>
+                </div>
+                <div className="mb-4 flex items-center gap-3">
+                  <img
+                    src={(data.company as any).logo || '/placeholder-logo.png'}
+                    alt={data.company.name}
+                    className="h-12 w-12 rounded-full object-cover ring-1 ring-gray-200"
+                  />
+                  <div>
+                    <Link
+                      href={`/companies/${data.company.id}`}
+                      className="text-base font-semibold text-gray-800 hover:text-[#63B7B7]"
+                    >
+                      {data.company.name}
+                    </Link>
+                    <div
+                      className={cn(
+                        'mt-1 flex items-center text-xs',
+                        (data.company as any).user?.UserProfile
+                          ?.isPaymentVerified
+                          ? 'text-green-600'
+                          : 'text-gray-500',
+                      )}
+                    >
+                      <CheckCircle
+                        className={cn(
+                          'h-3 w-3',
+                          locale === 'ar' ? 'ml-1' : 'mr-1',
+                          (data.company as any).user?.UserProfile
+                            ?.isPaymentVerified
+                            ? ''
+                            : 'text-gray-400',
+                        )}
+                      />
+                      {(data.company as any).user?.UserProfile
+                        ?.isPaymentVerified
+                        ? t.dashboard.projectDetail.paymentVerified
+                        : t.dashboard.projectDetail.paymentNotVerified}
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  {(data.company as any).user?.UserProfile?.location && (
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                      <span>
+                        {t.dashboard.projectDetail.clientLocationTime
+                          .replace(
+                            '{location}',
+                            (data.company as any).user.UserProfile.location,
+                          )
+                          .replace(
+                            '{time}',
+                            getLocalTimeForLocation(
+                              (data.company as any).user.UserProfile.location,
+                            ) || '',
+                          )}
+                      </span>
+                    </div>
+                  )}
+                  {(data.company as any).user?.projects &&
+                    (data.company as any).user.projects.length > 0 && (
+                      <div className="flex items-center gap-1.5">
+                        <Briefcase className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                        <span>
+                          {formatPlural(
+                            'clientProjectsPosted',
+                            (data.company as any).user.projects.length,
+                          )}
+                        </span>
+                      </div>
+                    )}
+                  {(data.company as any).user?.UserProfile?.hireRate && (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-base">%</span>
+                      <span>
+                        {t.dashboard.projectDetail.clientHireRate.replace(
+                          '{rate}',
+                          String(
+                            (data.company as any).user.UserProfile.hireRate,
+                          ),
+                        )}
+                      </span>
+                    </div>
+                  )}
+                  {(data.company as any).user?.createdAt && (
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                      <span>
+                        {t.dashboard.projectDetail.clientMemberSince.replace(
+                          '{date}',
+                          new Date(
+                            (data.company as any).user.createdAt,
+                          ).toLocaleDateString(dateLocale, {
+                            year: 'numeric',
+                            month: 'long',
+                          }),
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            ) : (
-              <Button
-                className="mb-3 w-full !bg-[#63B7B7] py-5 text-sm font-medium text-white hover:!bg-[#63B7B7]/90 sm:py-6 sm:text-base"
-                onClick={onApplyClick}
-              >
-                Apply now
-              </Button>
             )}
 
-            <div className="mb-5 flex gap-2 sm:mb-6">
-              <Button
-                variant="outline"
-                className="flex flex-1 items-center justify-center border-[#63B7B7] text-xs text-[#63B7B7] hover:bg-[#BEDDF1]/60 sm:text-sm"
-              >
-                <Bookmark className="mr-1 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4" />
-                Save
-              </Button>
-              <Button
-                variant="outline"
-                className="flex flex-1 items-center justify-center border-gray-200 text-xs text-gray-600 hover:bg-gray-50 sm:text-sm"
-              >
-                <Flag className="mr-1 h-3.5 w-3.5 sm:mr-2 sm:h-4 sm:w-4" />
-                Report
-              </Button>
-            </div>
-
-            <div className="border-t border-gray-100 px-6 py-4">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
-                Company
-              </h3>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="flex items-start gap-3">
-                  <Briefcase className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Company</p>
-                    <p className="text-sm text-gray-500">
-                      {data?.company?.name || 'Not specified'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Users className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">
-                      Total Projects
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {data?.company?._count?.projects
-                        ? `${data.company._count.projects} projects`
-                        : 'Not specified'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">
-                      Location
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {data?.company?.CompanyProfile?.location || 'Remote'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <Clock className="mt-0.5 h-5 w-5 text-[#63B7B7]" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">
-                      Local Time
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {data?.company?.CompanyProfile?.location
-                        ? getLocalTimeForLocation(
-                            data.company.CompanyProfile.location,
-                          )
-                        : 'Time zone not available'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t border-gray-100 pb-8 pt-4 sm:pt-5">
-              <div className="mb-3 flex items-center gap-2 sm:mb-4">
-                <Users className="h-4 w-4 text-[#63B7B7]" />
-                <h3 className="text-sm font-medium text-gray-900 sm:text-base">
-                  Project activity
+            {/* Activity */}
+            <div className="mb-6 rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-center gap-2">
+                <Clock
+                  className={cn(
+                    'h-4 w-4 text-[#63B7B7]',
+                    locale === 'ar' ? 'ml-2' : 'mr-2',
+                  )}
+                />
+                <h3 className="text-sm font-medium text-gray-900">
+                  {t.dashboard.projectDetail.activityTitle}
                 </h3>
               </div>
-
-              <div className="mb-4 space-y-2 sm:mb-5 sm:space-y-3">
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-gray-600">Proposals</span>
-                  <span className="font-medium text-gray-800">
-                    {data?._count?.proposals || 0}
+              <div className="space-y-2 text-sm text-gray-600">
+                <div className="flex justify-between">
+                  <span>
+                    {formatPlural(
+                      'activityProposals',
+                      data?._count?.proposals || 0,
+                    )}
                   </span>
                 </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-gray-600">Status</span>
-                  <span className="font-medium text-gray-800">
-                    {data?.status || 'Open'}
+                <div className="flex justify-between">
+                  <span>
+                    {formatPlural(
+                      'activityInterviewing',
+                      (data?._count as any)?.interviews || 0,
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>
+                    {formatPlural(
+                      'activityInvitesSent',
+                      (data?._count as any)?.invitesSent || 0,
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>
+                    {formatPlural(
+                      'activityUnansweredInvites',
+                      (data?._count as any)?.unansweredInvites || 0,
+                    )}
                   </span>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Bottom Action Bar */}
+          <div
+            className={cn(
+              'sticky bottom-0 flex items-center justify-between gap-3 border-t border-gray-200 bg-white p-4 sm:p-6',
+              locale === 'ar' ? 'flex-row-reverse' : '',
+            )}
+          >
+            <div className="flex gap-2">
+              <Button
+                className="h-10 w-full flex-1 !bg-[#63B7B7] !text-sm font-medium transition-colors duration-200 hover:!bg-[#63B7B7]/90 sm:flex-initial sm:px-6"
+                onClick={onApplyClick}
+              >
+                {t.dashboard.projectDetail.applyButton}
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-10 w-10 flex-shrink-0 rounded-lg border-gray-300 text-gray-500 hover:border-[#63B7B7] hover:bg-[#BEDDF1]/20 hover:text-[#63B7B7]"
+              >
+                <Bookmark className="h-5 w-5" />
+                <span className="sr-only">
+                  {t.dashboard.projectDetail.saveButton}
+                </span>
+              </Button>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-9 gap-1.5 px-2 text-xs text-gray-500 hover:text-red-600"
+            >
+              <Flag className="h-3.5 w-3.5" />
+              {t.dashboard.projectDetail.flagLink}
+            </Button>
           </div>
         </div>
       </div>

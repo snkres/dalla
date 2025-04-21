@@ -10,7 +10,6 @@ import {
   RefreshCw,
   ChevronLeft,
   ChevronRight,
-  Search,
 } from 'lucide-react'
 import { Button } from '@dalla/design-system'
 import { SearchBar } from './search-bar'
@@ -36,21 +35,18 @@ import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { getAllSkills } from '@lib/utils/skill-utils'
 import { useQueryState } from 'nuqs'
 import { useTranslation } from '@hooks/use-translation'
-import { cn } from '@dalla/utils'
 import { useLocale } from '@hooks/use-locale'
+import { cn } from '@dalla/utils'
+import { FilterCategory } from '@lib/types/project'
 
 const LIMIT = 4
-
-const getProjectKey = (
-  project: GetAllProjectsProfessionalViewRes['data'][0][number],
-  index: number,
-) => `${project.id}-${index}`
 
 export function ProfessionalHome() {
   const t = useTranslation()
   const { locale } = useLocale()
   const { toast } = useToast()
   const instanceId = useId()
+
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [page, setPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
@@ -88,31 +84,58 @@ export function ProfessionalHome() {
   const [selectedProjectId, setSelectedProjectId] = useQueryState('projectId', {
     defaultValue: null,
     parse: (value) => value || null,
-    history: 'replace',
   })
   const [selectedProject, setSelectedProject] = useState<
     GetAllProjectsProfessionalViewRes['data'][0][number] | null
-  >(null)
+  >(data?.data[0].find((project) => project.id === selectedProjectId) || null)
+
+  const localizedFilterCategories = useMemo<FilterCategory[]>(
+    () => [
+      {
+        key: 'all',
+        label: t.dashboard.filterCategoriesData.all.label,
+        icon: filterCategories[0].icon,
+        tooltip: t.dashboard.filterCategoriesData.all.tooltip,
+      },
+      {
+        key: 'recommended',
+        label: t.dashboard.filterCategoriesData.recommended.label,
+        icon: filterCategories[1].icon,
+        tooltip: t.dashboard.filterCategoriesData.recommended.tooltip,
+      },
+      {
+        key: 'viewed',
+        label: t.dashboard.filterCategoriesData.viewed.label,
+        icon: filterCategories[2].icon,
+        tooltip: t.dashboard.filterCategoriesData.viewed.tooltip,
+      },
+      {
+        key: 'saved',
+        label: t.dashboard.filterCategoriesData.saved.label,
+        icon: filterCategories[3].icon,
+        tooltip: t.dashboard.filterCategoriesData.saved.tooltip,
+      },
+      {
+        key: 'applied',
+        label: t.dashboard.filterCategoriesData.applied.label,
+        icon: filterCategories[4].icon,
+        tooltip: t.dashboard.filterCategoriesData.applied.tooltip,
+      },
+    ],
+    [t],
+  )
 
   useEffect(() => {
-    if (data?.data?.[0]?.length && selectedProjectId) {
-      const foundProject = data.data[0].find(
-        (project) => project.id === selectedProjectId,
-      )
-      setSelectedProject(foundProject || null)
-      if (foundProject) {
-        setShowProjectDetail(true)
-      }
-    } else {
-      setSelectedProject(null)
-    }
-  }, [data, selectedProjectId])
+    setSelectedProject(
+      data?.data[0].find((project) => project.id === selectedProjectId) || null,
+    )
+  }, [selectedProjectId, data])
 
   useEffect(() => {
-    if (data?.data?.[1]?.totalCount) {
-      setTotalCount(data.data[1].totalCount)
+    if (selectedProjectId && data?.data?.[0]?.length) {
+      setShowProjectDetail(true)
     }
-  }, [data])
+  }, [selectedProjectId, data])
 
   const allSkills = useMemo(() => {
     return getAllSkills(data?.data?.[0] || []) || []
@@ -139,24 +162,22 @@ export function ProfessionalHome() {
 
   const sortProjects = useCallback(
     (projects: GetAllProjectsProfessionalViewRes['data'][0]) => {
-      if (!projects) return []
-      let sortedProjects = [...projects]
       if (sortBy === 'newest') {
-        sortedProjects.sort(
+        return [...projects].sort(
           (a, b) =>
             new Date(b.createdAt || '').getTime() -
             new Date(a.createdAt || '').getTime(),
         )
       } else if (sortBy === 'budget-high') {
-        sortedProjects.sort(
+        return [...projects].sort(
           (a, b) => (b.meta.budget || 0) - (a.meta.budget || 0),
         )
       } else if (sortBy === 'budget-low') {
-        sortedProjects.sort(
+        return [...projects].sort(
           (a, b) => (a.meta.budget || 0) - (b.meta.budget || 0),
         )
       }
-      return sortedProjects
+      return projects
     },
     [sortBy],
   )
@@ -172,7 +193,9 @@ export function ProfessionalHome() {
       selectedLocations,
       selectedSkills,
     )
+
     results = sortProjects(results)
+
     setFilteredProjects(results)
   }, [
     activeFilter,
@@ -196,34 +219,33 @@ export function ProfessionalHome() {
       const originalPosition = document.body.style.position
       const originalWidth = document.body.style.width
       const originalTop = document.body.style.top
+      const originalHeight = document.body.style.height
 
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'
       document.body.style.width = '100%'
       document.body.style.top = `-${currentScrollY}px`
+      document.body.style.height = '100%'
 
       return () => {
-        document.body.style.overflow = originalOverflow
-        document.body.style.position = originalPosition
-        document.body.style.width = originalWidth
-        document.body.style.top = originalTop
         if (!showProjectDetail && !showProjectApplication) {
+          document.body.style.overflow = originalOverflow
+          document.body.style.position = originalPosition
+          document.body.style.width = originalWidth
+          document.body.style.top = originalTop
+          document.body.style.height = originalHeight
+
           window.scrollTo(0, currentScrollY)
         }
       }
-    } else {
-      if (document.body.style.position === 'fixed') {
-        const scrollY = document.body.style.top
-          ? parseInt(document.body.style.top, 10) * -1
-          : scrollPosition
-        document.body.style.overflow = ''
-        document.body.style.position = ''
-        document.body.style.width = ''
-        document.body.style.top = ''
-        window.scrollTo(0, scrollY)
-      }
     }
-  }, [showProjectDetail, showProjectApplication, scrollPosition])
+  }, [showProjectDetail, showProjectApplication])
+
+  useEffect(() => {
+    if (data?.data?.[1]?.totalCount) {
+      setTotalCount(data.data[1].totalCount)
+    }
+  }, [data])
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage)
@@ -231,18 +253,21 @@ export function ProfessionalHome() {
   }, [])
 
   const handleProjectClick = useCallback(
-    (project: GetAllProjectsProfessionalViewRes['data'][0][number]) => {
+    (
+      project: GetAllProjectsProfessionalViewRes['data'][0][number],
+      e: React.MouseEvent,
+    ) => {
+      e.preventDefault()
       setSelectedProject(project)
       setSelectedProjectId(project.id)
       setShowProjectDetail(true)
       setShowProjectApplication(false)
     },
-    [setSelectedProjectId],
+    [],
   )
 
   const handleApplyClick = useCallback(() => {
-    if (!selectedProject) return
-    if (selectedProject.applied) {
+    if (selectedProject?.applied) {
       toast({
         title: t.dashboard.professionalHome.alreadyAppliedToastTitle,
         description:
@@ -251,6 +276,7 @@ export function ProfessionalHome() {
       })
       return
     }
+
     setShowProjectDetail(false)
     setShowProjectApplication(true)
   }, [selectedProject, toast, t])
@@ -261,258 +287,310 @@ export function ProfessionalHome() {
   }, [])
 
   const handleCloseAll = useCallback(() => {
+    const scrollY = document.body.style.top
+      ? Number.parseInt(document.body.style.top.replace('px', '')) * -1
+      : scrollPosition
+
+    document.body.style.removeProperty('overflow')
+    document.body.style.removeProperty('position')
+    document.body.style.removeProperty('width')
+    document.body.style.removeProperty('top')
+    document.body.style.removeProperty('height')
+
     setShowProjectDetail(false)
     setShowProjectApplication(false)
+    setSelectedProject(null)
     setSelectedProjectId(null)
-  }, [setSelectedProjectId])
 
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true)
-    await refetch()
-    setIsRefreshing(false)
-  }, [refetch])
+    setTimeout(() => {
+      window.scrollTo(0, scrollY)
+    }, 10)
+  }, [scrollPosition, setSelectedProjectId])
 
-  const handleProposalSuccess = useCallback(() => {
-    setShowProjectApplication(false)
-    setSelectedProjectId(null)
-    refetch()
-    toast({
-      title: t.dashboard.professionalHome.proposalSuccessToastTitle,
-      description: t.dashboard.professionalHome.proposalSuccessToastDescription,
-    })
-  }, [refetch, toast, t, setSelectedProjectId])
-
-  const handleProposalError = useCallback(
-    (error: Error) => {
-      toast({
-        title: t.dashboard.professionalHome.proposalErrorToastTitle,
-        description:
-          error.message ||
-          t.dashboard.professionalHome.proposalErrorToastDescription,
-        variant: 'destructive',
-      })
-    },
-    [toast, t],
-  )
-
-  const clearAllFilters = useCallback(() => {
-    setActiveFilter('all')
-    setSearchQuery('')
+  const handleResetFilters = useCallback(() => {
     setSelectedBudgetRange([0, 100000])
     setSelectedDurations([])
     setSelectedLocations([])
     setSelectedSkills([])
-    setShowFilterPanel(false)
   }, [])
 
-  const filterOptions = useMemo(
-    () => [
-      { key: 'all', label: t.dashboard.professionalHome.filterAllProjects },
-      {
-        key: 'recommended',
-        label: t.dashboard.professionalHome.filterRecommended,
-      },
-      {
-        key: 'viewed',
-        label: t.dashboard.professionalHome.filterRecentlyViewed,
-      },
-      { key: 'saved', label: t.dashboard.professionalHome.filterSavedProjects },
-      {
-        key: 'applied',
-        label: t.dashboard.professionalHome.filterMyApplications,
-      },
-    ],
-    [t],
-  )
+  const clearAllFilters = useCallback(() => {
+    setActiveFilter('all')
+    setSearchQuery('')
+    handleResetFilters()
+  }, [handleResetFilters])
 
-  const sortOptions = useMemo(
-    () => [
-      {
-        key: 'newest' as const,
-        label: t.dashboard.professionalHome.sortNewest,
-      },
-      {
-        key: 'budget-high' as const,
-        label: t.dashboard.professionalHome.sortBudgetHighLow,
-      },
-      {
-        key: 'budget-low' as const,
-        label: t.dashboard.professionalHome.sortBudgetLowHigh,
-      },
-    ],
-    [t],
-  )
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    try {
+      await refetch()
+    } catch (error) {
+      toast({
+        title: t.dashboard.professionalHome.errorLoadingTitle,
+        description: t.dashboard.professionalHome.errorLoadingDescription,
+        variant: 'destructive',
+      })
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [refetch, toast, t])
 
   const renderSortOption = (
     option: 'newest' | 'budget-high' | 'budget-low',
     label: string,
   ) => (
-    <button
-      key={option}
-      onClick={() => setSortBy(option)}
-      className={cn(
-        'whitespace-nowrap px-3 py-1 text-sm',
+    <Button
+      key={`sort-${option}`}
+      size="sm"
+      className={`!rounded-md px-3 py-1 text-sm ${
         sortBy === option
-          ? 'font-medium text-[#63B7B7]'
-          : 'text-gray-600 hover:text-gray-900',
-      )}
+          ? '!bg-[#234d64] text-white'
+          : '!bg-gray-100 !text-gray-700 hover:!bg-gray-200'
+      }`}
+      onClick={() => setSortBy(option)}
     >
       {label}
-    </button>
+    </Button>
+  )
+
+  const getProjectKey = useCallback(
+    (
+      project: GetAllProjectsProfessionalViewRes['data'][0][number],
+      index: number,
+    ) => {
+      return project.id
+        ? `project-${project.id}`
+        : `project-${instanceId}-${index}`
+    },
+    [instanceId],
   )
 
   const totalPages = Math.ceil(totalCount / LIMIT)
 
   return (
-    <div
-      className="flex flex-col lg:flex-row"
-      dir={locale === 'ar' ? 'rtl' : 'ltr'}
-    >
-      <ProfileSidebar />
-      <div className="flex-1 bg-gray-50/50 p-4 lg:ml-[280px] lg:p-6">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <SearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            showFilterPanel={showFilterPanel}
-            setShowFilterPanel={setShowFilterPanel}
-            showSearchHelp={showSearchHelp}
-            setShowSearchHelp={setShowSearchHelp}
-            selectedBudgetRange={selectedBudgetRange}
-            setSelectedBudgetRange={setSelectedBudgetRange}
-            selectedDurations={selectedDurations}
-            setSelectedDurations={setSelectedDurations}
-            selectedLocations={selectedLocations}
-            setSelectedLocations={setSelectedLocations}
-            handleResetFilters={clearAllFilters}
-            budgetRanges={budgetRanges}
-            durationOptions={durationOptions}
-            locationOptions={locationOptions}
-            allSkills={allSkills.map((skill) => skill.name)}
-          />
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                'h-9 bg-white text-xs',
-                showFilterPanel ? '!border-[#63B7B7] !text-[#63B7B7]' : '',
-              )}
-              onClick={() => setShowFilterPanel(!showFilterPanel)}
-            >
-              <Filter className="mr-1.5 h-3.5 w-3.5" />
-              {t.dashboard.shared.filters}
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-9 w-9 bg-white"
-              onClick={handleRefresh}
-              disabled={isRefreshing || isFetching}
-            >
-              <RefreshCw
-                className={cn(
-                  'h-4 w-4',
-                  isRefreshing || isFetching ? 'animate-spin' : '',
-                )}
-              />
-              <span className="sr-only">
-                {t.dashboard.professionalHome.refreshResultsButton}
-              </span>
-            </Button>
-          </div>
-        </div>
-
-        <FilterChips
-          activeFilter={activeFilter}
-          setActiveFilter={setActiveFilter}
-          setShowSearchHelp={setShowSearchHelp}
-          showSearchHelp={showSearchHelp}
-          filterCategories={filterCategories}
-        />
-
-        <div className="mb-5 flex items-center justify-end border-b border-gray-200 pb-2">
-          <span className="mr-2 text-sm text-gray-500">
-            {t.dashboard.professionalHome.sortByLabel}
-          </span>
-          {sortOptions.map((opt) => renderSortOption(opt.key, opt.label))}
-        </div>
-
-        {hasActiveFilters && (
-          <div className="mb-5 flex items-start rounded-lg bg-[#63B7B7]/5 p-3 text-sm text-[#63B7B7]">
-            <AlertCircle className="mr-2 mt-0.5 h-4 w-4 flex-shrink-0" />
-            <span>
-              {searchQuery
-                ? t.dashboard.shared.showingResultsFor.replace(
-                    '{searchQuery}',
-                    searchQuery,
-                  )
-                : t.dashboard.shared.filtersApplied}{' '}
-              <button
-                onClick={clearAllFilters}
-                className="ml-1 font-medium text-[#63B7B7] underline hover:text-[#509a9a]"
+    <div className="w-full py-6">
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+          <div className="lg:col-span-3" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+            <div className="mb-6 flex items-center justify-between">
+              <h1 className="text-2xl font-semibold text-gray-900">
+                {t.dashboard.professionalHome.availableProjectsTitle}
+              </h1>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+                onClick={handleRefresh}
+                disabled={isLoading || isRefreshing || isFetching}
               >
-                {t.dashboard.shared.clearFilters}
-              </button>
-            </span>
-          </div>
-        )}
+                <RefreshCw
+                  className={`h-4 w-4 ${isLoading || isRefreshing || isFetching ? 'animate-spin text-[#234d64]' : ''}`}
+                />
+                <span>
+                  {isRefreshing
+                    ? t.dashboard.professionalHome.refreshingButton
+                    : t.dashboard.professionalHome.refreshButton}
+                </span>
+              </Button>
+            </div>
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              showFilterPanel={showFilterPanel}
+              setShowFilterPanel={setShowFilterPanel}
+              showSearchHelp={showSearchHelp}
+              setShowSearchHelp={setShowSearchHelp}
+              selectedBudgetRange={selectedBudgetRange}
+              setSelectedBudgetRange={setSelectedBudgetRange}
+              selectedDurations={selectedDurations}
+              setSelectedDurations={setSelectedDurations}
+              selectedLocations={selectedLocations}
+              setSelectedLocations={setSelectedLocations}
+              selectedSkills={selectedSkills}
+              setSelectedSkills={(skills) => setSelectedSkills(skills || [])}
+              handleResetFilters={handleResetFilters}
+              budgetRanges={budgetRanges}
+              durationOptions={durationOptions}
+              locationOptions={locationOptions}
+              allSkills={allSkills.map((skill) => skill.name)}
+            />
+            <FilterChips
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+              setShowSearchHelp={setShowSearchHelp}
+              showSearchHelp={showSearchHelp}
+              filterCategories={localizedFilterCategories}
+            />
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-          {isLoading ? (
-            <div className="col-span-full py-10 text-center text-gray-500">
-              {t.dashboard.shared.loading}
-            </div>
-          ) : isError ? (
-            <div className="col-span-full rounded-md border border-red-200 bg-red-50 p-4 text-center text-red-700">
-              {t.dashboard.shared.errorLoading}
-            </div>
-          ) : filteredProjects.length > 0 ? (
-            filteredProjects.map((project, index) => (
-              <ProjectCard
-                key={getProjectKey(project, index)}
-                project={project}
-                onClick={() => handleProjectClick(project)}
-              />
-            ))
-          ) : (
-            <div className="col-span-full py-10 text-center">
-              <Search className="mx-auto mb-3 h-10 w-10 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-800">
-                {t.dashboard.professionalHome.noProjectsFound}
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                {t.dashboard.professionalHome.noProjectsFoundDescription}
+            <div className="mb-4 mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-gray-500">
+                {t.dashboard.professionalHome.showingProjectsCount.replace(
+                  '{count}',
+                  String(filteredProjects.length),
+                )}
+                {activeFilter !== 'all' &&
+                  ` • ${t.dashboard.professionalHome.filteredByLabel.replace('{filter}', localizedFilterCategories.find((f) => f.key === activeFilter)?.label || activeFilter)}`}
+                {searchQuery &&
+                  ` • ${t.dashboard.professionalHome.searchLabel.replace('{query}', searchQuery)}`}
+                {selectedSkills.length > 0 &&
+                  ` • ${t.dashboard.professionalHome.skillsLabel.replace('{count}', String(selectedSkills.length))}`}
               </p>
-            </div>
-          )}
-        </div>
 
-        {totalCount > LIMIT && (
-          <div className="mt-8 flex items-center justify-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1 || isLoading || isFetching}
-            >
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              {t.dashboard.shared.previous}
-            </Button>
-            <span className="text-sm text-gray-700">
-              Page {page} of {totalPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages || isLoading || isFetching}
-            >
-              {t.dashboard.shared.next}
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
+              <div className="flex items-center gap-2">
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-sm text-gray-500"
+                    onClick={clearAllFilters}
+                  >
+                    {t.dashboard.professionalHome.clearAllFiltersButton}
+                  </Button>
+                )}
+
+                <div className="ml-2 flex items-center gap-1">
+                  <span className="text-sm text-gray-700">
+                    {t.dashboard.professionalHome.sortByLabel}
+                  </span>
+                  <div className="flex gap-1">
+                    {renderSortOption(
+                      'newest',
+                      t.dashboard.professionalHome.sortNewest,
+                    )}
+                    {renderSortOption(
+                      'budget-high',
+                      t.dashboard.professionalHome.sortBudgetHighLowArrow,
+                    )}
+                    {renderSortOption(
+                      'budget-low',
+                      t.dashboard.professionalHome.sortBudgetLowHighArrow,
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {isLoading || isRefreshing ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={`skeleton-${instanceId}-${i}`}
+                    className="h-64 animate-pulse rounded-xl bg-gray-100"
+                  />
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="rounded-xl bg-gray-50 p-8 text-center">
+                <div className="mb-4 flex justify-center">
+                  <AlertCircle className="h-12 w-12 text-red-400" />
+                </div>
+                <h3 className="mb-2 text-lg font-medium text-gray-900">
+                  {t.dashboard.professionalHome.errorLoadingTitle}
+                </h3>
+                <p className="mx-auto mb-6 max-w-md text-gray-500">
+                  {t.dashboard.professionalHome.errorLoadingDescription}
+                </p>
+                <Button
+                  onClick={() => refetch()}
+                  className="!bg-[#234d64] hover:!bg-[#234d64]/90"
+                >
+                  {t.dashboard.professionalHome.retryButton}
+                </Button>
+              </div>
+            ) : filteredProjects.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {filteredProjects.map(
+                  (
+                    project: GetAllProjectsProfessionalViewRes['data'][0][number],
+                    index: number,
+                  ) => (
+                    <ProjectCard
+                      key={getProjectKey(project, index)}
+                      project={project}
+                      onClick={handleProjectClick}
+                    />
+                  ),
+                )}
+              </div>
+            ) : (
+              <div className="rounded-xl bg-gray-50 p-8 text-center">
+                <div className="mb-4 flex justify-center">
+                  <AlertCircle className="h-12 w-12 text-gray-400" />
+                </div>
+                <h3 className="mb-2 text-lg font-medium text-gray-900">
+                  {t.dashboard.professionalHome.noProjectsFoundTitleAlt}
+                </h3>
+                <p className="mx-auto mb-6 max-w-md text-gray-500">
+                  {t.dashboard.professionalHome.noProjectsFoundDescriptionAlt}
+                </p>
+                <Button
+                  onClick={clearAllFilters}
+                  className="!bg-[#234d64] hover:!bg-[#234d64]/90"
+                >
+                  {t.dashboard.professionalHome.clearFiltersSearchButton}
+                </Button>
+              </div>
+            )}
+
+            {filteredProjects.length > 0 && totalPages > 1 && (
+              <div
+                className="mt-8 flex w-full items-center justify-between gap-2"
+                dir={locale === 'ar' ? 'rtl' : 'ltr'}
+              >
+                <Button
+                  variant="outline"
+                  onClick={() => handlePageChange(Math.max(1, page - 1))}
+                  disabled={page === 1 || isLoading || isRefreshing}
+                  className="flex items-center gap-1"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  {t.dashboard.shared.previous}
+                </Button>
+
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum = page
+                    if (page <= 3) {
+                      pageNum = i + 1
+                    } else if (page >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i
+                    } else {
+                      pageNum = page - 2 + i
+                    }
+
+                    if (pageNum > 0 && pageNum <= totalPages) {
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={page === pageNum ? 'default' : 'outline'}
+                          onClick={() => handlePageChange(pageNum)}
+                          disabled={isLoading || isRefreshing}
+                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#234d64] text-white' : ''}`}
+                        >
+                          {pageNum}
+                        </Button>
+                      )
+                    }
+                    return null
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    handlePageChange(Math.min(totalPages, page + 1))
+                  }
+                  disabled={page === totalPages || isLoading || isRefreshing}
+                  className="flex items-center gap-1"
+                >
+                  {t.dashboard.shared.next}
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
-        )}
+          <ProfileSidebar />
+        </div>
       </div>
 
       <AnimatePresence>
@@ -523,8 +601,14 @@ export function ProfessionalHome() {
             onApplyClick={handleApplyClick}
           />
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {showProjectApplication && selectedProject && (
-          <ApplyProposal project={selectedProject} onClose={handleCloseAll} />
+          <ApplyProposal
+            project={selectedProject}
+            onClose={handleBackToDetails}
+          />
         )}
       </AnimatePresence>
 

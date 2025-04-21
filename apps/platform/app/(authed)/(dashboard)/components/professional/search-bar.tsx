@@ -7,6 +7,9 @@ import { Badge } from '@dalla/design-system'
 import { FilterPanel } from '../../../../../components/shared/filter-panel'
 import { cn } from '@dalla/utils'
 import { SearchBarProps } from '@lib/types/search'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+
 const HELP_ANIMATION = {
   initial: { opacity: 0, y: -5 },
   animate: { opacity: 1, y: 0 },
@@ -33,6 +36,8 @@ export function SearchBar({
   locationOptions,
   allSkills,
 }: SearchBarProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const filterPanelRef = useRef<HTMLDivElement>(null)
   const safeFilterPanelRef = filterPanelRef as React.RefObject<HTMLDivElement>
 
@@ -61,34 +66,56 @@ export function SearchBar({
   }, [setShowFilterPanel])
 
   return (
-    <div className="relative mb-8">
+    <div className="relative mb-8" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="relative mb-4">
-        <div className="flex overflow-hidden rounded-xl border border-gray-200 bg-white pr-2">
+        <div
+          className={cn(
+            'flex overflow-hidden rounded-xl border border-gray-200 bg-white',
+            locale === 'ar' ? 'pl-2' : 'pr-2',
+          )}
+        >
           <div className="relative flex flex-grow items-center">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <Search
+              className={cn(
+                'absolute top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400',
+                locale === 'ar' ? 'right-3' : 'left-3',
+              )}
+            />
             <Input
               type="text"
-              placeholder="Search for projects, skills, or companies..."
-              className="h-12 w-full border-0 py-3 pl-10 pr-4 focus-visible:ring-0 focus-visible:ring-offset-0"
+              placeholder={t.dashboard.searchBar.placeholder}
+              className={cn(
+                'h-12 w-full border-0 py-3 focus-visible:ring-0 focus-visible:ring-offset-0',
+                locale === 'ar' ? 'pl-4 pr-10' : 'pl-10 pr-4',
+              )}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
             />
           </div>
           <Button
             variant="outline"
             size="sm"
             className={cn(
-              'my-1.5 ml-2 h-9 rounded-lg px-4 text-sm font-medium',
+              'my-1.5 h-9 rounded-lg px-4 text-sm font-medium',
+              locale === 'ar' ? 'mr-2' : 'ml-2',
               showFilterPanel
                 ? 'border-[#63B7B7]/30 bg-[#BEDDF1]/20 text-[#63B7B7]'
                 : 'border-gray-200 bg-gray-50',
             )}
             onClick={() => setShowFilterPanel(!showFilterPanel)}
           >
-            <Filter className="mr-2 h-4 w-4" />
-            Filters
+            <Filter
+              className={cn('h-4 w-4', locale === 'ar' ? 'ml-2' : 'mr-2')}
+            />
+            {t.dashboard.shared.filters}
             {totalFiltersApplied > 0 && (
-              <Badge className="ml-2 bg-[#63B7B7] text-white">
+              <Badge
+                className={cn(
+                  'bg-[#63B7B7] text-white',
+                  locale === 'ar' ? 'mr-2' : 'ml-2',
+                )}
+              >
                 {totalFiltersApplied}
               </Badge>
             )}
@@ -110,9 +137,9 @@ export function SearchBar({
               selectedLocations={selectedLocations}
               setSelectedLocations={setSelectedLocations}
               locationOptions={locationOptions}
-              // selectedSkills={selectedSkills || []}
-              // setSelectedSkills={setSelectedSkills}
-              // allSkills={allSkills}
+              selectedSkills={selectedSkills || []}
+              setSelectedSkills={setSelectedSkills}
+              allSkills={allSkills}
             />
           )}
         </AnimatePresence>
@@ -120,30 +147,42 @@ export function SearchBar({
         {showSearchHelp && (
           <motion.div
             {...HELP_ANIMATION}
-            className="mt-2 flex items-start rounded-lg bg-[#BEDDF1]/20 p-4 text-sm text-[#234d64]"
+            className={cn(
+              'mt-2 flex items-start rounded-lg bg-[#BEDDF1]/20 p-4 text-sm text-[#234d64]',
+              locale === 'ar' ? 'text-right' : 'text-left',
+            )}
           >
-            <Info className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-[#234d64]" />
+            <Info
+              className={cn(
+                'mt-0.5 h-5 w-5 flex-shrink-0 text-[#234d64]',
+                locale === 'ar' ? 'ml-2' : 'mr-2',
+              )}
+            />
             <div>
-              <p className="mb-1 font-medium">Search Tips:</p>
-              <ul className="list-disc space-y-1 pl-5">
-                <li>
-                  Try searching for skills like &apos;React&apos; or
-                  &apos;Design&apos;
-                </li>
-                <li>
-                  Search for job types like &apos;Remote&apos; or
-                  &apos;Full-time&apos;
-                </li>
-                <li>Enter company names to see their projects</li>
+              <p className="mb-1 font-medium">
+                {t.dashboard.searchBar.searchTipsTitle}
+              </p>
+              <ul
+                className={cn(
+                  'list-disc space-y-1',
+                  locale === 'ar' ? 'pr-5' : 'pl-5',
+                )}
+              >
+                <li>{t.dashboard.searchBar.searchTip1}</li>
+                <li>{t.dashboard.searchBar.searchTip2}</li>
+                <li>{t.dashboard.searchBar.searchTip3}</li>
               </ul>
             </div>
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto text-[#63B7B7] hover:bg-[#BEDDF1]/30"
+              className={cn(
+                'text-[#63B7B7] hover:bg-[#BEDDF1]/30',
+                locale === 'ar' ? 'mr-auto' : 'ml-auto',
+              )}
               onClick={() => setShowSearchHelp(false)}
             >
-              Close
+              {t.dashboard.shared.close}
             </Button>
           </motion.div>
         )}

@@ -61,7 +61,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['var(--font-sans)', 'sans-serif'],
+        nebula: ['var(--font-nebula)', 'sans'],
         arabic: ['var(--font-arabic)', 'sans-serif'],
         sora: ['var(--font-sora)', 'sans-serif'],
       },

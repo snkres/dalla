@@ -26,8 +26,8 @@ function updateFontsForLocale(
   root.classList.remove(nebulaClassName, madaniArabicClassName)
   root.classList.add(isArabic ? madaniArabicClassName : nebulaClassName)
 
-  body.classList.remove('font-sans', 'font-arabic')
-  body.classList.add(isArabic ? 'font-arabic' : 'font-sans')
+  body.classList.remove('font-nebula', 'font-arabic')
+  body.classList.add(isArabic ? 'font-arabic' : 'font-nebula')
 
   const event = new CustomEvent(LOCALE_CHANGE_EVENT, { detail: { locale } })
   window.dispatchEvent(event)
