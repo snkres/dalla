@@ -14,6 +14,7 @@ import { useState, useRef, useEffect, useMemo } from 'react'
 import { useAtom } from 'jotai'
 import type { Notification as NotificationType } from '@lib/types/navbar'
 import { globalAtom } from '@lib/atoms/global'
+import { useTranslation } from '@hooks/use-translation'
 
 const navItems = [
   { icon: Home, label: 'Dashboard', href: '/' },
@@ -31,6 +32,7 @@ const accountItems = [
 ]
 
 export const useNavbar = () => {
+  const t = useTranslation()
   const pathname = usePathname()
   const [activeItem, setActiveItem] = useState('/')
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
@@ -73,20 +75,57 @@ export const useNavbar = () => {
   //   }
   // }, [pathname])
 
+  const baseNavItems = useMemo(
+    () => [
+      { icon: Home, label: t.navbar.nav.dashboard, href: '/' },
+      { icon: Briefcase, label: t.navbar.nav.projects, href: '/projects' },
+      { icon: PencilLine, label: t.navbar.nav.proposals, href: '/proposals' },
+      {
+        icon: MessageCircle,
+        label: t.navbar.nav.messages,
+        href: '/messages',
+      },
+      { icon: Settings, label: t.navbar.nav.settings, href: '/settings' },
+    ],
+    [t],
+  )
+
+  const baseAccountItems = useMemo(
+    () => [
+      {
+        icon: User,
+        label: t.navbar.account.viewProfile,
+        href: '/user/profile',
+      },
+      { icon: Settings, label: t.navbar.account.settings, href: '/settings' },
+      {
+        icon: CreditCard,
+        label: t.navbar.account.billing,
+        href: '/billing',
+      },
+      {
+        icon: HelpCircle,
+        label: t.navbar.account.support,
+        href: '/support',
+      },
+    ],
+    [t],
+  )
+
   const currentNavItems = useMemo(() => {
-    return navItems.filter((item) => {
-      if (global.mode === 'company' && item.label === 'Proposals') {
+    return baseNavItems.filter((item) => {
+      if (global.mode === 'company' && item.label === t.navbar.nav.proposals) {
         return false
       }
       return true
     })
-  }, [global.mode])
+  }, [global.mode, baseNavItems, t])
 
   const currentAccountItems = useMemo(() => {
-    const items = [...accountItems]
+    const items = [...baseAccountItems]
 
     const profileItemIndex = items.findIndex(
-      (item) => item.label === 'View Profile',
+      (item) => item.label === t.navbar.account.viewProfile,
     )
     if (profileItemIndex !== -1) {
       items[profileItemIndex] = {
@@ -99,7 +138,7 @@ export const useNavbar = () => {
     }
 
     return items
-  }, [global.mode])
+  }, [global.mode, global.id, global.username, baseAccountItems, t])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -196,6 +235,7 @@ export const useNavbar = () => {
     activeItem,
     isProfileMenuOpen,
     isMobileMenuOpen,
+
     isSearchActive,
     searchQuery,
     notifications,

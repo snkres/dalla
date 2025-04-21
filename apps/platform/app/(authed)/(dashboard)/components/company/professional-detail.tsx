@@ -196,7 +196,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             className="border-b border-gray-100"
             dir={locale === 'ar' ? 'rtl' : 'ltr'}
           >
-            <div className="flex items-center border-b border-gray-200 p-3">
+            <div className="flex items-center gap-2 border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <FileText className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
@@ -220,7 +220,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             className="border-b border-gray-100"
             dir={locale === 'ar' ? 'rtl' : 'ltr'}
           >
-            <div className="flex items-center border-b border-gray-200 p-3">
+            <div className="flex items-center gap-2 border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <Briefcase className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>

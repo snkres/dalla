@@ -604,4 +604,38 @@ export default {
       },
     },
   },
+  navbar: {
+    searchPlaceholder: 'بحث...',
+    notificationsAriaLabel: 'الإشعارات',
+    profileMenuAriaLabel: 'قائمة الملف الشخصي',
+    mobileMenuAriaLabel: 'قائمة الجوال',
+    nav: {
+      dashboard: 'لوحة التحكم',
+      projects: 'المشاريع',
+      proposals: 'المقترحات',
+      messages: 'الرسائل',
+      settings: 'الإعدادات',
+    },
+    account: {
+      viewProfile: 'عرض الملف الشخصي',
+      settings: 'الإعدادات',
+      billing: 'الفواتير والخطط',
+      support: 'المساعدة والدعم',
+      signOut: 'تسجيل الخروج',
+    },
+    languageToggle: {
+      label: 'اللغة',
+      en: 'الإنجليزية',
+      ar: 'العربية',
+    },
+  },
+  notificationsPopup: {
+    title: 'الإشعارات',
+    markAllRead: 'وضع علامة على الكل كمقروء',
+    emptyState: {
+      title: 'لا توجد إشعارات',
+      description: 'أنت على اطلاع دائم!',
+    },
+    viewAll: 'عرض جميع الإشعارات',
+  },
 } as const

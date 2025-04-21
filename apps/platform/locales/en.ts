@@ -662,4 +662,39 @@ export const en = {
       },
     },
   },
+  navbar: {
+    searchPlaceholder: 'Search...',
+    notificationsAriaLabel: 'Notifications',
+    profileMenuAriaLabel: 'Profile menu',
+    mobileMenuAriaLabel: 'Mobile menu',
+    nav: {
+      dashboard: 'Dashboard',
+      projects: 'Projects',
+      proposals: 'Proposals',
+      messages: 'Messages',
+      settings: 'Settings',
+    },
+    account: {
+      viewProfile: 'View Profile',
+      settings: 'Settings',
+      billing: 'Billing & Plans',
+      support: 'Help & Support',
+      signOut: 'Sign Out',
+    },
+    languageToggle: {
+      label: 'Language',
+      en: 'English',
+      ar: 'Arabic',
+    },
+  },
+  // Add Notifications Popup keys below
+  notificationsPopup: {
+    title: 'Notifications',
+    markAllRead: 'Mark all read',
+    emptyState: {
+      title: 'No notifications',
+      description: "You're all caught up!",
+    },
+    viewAll: 'View all notifications',
+  },
 }

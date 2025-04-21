@@ -16,7 +16,12 @@ import {
   markNotificationAsReadAtom,
 } from '@lib/atoms/shared/notifications'
 import { getRelativeTime } from '@dalla/utils'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+
 const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [notifications] = useAtom(notificationsAtom)
   const [unreadCount] = useAtom(unreadNotificationCountAtom)
   const [, markAllAsRead] = useAtom(markAllNotificationsAsReadAtom)
@@ -52,11 +57,12 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.2 }}
       className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-lg"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="flex items-center justify-between border-b border-gray-100 p-4">
         <h3 className="flex items-center gap-2 text-sm font-medium text-gray-700">
           <Bell className="h-4 w-4 text-[#63B7B7]" />
-          Notifications
+          {t.notificationsPopup.title}
           {unreadCount > 0 && (
             <span className="rounded bg-[#63B7B7]/10 px-1.5 py-0.5 text-xs text-[#63B7B7]">
               {unreadCount}
@@ -72,7 +78,7 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
             className="h-7 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
           >
             <Check className="mr-1.5 h-3.5 w-3.5" />
-            Mark all read
+            {t.notificationsPopup.markAllRead}
           </Button>
         )}
       </div>
@@ -179,10 +185,10 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
                 </div>
               </div>
               <p className="text-sm font-medium text-gray-700">
-                No notifications
+                {t.notificationsPopup.emptyState.title}
               </p>
               <p className="mt-1 text-xs text-gray-400">
-                You&apos;re all caught up!
+                {t.notificationsPopup.emptyState.description}
               </p>
             </div>
           )}
@@ -195,7 +201,7 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
             variant="outline"
             className="w-full justify-center border-[#63B7B7]/20 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
           >
-            View all notifications
+            {t.notificationsPopup.viewAll}
           </Button>
         </Link>
       </div>

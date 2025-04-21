@@ -168,10 +168,10 @@ export default function CompanyHome() {
   }
 
   return (
-    <div dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <div>
       <div className="mx-auto max-w-[1200px] px-4 py-6 lg:max-w-[1350px]">
         <div className="flex flex-col gap-6 lg:flex-row">
-          <div className="flex-1">
+          <div className="flex-1" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <ProjectsOverview
               onPostJob={() => setShowAddProject(true)}
               projects={projectsOverviewData?.data.data[0] || []}

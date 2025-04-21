@@ -16,6 +16,7 @@ import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
+import { detectLanguage } from '@dalla/utils'
 
 const ActiveProjectView = ({
   project,
@@ -68,7 +69,12 @@ const ActiveProjectView = ({
           </div>
         </div>
 
-        <p className="mb-5 text-sm text-gray-600">{project.description}</p>
+        <p
+          className="mb-5 text-sm text-gray-600"
+          dir={detectLanguage(project.description) === 'arabic' ? 'rtl' : 'ltr'}
+        >
+          {project.description}
+        </p>
 
         <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">

@@ -16,6 +16,7 @@ import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { useAtom } from 'jotai'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
+import { detectLanguage } from '@dalla/utils'
 
 export function Sidebar() {
   const t = useTranslation()
@@ -58,10 +59,23 @@ export function Sidebar() {
               />
               <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white bg-green-500"></div>
             </div>
-            <h3 className="mb-0.5 text-base font-medium text-gray-800">
+            <h3
+              className="mb-0.5 text-base font-medium text-gray-800"
+              dir={
+                detectLanguage(profile?.data?.name) === 'arabic' ? 'rtl' : 'ltr'
+              }
+            >
               {profile?.data?.name}
             </h3>
-            <p className="text-xs text-gray-500">
+            <p
+              className="text-xs text-gray-500"
+              dir={
+                detectLanguage(profile?.data?.CompanyProfile?.headline) ===
+                'arabic'
+                  ? 'rtl'
+                  : 'ltr'
+              }
+            >
               {profile?.data?.CompanyProfile?.headline}
             </p>
           </div>
@@ -98,7 +112,7 @@ export function Sidebar() {
 
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
-          <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
+          <h2 className="flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-gray-500">
             {React.isValidElement(<Zap />) ? (
               React.cloneElement(
                 (<Zap />) as React.ReactElement<React.SVGProps<SVGSVGElement>>,

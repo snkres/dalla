@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { Link, useTransitionRouter } from 'next-view-transitions'
-import { Bell, Search, Menu, X } from 'lucide-react'
+import { Bell, Search, Menu, X, ChevronDown } from 'lucide-react'
 import { LogoHorizontal } from '@dalla/design-system'
 import { cn } from '@dalla/utils'
 import { AnimatePresence } from 'motion/react'
@@ -15,20 +15,99 @@ import { globalAtom } from '@lib/atoms/global'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
 import { unreadNotificationCountAtom } from '@lib/atoms/shared/notifications'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+import { useState, useRef, useEffect } from 'react'
+import { Button } from '@dalla/design-system'
+import { motion } from 'motion/react'
+
+function LanguageSwitcher() {
+  const { locale, setLocale } = useLocale()
+  const t = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
+  const switcherRef = useRef<HTMLDivElement>(null)
+
+  const toggleDropdown = () => setIsOpen(!isOpen)
+
+  const changeLocale = (newLocale: 'en' | 'ar') => {
+    setLocale(newLocale)
+    setIsOpen(false)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        switcherRef.current &&
+        !switcherRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  return (
+    <div ref={switcherRef} className="relative">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={toggleDropdown}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
+        aria-label={t.navbar.languageToggle.label}
+      >
+        <span className="text-lg">{locale === 'en' ? '🇺🇸' : '🇸🇦'}</span>
+      </Button>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -5 }}
+          className="absolute right-0 top-full z-50 mt-2 w-36 origin-top-right rounded-md border border-gray-100 bg-white p-1 shadow-lg"
+        >
+          <button
+            onClick={() => changeLocale('en')}
+            className={cn(
+              'flex w-full items-center gap-2 rounded px-3 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100',
+              locale === 'en' ? 'bg-gray-100' : undefined,
+            )}
+          >
+            <span className="text-lg">🇺🇸</span>
+            <span>{t.navbar.languageToggle.en}</span>
+          </button>
+          <button
+            onClick={() => changeLocale('ar')}
+            className={cn(
+              'flex w-full items-center gap-2 rounded px-3 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100',
+              locale === 'ar' ? 'bg-gray-100' : undefined,
+            )}
+          >
+            <span className="text-lg">🇸🇦</span>
+            <span>{t.navbar.languageToggle.ar}</span>
+          </button>
+        </motion.div>
+      )}
+    </div>
+  )
+}
 
 export function Navbar() {
   const router = useTransitionRouter()
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [global] = useAtom(globalAtom)
   const [proMeta] = useAtom(proMetaAtom)
   const [companyMeta] = useAtom(companyMetaAtom)
   const [unreadNotificationCount] = useAtom(unreadNotificationCountAtom)
-  console.log(global)
 
   const {
     navItems,
     accountItems,
     activeItem,
     isProfileMenuOpen,
+    setIsProfileMenuOpen,
     isMobileMenuOpen,
     isSearchActive,
     searchQuery,
@@ -44,7 +123,6 @@ export function Navbar() {
     notificationsRef,
     profileMenuRef,
     unreadCount,
-
     isNotificationsOpen,
   } = useNavbar()
 
@@ -64,7 +142,10 @@ export function Navbar() {
         <LogoHorizontal className="[&_path]:fill-slate-blue-100 [&_path]:h-24 [&_path]:w-24" />
       </div>
 
-      <div className="hidden items-center gap-1.5 rounded-full p-1 md:flex">
+      <div
+        className="hidden items-center gap-1.5 rounded-full p-1 md:flex"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      >
         {navItems.map((item) => (
           <Link
             key={item.label}
@@ -92,11 +173,12 @@ export function Navbar() {
               'flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 text-sm text-gray-500 transition-all',
               isSearchActive ? 'w-64' : 'w-40',
             )}
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
           >
             {!isSearchActive && (
               <>
                 <Search className="h-4 w-4" />
-                <span>Search...</span>
+                <span>{t.navbar.searchPlaceholder}</span>
               </>
             )}
           </button>
@@ -107,12 +189,13 @@ export function Navbar() {
                 <input
                   ref={searchInputRef}
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t.navbar.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
                   className="h-full w-full border-none bg-transparent pl-2 pr-8 text-sm focus:outline-none focus:ring-0"
                   autoFocus
+                  dir={locale === 'ar' ? 'rtl' : 'ltr'}
                 />
                 <button
                   type="button"
@@ -130,7 +213,7 @@ export function Navbar() {
           <button
             onClick={toggleNotifications}
             className="notifications-button relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
-            aria-label="Notifications"
+            aria-label={t.navbar.notificationsAriaLabel}
           >
             <Bell className="h-5 w-5" />
             {hasUnreadNotifications && (
@@ -157,7 +240,7 @@ export function Navbar() {
           <button
             onClick={toggleProfileMenu}
             className="flex h-10 items-center gap-2 rounded-full border border-gray-200 bg-white px-2 transition-colors hover:bg-gray-50"
-            aria-label="Profile menu"
+            aria-label={t.navbar.profileMenuAriaLabel}
           >
             <div className="relative h-6 w-6 overflow-hidden rounded-full">
               <Image
@@ -183,7 +266,11 @@ export function Navbar() {
 
           <AnimatePresence>
             {isProfileMenuOpen && (
-              <ProfilePopup ref={profileMenuRef} accountItems={accountItems} />
+              <ProfilePopup
+                ref={profileMenuRef}
+                accountItems={accountItems}
+                setIsProfileMenuOpen={setIsProfileMenuOpen}
+              />
             )}
           </AnimatePresence>
         </div>
@@ -191,7 +278,7 @@ export function Navbar() {
         <button
           onClick={toggleMobileMenu}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 md:hidden"
-          aria-label="Mobile menu"
+          aria-label={t.navbar.mobileMenuAriaLabel}
         >
           <Menu className="h-5 w-5" />
         </button>
