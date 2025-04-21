@@ -14,22 +14,38 @@ import { Button } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { companyMetaAtom } from '@lib/atoms/company/meta'
 import { useAtom } from 'jotai'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+import { detectLanguage } from '@dalla/utils'
 
 export function Sidebar() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const [profile] = useAtom(companyMetaAtom)
   const quickLinks = [
     {
       icon: <FileText />,
-      label: 'Start a Project',
+      label: t.dashboard.companyComponents.sidebar.startProjectLink,
       href: '/?startProject=true',
       highlight: true,
     },
-    { icon: <Bell />, label: 'Notifications', href: '#/notifications' },
-    { icon: <HelpCircle />, label: 'Help Center', href: '#/help' },
+    {
+      icon: <Bell />,
+      label: t.dashboard.companyComponents.sidebar.notificationsLink,
+      href: '#/notifications',
+    },
+    {
+      icon: <HelpCircle />,
+      label: t.dashboard.companyComponents.sidebar.helpCenterLink,
+      href: '#/help',
+    },
   ]
 
   return (
-    <div className="w-full space-y-5 md:w-[320px] lg:sticky lg:top-6 lg:self-start">
+    <div
+      className="w-full space-y-5 md:w-[320px] lg:sticky lg:top-6 lg:self-start"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="p-5">
           <div className="mb-4 flex flex-col items-center">
@@ -43,10 +59,23 @@ export function Sidebar() {
               />
               <div className="absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-white bg-green-500"></div>
             </div>
-            <h3 className="mb-0.5 text-base font-medium text-gray-800">
+            <h3
+              className="mb-0.5 text-base font-medium text-gray-800"
+              dir={
+                detectLanguage(profile?.data?.name) === 'arabic' ? 'rtl' : 'ltr'
+              }
+            >
               {profile?.data?.name}
             </h3>
-            <p className="text-xs text-gray-500">
+            <p
+              className="text-xs text-gray-500"
+              dir={
+                detectLanguage(profile?.data?.CompanyProfile?.headline) ===
+                'arabic'
+                  ? 'rtl'
+                  : 'ltr'
+              }
+            >
               {profile?.data?.CompanyProfile?.headline}
             </p>
           </div>
@@ -56,13 +85,17 @@ export function Sidebar() {
               <div className="text-base font-medium text-[#63B7B7]">
                 {profile?.data?._count?.projects}
               </div>
-              <div className="text-xs text-gray-600">Active Projects</div>
+              <div className="text-xs text-gray-600">
+                {t.dashboard.companyComponents.sidebar.activeProjects}
+              </div>
             </div>
             <div className="rounded-lg bg-[#63B7B7]/10 p-2.5 text-center">
               <div className="text-base font-medium text-[#63B7B7]">
                 {profile?.data?._count?.projects}
               </div>
-              <div className="text-xs text-gray-600">Hired Professionals</div>
+              <div className="text-xs text-gray-600">
+                {t.dashboard.companyComponents.sidebar.hiredProfessionals}
+              </div>
             </div>
           </div>
 
@@ -70,14 +103,16 @@ export function Sidebar() {
             className="h-9 w-full !bg-[#63B7B7] text-sm font-normal transition-colors duration-200 hover:!bg-[#63B7B7]/90"
             asChild
           >
-            <Link href={`/companies/${profile?.data?.id}`}>View Profile</Link>
+            <Link href={`/companies/${profile?.data?.id}`}>
+              {t.dashboard.companyComponents.sidebar.viewProfileButton}
+            </Link>
           </Button>
         </div>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-100 p-4">
-          <h2 className="flex items-center text-xs font-medium uppercase tracking-wider text-gray-500">
+          <h2 className="flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-gray-500">
             {React.isValidElement(<Zap />) ? (
               React.cloneElement(
                 (<Zap />) as React.ReactElement<React.SVGProps<SVGSVGElement>>,
@@ -86,7 +121,7 @@ export function Sidebar() {
             ) : (
               <Zap />
             )}
-            Quick Actions
+            {t.dashboard.companyComponents.sidebar.quickActionsTitle}
           </h2>
         </div>
         <div className="p-2">

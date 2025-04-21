@@ -378,11 +378,17 @@ export default function LoginPage() {
 
       <p className="text-center text-xs text-gray-500">
         {t.login.termsAgreement}{' '}
-        <Link href="/terms" className="text-[#234d64] hover:text-[#1a3b4d]">
+        <Link
+          href="https://dev.dalla.app/en/terms-of-service"
+          className="text-[#234d64] hover:text-[#1a3b4d]"
+        >
           {t.login.termsLink}
         </Link>{' '}
         {locale === 'ar' ? 'و' : 'and'}{' '}
-        <Link href="/privacy" className="text-[#234d64] hover:text-[#1a3b4d]">
+        <Link
+          href="https://dev.dalla.app/en/privacy-policy"
+          className="text-[#234d64] hover:text-[#1a3b4d]"
+        >
           {t.login.privacyLink}
         </Link>
       </p>

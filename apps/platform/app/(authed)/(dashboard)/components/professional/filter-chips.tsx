@@ -9,6 +9,8 @@ import {
 } from '@dalla/design-system'
 import { cn } from '@dalla/utils'
 import { FilterCategory } from '@lib/types/project'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface FilterChipsProps {
   activeFilter: string
@@ -25,8 +27,14 @@ export default function FilterChips({
   setShowSearchHelp,
   filterCategories,
 }: FilterChipsProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   return (
-    <div className="mb-2 flex flex-wrap gap-2">
+    <div
+      className="mb-2 flex flex-wrap gap-2"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+    >
       {filterCategories.map((category) => {
         const Icon = category.icon
         return (
@@ -51,6 +59,7 @@ export default function FilterChips({
               <TooltipContent
                 side="bottom"
                 className="bg-gray-800 px-2.5 py-1.5 text-xs"
+                dir={locale === 'ar' ? 'rtl' : 'ltr'}
               >
                 <p>{category.tooltip}</p>
               </TooltipContent>
@@ -61,11 +70,13 @@ export default function FilterChips({
       <Button
         variant="ghost"
         size="sm"
-        className="h-7 rounded-full px-3 text-xs text-[#1D8489] transition-colors duration-200 hover:bg-[#BEDDF1]/15"
+        className="h-7 rounded-full px-3 text-xs !text-[#1D8489] transition-colors duration-200 hover:!bg-[#BEDDF1]/15"
         onClick={() => setShowSearchHelp(!showSearchHelp)}
       >
-        <HelpCircle className="mr-1.5 h-3.5 w-3.5" />
-        Search Help
+        <HelpCircle
+          className={cn('h-3.5 w-3.5', locale === 'ar' ? 'ml-1.5' : 'mr-1.5')}
+        />
+        {t.dashboard.searchBar.searchHelpButton}
       </Button>
     </div>
   )

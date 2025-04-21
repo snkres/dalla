@@ -13,6 +13,9 @@ import { Badge } from '@dalla/design-system'
 import { cn } from '@dalla/utils'
 import { motion } from 'motion/react'
 import { ApplicationSidebarProps } from '@lib/types/steps'
+import { useTranslation } from '@hooks/use-translation'
+import { formatCurrency } from '@lib/utils/format-currency'
+import { useLocale } from '@hooks/use-locale'
 
 export function ApplicationSidebar({
   project,
@@ -33,13 +36,20 @@ export function ApplicationSidebar({
   totalMilestonesAmount,
 }: ApplicationSidebarProps) {
   const [showAllSkills, setShowAllSkills] = React.useState(false)
+  const translations = useTranslation()
+  const { locale } = useLocale()
+  const t = translations.dashboard.applyProposal
+  const t_shared = translations.dashboard.shared // For relative time
 
   if (isSubmitted) {
     return (
-      <div className="sticky top-0 flex w-2/5 flex-col rounded-3xl border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0">
+      <div
+        className="sticky top-0 flex w-2/5 flex-col rounded-3xl border-t border-gray-100 bg-white md:w-[320px] md:border-l md:border-t-0"
+        dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      >
         <div className="space-y-5 overflow-y-auto p-5">
           <div className="rounded-xl border border-[#63B7B7]/20 bg-[#63B7B7]/5 p-5">
-            <div className="mb-4 flex items-start">
+            <div className="mb-4 flex items-start gap-1">
               <div className="mr-3 flex-shrink-0">
                 <svg
                   width="24"
@@ -59,43 +69,43 @@ export function ApplicationSidebar({
               </div>
               <div>
                 <h3 className="text-base font-medium text-gray-800">
-                  Proposal submitted
+                  {t.submittedTitle}
                 </h3>
                 <p className="mt-1 text-sm text-gray-600">
-                  The client will review it shortly
+                  {t.submittedDescription}
                 </p>
               </div>
             </div>
             <div className="rounded-lg border border-[#63B7B7]/10 bg-white p-3.5 text-sm text-gray-700">
-              You&apos;ll be notified when they respond to your application.
+              {t.submittedNotification}
             </div>
           </div>
 
           <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
             <div className="border-b border-gray-100 p-4">
-              <h3 className="flex items-center text-sm font-medium text-gray-800">
+              <h3 className="flex items-center gap-1 text-sm font-medium text-gray-800">
                 <Users className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                What happens next
+                {t.whatHappensNextTitle}
               </h3>
             </div>
 
             <div className="space-y-5 p-5">
               {[
                 {
-                  title: 'Client reviews your proposal',
-                  description: 'This typically takes 1-3 days',
+                  title: t.nextStep1Title,
+                  description: t.nextStep1Desc,
                 },
                 {
-                  title: "If interested, they'll message you",
-                  description: "You'll receive an email notification",
+                  title: t.nextStep2Title,
+                  description: t.nextStep2Desc,
                 },
                 {
-                  title: 'Discuss project details',
-                  description: 'Clarify any questions about the work',
+                  title: t.nextStep3Title,
+                  description: t.nextStep3Desc,
                 },
                 {
-                  title: 'Client makes hiring decision',
-                  description: "If selected, you'll begin work on the project",
+                  title: t.nextStep4Title,
+                  description: t.nextStep4Desc,
                 },
               ].map((step, index) => (
                 <div key={index} className="flex items-start">
@@ -130,7 +140,7 @@ export function ApplicationSidebar({
               className="relative w-full overflow-hidden rounded-xl !bg-[#63B7B7] py-5 font-medium text-white hover:!bg-[#63B7B7]/90"
               disabled
             >
-              <span className="opacity-0">Submit proposal</span>
+              <span className="opacity-0">{t.submitButton}</span>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
               </div>
@@ -148,7 +158,7 @@ export function ApplicationSidebar({
                 disabled={!canSubmit}
               >
                 <Send className="mr-2 h-4 w-4" />
-                Submit Proposal
+                {t.submitButton}
               </Button>
             </motion.div>
           )}
@@ -157,7 +167,9 @@ export function ApplicationSidebar({
         <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
           <div className="border-b border-gray-100 p-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-800">Completion</h3>
+              <h3 className="text-sm font-medium text-gray-800">
+                {t.completionTitle}
+              </h3>
               <span
                 className={cn(
                   'text-xs font-medium',
@@ -190,37 +202,51 @@ export function ApplicationSidebar({
               {[
                 {
                   step: 1,
-                  title: 'Cover Letter',
+                  title: t.sidebarStep1Title,
                   isComplete: coverLetter.length > 0,
-                  status: coverLetter.length > 0 ? 'Added' : 'Required',
+                  status:
+                    coverLetter.length > 0 ? t.statusAdded : t.statusRequired,
                   icon: <FileText className="h-3.5 w-3.5" />,
                 },
                 {
                   step: 2,
-                  title: 'Pricing',
+                  title: t.sidebarStep2Title,
                   isComplete:
                     (bidAmount > 0 && estimatedDuration) ||
                     (bidType === 'milestone' && milestones.length > 0),
-                  status:
+                  statusNode:
                     (bidAmount > 0 && estimatedDuration) ||
-                    (bidType === 'milestone' && milestones.length > 0)
-                      ? `$${bidType === 'fixed' ? bidAmount : totalMilestonesAmount} ${bidType}`
-                      : 'Required',
+                    (bidType === 'milestone' && milestones.length > 0) ? (
+                      <span className="flex items-center">
+                        {formatCurrency(bidAmount)}&nbsp;{t.statusBidTypeFixed}
+                      </span>
+                    ) : (
+                      <span>{t.statusRequired}</span>
+                    ),
                   icon: <Riyal className="h-3.5 w-3.5" />,
                 },
                 {
                   step: 3,
-                  title: 'Portfolio & Files',
+                  title: t.sidebarStep3Title,
                   isComplete:
                     relatedProjects.some((p) => p.selected) || files.length > 0,
                   status:
                     relatedProjects.some((p) => p.selected) && files.length > 0
-                      ? 'Complete'
+                      ? t.statusComplete
                       : relatedProjects.some((p) => p.selected)
-                        ? 'Portfolio added'
+                        ? t.statusPortfolioAdded
                         : files.length > 0
-                          ? `${files.length} file${files.length > 1 ? 's' : ''}`
-                          : 'Recommended',
+                          ? t.statusFilesAdded
+                              .replace('{count}', files.length.toString())
+                              .replace(
+                                '{plural}',
+                                files.length > 1
+                                  ? locale === 'ar'
+                                    ? 'ات'
+                                    : 's'
+                                  : '',
+                              )
+                          : t.statusRecommended,
                   icon: <ImageIcon className="h-3.5 w-3.5" />,
                 },
               ].map((item) => (
@@ -248,7 +274,7 @@ export function ApplicationSidebar({
                   >
                     <div
                       className={cn(
-                        'text-xs',
+                        'text-xs font-medium',
                         activeStep === item.step
                           ? 'text-[#63B7B7]'
                           : item.isComplete
@@ -259,30 +285,32 @@ export function ApplicationSidebar({
                       {item.icon}
                     </div>
                   </div>
-                  <div className="flex-">
-                    <span
+                  <div className="flex-1">
+                    <p
                       className={cn(
-                        'text-sm',
+                        'text-xs font-medium',
                         activeStep === item.step
-                          ? 'font-medium text-gray-800'
+                          ? 'text-[#63B7B7]'
                           : 'text-gray-700',
                       )}
                     >
                       {item.title}
-                    </span>
-                    <div className="mt-0.5 flex items-center">
-                      <span
-                        className={cn(
-                          'text-xs',
-                          item.isComplete ? 'text-[#63B7B7]' : 'text-gray-400',
-                        )}
-                      >
-                        {item.status}
-                      </span>
+                    </p>
+                    <div
+                      className={cn(
+                        'mt-0.5 text-xs',
+                        activeStep === item.step
+                          ? 'text-[#63B7B7]'
+                          : item.isComplete
+                            ? 'text-gray-600'
+                            : 'text-gray-400',
+                      )}
+                    >
+                      {item.step === 2 ? item.statusNode : item.status}
                     </div>
                   </div>
-                  {activeStep === item.step && (
-                    <ChevronRight className="h-3.5 w-3.5 text-[#63B7B7]" />
+                  {activeStep !== item.step && (
+                    <ChevronRight className="ml-2 h-3.5 w-3.5 text-gray-400" />
                   )}
                 </motion.button>
               ))}
@@ -293,64 +321,49 @@ export function ApplicationSidebar({
         <div className="overflow-hidden rounded-xl border border-gray-100 bg-white">
           <div className="border-b border-gray-100 p-4">
             <h3 className="flex items-center text-sm font-medium text-gray-800">
-              <AlertCircle className="mr-2 h-3.5 w-3.5 text-[#63B7B7]" />
-              Project Summary
+              <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
+              {t.projectInfoTitle}
             </h3>
           </div>
-          <div className="space-y-3 p-4">
+          <div className="space-y-4 p-4">
             <div>
-              <p className="mb-1 text-xs text-gray-400">Project title</p>
-              <p className="text-sm text-gray-800">{project.title}</p>
-            </div>
-
-            <div className="flex items-center gap-2 border-b border-t border-gray-50 py-2">
-              <Clock className="h-3.5 w-3.5 text-gray-400" />
-              <p className="text-xs text-gray-500">
-                Posted{' '}
-                {new Date(project.createdAt).toLocaleDateString('en-GB', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+              <p className="mb-2 text-xs font-medium text-gray-500">
+                {t.skillsRequiredTitle}
               </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs text-gray-400">Skills required</p>
               <div className="flex flex-wrap gap-1.5">
                 {project.skills
-                  .slice(0, showAllSkills ? project.skills.length : 3)
+                  .slice(0, showAllSkills ? project.skills.length : 5)
                   .map((skill) => (
                     <Badge
                       key={skill}
-                      className="rounded-md border-none !bg-[#BEDDF1]/10 px-2 py-0.5 text-xs font-normal text-[#63B7B7] hover:!bg-[#BEDDF1]/20"
+                      className="!bg-[#63B7B7]/10 !text-[#63B7B7]"
                     >
                       {skill}
                     </Badge>
                   ))}
-                {!showAllSkills && project.skills.length > 3 && (
-                  <Badge
-                    className="cursor-pointer rounded-md border-none !bg-gray-50 px-2 py-0.5 text-xs !text-gray-500 hover:!bg-gray-100"
-                    onClick={() => setShowAllSkills(true)}
+                {project.skills.length > 5 && (
+                  <button
+                    onClick={() => setShowAllSkills(!showAllSkills)}
+                    className="ml-auto text-xs font-medium text-[#63B7B7] hover:underline"
                   >
-                    +{project.skills.length - 3} more
-                  </Badge>
-                )}
-                {showAllSkills && project.skills.length > 3 && (
-                  <Badge
-                    className="cursor-pointer rounded-md border-none !bg-gray-50 px-2 py-0.5 text-xs !text-gray-500 hover:!bg-gray-100"
-                    onClick={() => setShowAllSkills(false)}
-                  >
-                    Show less
-                  </Badge>
+                    {showAllSkills
+                      ? t.showLessSkills
+                      : t.viewAllSkills.replace(
+                          '{count}',
+                          project.skills.length.toString(),
+                        )}
+                  </button>
                 )}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg bg-gray-50 p-3 text-xs text-gray-400">
-          By submitting, you agree to the Terms of Service and Code of Conduct.
+        <div
+          className="rounded-lg bg-gray-50 p-3 text-xs text-gray-400"
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+        >
+          {t.agreementText}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ type TranslationKeys = typeof en
 
 const translations: Record<GlobalAtom['locale'], TranslationKeys> = {
   en,
+  // @ts-expect-error
   ar,
 }
 

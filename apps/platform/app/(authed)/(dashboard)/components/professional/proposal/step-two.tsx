@@ -20,9 +20,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@dalla/design-system'
-import { fadeIn } from '@dalla/utils'
+import { fadeIn, translateDuration } from '@dalla/utils'
 import { StepTwoProps } from '@lib/types/steps'
 import { formatCurrency } from '@lib/utils/format-currency'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 export function StepTwo({
   bidType,
@@ -40,16 +42,19 @@ export function StepTwo({
   totalMilestonesAmount,
   project,
 }: StepTwoProps) {
+  const translations = useTranslation()
+  const t = translations.dashboard.applyProposal
+  const { locale } = useLocale()
   return (
     <motion.div {...fadeIn} className="mx-auto max-w-3xl space-y-6">
       <div className="relative overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
         <div className="absolute left-0 top-0 h-1 w-full bg-[#63B7B7]"></div>
         <div className="p-6">
-          <h3 className="mb-6 flex items-center text-lg font-semibold text-gray-800">
+          <h3 className="mb-6 flex items-center gap-1 text-lg font-semibold text-gray-800">
             <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#63B7B7] text-sm text-white">
               2
             </span>
-            Pricing Details
+            {t.step2Title}
           </h3>
 
           <div
@@ -67,9 +72,9 @@ export function StepTwo({
               >
                 <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md">
                   <div className="border-b border-gray-100 p-4">
-                    <h4 className="flex items-center text-sm font-medium">
+                    <h4 className="flex items-center gap-1 text-sm font-medium">
                       <Riyal className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                      Set Your Price
+                      {t.setPriceTitle}
                     </h4>
                   </div>
                   <div className="p-4">
@@ -83,14 +88,15 @@ export function StepTwo({
                           onChange={(e) =>
                             handleBidChange(parseInt(e.target.value) || 0)
                           }
+                          aria-label={t.bidAmountLabel}
                           className="h-auto w-20 border-0 bg-transparent p-0 text-lg font-semibold focus:ring-0"
                           style={{ caretColor: '#63B7B7' }}
                         />
                       </div>
-                      <div className="rounded-lg border border-[#63B7B7]/10 bg-[#63B7B7]/5 p-2">
+                      <div className="rounded-lg border border-[#63B7B7]/10 bg-[#63B7B7]/5 p-3">
                         <div className="text-xs">
                           <span className="text-gray-600">
-                            You&apos;ll receive:{' '}
+                            {t.youllReceiveLabel}{' '}
                           </span>
                           {formatCurrency(youllReceive, 'h-3 w-3 mr-0.5')}
                           <span className="ml-1 inline-flex items-center text-xs text-gray-500">
@@ -106,20 +112,22 @@ export function StepTwo({
                         max={2000}
                         step={50}
                         onValueChange={(value) => handleBidChange(value[0])}
-                        className="w-full bg-[#63B7B7]/10"
+                        className="w-full !bg-[#63B7B7]/10"
                       />
                       <div className="flex justify-between text-xs text-gray-500">
-                        <span>﷼100</span>
-                        <span>﷼2,000</span>
+                        <span>{formatCurrency(100, 'h-2.5 w-2.5 mr-0.5')}</span>
+                        <span>
+                          {formatCurrency(2000, 'h-2.5 w-2.5 mr-0.5')}
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md">
                   <div className="border-b border-gray-100 p-4">
-                    <h4 className="flex items-center text-sm font-medium">
+                    <h4 className="flex items-center gap-1 text-sm font-medium">
                       <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                      Timeline
+                      {t.timelineTitle}
                     </h4>
                   </div>
                   <div className="p-4">
@@ -127,7 +135,7 @@ export function StepTwo({
                       <div className="relative w-1/3">
                         <Input
                           id="timeline-value"
-                          placeholder="e.g. 3"
+                          placeholder={t.timelinePlaceholder}
                           value={estimatedDuration.split(' ')[0] || '1'}
                           onChange={(e) => {
                             const value = e.target.value
@@ -153,12 +161,20 @@ export function StepTwo({
                           }}
                         >
                           <SelectTrigger className="!h-10 w-full">
-                            <SelectValue placeholder="Select unit" />
+                            <SelectValue
+                              placeholder={t.timelineUnitPlaceholder}
+                            />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="days">Days</SelectItem>
-                            <SelectItem value="weeks">Weeks</SelectItem>
-                            <SelectItem value="months">Months</SelectItem>
+                            <SelectItem value="days">
+                              {t.timelineUnitDays}
+                            </SelectItem>
+                            <SelectItem value="weeks">
+                              {t.timelineUnitWeeks}
+                            </SelectItem>
+                            <SelectItem value="months">
+                              {t.timelineUnitMonths}
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -167,17 +183,17 @@ export function StepTwo({
                 </div>
                 {(project.meta.budget || project.meta.duration) && (
                   <div className="mb-6 rounded-xl border border-gray-100 bg-white p-4 shadow-md">
-                    <div className="mb-2 flex items-center text-sm text-gray-700">
+                    <div className="mb-2 flex items-center gap-1 text-sm text-gray-700">
                       <AlertCircle className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                      Client Expectations
+                      {t.clientExpectationsTitle}
                     </div>
                     <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {project.meta.budget && (
-                        <div className="flex items-center rounded-lg border border-gray-100 bg-white p-3">
+                        <div className="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-3">
                           <Riyal className="mr-2 h-4 w-4 text-[#63B7B7]" />
                           <div>
                             <span className="block text-xs text-gray-500">
-                              Budget
+                              {t.clientBudgetLabel}
                             </span>
                             <span className="text-sm font-medium">
                               {project.meta.budget}
@@ -186,14 +202,14 @@ export function StepTwo({
                         </div>
                       )}
                       {project.meta.duration && (
-                        <div className="flex items-center rounded-lg border border-gray-100 bg-white p-3">
+                        <div className="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-3">
                           <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
                           <div>
                             <span className="block text-xs text-gray-500">
-                              Timeline
+                              {t.clientTimelineLabel}
                             </span>
                             <span className="text-sm font-medium">
-                              {project.meta.duration}
+                              {translateDuration(project.meta.duration, locale)}
                             </span>
                           </div>
                         </div>

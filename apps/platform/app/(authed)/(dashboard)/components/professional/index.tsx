@@ -34,10 +34,16 @@ import {
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { getAllSkills } from '@lib/utils/skill-utils'
 import { useQueryState } from 'nuqs'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+import { cn } from '@dalla/utils'
+import { FilterCategory } from '@lib/types/project'
 
 const LIMIT = 4
 
 export function ProfessionalHome() {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const { toast } = useToast()
   const instanceId = useId()
 
@@ -83,11 +89,47 @@ export function ProfessionalHome() {
     GetAllProjectsProfessionalViewRes['data'][0][number] | null
   >(data?.data[0].find((project) => project.id === selectedProjectId) || null)
 
+  const localizedFilterCategories = useMemo<FilterCategory[]>(
+    () => [
+      {
+        key: 'all',
+        label: t.dashboard.filterCategoriesData.all.label,
+        icon: filterCategories[0].icon,
+        tooltip: t.dashboard.filterCategoriesData.all.tooltip,
+      },
+      {
+        key: 'recommended',
+        label: t.dashboard.filterCategoriesData.recommended.label,
+        icon: filterCategories[1].icon,
+        tooltip: t.dashboard.filterCategoriesData.recommended.tooltip,
+      },
+      {
+        key: 'viewed',
+        label: t.dashboard.filterCategoriesData.viewed.label,
+        icon: filterCategories[2].icon,
+        tooltip: t.dashboard.filterCategoriesData.viewed.tooltip,
+      },
+      {
+        key: 'saved',
+        label: t.dashboard.filterCategoriesData.saved.label,
+        icon: filterCategories[3].icon,
+        tooltip: t.dashboard.filterCategoriesData.saved.tooltip,
+      },
+      {
+        key: 'applied',
+        label: t.dashboard.filterCategoriesData.applied.label,
+        icon: filterCategories[4].icon,
+        tooltip: t.dashboard.filterCategoriesData.applied.tooltip,
+      },
+    ],
+    [t],
+  )
+
   useEffect(() => {
     setSelectedProject(
       data?.data[0].find((project) => project.id === selectedProjectId) || null,
     )
-  }, [selectedProjectId])
+  }, [selectedProjectId, data])
 
   useEffect(() => {
     if (selectedProjectId && data?.data?.[0]?.length) {
@@ -227,8 +269,9 @@ export function ProfessionalHome() {
   const handleApplyClick = useCallback(() => {
     if (selectedProject?.applied) {
       toast({
-        title: 'Already Applied',
-        description: "You've already submitted a proposal for this project.",
+        title: t.dashboard.professionalHome.alreadyAppliedToastTitle,
+        description:
+          t.dashboard.professionalHome.alreadyAppliedToastDescription,
         variant: 'default',
       })
       return
@@ -236,7 +279,7 @@ export function ProfessionalHome() {
 
     setShowProjectDetail(false)
     setShowProjectApplication(true)
-  }, [selectedProject, toast])
+  }, [selectedProject, toast, t])
 
   const handleBackToDetails = useCallback(() => {
     setShowProjectApplication(false)
@@ -281,21 +324,16 @@ export function ProfessionalHome() {
     setIsRefreshing(true)
     try {
       await refetch()
-      toast({
-        title: 'Projects Updated',
-        description: 'Successfully refreshed the latest projects.',
-        variant: 'default',
-      })
     } catch (error) {
       toast({
-        title: 'Refresh Failed',
-        description: 'Unable to load the latest projects. Please try again.',
+        title: t.dashboard.professionalHome.errorLoadingTitle,
+        description: t.dashboard.professionalHome.errorLoadingDescription,
         variant: 'destructive',
       })
     } finally {
       setIsRefreshing(false)
     }
-  }, [refetch, toast])
+  }, [refetch, toast, t])
 
   const renderSortOption = (
     option: 'newest' | 'budget-high' | 'budget-low',
@@ -306,7 +344,7 @@ export function ProfessionalHome() {
       size="sm"
       className={`!rounded-md px-3 py-1 text-sm ${
         sortBy === option
-          ? '!bg-[#234d64] text-white'
+          ? '!bg-[#64B7B7] text-white'
           : '!bg-gray-100 !text-gray-700 hover:!bg-gray-200'
       }`}
       onClick={() => setSortBy(option)}
@@ -333,10 +371,10 @@ export function ProfessionalHome() {
     <div className="w-full py-6">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <div className="mb-6 flex items-center justify-between">
               <h1 className="text-2xl font-semibold text-gray-900">
-                Available Projects
+                {t.dashboard.professionalHome.availableProjectsTitle}
               </h1>
               <Button
                 variant="outline"
@@ -348,7 +386,11 @@ export function ProfessionalHome() {
                 <RefreshCw
                   className={`h-4 w-4 ${isLoading || isRefreshing || isFetching ? 'animate-spin text-[#234d64]' : ''}`}
                 />
-                <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+                <span>
+                  {isRefreshing
+                    ? t.dashboard.professionalHome.refreshingButton
+                    : t.dashboard.professionalHome.refreshButton}
+                </span>
               </Button>
             </div>
             <SearchBar
@@ -365,7 +407,7 @@ export function ProfessionalHome() {
               selectedLocations={selectedLocations}
               setSelectedLocations={setSelectedLocations}
               selectedSkills={selectedSkills}
-              // setSelectedSkills={setSelectedSkills}
+              setSelectedSkills={(skills) => setSelectedSkills(skills || [])}
               handleResetFilters={handleResetFilters}
               budgetRanges={budgetRanges}
               durationOptions={durationOptions}
@@ -377,17 +419,21 @@ export function ProfessionalHome() {
               setActiveFilter={setActiveFilter}
               setShowSearchHelp={setShowSearchHelp}
               showSearchHelp={showSearchHelp}
-              filterCategories={filterCategories}
+              filterCategories={localizedFilterCategories}
             />
 
             <div className="mb-4 mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-gray-500">
-                Showing {filteredProjects.length} projects
+                {t.dashboard.professionalHome.showingProjectsCount.replace(
+                  '{count}',
+                  String(filteredProjects.length),
+                )}
                 {activeFilter !== 'all' &&
-                  ` • Filtered by: ${filterCategories.find((f) => f.key === activeFilter)?.label}`}
-                {searchQuery && ` • Search: "${searchQuery}"`}
+                  ` • ${t.dashboard.professionalHome.filteredByLabel.replace('{filter}', localizedFilterCategories.find((f) => f.key === activeFilter)?.label || activeFilter)}`}
+                {searchQuery &&
+                  ` • ${t.dashboard.professionalHome.searchLabel.replace('{query}', searchQuery)}`}
                 {selectedSkills.length > 0 &&
-                  ` • Skills: ${selectedSkills.length} selected`}
+                  ` • ${t.dashboard.professionalHome.skillsLabel.replace('{count}', String(selectedSkills.length))}`}
               </p>
 
               <div className="flex items-center gap-2">
@@ -398,16 +444,27 @@ export function ProfessionalHome() {
                     className="text-sm text-gray-500"
                     onClick={clearAllFilters}
                   >
-                    Clear All
+                    {t.dashboard.professionalHome.clearAllFiltersButton}
                   </Button>
                 )}
 
                 <div className="ml-2 flex items-center gap-1">
-                  <span className="text-sm text-gray-700">Sort:</span>
+                  <span className="text-sm text-gray-700">
+                    {t.dashboard.professionalHome.sortByLabel}
+                  </span>
                   <div className="flex gap-1">
-                    {renderSortOption('newest', 'Newest')}
-                    {renderSortOption('budget-high', 'Budget ↓')}
-                    {renderSortOption('budget-low', 'Budget ↑')}
+                    {renderSortOption(
+                      'newest',
+                      t.dashboard.professionalHome.sortNewest,
+                    )}
+                    {renderSortOption(
+                      'budget-high',
+                      t.dashboard.professionalHome.sortBudgetHighLowArrow,
+                    )}
+                    {renderSortOption(
+                      'budget-low',
+                      t.dashboard.professionalHome.sortBudgetLowHighArrow,
+                    )}
                   </div>
                 </div>
               </div>
@@ -428,17 +485,16 @@ export function ProfessionalHome() {
                   <AlertCircle className="h-12 w-12 text-red-400" />
                 </div>
                 <h3 className="mb-2 text-lg font-medium text-gray-900">
-                  Error loading projects
+                  {t.dashboard.professionalHome.errorLoadingTitle}
                 </h3>
                 <p className="mx-auto mb-6 max-w-md text-gray-500">
-                  We encountered an error while loading projects. Please try
-                  again.
+                  {t.dashboard.professionalHome.errorLoadingDescription}
                 </p>
                 <Button
                   onClick={() => refetch()}
                   className="!bg-[#234d64] hover:!bg-[#234d64]/90"
                 >
-                  Retry
+                  {t.dashboard.professionalHome.retryButton}
                 </Button>
               </div>
             ) : filteredProjects.length > 0 ? (
@@ -462,31 +518,38 @@ export function ProfessionalHome() {
                   <AlertCircle className="h-12 w-12 text-gray-400" />
                 </div>
                 <h3 className="mb-2 text-lg font-medium text-gray-900">
-                  No projects found
+                  {t.dashboard.professionalHome.noProjectsFoundTitleAlt}
                 </h3>
                 <p className="mx-auto mb-6 max-w-md text-gray-500">
-                  We couldn&apos;t find any projects matching your search
-                  criteria. Try adjusting your filters or search terms.
+                  {t.dashboard.professionalHome.noProjectsFoundDescriptionAlt}
                 </p>
                 <Button
                   onClick={clearAllFilters}
                   className="!bg-[#234d64] hover:!bg-[#234d64]/90"
                 >
-                  Clear Filters & Search
+                  {t.dashboard.professionalHome.clearFiltersSearchButton}
                 </Button>
               </div>
             )}
 
             {filteredProjects.length > 0 && totalPages > 1 && (
-              <div className="mt-8 flex w-full items-center justify-between gap-2">
+              <div
+                className={cn(
+                  'mt-8 flex w-full items-center justify-between gap-2',
+                  locale === 'ar' ? 'flex-row-reverse' : 'flex-row',
+                )}
+              >
                 <Button
                   variant="outline"
                   onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page === 1 || isLoading || isRefreshing}
-                  className="flex items-center gap-1"
+                  className={cn(
+                    'flex items-center gap-1',
+                    locale === 'ar' ? 'flex-row-reverse' : 'flex-row',
+                  )}
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  Previous
+                  {t.dashboard.shared.previous}
                 </Button>
 
                 <div className="flex items-center gap-1">
@@ -507,7 +570,7 @@ export function ProfessionalHome() {
                           variant={page === pageNum ? 'default' : 'outline'}
                           onClick={() => handlePageChange(pageNum)}
                           disabled={isLoading || isRefreshing}
-                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#234d64] text-white' : ''}`}
+                          className={`h-10 w-10 ${page === pageNum ? '!bg-[#64B7B7] text-white' : ''}`}
                         >
                           {pageNum}
                         </Button>
@@ -523,9 +586,12 @@ export function ProfessionalHome() {
                     handlePageChange(Math.min(totalPages, page + 1))
                   }
                   disabled={page === totalPages || isLoading || isRefreshing}
-                  className="flex items-center gap-1"
+                  className={cn(
+                    'flex items-center gap-1',
+                    locale === 'ar' ? 'flex-row-reverse' : 'flex-row',
+                  )}
                 >
-                  Next
+                  {t.dashboard.shared.next}
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { motion } from 'motion/react'
 import Image from 'next/image'
 import {
   Star,
@@ -17,8 +16,10 @@ import { Button, Modal, Riyal } from '@dalla/design-system'
 import { Badge } from '@dalla/design-system'
 import { useQuery } from '@tanstack/react-query'
 import { getProProfile } from '@lib/api/pro/profile'
-import { formatDate } from '@dalla/utils'
+import { cn, detectLanguage, formatDate } from '@dalla/utils'
 import { formatCurrency } from '@lib/utils/format-currency'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface ConsultantDetailProps {
   username: string
@@ -26,6 +27,8 @@ interface ConsultantDetailProps {
 }
 
 export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
   const router = useTransitionRouter()
   const { data: professional } = useQuery({
     queryKey: ['professional', username],
@@ -45,7 +48,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
     <Modal
       isOpen={true}
       onClose={onClose}
-      title="Professional Profile"
+      title={t.dashboard.companyComponents.professionalDetail.modalTitle}
       showExternalLink
       onExternalLinkClick={() => {
         router.push(`/professionals/${username}`)
@@ -53,7 +56,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
       width="lg"
     >
       <div className="flex h-full flex-col overflow-hidden md:flex-row">
-        <div className="flex-1 overflow-y-auto">
+        <div
+          className="flex-1 overflow-y-auto"
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+        >
           <div className="border-b border-gray-100 p-5">
             <div className="mb-4 flex items-start gap-4">
               <div className="relative">
@@ -79,9 +85,9 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
 
               <div className="flex-1">
                 <div className="mb-1 flex items-start justify-between">
-                  <h1 className="text-lg font-medium text-gray-800">
+                  <span className="text-lg font-medium text-gray-800">
                     {professional?.data?.data?.User?.name}
-                  </h1>
+                  </span>
                   <Badge
                     className={`!rounded-full !px-2 !py-0.5 !text-xs !font-medium capitalize ${
                       professional?.data?.data?.meta?.availability ===
@@ -101,27 +107,40 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 </p>
 
                 <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <Star className="mr-1 h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                     <span className="font-medium text-gray-700">
                       {professional?.data?.data?.meta?.successRate ?? 5}
                     </span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <MapPin className="mr-1 h-3.5 w-3.5" />
                     <span>{professional?.data?.data?.meta?.location}</span>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <Briefcase className="mr-1 h-3.5 w-3.5" />
-                    <span>
-                      {professional?.data?.data?.meta?.yearsOfExperience} yrs
+                    <span dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+                      {professional?.data?.data?.meta?.yearsOfExperience}{' '}
+                      {
+                        t.dashboard.companyComponents.professionalDetail
+                          .yearsExperienceSuffix
+                      }
                     </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="mb-1 flex flex-wrap gap-1.5">
+            <div
+              className="mb-1 flex flex-wrap gap-1.5"
+              dir={
+                detectLanguage(
+                  professional?.data?.data?.meta?.skills?.[0] || '',
+                ) === 'arabic'
+                  ? 'rtl'
+                  : 'ltr'
+              }
+            >
               {(showAllSkills
                 ? professional?.data?.data?.meta?.skills
                 : professional?.data?.data?.meta?.skills?.slice(0, 5)
@@ -148,59 +167,106 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                     className="cursor-pointer !rounded-md !border-none !bg-gray-50 !px-2 !py-0.5 !text-xs !font-normal !text-gray-600 hover:!bg-gray-100"
                     onClick={() => setShowAllSkills(false)}
                   >
-                    Show less
+                    {
+                      t.dashboard.companyComponents.professionalDetail
+                        .showLessSkillsButton
+                    }
                   </Badge>
                 )}
             </div>
           </div>
 
-          <div className="border-b border-gray-100 bg-[#63B7B7]/5 px-5 py-3">
-            <div className="flex items-center text-xs text-gray-700">
+          <div
+            className="border-b border-gray-100 bg-[#63B7B7]/5 px-5 py-3"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <div className="flex items-center gap-1 text-xs text-gray-700">
               <Shield className="mr-2 h-3.5 w-3.5 text-[#63B7B7]" />
-              <span>Match score: </span>
-              <span className="ml-1 font-medium text-[#63B7B7]">
-                {matchPercentage}%
+              <span>
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .matchScorePrefix
+                }
               </span>
-              <span className="ml-1">for your project requirements</span>
+              <span className="ml-1 font-medium text-[#63B7B7]">
+                {matchPercentage}
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .matchScoreSuffix
+                }
+              </span>
+              <span className="ml-1">
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .matchScoreRequirementText
+                }
+              </span>
             </div>
           </div>
 
-          <div className="border-b border-gray-100">
-            <div className="flex items-center border-b border-gray-200 p-3">
+          <div
+            className="border-b border-gray-100"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <div className="flex items-center gap-2 border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <FileText className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
-              <h2 className="text-sm font-medium text-gray-800">About</h2>
+              <h2 className="text-sm font-medium text-gray-800">
+                {t.dashboard.companyComponents.professionalDetail.aboutTitle}
+              </h2>
             </div>
-            <p className="p-6 px-4 text-sm leading-relaxed text-gray-600">
+            <p
+              className="p-6 px-4 text-sm leading-relaxed text-gray-600"
+              dir={
+                detectLanguage(professional?.data?.data?.bio || '') === 'arabic'
+                  ? 'rtl'
+                  : 'ltr'
+              }
+            >
               {professional?.data?.data?.bio}
             </p>
           </div>
 
-          <div className="border-b border-gray-100">
-            <div className="flex items-center border-b border-gray-200 p-3">
+          <div
+            className="border-b border-gray-100"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <div className="flex items-center gap-2 border-b border-gray-200 p-3">
               <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                 <Briefcase className="h-3.5 w-3.5 text-[#63B7B7]" />
               </div>
               <h2 className="text-sm font-medium text-gray-800">
-                Work History
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .workHistoryTitle
+                }
               </h2>
             </div>
-            <div className="space-y-4 p-6 px-4">
+            <div
+              className="space-y-4 p-6 px-4"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
               {professional?.data?.data?.experience?.map(
                 (exp: any, index: number) => (
                   <div
                     key={index}
                     className="border-b border-gray-100 pb-4 last:border-0 last:pb-0"
+                    dir={
+                      detectLanguage(exp.title || '') === 'arabic'
+                        ? 'rtl'
+                        : 'ltr'
+                    }
                   >
                     <h3 className="mb-1 text-sm font-medium text-gray-800">
                       {exp.title} at {exp.company}
                     </h3>
                     <div className="mb-2 flex items-center text-xs text-gray-500">
                       <span>
-                        {formatDate(new Date(exp.startDate))} -{' '}
+                        {formatDate(new Date(exp.startDate))} -
                         {exp.endDate === 'present'
-                          ? 'Present'
+                          ? t.dashboard.companyComponents.professionalDetail
+                              .endDatePresent
                           : formatDate(new Date(exp.endDate))}
                       </span>
                       <span className="mx-2">•</span>
@@ -215,63 +281,139 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
               {(!professional?.data?.data?.experience ||
                 professional?.data?.data?.experience.length === 0) && (
                 <p className="text-sm text-gray-500">
-                  No work history available
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .noWorkHistory
+                  }
                 </p>
               )}
             </div>
           </div>
 
-          <div className="border-gray-100">
-            <div className="flex items-center border-b border-gray-200 p-3">
-              <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
-                <Boxes className="h-3.5 w-3.5 text-[#63B7B7]" />
+          <div
+            className="w-full border-gray-100"
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+          >
+            <div className="flex w-full items-center justify-between border-b border-gray-200 p-3">
+              <div className="flex w-full items-center gap-2">
+                <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
+                  <Boxes className="h-3.5 w-3.5 text-[#63B7B7]" />
+                </div>
+                <span className="text-sm font-medium text-gray-800">
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .portfolioTitle
+                  }
+                </span>
               </div>
-              <h2 className="text-sm font-medium text-gray-800">
-                Portfolio & Projects
-              </h2>
               <Button
                 variant="ghost"
                 size="sm"
-                className="ml-auto h-7 text-xs text-[#63B7B7]"
+                className={cn(
+                  'ml-auto flex h-7 items-center gap-1 text-xs text-[#63B7B7]',
+                  // locale === 'ar' ? 'flex-row-reverse' : '',
+                )}
                 onClick={() =>
                   router.push(
                     `/professionals/${professional?.data.data.User.username}`,
                   )
                 }
               >
-                View all <ChevronRight className="ml-1 h-3 w-3" />
+                <span>
+                  {' '}
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .viewAllButton
+                  }
+                </span>
+                <ChevronRight
+                  className={cn(
+                    'ml-1 h-3 w-3',
+                    locale === 'ar' ? 'rotate-180' : '',
+                  )}
+                />
               </Button>
             </div>
-            <div className="grid grid-cols-1 gap-3 p-6 px-4">
+            <div
+              className="grid grid-cols-1 gap-3 p-6 px-4"
+              dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            >
               {professional?.data?.data?.projects?.slice(0, 3).map((p: any) => (
                 <div className="rounded-lg bg-[#63B7B7]/10 p-3" key={p.id}>
-                  <h4 className="mb-1 text-xs font-medium text-gray-800">
+                  <h4
+                    className="mb-1 text-xs font-medium text-gray-800"
+                    dir={
+                      detectLanguage(p.title || '') === 'arabic' ? 'rtl' : 'ltr'
+                    }
+                  >
                     {p.title}
                   </h4>
-                  <p className="mb-1 text-[11px] text-gray-500">
+                  <p
+                    className="mb-1 text-[11px] text-gray-500"
+                    dir={
+                      detectLanguage(p.skills.join(', ') || '') === 'arabic'
+                        ? 'rtl'
+                        : 'ltr'
+                    }
+                  >
                     {p.skills.join(', ')}
                   </p>
-                  <p className="text-xs text-gray-600">{p.description}</p>
+                  <p
+                    className="text-xs text-gray-600"
+                    dir={
+                      detectLanguage(p.description || '') === 'arabic'
+                        ? 'rtl'
+                        : 'ltr'
+                    }
+                  >
+                    {p.description}
+                  </p>
                 </div>
               ))}
               {professional?.data?.data?.User.projects
                 ?.slice(0, 3)
                 .map((p: any) => (
                   <div className="rounded-lg bg-[#63B7B7]/10 p-3" key={p.id}>
-                    <h4 className="mb-1 text-xs font-medium text-gray-800">
+                    <h4
+                      className="mb-1 text-xs font-medium text-gray-800"
+                      dir={
+                        detectLanguage(p.title || '') === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
                       {p.title}
                     </h4>
-                    <p className="mb-1 text-[11px] text-gray-500">
+                    <p
+                      className="mb-1 text-[11px] text-gray-500"
+                      dir={
+                        detectLanguage(p.skills.join(', ') || '') === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
                       {p.skills.join(', ')}
                     </p>
-                    <p className="text-xs text-gray-600">{p.description}</p>
+                    <p
+                      className="text-xs text-gray-600"
+                      dir={
+                        detectLanguage(p.description || '') === 'arabic'
+                          ? 'rtl'
+                          : 'ltr'
+                      }
+                    >
+                      {p.description}
+                    </p>
                   </div>
                 ))}
             </div>
           </div>
         </div>
 
-        <div className="h-full w-full rounded-ee-3xl border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72">
+        <div
+          className="h-full w-full rounded-ee-3xl border-t border-gray-100 bg-gray-50 md:w-64 md:border-l md:border-t-0 lg:w-72"
+          dir={locale === 'ar' ? 'rtl' : 'ltr'}
+        >
           <div className="space-y-3">
             <div className="border-b border-gray-200">
               <div className="flex items-center border-b border-gray-200 p-2">
@@ -279,25 +421,56 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                   <Riyal className="h-3.5 w-3.5" />
                 </div>
                 <h3 className="text-sm font-medium text-gray-800">
-                  Rate & Availability
+                  {
+                    t.dashboard.companyComponents.professionalDetail
+                      .rateAvailabilityTitle
+                  }
                 </h3>
               </div>
               <div className="space-y-2 p-6 px-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Hourly Rate</span>
-                  <span className="flex items-center gap-1 text-sm font-normal text-gray-800">
-                    {formatCurrency(
-                      professional?.data?.data?.meta?.hourlyRate || 0,
-                    )}
-                    <span className="text-gray-600">/hr</span>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">
+                    {
+                      t.dashboard.companyComponents.professionalDetail
+                        .hourlyRateLabel
+                    }
                   </span>
+                  <div className="flex items-center justify-between gap-1 text-sm font-normal text-gray-800">
+                    <span>
+                      {(professional?.data?.data?.meta?.hourlyRate &&
+                        formatCurrency(
+                          professional.data.data.meta.hourlyRate,
+                          locale,
+                        )) ||
+                        t.dashboard.companyComponents.proposalDetails.textNA}
+                    </span>
+                    <span>
+                      {professional.data.data.meta.hourlyRate &&
+                        t.dashboard.companyComponents.professionalDetail
+                          .hourlyRateSuffix}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Availability</span>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">
+                    {
+                      t.dashboard.companyComponents.professionalDetail
+                        .availabilityLabel
+                    }
+                  </span>
                   <span className="text-sm font-normal text-gray-800">
                     {professional?.data?.data?.meta?.weeklyAvailability ??
-                      'N/A'}{' '}
-                    hrs/week
+                      t.dashboard.companyComponents.proposalDetails.textNA}
+
+                    {professional?.data?.data?.meta?.weeklyAvailability && (
+                      <>
+                        {' '}
+                        {
+                          t.dashboard.companyComponents.professionalDetail
+                            .availabilitySuffix
+                        }
+                      </>
+                    )}
                   </span>
                 </div>
               </div>
@@ -305,14 +478,17 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
 
             <div className="border-b border-gray-200">
               <div className="flex items-center justify-between border-b border-gray-200 p-3 pt-0">
-                <div className="flex items-center justify-start">
+                <div className="flex items-center justify-start gap-2">
                   <div className="mr-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#63B7B7]/10">
                     <Star className="h-3.5 w-3.5 text-[#63B7B7]" />
                   </div>
                   <div className="flex flex-col items-start justify-center">
-                    <h3 className="text-sm font-medium text-gray-800">
-                      Professional Rating
-                    </h3>
+                    <span className="text-sm font-medium text-gray-800">
+                      {
+                        t.dashboard.companyComponents.professionalDetail
+                          .ratingTitle
+                      }
+                    </span>
                     <div className="flex items-center justify-center">
                       <div className="mr-1 flex items-center">
                         {Array.from(
@@ -327,9 +503,6 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                           />
                         ))}
                       </div>
-                      <span className="text-xs font-normal">
-                        {professional?.data?.data?.meta?.successRate}
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -347,7 +520,7 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
             </div>
             <div className="border-b border-gray-200 p-2">
               <Button className="mb-2 h-9 w-full !bg-[#63B7B7] text-white hover:!bg-[#63B7B7]/90">
-                Hire Professional
+                {t.dashboard.companyComponents.professionalDetail.hireButton}
               </Button>
 
               <Button
@@ -355,7 +528,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 className="mb-2 h-9 w-full !border-[#63B7B7] !text-[#63B7B7] hover:!bg-[#63B7B7]/5"
               >
                 <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
-                Message
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .sendMessageButton
+                }
               </Button>
 
               <Button
@@ -363,7 +539,10 @@ export function ConsultantDetail({ username, onClose }: ConsultantDetailProps) {
                 className="h-9 w-full !text-gray-700 hover:!bg-gray-100"
               >
                 <Bookmark className="mr-1.5 h-3.5 w-3.5" />
-                Save Profile
+                {
+                  t.dashboard.companyComponents.professionalDetail
+                    .saveProfileButton
+                }
               </Button>
             </div>
           </div>

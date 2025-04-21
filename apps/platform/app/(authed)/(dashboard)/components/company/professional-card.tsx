@@ -7,6 +7,9 @@ import { cn } from '@dalla/utils'
 import { motion } from 'motion/react'
 import { Consultant } from '@lib/types/company'
 import { GetAllProfessionalsRes } from '@lib/api/company/professionals'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+import { formatCurrency } from '@lib/utils/format-currency'
 
 interface ProfessionalCardProps {
   professional: GetAllProfessionalsRes['data'][0][number]
@@ -19,6 +22,9 @@ export function ProfessionalCard({
   onClick,
   onHire,
 }: ProfessionalCardProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   const handleHireClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     onHire?.(professional)
@@ -63,10 +69,11 @@ export function ProfessionalCard({
       transition={{ duration: 0.2 }}
       className="group cursor-pointer overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm hover:shadow"
       onClick={() => onClick(professional)}
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="flex h-full flex-col justify-between p-4">
         <div>
-          <div className="mb-3 flex items-center gap-3">
+          <div className="mb-3 flex items-center gap-3" dir="ltr">
             <div className="relative flex-shrink-0">
               <div className="h-10 w-10 overflow-hidden rounded-full bg-[#63B7B7]/10 ring-1 ring-[#63B7B7]/20">
                 <Image
@@ -105,11 +112,15 @@ export function ProfessionalCard({
               <div
                 className={cn('h-1.5 w-1.5 rounded-full', statusColors.dot)}
               ></div>
-              {professional.meta.availability ?? 'N/A'}
+              {professional.meta.availability ??
+                t.dashboard.companyComponents.professionalCard.availabilityNA}
             </Badge>
           </div>
 
-          <div className="mb-3 flex items-center justify-between text-xs">
+          <div
+            className="mb-3 flex items-center justify-between text-xs"
+            dir="ltr"
+          >
             <div className="flex items-center gap-2">
               <div className="flex items-center">
                 <Star className="mr-0.5 h-3 w-3 fill-amber-400 text-amber-400" />
@@ -129,13 +140,17 @@ export function ProfessionalCard({
             </div>
 
             {professional.meta.hourlyRate && (
-              <div className="font-medium text-gray-700">
-                ${professional.meta.hourlyRate}/hr
+              <div className="flex font-medium text-gray-700">
+                {formatCurrency(professional.meta.hourlyRate, 'h-4 w-4')}
+                {
+                  t.dashboard.companyComponents.professionalCard
+                    .hourlyRateSuffix
+                }
               </div>
             )}
           </div>
 
-          <div className="mb-3 flex flex-wrap gap-1">
+          <div className="mb-3 flex flex-wrap gap-1" dir="ltr">
             {professional.meta.skills.slice(0, 2).map((skill, index) => (
               <Badge
                 key={index}
@@ -154,7 +169,11 @@ export function ProfessionalCard({
             <div className="flex items-center gap-1">
               <Briefcase className="h-3 w-3 text-gray-500" />
               <span className="text-gray-600">
-                {professional.meta.yearsOfExperience} years exp.
+                {professional.meta.yearsOfExperience}{' '}
+                {
+                  t.dashboard.companyComponents.professionalCard
+                    .yearsExperienceSuffix
+                }
               </span>
             </div>
 
@@ -165,7 +184,10 @@ export function ProfessionalCard({
               )}
             >
               <CheckCircle className="h-3 w-3" />
-              <span>{matchPercentage}% match</span>
+              <span>
+                {matchPercentage}
+                {t.dashboard.companyComponents.professionalCard.matchSuffix}
+              </span>
             </div>
           </div>
         </div>
@@ -174,7 +196,7 @@ export function ProfessionalCard({
           onClick={handleHireClick}
           className="mt-1 h-7 w-full !bg-[#63B7B7] !text-xs !text-white hover:!bg-[#63B7B7]/90"
         >
-          Hire Professional
+          {t.dashboard.companyComponents.professionalCard.hireButton}
         </Button>
       </div>
     </motion.div>

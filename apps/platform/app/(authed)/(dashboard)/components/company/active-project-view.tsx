@@ -14,18 +14,25 @@ import { Link } from 'next-view-transitions'
 import Image from 'next/image'
 import { GetAllCompanyProjectsRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
+import { detectLanguage, translateDuration } from '@dalla/utils'
 
 const ActiveProjectView = ({
   project,
 }: {
   project: GetAllCompanyProjectsRes['data'][0][number]
 }) => {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="p-5">
         <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -38,7 +45,10 @@ const ActiveProjectView = ({
                 {project.status}
               </Badge> */}
             </div>
-            <p className="text-xs text-gray-500">Project ID: {project.id}</p>
+            <p className="text-xs text-gray-500">
+              {t.dashboard.companyComponents.activeProjectView.projectIdPrefix}{' '}
+              {project.id}
+            </p>
           </div>
 
           <div className="mt-2 flex flex-wrap items-center gap-2 sm:mt-0">
@@ -50,27 +60,45 @@ const ActiveProjectView = ({
             >
               <Link href={`/projects/${project.id}`} prefetch={true}>
                 <ArrowUpRight className="mr-1.5 h-3.5 w-3.5" />
-                Project Dashboard
+                {
+                  t.dashboard.companyComponents.activeProjectView
+                    .dashboardButton
+                }
               </Link>
             </Button>
           </div>
         </div>
 
-        <p className="mb-5 text-sm text-gray-600">{project.description}</p>
+        <p
+          className="mb-5 text-sm text-gray-600"
+          dir={detectLanguage(project.description) === 'arabic' ? 'rtl' : 'ltr'}
+        >
+          {project.description}
+        </p>
 
         <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
             <div className="border-b border-[#63B7B7]/20 bg-[#E0F2F2] px-4 py-3">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-[#1D8489]" />
-                <h4 className="text-sm font-medium text-[#1D8489]">Timeline</h4>
+                <h4 className="text-sm font-medium text-[#1D8489]">
+                  {
+                    t.dashboard.companyComponents.activeProjectView
+                      .timelineTitle
+                  }
+                </h4>
               </div>
             </div>
             <div className="bg-white p-4">
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-xs text-gray-500">Duration</span>
+                <span className="text-xs text-gray-500">
+                  {
+                    t.dashboard.companyComponents.activeProjectView
+                      .durationLabel
+                  }
+                </span>
                 <span className="text-xs font-medium text-gray-700">
-                  {project.meta.timeline ?? project.meta.duration}
+                  {translateDuration(project.meta.duration, locale)}
                 </span>
               </div>
               {/* {project.assignedProfessionalId && (
@@ -88,19 +116,25 @@ const ActiveProjectView = ({
             <div className="border-b border-green-100 bg-green-50 px-4 py-3">
               <div className="flex items-center gap-2">
                 <Riyal className="h-4 w-4 text-green-600" />
-                <h4 className="text-sm font-medium text-green-700">Budget</h4>
+                <h4 className="text-sm font-medium text-green-700">
+                  {t.dashboard.companyComponents.activeProjectView.budgetTitle}
+                </h4>
               </div>
             </div>
             <div className="bg-white p-4">
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-xs text-gray-500">Total</span>
+                <span className="text-xs text-gray-500">
+                  {t.dashboard.companyComponents.activeProjectView.totalLabel}
+                </span>
                 <span className="text-sm font-medium text-gray-700">
-                  {formatCurrency(Number(project.meta.budget))}
+                  {formatCurrency(Number(project.meta.budget), locale)}
                 </span>
               </div>
               {project.assignedProfessionalId && (
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Spent</span>
+                  <span className="text-xs text-gray-500">
+                    {t.dashboard.companyComponents.activeProjectView.spentLabel}
+                  </span>
                   <span className="text-sm font-medium text-green-600">
                     {formatCurrency(
                       Number(project.meta.budget) -
@@ -111,9 +145,15 @@ const ActiveProjectView = ({
                               project.assignedProfessionalId,
                           )?.professional.UserProfile?.meta?.totalEarned || 0,
                         ),
+                      locale,
                     )}{' '}
                     {project.status === 'InProgress' && (
-                      <span className="text-xs text-gray-500">(In Escrow)</span>
+                      <span className="text-xs text-gray-500">
+                        {
+                          t.dashboard.companyComponents.activeProjectView
+                            .inEscrowBadge
+                        }
+                      </span>
                     )}
                   </span>
                 </div>
@@ -130,7 +170,10 @@ const ActiveProjectView = ({
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-purple-600" />
                 <h4 className="text-sm font-medium text-purple-700">
-                  Assigned Consultant
+                  {
+                    t.dashboard.companyComponents.activeProjectView
+                      .assignedConsultantTitle
+                  }
                 </h4>
               </div>
               <Button
@@ -149,7 +192,10 @@ const ActiveProjectView = ({
                   }`}
                   prefetch={true}
                 >
-                  View Profile
+                  {
+                    t.dashboard.companyComponents.activeProjectView
+                      .viewProfileButton
+                  }
                   <ChevronRight className="ml-1 h-3 w-3" />
                 </Link>
               </Button>
@@ -222,7 +268,10 @@ const ActiveProjectView = ({
                       className="h-8 !bg-[#63B7B7] text-xs text-white hover:!bg-[#1D8489]"
                     >
                       <MessageSquare className="mr-1.5 h-3.5 w-3.5" />
-                      Message
+                      {
+                        t.dashboard.companyComponents.activeProjectView
+                          .messageButton
+                      }
                     </Button>
                   </div>
                 </div>

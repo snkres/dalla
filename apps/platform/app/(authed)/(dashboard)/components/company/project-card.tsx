@@ -4,6 +4,8 @@ import { Badge, Riyal } from '@dalla/design-system'
 import { Button } from '@dalla/design-system'
 import { Progress } from '@dalla/design-system'
 import { Project } from '@lib/types/project'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface ProjectCardProps {
   project: Project
@@ -11,10 +13,14 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, onClick }: ProjectCardProps) {
+  const t = useTranslation()
+  const { locale } = useLocale()
+
   return (
     <div
       className="cursor-pointer overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
       onClick={() => onClick(project)}
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="p-5">
         <div className="mb-3 flex items-start justify-between">
@@ -47,9 +53,12 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
 
         <div className="mb-4 space-y-3">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">Progress</span>
+            <span className="text-gray-600">
+              {t.dashboard.companyComponents.projectCard.progressLabel}
+            </span>
             <span className="font-medium text-[#63B7B7]">
-              {project.progress}%
+              {project.progress}
+              {t.dashboard.companyComponents.projectCard.progressSuffix}
             </span>
           </div>
           <Progress
@@ -74,7 +83,10 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           </div>
           <div className="flex items-center gap-1.5">
             <Users className="h-4 w-4 text-gray-400" />
-            <span className="text-gray-700">{project.team} consultants</span>
+            <span className="text-gray-700">
+              {project.team}{' '}
+              {t.dashboard.companyComponents.projectCard.teamSuffix}
+            </span>
           </div>
         </div>
       </div>

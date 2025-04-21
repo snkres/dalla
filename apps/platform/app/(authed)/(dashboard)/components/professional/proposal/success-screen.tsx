@@ -5,6 +5,7 @@ import { Link } from 'next-view-transitions'
 import { Button } from '@dalla/design-system'
 import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { scaleIn } from '@dalla/utils'
+import { useTranslation } from '@hooks/use-translation'
 
 interface SuccessScreenProps {
   project: GetAllProjectsProfessionalViewRes['data'][0][number]
@@ -12,6 +13,9 @@ interface SuccessScreenProps {
 }
 
 export function SuccessScreen({ project, onClose }: SuccessScreenProps) {
+  const translations = useTranslation()
+  const t = translations.dashboard.applyProposal
+
   return (
     <motion.div
       {...scaleIn}
@@ -21,13 +25,10 @@ export function SuccessScreen({ project, onClose }: SuccessScreenProps) {
         <CheckCircle className="h-8 w-8 text-green-600" />
       </div>
       <h2 className="mb-3 text-xl font-semibold text-gray-900">
-        Application Submitted!
+        {t.successTitle}
       </h2>
       <p className="mb-8 max-w-md text-sm text-gray-600">
-        Your proposal for{' '}
-        <span className="font-medium text-gray-800">{project.title}</span> has
-        been successfully submitted. The client will be notified and review your
-        application.
+        {t.successDescription.replace('{title}', project.title)}
       </p>
       <div className="flex gap-4">
         <Button
@@ -35,10 +36,10 @@ export function SuccessScreen({ project, onClose }: SuccessScreenProps) {
           className="border-[#234d64]/30 px-6 text-[#234d64] hover:bg-[#234d64]/10"
           onClick={onClose}
         >
-          Return to project
+          {t.returnToProjectButton}
         </Button>
         <Button className="!bg-[#63B7B7] px-6 hover:!bg-[#63B7B7]/90" asChild>
-          <Link href={`/proposals`}>View your proposals</Link>
+          <Link href={`/proposals`}>{t.viewProposalsButton}</Link>
         </Button>
       </div>
     </motion.div>

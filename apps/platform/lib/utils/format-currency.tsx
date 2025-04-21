@@ -22,7 +22,7 @@ export const formatCurrency = (
   }).format(amount)
 
   return (
-    <span className="flex items-center gap-1">
+    <span className="flex items-center gap-1" dir="ltr">
       <Riyal className={iconSize} color={iconColor} />
       <span>{formatted}</span>
     </span>

@@ -16,6 +16,7 @@ import { fadeIn } from '@dalla/utils'
 import { StepThreeProps } from '@lib/types/steps'
 import { useAtom } from 'jotai'
 import { proMetaAtom } from '@lib/atoms/pro/meta'
+import { useTranslation } from '@hooks/use-translation'
 
 const MAX_TOTAL_SIZE = 20 * 1024 * 1024
 
@@ -26,6 +27,8 @@ export function StepThree({
   setDragActive,
 }: StepThreeProps) {
   const [sizeError, setSizeError] = useState<string | null>(null)
+  const translations = useTranslation()
+  const t = translations.dashboard.applyProposal
 
   const totalSize = files.reduce((sum, file) => sum + file.size, 0)
 
@@ -36,7 +39,7 @@ export function StepThree({
         totalSize + newFiles.reduce((sum, file) => sum + file.size, 0)
 
       if (newTotalSize > MAX_TOTAL_SIZE) {
-        setSizeError('Total file size exceeds the 20MB limit')
+        setSizeError(t.fileSizeError.replace('{limit}', '20'))
         return
       }
 
@@ -72,7 +75,7 @@ export function StepThree({
         totalSize + newFiles.reduce((sum, file) => sum + file.size, 0)
 
       if (newTotalSize > MAX_TOTAL_SIZE) {
-        setSizeError('Total file size exceeds the 20MB limit')
+        setSizeError(t.fileSizeError.replace('{limit}', '20'))
         return
       }
 
@@ -90,7 +93,7 @@ export function StepThree({
             <span className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-[#63B7B7] text-sm text-white">
               3
             </span>
-            Showcase Your Work
+            {t.step3Title}
           </h3>
 
           <div className="space-y-6">
@@ -98,18 +101,17 @@ export function StepThree({
               <div className="border-b border-gray-100 p-4">
                 <h4 className="flex items-center text-sm font-medium">
                   <Star className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                  Relevant Projects
+                  {t.relevantProjectsTitle}
                 </h4>
               </div>
               <div className="p-4">
                 {/* {profile.data.projects.length > 0 ? (
                   <p className="mb-4 text-sm text-gray-700">
-                    Select projects from your portfolio that showcase your
-                    skills for this job.
+                    {t.portfolioSelectionPrompt}
                   </p>
                 ) : (
                   <p className="mb-4 text-sm text-gray-700">
-                    Your profile doesn't have any projects
+                    {t.noPortfolioProjects}
                   </p>
                 )} */}
 
@@ -175,7 +177,7 @@ export function StepThree({
               <div className="border-b border-gray-100 p-4">
                 <h4 className="flex items-center text-sm font-medium">
                   <PaperclipIcon className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                  Attachments
+                  {t.attachmentsTitle}
                 </h4>
               </div>
               <div
@@ -193,11 +195,9 @@ export function StepThree({
                       <Upload className="h-6 w-6 text-gray-500" />
                     </div>
                     <p className="mb-1 text-sm font-medium text-gray-700">
-                      Drag and drop your files here
+                      {t.dragDropPrompt}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      PDF, DOC, DOCX, JPG, PNG up to 5MB
-                    </p>
+                    <p className="text-xs text-gray-500">{t.fileTypesPrompt}</p>
                   </div>
                 ) : (
                   <div className="mb-4 w-full space-y-3">
@@ -234,9 +234,10 @@ export function StepThree({
                   <div className="mb-4 w-full">
                     <div className="mb-2 flex items-center justify-between text-xs text-gray-500">
                       <span>
-                        Total size: {(totalSize / (1024 * 1024)).toFixed(2)} MB
+                        {t.totalSizeLabel}{' '}
+                        {(totalSize / (1024 * 1024)).toFixed(2)} MB
                       </span>
-                      <span>Maximum: 20 MB</span>
+                      <span>{t.maxSizeLabel} 20 MB</span>
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
                       <div
@@ -252,7 +253,9 @@ export function StepThree({
                       ></div>
                     </div>
                     {sizeError && (
-                      <p className="mt-1 text-xs text-red-500">{sizeError}</p>
+                      <div className="mt-2 text-center text-xs text-red-600">
+                        {sizeError}
+                      </div>
                     )}
                   </div>
                 )}
@@ -269,23 +272,12 @@ export function StepThree({
                   />
 
                   {/* Button that triggers the file input */}
-                  <label htmlFor="file-upload">
-                    <Button
-                      variant={files.length === 0 ? 'default' : 'outline'}
-                      size="sm"
-                      className={cn(
-                        'cursor-pointer px-4 py-2.5 font-medium',
-                        files.length === 0
-                          ? '!bg-[#63B7B7] hover:!bg-[#63B7B7]/90'
-                          : 'border-[#63B7B7]/30 text-[#63B7B7] hover:bg-[#63B7B7]/10',
-                      )}
-                      asChild
-                    >
-                      <span>
-                        <PaperclipIcon className="mr-2 h-4 w-4" />
-                        {files.length === 0 ? 'Browse files' : 'Add more files'}
-                      </span>
-                    </Button>
+                  <label
+                    htmlFor="file-upload"
+                    className="mt-4 inline-flex cursor-pointer items-center rounded-lg border border-[#63B7B7]/20 bg-[#63B7B7]/5 px-4 py-2 text-sm font-medium text-[#63B7B7] transition-colors hover:bg-[#63B7B7]/10"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    {t.uploadButton}
                   </label>
                 </div>
               </div>
