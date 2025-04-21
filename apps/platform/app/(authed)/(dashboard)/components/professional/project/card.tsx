@@ -14,6 +14,7 @@ import {
   cn,
   detectLanguage,
   getRelativeTime,
+  translateDuration,
 } from '@dalla/utils'
 import type { GetAllProjectsProfessionalViewRes } from '@lib/api/pro/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
@@ -180,7 +181,7 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                   >
                     <Calendar className="h-4 w-4 text-[#63B7B7]" />
                     <span className="truncate">
-                      {project.meta.duration ||
+                      {translateDuration(project.meta.duration || '', locale) ||
                         t.dashboard.projectCard.durationNotSpecified}
                     </span>
                   </div>
@@ -202,7 +203,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
                 locale === 'ar' ? 'ml-1' : 'mr-1',
               )}
             />
-            {/* Use getRelativeTime with translations */}
             {getRelativeTime(project.createdAt, {
               locale,
               translations: relativeTimeTranslations,
