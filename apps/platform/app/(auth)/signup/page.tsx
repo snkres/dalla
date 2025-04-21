@@ -375,11 +375,17 @@ export default function SignupPage() {
 
         <p className="text-center text-xs text-gray-500">
           {t.signup.termsAgreement}{' '}
-          <Link href="/terms" className="text-[#234d64] hover:text-[#1a3b4d]">
+          <Link
+            href="https://dev.dalla.app/en/terms-of-service"
+            className="text-[#234d64] hover:text-[#1a3b4d]"
+          >
             {t.signup.termsLink}
           </Link>{' '}
           {locale === 'ar' ? 'و' : 'and'}{' '}
-          <Link href="/privacy" className="text-[#234d64] hover:text-[#1a3b4d]">
+          <Link
+            href="https://dev.dalla.app/en/privacy-policy"
+            className="text-[#234d64] hover:text-[#1a3b4d]"
+          >
             {t.signup.privacyLink}
           </Link>
         </p>
