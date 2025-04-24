@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import '../globals.css'
-import { Sora } from 'next/font/google'
+import { Sora, IBM_Plex_Sans_Arabic } from 'next/font/google'
 import localFont from 'next/font/local'
 import { Toaster } from '@dalla/design-system/ui/toast/toaster'
 import { ViewTransitions } from 'next-view-transitions'
-import { Suspense } from 'react'
 import Providers from './providers'
 import { cn } from '@dalla/utils'
 
@@ -38,11 +37,11 @@ export const nebula = localFont({
   display: 'swap',
 })
 
-export const madaniArabic = localFont({
-  src: '../public/fonts/madani/Madani-Arabic-Regular.woff2',
-  variable: '--font-arabic',
-  weight: '400',
-  style: 'normal',
+export const madaniArabic = IBM_Plex_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-madani-arabic',
+  display: 'swap',
 })
 
 const isProd = process.env.NODE_ENV === 'production'
