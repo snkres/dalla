@@ -14,22 +14,13 @@ import {
 import {
   Users,
   FileText,
-  Plus,
-  ChevronRight,
   Star,
   MessageSquare,
   Eye,
-  Badge,
-  ArrowRight,
-  Settings,
   Download,
 } from 'lucide-react'
-import {
-  GetAllCompanyProjectsRes,
-  GetProjectRes,
-} from '@lib/api/company/projects'
+import { GetProjectRes } from '@lib/api/company/projects'
 import { formatCurrency } from '@lib/utils/format-currency'
-
 import { Link } from 'next-view-transitions'
 import { useState } from 'react'
 import ProposalDetailModal from './proposal-detail-modal'
@@ -90,20 +81,20 @@ export function CompanyProjectView({
 
               <div className="p-5">
                 <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-3">
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                    <div className="mb-1 text-xs font-medium text-gray-500">
+                  <div className="rounded-lg border border-[#64B7B7]/10 bg-[#64b7b708] p-4">
+                    <div className="mb-1 text-xs font-medium text-[#64B7B7]/70">
                       Total Budget
                     </div>
-                    <div className="flex items-center gap-1.5 text-xl font-semibold">
+                    <div className="flex items-center gap-1.5 text-xl font-semibold text-[#64B7B7]/80">
                       {formatCurrency(project.meta?.budget, 'h-5 w-5')}
                     </div>
                   </div>
 
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                    <div className="mb-1 text-xs font-medium text-gray-500">
+                  <div className="rounded-lg border border-[#64B7B7]/10 bg-[#64b7b708] p-4">
+                    <div className="mb-1 text-xs font-medium text-[#64B7B7]/70">
                       Spent
                     </div>
-                    <div className="text-lg font-semibold text-gray-900">
+                    <div className="text-lg font-semibold text-[#64B7B7]/80">
                       {formatCurrency(
                         project.meta.budget *
                           (project.status === 'Open' ? 0.3 : 1),
@@ -111,11 +102,11 @@ export function CompanyProjectView({
                     </div>
                   </div>
 
-                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                    <div className="mb-1 text-xs font-medium text-gray-500">
+                  <div className="rounded-lg border border-[#64B7B7]/10 bg-[#64b7b708] p-4">
+                    <div className="mb-1 text-xs font-medium text-[#64B7B7]/70">
                       Remaining
                     </div>
-                    <div className="text-lg font-semibold text-gray-900">
+                    <div className="text-lg font-semibold text-[#64B7B7]/80">
                       {formatCurrency(
                         project.meta.budget -
                           (project.status === 'Open' ? 0.3 : 1) *
@@ -125,21 +116,19 @@ export function CompanyProjectView({
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">Budget Usage</span>
-                    <span>{project.status === 'Open' ? 30 : 100}%</span>
+                    <span className="text-[#3c7878]">Spent</span>
+                    <span className="text-[#3c7878]">
+                      {project.status === 'Open' ? 30 : 100}%
+                    </span>
                   </div>
                   <Progress
                     value={project.status === 'Open' ? 30 : 100}
-                    color={
-                      project.status === 'Open'
-                        ? 'bg-[#63B7B7]'
-                        : 'bg-amber-500'
-                    }
+                    className="!bg-[#64b7b71f]"
                     indicatorClassName={
                       project.status === 'Open'
-                        ? '!bg-[#63B7B7]'
+                        ? '!bg-[#64B7B7]/90'
                         : '!bg-amber-500'
                     }
                   />
