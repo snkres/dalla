@@ -16,7 +16,8 @@ const translations: Record<GlobalAtom['locale'], TranslationKeys> = {
 export function useTranslation() {
   const { locale } = useLocale()
 
-  const currentTranslations = translations[locale] ?? translations.en
+  const currentTranslations =
+    translations[locale as keyof typeof translations] ?? translations.en
 
   return currentTranslations as TranslationKeys
 }
