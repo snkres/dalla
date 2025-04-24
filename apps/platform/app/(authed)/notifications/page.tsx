@@ -31,9 +31,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@dalla/design-system'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@dalla/design-system'
-import { Badge } from '@dalla/design-system'
 import { motion, AnimatePresence } from 'motion/react'
+import { AnimatedTabs } from '@dalla/design-system'
 
 export default function NotificationsPage() {
   const [notifications] = useAtom(notificationsAtom)
@@ -138,69 +137,52 @@ export default function NotificationsPage() {
       </div>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-        <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab}>
-          <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
-            <TabsList className="grid h-auto w-full max-w-md grid-cols-2 gap-1.5 !rounded-lg bg-[#e6f3f3] p-1.5 shadow-sm">
-              <TabsTrigger value="all" className="!rounded-md px-4 py-2">
-                All
-                {counts.all > 0 && (
-                  <Badge
-                    variant="outline"
-                    className="ml-2 border-gray-300 bg-white px-2 py-0 text-xs text-gray-700"
-                  >
-                    {counts.all}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="unread" className="!rounded-md px-4 py-2">
-                Unread
-                {counts.unread > 0 && (
-                  <Badge
-                    variant="outline"
-                    className="ml-2 border-[#63B7B7] bg-[#63B7B7]/10 px-2 py-0 text-xs text-[#63B7B7]"
-                  >
-                    {counts.unread}
-                  </Badge>
-                )}
-              </TabsTrigger>
-            </TabsList>
+        <div className="flex items-center justify-between border-b border-gray-200 px-6">
+          <AnimatedTabs
+            tabs={[
+              { id: 'all', label: 'All', count: counts.all },
+              { id: 'unread', label: 'Unread', count: counts.unread },
+            ]}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            className="w-full max-w-md"
+          />
 
-            <div className="hidden items-center gap-4 text-sm text-gray-500 md:flex">
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-[#63B7B7]" />
-                <span>Projects: {counts.project}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-blue-500" />
-                <span>Messages: {counts.message}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="h-2 w-2 rounded-full bg-purple-500" />
-                <span>System: {counts.system}</span>
-              </div>
+          <div className="hidden items-center gap-4 text-sm text-gray-500 md:flex">
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-[#63B7B7]" />
+              <span>Projects: {counts.project}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-blue-500" />
+              <span>Messages: {counts.message}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="h-2 w-2 rounded-full bg-purple-500" />
+              <span>System: {counts.system}</span>
             </div>
           </div>
+        </div>
 
-          <TabsContent value="all" className="mt-0">
-            <NotificationList
-              notifications={filteredNotifications}
-              dismissNotification={dismissNotification}
-              markAsRead={markAsRead}
-              getNotificationIcon={getNotificationIcon}
-              getTypeColor={getTypeColor}
-            />
-          </TabsContent>
+        {activeTab === 'all' && (
+          <NotificationList
+            notifications={filteredNotifications}
+            dismissNotification={dismissNotification}
+            markAsRead={markAsRead}
+            getNotificationIcon={getNotificationIcon}
+            getTypeColor={getTypeColor}
+          />
+        )}
 
-          <TabsContent value="unread" className="mt-0">
-            <NotificationList
-              notifications={filteredNotifications}
-              dismissNotification={dismissNotification}
-              markAsRead={markAsRead}
-              getNotificationIcon={getNotificationIcon}
-              getTypeColor={getTypeColor}
-            />
-          </TabsContent>
-        </Tabs>
+        {activeTab === 'unread' && (
+          <NotificationList
+            notifications={filteredNotifications}
+            dismissNotification={dismissNotification}
+            markAsRead={markAsRead}
+            getNotificationIcon={getNotificationIcon}
+            getTypeColor={getTypeColor}
+          />
+        )}
       </div>
     </div>
   )

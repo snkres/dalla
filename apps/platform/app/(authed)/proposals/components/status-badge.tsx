@@ -22,7 +22,7 @@ const StatusBadge: React.FC<{
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Accepted':
-        return '!bg-green-50 !text-green-600 !border-green-200'
+        return '!bg-green-50 !text-green-600 !border-[#64B7B7]'
       case 'Rejected':
         return '!bg-red-50 !text-red-600 !border-red-200'
       case 'Pending':

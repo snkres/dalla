@@ -29,6 +29,8 @@ import {
 } from '@dalla/design-system'
 import { Progress } from '@dalla/design-system'
 import { cn } from '@dalla/utils'
+import { useTranslation } from '@hooks/use-translation'
+import { useLocale } from '@hooks/use-locale'
 
 interface MultiImageUploadProps {
   images: string[]
@@ -94,6 +96,9 @@ const MultiImageUpload = ({
   const [previewFile, setPreviewFile] = useState<string | null>(null)
   const [dragActive, setDragActive] = useState(false)
   const { toast } = useToast()
+  const translations = useTranslation()
+  const { locale } = useLocale()
+  const t = translations.shared.multiImageUpload || {}
 
   const getFileTypeInfo = (fileUrl: string, mimeType?: string) => {
     const extension = fileUrl.split('.').pop()?.toLowerCase() || ''
@@ -128,8 +133,10 @@ const MultiImageUpload = ({
   const validateFile = (file: File): boolean => {
     if (file.size > maxFileSize * 1024 * 1024) {
       toast({
-        title: 'File too large',
-        description: `Maximum file size is ${maxFileSize}MB`,
+        title: t.toastFileTooLargeTitle || 'File too large',
+        description: (
+          t.toastFileTooLargeDesc || 'Maximum file size is {size}MB'
+        ).replace('{size}', maxFileSize.toString()),
         variant: 'destructive',
       })
       return false
@@ -140,8 +147,9 @@ const MultiImageUpload = ({
         file.type.includes('image') || file.type.includes('pdf')
       if (!isValidType) {
         toast({
-          title: 'Invalid file type',
-          description: 'Only images and PDFs are allowed',
+          title: t.toastInvalidTypeTitle || 'Invalid file type',
+          description:
+            t.toastInvalidTypeDesc || 'Only images and PDFs are allowed',
           variant: 'destructive',
         })
         return false
@@ -154,8 +162,10 @@ const MultiImageUpload = ({
   const uploadFiles = async (files: FileList | File[]) => {
     if (images.length >= maxImages) {
       toast({
-        title: 'Maximum files reached',
-        description: `You can only upload up to ${maxImages} files`,
+        title: t.toastMaxFilesTitle || 'Maximum files reached',
+        description: (
+          t.toastMaxFilesDesc || 'You can only upload up to {max} files'
+        ).replace('{max}', maxImages.toString()),
         variant: 'destructive',
       })
       return
@@ -188,8 +198,10 @@ const MultiImageUpload = ({
         } catch (error) {
           console.error('Error uploading file:', error)
           toast({
-            title: 'Upload failed',
-            description: `Failed to upload ${file.name}`,
+            title: t.toastUploadFailedTitle || 'Upload failed',
+            description: (
+              t.toastUploadFailedSingleDesc || 'Failed to upload {filename}'
+            ).replace('{filename}', file.name),
             variant: 'destructive',
           })
         }
@@ -199,15 +211,19 @@ const MultiImageUpload = ({
 
       if (validFiles.length > 0) {
         toast({
-          title: 'Upload successful',
-          description: `Successfully uploaded ${validFiles.length} file(s)`,
+          title: t.toastUploadSuccessTitle || 'Upload successful',
+          description: (
+            t.toastUploadSuccessDesc || 'Successfully uploaded {count} file(s)'
+          ).replace('{count}', validFiles.length.toString()),
         })
       }
     } catch (error) {
       console.error('Error uploading files:', error)
       toast({
-        title: 'Upload failed',
-        description: 'An error occurred while uploading files',
+        title: t.toastUploadFailedTitle || 'Upload failed',
+        description:
+          t.toastUploadFailedGeneralDesc ||
+          'An error occurred while uploading files',
         variant: 'destructive',
       })
     } finally {
@@ -234,8 +250,8 @@ const MultiImageUpload = ({
     updatedImages.splice(index, 1)
     onImagesChange(updatedImages)
     toast({
-      title: 'File removed',
-      description: 'The file has been removed',
+      title: t.toastRemovedTitle || 'File removed',
+      description: t.toastRemovedDesc || 'The file has been removed',
     })
   }
 
@@ -278,7 +294,7 @@ const MultiImageUpload = ({
         type="button"
         onClick={() => setPreviewFile(fileUrl)}
         className="absolute bottom-1 left-1 rounded-full bg-white/80 p-1 shadow-sm hover:bg-white"
-        aria-label="Preview file"
+        aria-label={locale === 'ar' ? 'معاينة الملف' : 'Preview file'}
       >
         <Eye className="h-3 w-3 text-gray-700" />
       </button>
@@ -289,14 +305,13 @@ const MultiImageUpload = ({
         <div className="relative h-full w-full">
           <Image
             src={fileUrl || '/placeholder.svg'}
-            alt={`Media ${index + 1}`}
+            alt={locale === 'ar' ? `وسائط ${index + 1}` : `Media ${index + 1}`}
             fill
             className="object-cover"
           />
           <PreviewButton />
           <div className="absolute bottom-0 right-0 bg-black/50 px-1 py-0.5 text-[8px] text-white">
-            {/* {extension.toUpperCase()} */}
-            File
+            {locale === 'ar' ? 'ملف' : 'File'}
           </div>
         </div>
       )
@@ -314,8 +329,7 @@ const MultiImageUpload = ({
           />
         </div>
         <div className="text-center" style={{ color: fileTypeInfo.color }}>
-          {/* <span className="text-xs font-bold">{extension.toUpperCase()}</span> */}
-          File
+          {locale === 'ar' ? 'ملف' : 'File'}
         </div>
         <PreviewButton />
       </div>
@@ -349,7 +363,9 @@ const MultiImageUpload = ({
       >
         {isUploading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm">
-            <div className="mb-2 text-sm font-medium">Uploading...</div>
+            <div className="mb-2 text-sm font-medium">
+              {t.uploadingLabel || 'Uploading...'}
+            </div>
             <Progress value={uploadProgress} className="w-3/4 max-w-md" />
             <div className="mt-2 text-xs text-gray-500">
               {Math.round(uploadProgress)}%
@@ -369,7 +385,7 @@ const MultiImageUpload = ({
                 type="button"
                 onClick={() => handleRemoveImage(index)}
                 className="absolute right-1 top-1 rounded-full bg-white/80 p-1 shadow-sm hover:bg-white"
-                aria-label="Remove file"
+                aria-label={locale === 'ar' ? 'إزالة الملف' : 'Remove file'}
               >
                 <X className="h-3 w-3 text-gray-700" />
               </button>
@@ -385,10 +401,12 @@ const MultiImageUpload = ({
               )}
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              aria-label="Add media"
+              aria-label={locale === 'ar' ? 'أضف وسائط' : 'Add media'}
             >
               <Plus className="h-5 w-5 text-gray-400" />
-              <span className="mt-1 text-xs text-gray-500">Add</span>
+              <span className="mt-1 text-xs text-gray-500">
+                {t.addButtonLabel || 'Add'}
+              </span>
             </button>
           )}
         </div>
@@ -399,13 +417,16 @@ const MultiImageUpload = ({
               <ImageIcon className="h-6 w-6 text-[#63B7B7]" />
             </div>
             <p className="text-sm text-gray-700">
-              Drag and drop files here or click to browse
+              {t?.dragDropText || 'drop files here or click to browse'}
             </p>
             <p className="mt-1 text-xs text-gray-500">
               {allowAllFileTypes
-                ? 'Supports various file types'
-                : 'Images and PDFs only'}{' '}
-              (max {maxFileSize}MB)
+                ? t.fileTypesText || 'Supports various file types'
+                : t.imagesAndPdfText || 'Images and PDFs only'}{' '}
+              {(t.maxSizeText || '(max {size}MB)').replace(
+                '{size}',
+                maxFileSize.toString(),
+              )}
             </p>
           </div>
         )}
@@ -418,14 +439,28 @@ const MultiImageUpload = ({
         multiple
         onChange={handleFileChange}
         className="hidden"
-        aria-label="Upload files"
+        aria-label={locale === 'ar' ? 'تحميل الملفات' : 'Upload files'}
       />
 
       <div className="flex items-start gap-2">
         <AlertCircle className="mt-0.5 h-4 w-4 text-gray-400" />
         <p className="text-xs text-gray-500">
-          Click or drag to add {allowAllFileTypes ? 'files' : 'images and PDFs'}
-          . Maximum {maxImages} files allowed, up to {maxFileSize}MB each.
+          {(
+            t.helperText ||
+            'Click or drag to add {fileTypes}. Maximum {maxFiles} files allowed, up to {maxSize}MB each.'
+          )
+            .replace(
+              '{fileTypes}',
+              allowAllFileTypes
+                ? locale === 'ar'
+                  ? 'ملفات'
+                  : 'files'
+                : locale === 'ar'
+                  ? 'صور وملفات PDF'
+                  : 'images and PDFs',
+            )
+            .replace('{maxFiles}', maxImages.toString())
+            .replace('{maxSize}', maxFileSize.toString())}
         </p>
       </div>
 
@@ -435,11 +470,11 @@ const MultiImageUpload = ({
       >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>File Preview</DialogTitle>
+            <DialogTitle>{t.filePreviewTitle || 'File Preview'}</DialogTitle>
             <DialogDescription>
               {isImage(previewFile || '')
-                ? 'Viewing image file'
-                : 'File preview not available'}
+                ? t.imagePreviewDescription || 'Viewing image file'
+                : t.filePreviewNotAvailable || 'File preview not available'}
             </DialogDescription>
           </DialogHeader>
           {previewFile && (
@@ -448,7 +483,7 @@ const MultiImageUpload = ({
                 <div className="relative aspect-auto h-[60vh] w-full">
                   <Image
                     src={previewFile || '/placeholder.svg'}
-                    alt="Preview"
+                    alt={locale === 'ar' ? 'معاينة' : 'Preview'}
                     fill
                     className="object-contain"
                   />
@@ -472,17 +507,19 @@ const MultiImageUpload = ({
                           className="text-lg font-medium"
                           style={{ color: fileTypeInfo.color }}
                         >
-                          {fileTypeInfo.label} File
+                          {locale === 'ar'
+                            ? 'ملف ' + fileTypeInfo.label
+                            : fileTypeInfo.label + ' File'}
                         </p>
                         <p className="mt-2 text-sm text-gray-500">
-                          Preview not available.{' '}
+                          {t.previewNotAvailable || 'Preview not available.'}{' '}
                           <a
                             href={previewFile}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-500 hover:underline"
                           >
-                            Download file
+                            {t.downloadFileLink || 'Download file'}
                           </a>
                         </p>
                       </>

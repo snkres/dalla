@@ -1,10 +1,8 @@
 'use client'
 
-import { motion, AnimatePresence } from 'motion/react'
-import { Tabs, TabsList, TabsTrigger } from '@dalla/design-system'
-import { memo, useMemo, useState, useRef, useEffect } from 'react'
-import { Search, SlidersHorizontal } from 'lucide-react'
+import { memo, useMemo } from 'react'
 import { GetAllProposalsRes } from '@lib/api/pro/proposals'
+import { AnimatedTabs } from '@dalla/design-system'
 
 interface TabContainerProps {
   activeTab: string
@@ -19,6 +17,7 @@ interface TabContainerProps {
   onSort: (field: 'date' | 'amount' | 'title') => void
   viewType: 'professional' | 'company'
 }
+
 const TabContainer: React.FC<TabContainerProps> = memo(
   ({ activeTab, onTabChange, proposals, searchQuery, onSearchChange }) => {
     const getTabCount = useMemo(
@@ -41,72 +40,24 @@ const TabContainer: React.FC<TabContainerProps> = memo(
               return 0
           }
         },
-      [proposals.length],
+      [proposals],
     )
 
     const tabItems = useMemo(
       () => [
-        { id: 'Pending', label: 'Pending' },
-        { id: 'Accepted', label: 'Accepted' },
-        { id: 'Rejected', label: 'Rejected' },
+        { id: 'Pending', label: 'Pending', count: getTabCount('Pending') },
+        { id: 'Accepted', label: 'Accepted', count: getTabCount('Accepted') },
+        { id: 'Rejected', label: 'Rejected', count: getTabCount('Rejected') },
       ],
-      [],
+      [getTabCount],
     )
 
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        className="relative flex h-full flex-col"
-      >
-        <Tabs
-          defaultValue={activeTab}
-          className="flex h-full w-full flex-col"
-          onValueChange={onTabChange}
-        >
-          <div className="py-4">
-            <TabsList className="grid h-auto w-full grid-cols-3 gap-1.5 !rounded-lg bg-[#e6f3f3] p-1.5 shadow-sm">
-              {tabItems.map(({ id, label }) => (
-                <TabsTrigger
-                  key={id}
-                  value={id}
-                  className="duration-250 group relative !rounded-md px-3 py-2.5 text-sm font-medium transition-all hover:text-[#4a8a8a] focus:outline-none focus:ring-2 focus:ring-[#63B7B7]/20 focus-visible:ring-offset-2 data-[state=inactive]:text-[#63B7B7]"
-                >
-                  {activeTab === id && (
-                    <motion.div
-                      layoutId="tab-indicator"
-                      className="absolute inset-0 rounded-md bg-[#63B7B7] shadow-sm"
-                      transition={{ type: 'spring', duration: 0.5 }}
-                      style={{ zIndex: 0 }}
-                    />
-                  )}
-                  <div className="relative z-10 flex items-center justify-center space-x-1.5">
-                    <span
-                      className={`transition-transform duration-200 ${activeTab === id ? 'text-white' : ''}`}
-                    >
-                      {label}
-                    </span>
-                    <AnimatePresence mode="wait">
-                      {getTabCount(id) > 0 && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ duration: 0.2 }}
-                          className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs font-medium ${activeTab === id ? 'bg-white text-[#63B7B7]' : 'bg-[#63B7B7]/10 text-[#63B7B7]'} transition-colors duration-200`}
-                        >
-                          {getTabCount(id)}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-        </Tabs>
-      </motion.div>
+      <AnimatedTabs
+        tabs={tabItems}
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+      />
     )
   },
 )

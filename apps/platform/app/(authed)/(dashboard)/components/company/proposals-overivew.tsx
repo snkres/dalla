@@ -302,7 +302,7 @@ const ProposalsOverivewModal = ({
                           className={
                             proposal.status === 'Rejected'
                               ? '!border-red-200 !bg-red-50 !text-red-700'
-                              : '!border-green-200 !bg-green-50 !text-green-700'
+                              : '!border-[#64B7B7] !bg-green-50 !text-green-700'
                           }
                         >
                           {proposal.status === 'Rejected'

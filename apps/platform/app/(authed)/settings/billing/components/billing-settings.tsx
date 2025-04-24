@@ -135,7 +135,7 @@ export function BillingSettings() {
                 </TableCell>
                 <TableCell className="text-sm">﷼29.00</TableCell>
                 <TableCell>
-                  <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-green-200">
+                  <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-[#64B7B7]">
                     Paid
                   </Badge>
                 </TableCell>
@@ -159,7 +159,7 @@ export function BillingSettings() {
                 </TableCell>
                 <TableCell className="text-sm">﷼29.00</TableCell>
                 <TableCell>
-                  <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-green-200">
+                  <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-[#64B7B7]">
                     Paid
                   </Badge>
                 </TableCell>
@@ -183,7 +183,7 @@ export function BillingSettings() {
                 </TableCell>
                 <TableCell className="text-sm">﷼29.00</TableCell>
                 <TableCell>
-                  <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-green-200">
+                  <Badge className="rounded-full !bg-green-100 text-green-800 hover:!bg-[#64B7B7]">
                     Paid
                   </Badge>
                 </TableCell>
