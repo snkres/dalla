@@ -28,6 +28,10 @@ export function useLocale() {
         setCurrentLocale(newLocale)
         if (locale !== newLocale) {
           setCookie('lang', newLocale, {
+            domain:
+              process.env.NODE_ENV === 'production'
+                ? '.dev.dalla.app'
+                : undefined,
             path: '/',
             maxAge: 60 * 60 * 24 * 30,
             secure: process.env.NODE_ENV === 'production',
@@ -45,6 +49,8 @@ export function useLocale() {
   const setLocale = (locale: string) => {
     setCurrentLocale(locale)
     setCookie('lang', locale, {
+      domain:
+        process.env.NODE_ENV === 'production' ? '.dev.dalla.app' : undefined,
       path: '/',
       maxAge: 60 * 60 * 24 * 30,
       secure: process.env.NODE_ENV === 'production',
