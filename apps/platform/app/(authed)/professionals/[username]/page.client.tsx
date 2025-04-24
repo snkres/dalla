@@ -107,7 +107,7 @@ export function ProProfileClient({ username }: { username: string }) {
   return (
     <div className="mx-auto max-w-[1400px] p-4">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="space-y-6 lg:col-span-4">
+        <div className="space-y-6 self-start lg:sticky lg:top-6 lg:col-span-4">
           <ProfileCard
             profile={{
               name: profile?.data?.User.name,
