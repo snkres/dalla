@@ -173,12 +173,7 @@ export function StepOne({ formData, handleInputChange }: StepOneProps) {
                 placeholder={t.projectTitlePlaceholder}
                 value={formData.title}
                 onChange={handleInputChange}
-                className={cn(
-                  'w-full',
-                  formData.title
-                    ? 'border-green-200 focus:border-green-300 focus:ring-green-200'
-                    : '',
-                )}
+                className={cn('w-full')}
               />
               {!formData.title && (
                 <p className="mt-1 text-xs text-amber-600">
@@ -200,12 +195,7 @@ export function StepOne({ formData, handleInputChange }: StepOneProps) {
                   placeholder={t.jobTitlePlaceholder}
                   value={formData.jobTitle}
                   onChange={handleInputChange}
-                  className={cn(
-                    'w-full',
-                    formData.jobTitle
-                      ? 'border-green-200 focus:border-green-300 focus:ring-green-200'
-                      : '',
-                  )}
+                  className={cn('w-full')}
                 />
                 {!formData.jobTitle && (
                   <p className="mt-1 text-xs text-amber-600">
@@ -229,12 +219,7 @@ export function StepOne({ formData, handleInputChange }: StepOneProps) {
               value={formData.description}
               onChange={handleInputChange}
               rows={4}
-              className={cn(
-                'w-full resize-none',
-                formData.description
-                  ? 'border-green-200 focus:border-green-300 focus:ring-green-200'
-                  : '',
-              )}
+              className={cn('w-full resize-none')}
             />
             {!formData.description && (
               <p className="mt-1 text-xs text-amber-600">
