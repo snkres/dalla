@@ -21,78 +21,6 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@dalla/design-system'
 import { motion } from 'motion/react'
 
-function LanguageSwitcher() {
-  const { locale, setLocale } = useLocale()
-  const t = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
-  const switcherRef = useRef<HTMLDivElement>(null)
-
-  const toggleDropdown = () => setIsOpen(!isOpen)
-
-  const changeLocale = (newLocale: 'en' | 'ar') => {
-    setLocale(newLocale)
-    setIsOpen(false)
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        switcherRef.current &&
-        !switcherRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
-
-  return (
-    <div ref={switcherRef} className="relative">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={toggleDropdown}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
-        aria-label={t.navbar.languageToggle.label}
-      >
-        <span className="text-lg">{locale === 'en' ? '🇺🇸' : '🇸🇦'}</span>
-      </Button>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -5 }}
-          className="absolute right-0 top-full z-50 mt-2 w-36 origin-top-right rounded-md border border-gray-100 bg-white p-1 shadow-lg"
-        >
-          <button
-            onClick={() => changeLocale('en')}
-            className={cn(
-              'flex w-full items-center gap-2 rounded px-3 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100',
-              locale === 'en' ? 'bg-gray-100' : undefined,
-            )}
-          >
-            <span className="text-lg">🇺🇸</span>
-            <span>{t.navbar.languageToggle.en}</span>
-          </button>
-          <button
-            onClick={() => changeLocale('ar')}
-            className={cn(
-              'flex w-full items-center gap-2 rounded px-3 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100',
-              locale === 'ar' ? 'bg-gray-100' : undefined,
-            )}
-          >
-            <span className="text-lg">🇸🇦</span>
-            <span>{t.navbar.languageToggle.ar}</span>
-          </button>
-        </motion.div>
-      )}
-    </div>
-  )
-}
-
 export function Navbar() {
   const router = useTransitionRouter()
   const t = useTranslation()
@@ -153,7 +81,7 @@ export function Navbar() {
             className={cn(
               'flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium transition-colors',
               pathname === item.href
-                ? 'bg-slate-blue-100 text-white'
+                ? 'bg-[#339a9a] text-white'
                 : 'text-gray-600 hover:bg-gray-100',
             )}
             onClick={() => setActiveItem(item.href)}
@@ -259,9 +187,6 @@ export function Navbar() {
                 }}
               />
             </div>
-            <span className="hidden text-sm font-medium text-gray-700 md:block">
-              {global.name}
-            </span>
           </button>
 
           <AnimatePresence>
