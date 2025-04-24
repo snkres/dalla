@@ -27,6 +27,8 @@ import ProposalDetailModal from './proposal-detail-modal'
 import StatusBadge from 'app/(authed)/proposals/components/status-badge'
 import { ProposalStatus } from '@lib/api/pro/proposals'
 import { ListDisplay } from '@dalla/components/listDisplay'
+import Image from 'next/image'
+import { motion } from 'motion/react'
 
 export function CompanyProjectView({
   project,
@@ -277,30 +279,80 @@ export function CompanyProjectView({
       )}
       {project.status === 'Open' && (
         <TabsContent value="proposals" className="m-0 p-0 outline-none">
-          <div className="py-4">
+          <div className="">
             {project.proposals.length > 0 ? (
-              project.proposals.map((proposal) => (
-                <div
-                  key={proposal.id}
-                  className="mb-4 cursor-pointer rounded-lg border border-gray-200 bg-white p-4"
-                  onClick={() => handleProposalClick(proposal)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="text-base font-medium text-gray-900">
-                      {proposal.professional.name}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
+              >
+                {project.proposals.map((proposal) => (
+                  <motion.div
+                    key={proposal.id}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    whileHover={{
+                      boxShadow: '0 4px 12px rgba(99, 183, 183, 0.1)',
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="flex cursor-pointer flex-col rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:border-[#63B7B7]/30"
+                    onClick={() => handleProposalClick(proposal)}
+                  >
+                    <div className="mb-3 flex items-start gap-3">
+                      <div className="relative">
+                        <div className="h-12 w-12 overflow-hidden rounded-full ring-2 ring-[#63B7B7]/10">
+                          <Image
+                            src={proposal.professional.UserProfile?.avatar}
+                            alt={proposal.professional.name}
+                            width={48}
+                            height={48}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-base font-medium text-gray-900">
+                          {proposal.professional.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {proposal.professional.UserProfile?.headline}
+                        </div>
+                      </div>
+                      <StatusBadge status={proposal.status as ProposalStatus} />
                     </div>
-                    <div className="text-sm text-gray-500">
-                      {formatCurrency(proposal.price)}
+
+                    <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-3">
+                      <div className="flex items-center text-sm text-gray-500">
+                        <svg
+                          className="mr-1.5 h-4 w-4 text-[#63B7B7]"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 8V12L14 14"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          <circle
+                            cx="12"
+                            cy="12"
+                            r="9"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          />
+                        </svg>
+                        {proposal.timeline}
+                      </div>
+                      <div className="text-sm font-medium text-[#63B7B7]">
+                        {formatCurrency(proposal.price)}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="mt-1 text-sm text-gray-500">
-                      {proposal.timeline} days
-                    </div>
-                    <StatusBadge status={proposal.status as ProposalStatus} />
-                  </div>
-                </div>
-              ))
+                  </motion.div>
+                ))}
+              </motion.div>
             ) : (
               <div className="rounded-lg border border-gray-200 bg-white p-6">
                 <div className="mb-4 text-center">
