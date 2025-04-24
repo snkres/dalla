@@ -35,7 +35,7 @@ const InsightsSection: React.FC<InsightsSectionProps> = ({
                 ? '!border-red-200 !bg-red-50 !text-red-600'
                 : data.competingProposals > 8
                   ? '!border-amber-200 !bg-amber-50 !text-amber-600'
-                  : '!border-green-200 !bg-green-50 !text-green-600',
+                  : '!border-[#64B7B7] !bg-green-50 !text-green-600',
             )}
           >
             {data.competingProposals > 15
@@ -70,7 +70,7 @@ const InsightsSection: React.FC<InsightsSectionProps> = ({
             className={cn(
               'w-fit text-xs',
               data.proposalViews > 5
-                ? '!border-green-200 !bg-green-50 !text-green-600'
+                ? '!border-[#64B7B7] !bg-green-50 !text-green-600'
                 : data.proposalViews > 0
                   ? '!border-amber-200 !bg-amber-50 !text-amber-600'
                   : '!border-gray-200 !bg-gray-100 !text-gray-600',

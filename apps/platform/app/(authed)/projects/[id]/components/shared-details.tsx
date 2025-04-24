@@ -32,7 +32,7 @@ export function ProjectSharedDetails({
     switch (project.status) {
       case 'Completed':
         return (
-          <Badge className="flex items-center gap-1 !rounded-full border !border-green-200 !bg-green-50/80 !px-2.5 !py-1 !text-xs !font-medium !text-green-700 shadow-sm">
+          <Badge className="flex items-center gap-1 !rounded-full border !border-[#64B7B7] !bg-green-50/80 !px-2.5 !py-1 !text-xs !font-medium !text-green-700 shadow-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
             Completed
           </Badge>

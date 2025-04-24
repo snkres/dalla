@@ -314,7 +314,7 @@ const ProposalDetailModal: React.FC<ProposalDetailModalProps> = ({
                       proposal.status === 'Rejected'
                         ? '!border-red-200 !bg-red-50 !text-red-700'
                         : proposal.status === 'Accepted'
-                          ? '!border-green-200 !bg-green-50 !text-green-700'
+                          ? '!border-[#64B7B7] !bg-green-50 !text-green-700'
                           : '!border-amber-200 !bg-amber-50 !text-amber-700'
                     }
                   >
