@@ -25,6 +25,7 @@ export interface StepTwoProps {
     name: string
     price: number
     duration: string
+    description: string
     durationValue?: number
     durationUnit?: 'days' | 'weeks' | 'months'
   }>
@@ -41,6 +42,7 @@ export interface StepTwoProps {
         name: string
         price: number
         duration: string
+        description: string
         durationValue?: number
         durationUnit?: 'days' | 'weeks' | 'months'
       }>
@@ -76,6 +78,7 @@ export interface ApplicationSidebarProps {
     name: string
     price: number
     duration: string
+    description: string
     durationValue?: number
     durationUnit?: 'days' | 'weeks' | 'months'
   }>

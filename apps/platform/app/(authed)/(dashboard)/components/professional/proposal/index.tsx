@@ -23,6 +23,7 @@ interface ProjectApplicationProps {
 
 interface Milestone {
   name: string
+  description: string
   price: number
   duration: string
   durationValue?: number
@@ -56,24 +57,11 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
 
   const [milestones, setMilestones] = useState<Milestone[]>([
     {
-      name: 'Initial Setup & Planning',
-      price: Math.round(project.meta.budget * 0.3),
-      duration: '1 week',
-      durationValue: 1,
-      durationUnit: 'weeks',
-    },
-    {
-      name: 'Implementation & Development',
-      price: Math.round(project.meta.budget * 0.5),
-      duration: '2 weeks',
-      durationValue: 2,
-      durationUnit: 'weeks',
-    },
-    {
-      name: 'Testing & Delivery',
-      price: Math.round(project.meta.budget * 0.2),
-      duration: '1 week',
-      durationValue: 1,
+      name: '',
+      description: '',
+      price: 0,
+      duration: '',
+      durationValue: 0,
       durationUnit: 'weeks',
     },
   ])
@@ -125,16 +113,38 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
       completed += bidAmount > 0 ? 15 : 0
       completed += durationValue > 0 && durationUnit ? 15 : 0
     } else {
-      completed += milestones.length > 0 ? 15 : 0
-      completed += milestones.every(
+      // Check if any milestones have been started
+      const milestonesStarted = milestones.some(
         (m) =>
-          m.name &&
-          m.price > 0 &&
-          (m.durationValue || 0) > 0 &&
-          !!m.durationUnit,
+          m.name.trim() !== '' ||
+          m.description.trim() !== '' ||
+          m.price > 0 ||
+          (m.durationValue || 0) > 0,
       )
-        ? 15
-        : 0
+
+      completed += milestonesStarted ? 15 : 0
+
+      // Check if all started milestones are complete
+      const startedMilestones = milestones.filter(
+        (m) =>
+          m.name.trim() !== '' ||
+          m.description.trim() !== '' ||
+          m.price > 0 ||
+          (m.durationValue || 0) > 0,
+      )
+
+      const allStartedMilestonesComplete =
+        startedMilestones.length > 0 &&
+        startedMilestones.every(
+          (m) =>
+            m.name.trim() !== '' &&
+            m.description.trim() !== '' &&
+            m.price > 0 &&
+            (m.durationValue || 0) > 0 &&
+            !!m.durationUnit,
+        )
+
+      completed += allStartedMilestonesComplete ? 15 : 0
     }
     total += 40
     completed += relatedProjects.some((p) => p.selected) ? 20 : 0
@@ -160,15 +170,38 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     if (bidType === 'fixed') {
       isPricingValid = bidAmount > 0 && durationValue > 0 && !!durationUnit
     } else {
+      // Need at least one milestone and all milestones must be complete
+      const activeCount = milestones.filter(
+        (m) =>
+          m.name.trim() !== '' ||
+          m.description.trim() !== '' ||
+          m.price > 0 ||
+          (m.durationValue || 0) > 0,
+      ).length
+
       isPricingValid =
-        milestones.length > 0 &&
-        milestones.every(
-          (m) =>
+        activeCount > 0 &&
+        milestones.every((m) => {
+          // Skip validation for empty milestones (not yet started)
+          const isEmptyMilestone =
+            m.name.trim() === '' &&
+            m.description.trim() === '' &&
+            m.price === 0 &&
+            (m.durationValue || 0) === 0
+
+          if (isEmptyMilestone) {
+            return true
+          }
+
+          // Validate filled or partially filled milestones
+          return (
             m.name.trim() !== '' &&
+            m.description.trim() !== '' &&
             m.price > 0 &&
             (m.durationValue || 0) > 0 &&
-            !!m.durationUnit,
-        )
+            !!m.durationUnit
+          )
+        })
     }
 
     // Step 3: Portfolio validation
@@ -208,30 +241,41 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
 
     try {
       const media = await Promise.all(files.map((file) => upload(file)))
-      // Prepare the proposal data
-      const proposalData = {
+
+      // Filter out empty milestones
+      const validMilestones = milestones.filter(
+        (m) =>
+          m.name.trim() !== '' &&
+          m.description.trim() !== '' &&
+          m.price > 0 &&
+          (m.durationValue || 0) > 0,
+      )
+
+      // Submit the proposal
+      await createProjectProposal(project.id, {
+        type:
+          bidType === 'fixed'
+            ? ('AllInOne' as const)
+            : ('MilestoneBased' as const),
         price: bidType === 'fixed' ? bidAmount : totalMilestonesAmount,
         timeline:
           bidType === 'fixed'
             ? `${durationValue} ${durationUnit}`
-            : milestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
+            : validMilestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
         description: coverLetter,
         relevantProjects: [],
         media: media.map((m) => m.data.fileUrl),
         // Add milestones data if bid type is milestone
         ...(bidType === 'milestone' && {
-          milestones: milestones.map((milestone, index) => ({
+          milestones: validMilestones.map((milestone, index) => ({
             order: index + 1,
             title: milestone.name,
-            description: milestone.name,
+            description: milestone.description || milestone.name,
             price: milestone.price,
             timeline: milestone.duration,
           })),
         }),
-      }
-
-      // Submit the proposal
-      const response = await createProjectProposal(project.id, proposalData)
+      })
 
       // Handle successful submission
       setIsSubmitted(true)
@@ -299,10 +343,11 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
       setMilestones([
         ...milestones,
         {
-          name: t.newMilestoneDefaultName || 'New Milestone',
-          price: Math.round(bidAmount * 0.1),
-          duration: '1 weeks',
-          durationValue: 1,
+          name: '',
+          description: '',
+          price: 0,
+          duration: '',
+          durationValue: 0,
           durationUnit: 'weeks' as 'days' | 'weeks' | 'months',
         },
       ])

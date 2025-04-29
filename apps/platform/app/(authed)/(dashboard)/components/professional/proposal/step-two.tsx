@@ -10,7 +10,7 @@ import {
   AlertCircle,
   Plus,
 } from 'lucide-react'
-import { Riyal } from '@dalla/design-system'
+import { Riyal, Textarea } from '@dalla/design-system'
 import { Button } from '@dalla/design-system'
 import { Input } from '@dalla/design-system'
 import { Label } from '@dalla/design-system'
@@ -21,6 +21,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+} from '@dalla/design-system'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from '@dalla/design-system'
 import { fadeIn, translateDuration } from '@dalla/utils'
 import type { StepTwoProps } from '@lib/types/steps'
@@ -152,6 +158,7 @@ export function StepTwo({
                   transition={{ duration: 0.2 }}
                   className="space-y-6"
                 >
+                  <ClientExpectations project={project} t={t} locale={locale} />
                   <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md">
                     <div className="border-b border-gray-100 p-4">
                       <h4 className="flex items-center gap-1 text-sm font-medium">
@@ -250,6 +257,7 @@ export function StepTwo({
                   transition={{ duration: 0.2 }}
                   className="space-y-6"
                 >
+                  <ClientExpectations project={project} t={t} locale={locale} />
                   <div className="mb-6 overflow-hidden rounded-xl bg-white shadow-md">
                     <div className="flex items-center justify-between border-b border-gray-100 p-4">
                       <h4 className="flex items-center text-sm font-medium">
@@ -257,12 +265,14 @@ export function StepTwo({
                         {t.milestoneTitle || 'Milestones'}
                       </h4>
                       <div className="rounded-full bg-[#63B7B7]/10 px-3 py-1">
-                        <span className="text-xs font-medium text-[#63B7B7]">
-                          {t.totalLabel || 'Total'}:{' '}
-                          {formatCurrency(
-                            totalMilestonesAmount,
-                            'h-2.5 w-2.5 mr-0.5',
-                          )}
+                        <span className="flex items-center gap-1 text-xs font-medium text-[#63B7B7]">
+                          <span>{t.totalLabel || 'Total'}</span>
+                          <span>
+                            {formatCurrency(
+                              totalMilestonesAmount,
+                              'h-2.5 w-2.5',
+                            )}
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -311,56 +321,78 @@ export function StepTwo({
                                   </div>
                                 </div>
                                 <div className="p-4">
-                                  <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-                                    <div className="md:col-span-6">
+                                  <div className="flex flex-col gap-4">
+                                    <div className="flex gap-2">
+                                      <div className="w-1/2">
+                                        <Label
+                                          htmlFor={`milestone-title-${index}`}
+                                          className="mb-1.5 block text-xs text-gray-500"
+                                        >
+                                          {'Title'}
+                                        </Label>
+                                        <Input
+                                          id={`milestone-title-${index}`}
+                                          value={milestone.name}
+                                          onChange={(e) =>
+                                            updateMilestone(
+                                              index,
+                                              'name',
+                                              e.target.value,
+                                            )
+                                          }
+                                          placeholder="Enter milestone title"
+                                        />
+                                      </div>
+                                      <div className="md:col-span-3">
+                                        <Label
+                                          htmlFor={`milestone-price-${index}`}
+                                          className="mb-1.5 block text-xs text-gray-500"
+                                        >
+                                          {t.milestoneAmountLabel || 'Amount'}
+                                        </Label>
+                                        <div className="relative">
+                                          <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#63B7B7]" />
+                                          <Input
+                                            id={`milestone-price-${index}`}
+                                            type="number"
+                                            value={milestone.price}
+                                            onChange={(e) =>
+                                              updateMilestone(
+                                                index,
+                                                'price',
+                                                Number.parseInt(
+                                                  e.target.value,
+                                                ) || 0,
+                                              )
+                                            }
+                                            className="pl-10 text-sm"
+                                            placeholder="Enter amount"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="w-full">
                                       <Label
-                                        htmlFor={`milestone-${index}`}
+                                        htmlFor={`milestone-description-${index}`}
                                         className="mb-1.5 block text-xs text-gray-500"
                                       >
                                         {t.milestoneDescriptionLabel ||
                                           'Description'}
                                       </Label>
-                                      <Input
-                                        id={`milestone-${index}`}
-                                        value={milestone.name}
+                                      <Textarea
+                                        id={`milestone-description-${index}`}
+                                        value={milestone.description || ''}
                                         onChange={(e) =>
                                           updateMilestone(
                                             index,
-                                            'name',
+                                            'description',
                                             e.target.value,
                                           )
                                         }
-                                        className="border-gray-100 bg-gray-50 text-sm transition-colors focus:border-[#63B7B7] focus:ring-[#63B7B7]/20"
-                                        placeholder={
-                                          t.milestoneDescriptionPlaceholder ||
-                                          'What will you deliver?'
-                                        }
+                                        className="!h-28 !w-full"
+                                        placeholder="Describe what will be delivered in this milestone"
                                       />
-                                    </div>
-                                    <div className="md:col-span-3">
-                                      <Label
-                                        htmlFor={`milestone-price-${index}`}
-                                        className="mb-1.5 block text-xs text-gray-500"
-                                      >
-                                        {t.milestoneAmountLabel || 'Amount'}
-                                      </Label>
-                                      <div className="relative">
-                                        <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#63B7B7]" />
-                                        <Input
-                                          id={`milestone-price-${index}`}
-                                          type="number"
-                                          value={milestone.price}
-                                          onChange={(e) =>
-                                            updateMilestone(
-                                              index,
-                                              'price',
-                                              Number.parseInt(e.target.value) ||
-                                                0,
-                                            )
-                                          }
-                                          className="border-gray-100 bg-gray-50 pl-10 text-sm transition-colors focus:border-[#63B7B7] focus:ring-[#63B7B7]/20"
-                                        />
-                                      </div>
                                     </div>
                                     <div className="md:col-span-3">
                                       <Label
@@ -375,20 +407,21 @@ export function StepTwo({
                                           <Input
                                             type="number"
                                             min={1}
-                                            value={milestone.durationValue || 1}
+                                            value={milestone.durationValue || 0}
                                             onChange={(e) => {
                                               updateMilestone(
                                                 index,
                                                 'durationValue',
-                                                parseInt(e.target.value) || 1,
+                                                parseInt(e.target.value) || 0,
                                               )
                                               updateMilestone(
                                                 index,
                                                 'duration',
-                                                `${parseInt(e.target.value) || 1} ${milestone.durationUnit || 'weeks'}`,
+                                                `${parseInt(e.target.value) || 0} ${milestone.durationUnit || 'weeks'}`,
                                               )
                                             }}
                                             className="border-gray-100 bg-gray-50 text-sm transition-colors focus:border-[#63B7B7] focus:ring-[#63B7B7]/20"
+                                            placeholder="Duration"
                                           />
                                         </div>
                                         <Select
@@ -406,7 +439,7 @@ export function StepTwo({
                                             updateMilestone(
                                               index,
                                               'duration',
-                                              `${milestone.durationValue || 1} ${value}`,
+                                              `${milestone.durationValue || 0} ${value}`,
                                             )
                                           }}
                                         >
@@ -457,31 +490,40 @@ export function StepTwo({
                     <div className="p-4">
                       <div className="mb-4">
                         <div className="flex h-8 w-full overflow-hidden rounded-full">
-                          {milestones.map((milestone, index) => {
-                            const percentage =
-                              (milestone.price / totalMilestonesAmount) * 100
-                            return (
-                              <div
-                                key={index}
-                                className="group relative flex items-center justify-center transition-all duration-300 hover:brightness-90"
-                                style={{
-                                  width: `${percentage}%`,
-                                  backgroundColor: `hsl(180, 35%, ${60 - index * 5}%)`,
-                                }}
-                              >
-                                <span className="absolute -bottom-8 left-1/2 z-10 hidden -translate-x-1/2 transform whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white group-hover:block">
-                                  {milestone.name}:{' '}
-                                  {formatCurrency(
-                                    milestone.price,
-                                    'h-2.5 w-2.5 mr-0.5',
-                                  )}{' '}
-                                  ({Math.round(percentage)}%)
-                                </span>
-                              </div>
-                            )
-                          })}
+                          <TooltipProvider>
+                            {milestones.map((milestone, index) => {
+                              const percentage =
+                                (milestone.price / totalMilestonesAmount) * 100
+                              return (
+                                <Tooltip key={index}>
+                                  <TooltipTrigger asChild>
+                                    <div
+                                      className="flex items-center justify-center transition-all duration-300 hover:brightness-90"
+                                      style={{
+                                        width: `${percentage}%`,
+                                        backgroundColor: `hsl(180, 35%, ${60 - index * 5}%)`,
+                                      }}
+                                    ></div>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    side="top"
+                                    className="border-none bg-gray-800 text-white"
+                                  >
+                                    <p>
+                                      {milestone.name}:{' '}
+                                      {formatCurrency(
+                                        milestone.price,
+                                        'h-2.5 w-2.5 mr-0.5',
+                                      )}{' '}
+                                      ({Math.round(percentage)}%)
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )
+                            })}
+                          </TooltipProvider>
                         </div>
-                        <div className="mt-10 flex justify-between text-xs text-gray-500">
+                        <div className="mt-2 flex justify-between text-xs text-gray-500">
                           <span>Start</span>
                           <span>Completion</span>
                         </div>
@@ -553,14 +595,7 @@ export function StepTwo({
                       </li>
                     </ul>
                   </div>
-                  <div className="mb-6 overflow-hidden rounded-xl bg-white shadow-md">
-                    <div className="border-b border-gray-100 p-4">
-                      <h4 className="flex items-center gap-1 text-sm font-medium">
-                        <Briefcase className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                        {t.milestoneTemplatesTitle || 'Milestone Templates'}
-                      </h4>
-                    </div>
-                  </div>
+
                   <div className="mb-6 overflow-hidden rounded-xl bg-white shadow-md">
                     <div className="border-b border-gray-100 p-4">
                       <h4 className="flex items-center gap-1 text-sm font-medium">
@@ -637,16 +672,23 @@ export function StepTwo({
                         ) : (
                           <div className="flex items-center text-amber-600">
                             <AlertCircle className="mr-2 h-4 w-4" />
-                            <span className="text-xs">
-                              {t.milestonesTotalMismatch ||
-                                'Milestone total differs from your bid amount'}
+                            <span className="flex gap-0.5 text-xs">
+                              <span>
+                                {t.milestonesTotalMismatch ||
+                                  'Milestone total differs from your bid amount'}
+                              </span>
                               (
-                              {formatCurrency(
-                                totalMilestonesAmount,
-                                'h-2.5 w-2.5 mr-0.5',
-                              )}{' '}
-                              vs{' '}
-                              {formatCurrency(bidAmount, 'h-2.5 w-2.5 mr-0.5')})
+                              <span>
+                                {formatCurrency(
+                                  totalMilestonesAmount,
+                                  'h-2.5 w-2.5',
+                                )}
+                              </span>
+                              <span>vs</span>
+                              <span>
+                                {formatCurrency(bidAmount, 'h-2.5 w-2.5 ')}
+                              </span>
+                              )
                             </span>
                           </div>
                         )}
@@ -678,7 +720,6 @@ export function StepTwo({
                             {t.serviceFeeLabel || 'Service fee (10%)'}
                           </span>
                           <span className="text-gray-700">
-                            -
                             {formatCurrency(
                               totalMilestonesAmount * 0.1,
                               'h-3 w-3 mr-0.5',
@@ -705,45 +746,62 @@ export function StepTwo({
               )}
             </AnimatePresence>
           </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+}
 
-          {(project.meta.budget || project.meta.duration) && (
-            <div className="mt-6 rounded-xl border border-gray-100 bg-white p-4 shadow-md">
-              <div className="mb-2 flex items-center gap-1 text-sm text-gray-700">
-                <AlertCircle className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                {t.clientExpectationsTitle || 'Client Expectations'}
+const ClientExpectations = ({
+  project,
+  t,
+  locale,
+}: {
+  project: {
+    meta: {
+      budget: number
+      duration: string
+    }
+  }
+  t: any
+  locale: string
+}) => {
+  return (
+    (project.meta.budget || project.meta.duration) && (
+      <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-md">
+        <div className="mb-2 flex items-center gap-1 text-sm text-gray-700">
+          <AlertCircle className="mr-2 h-4 w-4 text-[#63B7B7]" />
+          {t.clientExpectationsTitle || 'Client Expectations'}
+        </div>
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {project.meta.budget && (
+            <div className="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-3">
+              <Riyal className="mr-2 h-4 w-4 text-[#63B7B7]" />
+              <div>
+                <span className="block text-xs text-gray-500">
+                  {t.clientBudgetLabel || 'Budget'}
+                </span>
+                <span className="text-sm font-medium">
+                  {project.meta.budget}
+                </span>
               </div>
-              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {project.meta.budget && (
-                  <div className="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-3">
-                    <Riyal className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                    <div>
-                      <span className="block text-xs text-gray-500">
-                        {t.clientBudgetLabel || 'Budget'}
-                      </span>
-                      <span className="text-sm font-medium">
-                        {project.meta.budget}
-                      </span>
-                    </div>
-                  </div>
-                )}
-                {project.meta.duration && (
-                  <div className="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-3">
-                    <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
-                    <div>
-                      <span className="block text-xs text-gray-500">
-                        {t.clientTimelineLabel || 'Timeline'}
-                      </span>
-                      <span className="text-sm font-medium">
-                        {translateDuration(project.meta.duration, locale)}
-                      </span>
-                    </div>
-                  </div>
-                )}
+            </div>
+          )}
+          {project.meta.duration && (
+            <div className="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-3">
+              <Clock className="mr-2 h-4 w-4 text-[#63B7B7]" />
+              <div>
+                <span className="block text-xs text-gray-500">
+                  {t.clientTimelineLabel || 'Timeline'}
+                </span>
+                <span className="text-sm font-medium">
+                  {translateDuration(project.meta.duration, locale)}
+                </span>
               </div>
             </div>
           )}
         </div>
       </div>
-    </motion.div>
+    )
   )
 }

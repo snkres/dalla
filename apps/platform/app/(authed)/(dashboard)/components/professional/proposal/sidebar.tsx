@@ -218,7 +218,15 @@ export function ApplicationSidebar({
                     (bidAmount > 0 && estimatedDuration) ||
                     (bidType === 'milestone' && milestones.length > 0) ? (
                       <span className="flex items-center">
-                        {formatCurrency(bidAmount)}&nbsp;{t.statusBidTypeFixed}
+                        {formatCurrency(
+                          bidType === 'fixed'
+                            ? bidAmount
+                            : totalMilestonesAmount,
+                        )}
+                        &nbsp;
+                        {bidType === 'fixed'
+                          ? t.statusBidTypeFixed
+                          : t.statusBidTypeMilestone}
                       </span>
                     ) : (
                       <span>{t.statusRequired}</span>
