@@ -27,6 +27,7 @@ import { createProjectProposal } from '@lib/api/pro/proposals'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
 import { ListDisplay } from '@dalla/components/listDisplay'
+import { ApplyProposal } from '../../../(dashboard)/components/professional/proposal'
 
 export function ProfessionalProjectView({
   project,
@@ -41,18 +42,6 @@ export function ProfessionalProjectView({
   const { toast } = useToast()
   const [meta, setMeta] = useAtom(proMetaAtom)
   const [isApplying, setIsApplying] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [proposal, setProposal] = useState({
-    description: '',
-    price: '',
-    timeline: '',
-  })
-
-  // Form validation
-  const isFormValid =
-    proposal.description.trim().length >= 50 &&
-    Number(proposal.price) > 0 &&
-    proposal.timeline.trim().length > 0
 
   // Check if the professional has already applied to this project
   const hasApplied = project.applied
@@ -60,156 +49,9 @@ export function ProfessionalProjectView({
   // Check if the professional is assigned to this project
   const isAssigned = project.professional?.id === meta?.data.id
 
-  const handleApply = async () => {
-    if (!isFormValid) {
-      toast({
-        title: 'Incomplete proposal',
-        description: 'Please fill out all fields with valid information.',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    setIsSubmitting(true)
-
-    try {
-      // Prepare the payload for API
-      const payload = {
-        price: Number(proposal.price),
-        timeline: proposal.timeline,
-        description: proposal.description,
-        relevantProjects: [],
-        media: [], // No media attachments in this simplified version
-      }
-
-      // Submit proposal to API
-      const response = await createProjectProposal(project.id, payload)
-
-      // Show success message
-      toast({
-        title: 'Proposal submitted',
-        description:
-          'Your proposal has been successfully submitted to the client.',
-      })
-
-      // Close the form and refresh the page to reflect the updated state
-      setIsApplying(false)
-      router.refresh()
-    } catch (error) {
-      console.error('Error submitting proposal:', error)
-      toast({
-        title: 'Submission failed',
-        description:
-          'There was an error submitting your proposal. Please try again.',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   if (isApplying) {
     return (
-      <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-xl font-medium text-gray-900">
-          Submit Your Proposal
-        </h2>
-
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Proposal Description
-          </label>
-          <Textarea
-            placeholder="Describe how you would approach this project and why you're a good fit..."
-            className="min-h-[150px]"
-            value={proposal.description}
-            onChange={(e) =>
-              setProposal({ ...proposal, description: e.target.value })
-            }
-          />
-          {proposal.description && proposal.description.length < 50 && (
-            <p className="mt-1 text-xs text-red-500">
-              Please provide a detailed description (minimum 50 characters)
-            </p>
-          )}
-        </div>
-
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              Your Price (﷼)
-            </label>
-            <div className="relative">
-              <Riyal className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-              <Input
-                type="number"
-                className="pl-10"
-                placeholder="1000"
-                value={proposal.price}
-                onChange={(e) =>
-                  setProposal({ ...proposal, price: e.target.value })
-                }
-              />
-              {proposal.price && Number(proposal.price) <= 0 && (
-                <p className="mt-1 text-xs text-red-500">
-                  Please enter a valid price
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
-              Estimated Timeline
-            </label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-              <Input
-                placeholder="e.g., 2 weeks"
-                className="pl-10"
-                value={proposal.timeline}
-                onChange={(e) =>
-                  setProposal({ ...proposal, timeline: e.target.value })
-                }
-              />
-              {proposal.timeline && proposal.timeline.trim().length === 0 && (
-                <p className="mt-1 text-xs text-red-500">
-                  Please provide a timeline estimate
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 flex gap-3">
-          <Button
-            className="bg-[#63B7B7] text-white hover:bg-[#63B7B7]/90"
-            onClick={handleApply}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              <>
-                <Send className="mr-2 h-4 w-4" />
-                Submit Proposal
-              </>
-            )}
-          </Button>
-
-          <Button
-            variant="outline"
-            className="border-gray-300 text-gray-700 hover:bg-gray-50"
-            onClick={() => setIsApplying(false)}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-        </div>
-      </div>
+      <ApplyProposal project={project} onClose={() => setIsApplying(false)} />
     )
   }
 
@@ -300,11 +142,9 @@ export function ProfessionalProjectView({
                 </p>
                 <Button
                   className="mt-2 !bg-[#63B7B7] text-white hover:!bg-[#63B7B7]/90"
-                  asChild
+                  onClick={() => setIsApplying(true)}
                 >
-                  <Link href={`/?projectId=${project.id}`}>
-                    Submit a Proposal
-                  </Link>
+                  Submit a Proposal
                 </Button>
               </div>
             )}
