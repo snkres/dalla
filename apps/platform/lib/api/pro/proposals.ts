@@ -68,15 +68,24 @@ interface Meta {
   [property: string]: any
 }
 
-export async function createProjectProposal(
-  projectId: string,
-  payload: {
+interface CreateProjectProposalPayload {
+  type: 'AllInOne' | 'MilestoneBased'
+  price: number
+  timeline: string
+  description: string
+  relevantProjects: Array<string>
+  media: Array<string>
+  milestones?: Array<{
+    order: number
+    title: string
+    description: string
     price: number
     timeline: string
-    description: string
-    relevantProjects: Array<string>
-    media: Array<string>
-  },
+  }>
+}
+export async function createProjectProposal(
+  projectId: string,
+  payload: CreateProjectProposalPayload,
 ) {
   const res = await axiosInstance
     .post<CreateProjectProposalRes>(
