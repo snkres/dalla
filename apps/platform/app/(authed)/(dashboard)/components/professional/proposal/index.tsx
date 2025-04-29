@@ -251,6 +251,26 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
           (m.durationValue || 0) > 0,
       )
 
+      // Calculate total duration for milestone-based projects
+      const calculateTotalDuration = (milestones: Milestone[]) => {
+        // Convert all durations to days for accurate calculation
+        const daysMap = { days: 1, weeks: 7, months: 30 }
+        const totalDays = milestones.reduce((sum, milestone) => {
+          const value = milestone.durationValue || 0
+          const unit = milestone.durationUnit || 'days'
+          return sum + value * daysMap[unit]
+        }, 0)
+
+        // Convert back to most appropriate unit
+        if (totalDays >= 60) {
+          return `${Math.round(totalDays / 30)} months`
+        } else if (totalDays >= 14) {
+          return `${Math.round(totalDays / 7)} weeks`
+        } else {
+          return `${totalDays} days`
+        }
+      }
+
       // Submit the proposal
       await createProjectProposal(project.id, {
         type:
@@ -261,7 +281,7 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
         timeline:
           bidType === 'fixed'
             ? `${durationValue} ${durationUnit}`
-            : validMilestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
+            : calculateTotalDuration(validMilestones),
         description: coverLetter,
         relevantProjects: [],
         media: media.map((m) => m.data.fileUrl),
