@@ -81,6 +81,13 @@ export type GetAllCompanyProjectsRes = {
             meta: ProProfile['data']['meta']
           }
         }
+        milestones: Array<{
+          order: number
+          title: string
+          description: string
+          price: number
+          timeline: string
+        }>
       }>
     }>,
     {
