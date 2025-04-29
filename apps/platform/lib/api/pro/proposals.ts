@@ -76,6 +76,13 @@ export async function createProjectProposal(
     description: string
     relevantProjects: Array<string>
     media: Array<string>
+    milestones?: Array<{
+      order: number
+      title: string
+      description: string
+      price: number
+      timeline: string
+    }>
   },
 ) {
   const res = await axiosInstance

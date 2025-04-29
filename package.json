@@ -12,7 +12,7 @@
     "build:platform": "turbo run build --filter=dalla-platform",
     "changeset": "changeset",
     "clean": "turbo run clean && rm -rf node_modules",
-    "dev": "turbo run dev --filter=dalla-platform",
+    "dev": "turbo run dev",
     "format": "prettier --write .",
     "lint": "turbo run lint",
     "release": "turbo run build --filter=main... && changeset publish",

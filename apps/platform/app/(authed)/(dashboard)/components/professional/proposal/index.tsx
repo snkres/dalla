@@ -21,6 +21,14 @@ interface ProjectApplicationProps {
   onClose: () => void
 }
 
+interface Milestone {
+  name: string
+  price: number
+  duration: string
+  durationValue?: number
+  durationUnit?: 'days' | 'weeks' | 'months'
+}
+
 export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   const translations = useTranslation()
   const t = translations.dashboard.applyProposal
@@ -41,22 +49,34 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   const [estimatedDuration, setEstimatedDuration] = useState(
     project.meta?.duration || '2 weeks',
   )
-  const defaultMilestones = useMemo(
-    () => [
-      {
-        name: t.defaultMilestone1Name,
-        price: Math.round(bidAmount * 0.3),
-        duration: t.defaultMilestone1Duration,
-      },
-      {
-        name: t.defaultMilestone2Name,
-        price: Math.round(bidAmount * 0.5),
-        duration: t.defaultMilestone2Duration,
-      },
-    ],
-    [bidAmount, t],
+  const [durationValue, setDurationValue] = useState(2)
+  const [durationUnit, setDurationUnit] = useState<'days' | 'weeks' | 'months'>(
+    'weeks',
   )
-  const [milestones, setMilestones] = useState(defaultMilestones)
+
+  const [milestones, setMilestones] = useState<Milestone[]>([
+    {
+      name: 'Initial Setup & Planning',
+      price: Math.round(project.meta.budget * 0.3),
+      duration: '1 week',
+      durationValue: 1,
+      durationUnit: 'weeks',
+    },
+    {
+      name: 'Implementation & Development',
+      price: Math.round(project.meta.budget * 0.5),
+      duration: '2 weeks',
+      durationValue: 2,
+      durationUnit: 'weeks',
+    },
+    {
+      name: 'Testing & Delivery',
+      price: Math.round(project.meta.budget * 0.2),
+      duration: '1 week',
+      durationValue: 1,
+      durationUnit: 'weeks',
+    },
+  ])
   const [relatedProjects, setRelatedProjects] = useState<
     Array<{ title: string; selected: boolean }>
   >([
@@ -103,10 +123,18 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     total += 30
     if (bidType === 'fixed') {
       completed += bidAmount > 0 ? 15 : 0
-      completed += estimatedDuration ? 15 : 0
+      completed += durationValue > 0 && durationUnit ? 15 : 0
     } else {
       completed += milestones.length > 0 ? 15 : 0
-      completed += milestones.every((m) => m.name && m.price > 0) ? 15 : 0
+      completed += milestones.every(
+        (m) =>
+          m.name &&
+          m.price > 0 &&
+          (m.durationValue || 0) > 0 &&
+          !!m.durationUnit,
+      )
+        ? 15
+        : 0
     }
     total += 40
     completed += relatedProjects.some((p) => p.selected) ? 20 : 0
@@ -115,7 +143,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   }, [
     coverLetter,
     bidAmount,
-    estimatedDuration,
+    durationValue,
+    durationUnit,
     bidType,
     milestones,
     relatedProjects,
@@ -129,13 +158,16 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     // Step 2: Pricing validation
     let isPricingValid = false
     if (bidType === 'fixed') {
-      isPricingValid = bidAmount > 0 && !!estimatedDuration
+      isPricingValid = bidAmount > 0 && durationValue > 0 && !!durationUnit
     } else {
       isPricingValid =
         milestones.length > 0 &&
         milestones.every(
           (m) =>
-            m.name.trim() !== '' && m.price > 0 && m.duration.trim() !== '',
+            m.name.trim() !== '' &&
+            m.price > 0 &&
+            (m.durationValue || 0) > 0 &&
+            !!m.durationUnit,
         )
     }
 
@@ -153,7 +185,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   }, [
     coverLetter,
     bidAmount,
-    estimatedDuration,
+    durationValue,
+    durationUnit,
     bidType,
     milestones,
     relatedProjects,
@@ -180,11 +213,21 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
         price: bidType === 'fixed' ? bidAmount : totalMilestonesAmount,
         timeline:
           bidType === 'fixed'
-            ? estimatedDuration
+            ? `${durationValue} ${durationUnit}`
             : milestones.map((m) => `${m.name}: ${m.duration}`).join(', '),
         description: coverLetter,
         relevantProjects: [],
         media: media.map((m) => m.data.fileUrl),
+        // Add milestones data if bid type is milestone
+        ...(bidType === 'milestone' && {
+          milestones: milestones.map((milestone, index) => ({
+            order: index + 1,
+            title: milestone.name,
+            description: milestone.name,
+            price: milestone.price,
+            timeline: milestone.duration,
+          })),
+        }),
       }
 
       // Submit the proposal
@@ -211,13 +254,15 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
     bidType,
     bidAmount,
     totalMilestonesAmount,
-    estimatedDuration,
+    durationValue,
+    durationUnit,
     milestones,
     coverLetter,
     project.id,
     files,
     toast,
     t,
+    t_proHome,
   ])
 
   const simulateAiSuggestions = useCallback(() => {
@@ -227,12 +272,12 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
 
   const handleBidChange = useCallback((value: number) => {
     setBidAmount(value)
-    setMilestones((milestones) =>
-      milestones.map((milestone, index) => {
-        let percentage
+    setMilestones((prevMilestones) =>
+      prevMilestones.map((milestone, index) => {
+        let percentage = 0.2
         if (index === 0) percentage = 0.3
         else if (index === 1) percentage = 0.5
-        else percentage = 0.2
+
         return {
           ...milestone,
           price: Math.round(value * percentage),
@@ -254,9 +299,11 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
       setMilestones([
         ...milestones,
         {
-          name: t.newMilestoneDefaultName,
+          name: t.newMilestoneDefaultName || 'New Milestone',
           price: Math.round(bidAmount * 0.1),
-          duration: t.newMilestoneDefaultDuration,
+          duration: '1 weeks',
+          durationValue: 1,
+          durationUnit: 'weeks' as 'days' | 'weeks' | 'months',
         },
       ])
     }
@@ -265,7 +312,9 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
   const handleRemoveMilestone = useCallback(
     (index: number) => {
       if (milestones.length > 1) {
-        setMilestones((milestones) => milestones.filter((_, i) => i !== index))
+        setMilestones((prevMilestones) =>
+          prevMilestones.filter((_, i) => i !== index),
+        )
       }
     },
     [milestones],
@@ -273,8 +322,8 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
 
   const updateMilestone = useCallback(
     (index: number, field: string, value: string | number) => {
-      setMilestones((milestones) =>
-        milestones.map((milestone, i) =>
+      setMilestones((prevMilestones) =>
+        prevMilestones.map((milestone, i) =>
           i === index ? { ...milestone, [field]: value } : milestone,
         ),
       )
@@ -285,17 +334,17 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
 
   return (
     <Modal isOpen={true} onClose={onClose} title={t.modalTitle} width="xl">
-      <ApplicationHeader activeStep={activeStep} isSubmitted={isSubmitted} />
-      <div className="flex h-full flex-col justify-end md:flex-row">
+      {/* <ApplicationHeader activeStep={activeStep} isSubmitted={isSubmitted} /> */}
+      <div className="flex h-fit flex-col justify-end md:flex-row">
         <div
-          className="relative w-[70%] overflow-y-auto p-4 sm:p-6"
+          className="w-[70%] overflow-y-auto p-4 sm:p-6"
           dir={locale === 'ar' ? 'rtl' : 'ltr'}
         >
           <div className="max-w-3xl">
             {isSubmitted ? (
               <SuccessScreen project={project} onClose={onClose} />
             ) : (
-              <div className="space-y-6">
+              <div className="h-fit space-y-6 overflow-y-scroll">
                 <h1 className="mb-2 text-xl font-semibold text-gray-900">
                   {t.modalTitle}
                 </h1>
@@ -319,12 +368,17 @@ export function ApplyProposal({ project, onClose }: ProjectApplicationProps) {
                 )}
                 {activeStep === 2 && (
                   <StepTwo
+                    setMilestones={setMilestones}
                     bidType={bidType}
                     setBidType={setBidType}
                     bidAmount={bidAmount}
                     handleBidChange={handleBidChange}
                     estimatedDuration={estimatedDuration}
                     setEstimatedDuration={setEstimatedDuration}
+                    durationValue={durationValue}
+                    setDurationValue={setDurationValue}
+                    durationUnit={durationUnit}
+                    setDurationUnit={setDurationUnit}
                     milestones={milestones}
                     handleAddMilestone={handleAddMilestone}
                     handleRemoveMilestone={handleRemoveMilestone}

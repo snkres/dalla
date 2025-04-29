@@ -133,7 +133,9 @@ export function Modal({
           </div>
 
           {/* Body */}
-          <div className={cn('flex-1', bodyClassName)}>{children}</div>
+          <div className={cn('h-fit flex-1 overflow-y-scroll', bodyClassName)}>
+            {children}
+          </div>
         </motion.div>
       </motion.div>
     </>

@@ -17,7 +17,17 @@ export interface StepTwoProps {
   handleBidChange: (value: number) => void
   estimatedDuration: string
   setEstimatedDuration: (value: string) => void
-  milestones: Array<{ name: string; price: number; duration: string }>
+  durationValue: number
+  setDurationValue: (value: number) => void
+  durationUnit: 'days' | 'weeks' | 'months'
+  setDurationUnit: (value: 'days' | 'weeks' | 'months') => void
+  milestones: Array<{
+    name: string
+    price: number
+    duration: string
+    durationValue?: number
+    durationUnit?: 'days' | 'weeks' | 'months'
+  }>
   handleAddMilestone: () => void
   handleRemoveMilestone: (index: number) => void
   updateMilestone: (
@@ -25,6 +35,17 @@ export interface StepTwoProps {
     field: string,
     value: string | number,
   ) => void
+  setMilestones: React.Dispatch<
+    React.SetStateAction<
+      Array<{
+        name: string
+        price: number
+        duration: string
+        durationValue?: number
+        durationUnit?: 'days' | 'weeks' | 'months'
+      }>
+    >
+  >
   serviceFee: number
   youllReceive: number
   totalMilestonesAmount: number
@@ -51,7 +72,13 @@ export interface ApplicationSidebarProps {
   bidAmount: number
   estimatedDuration: string
   bidType: 'fixed' | 'milestone'
-  milestones: Array<{ name: string; price: number; duration: string }>
+  milestones: Array<{
+    name: string
+    price: number
+    duration: string
+    durationValue?: number
+    durationUnit?: 'days' | 'weeks' | 'months'
+  }>
   relatedProjects: Array<{ title: string; selected: boolean }>
   files: File[]
   totalMilestonesAmount: number

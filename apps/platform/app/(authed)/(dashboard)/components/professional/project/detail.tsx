@@ -113,10 +113,7 @@ export function ProjectDetail({
       )}
       width="xl"
     >
-      <div
-        className="flex h-full flex-col overflow-hidden md:flex-row"
-        dir="ltr"
-      >
+      <div className="flex flex-col md:flex-row" dir="ltr">
         {/* Main Content Scroll Area */}
         <div
           className="h-full flex-1 overflow-y-auto"
@@ -371,7 +368,7 @@ export function ProjectDetail({
         {/* Sidebar */}
         <div
           className={cn(
-            'w-full shrink-0 overflow-y-auto border-gray-200 md:w-72 lg:w-80 xl:w-96',
+            'h-[calc(100vh-100px)] w-full shrink-0 border-gray-200 md:w-72 lg:w-80 xl:w-96',
             'border-l',
           )}
           dir={locale === 'ar' ? 'rtl' : 'ltr'}
