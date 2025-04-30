@@ -161,7 +161,7 @@ export function ProjectSharedDetails({
                 <h3 className="mb-3 text-sm font-medium text-gray-900">
                   Project Scope
                 </h3>
-                <div className="rounded-md py-4 pl-1">
+                <div className="p-1">
                   <ListDisplay
                     value={project.scope}
                     emptyText="No scope details provided"
@@ -174,7 +174,7 @@ export function ProjectSharedDetails({
                 <h3 className="mb-3 text-sm font-medium text-gray-900">
                   Deliverables
                 </h3>
-                <div className="rounded-md py-4 pl-1">
+                <div className="p-1">
                   <ListDisplay
                     value={project.deliverables}
                     emptyText="No deliverables specified"
@@ -253,8 +253,8 @@ export function ProjectSharedDetails({
                 <div className="bg-white p-4">
                   <div className="flex flex-col">
                     <div className="text-base font-semibold text-[#1D8489]">
-                      <span className="flex items-center gap-1">
-                        {project.meta?.timeline}
+                      <span className="flex items-center gap-1 capitalize">
+                        {project.meta?.timeline ?? project.meta?.duration}
                       </span>
                     </div>
                   </div>
