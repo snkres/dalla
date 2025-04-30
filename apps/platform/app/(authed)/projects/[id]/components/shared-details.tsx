@@ -10,12 +10,14 @@ import { Riyal } from '@dalla/design-system'
 import {
   Briefcase,
   Calendar,
+  CheckCircle,
   Clock,
   Edit,
   MessageCircle,
   Users,
 } from 'lucide-react'
 import { Link } from 'next-view-transitions'
+import { ListDisplay } from '@dalla/components/listDisplay'
 
 export function ProjectSharedDetails({
   project,
@@ -134,13 +136,15 @@ export function ProjectSharedDetails({
                       Message Professional
                     </Link>
                   </Button>
-                  <Button
-                    className="!bg-[#63B7B7] !text-sm font-normal hover:!bg-[#63B7B7]/90"
-                    onClick={() => setShowEditModal(true)}
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    Edit Project
-                  </Button>
+                  {isAssignedProfessional && (
+                    <Button
+                      className="!bg-[#63B7B7] !text-sm font-normal hover:!bg-[#63B7B7]/90"
+                      onClick={() => setShowEditModal(true)}
+                    >
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit Project
+                    </Button>
+                  )}
                 </>
               ) : null}
             </div>
@@ -152,6 +156,33 @@ export function ProjectSharedDetails({
             <p className="mb-5 text-sm leading-relaxed text-gray-700">
               {project.description}
             </p>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-gray-900">
+                  Project Scope
+                </h3>
+                <div className="rounded-md py-4 pl-1">
+                  <ListDisplay
+                    value={project.scope}
+                    emptyText="No scope details provided"
+                    className="text-gray-600"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h3 className="mb-3 text-sm font-medium text-gray-900">
+                  Deliverables
+                </h3>
+                <div className="rounded-md py-4 pl-1">
+                  <ListDisplay
+                    value={project.deliverables}
+                    emptyText="No deliverables specified"
+                    className="text-gray-600"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="grid shrink-0 grid-cols-2 gap-3 md:w-72 lg:w-80">
             {/* <div className="col-span-2 overflow-hidden rounded-xl border border-[#63B7B7]/20 shadow-sm">
@@ -201,7 +232,7 @@ export function ProjectSharedDetails({
                     </span>
                   </div>
                   {isCompany && (
-                    <div className="mt-1 text-xs text-gray-500">
+                    <div className="mt-1 flex gap-1 text-xs text-gray-500">
                       {formatCurrency(project.meta?.budget * 0.3, 'h-3 w-3')}{' '}
                       from total budget to activate the project
                     </div>
@@ -209,27 +240,53 @@ export function ProjectSharedDetails({
                 </div>
               </div>
             </div>
-
-            {/* <div className="overflow-hidden rounded-xl border border-[#63B7B7]/20 shadow-sm">
-              <div className="border-b border-[#63B7B7]/20 bg-[#E0F2F2] px-4 py-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-[#1D8489]" />
-                  <h3 className="text-sm font-medium text-[#1D8489]">
-                    Milestones
-                  </h3>
-                </div>
-              </div>
-              <div className="bg-white p-4">
-                <div className="flex flex-col">
-                  <div className="text-base font-semibold text-[#1D8489]">
-                    {completedMilestones}/{totalMilestones}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    Milestones completed
+            {!project.professional ? (
+              <div className="col-span-2 h-fit overflow-hidden rounded-xl border shadow-sm">
+                <div className={`border-b px-4 py-3`}>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-[#1D8489]" />
+                    <h3 className="text-sm font-medium text-[#1D8489]">
+                      Timeline
+                    </h3>
                   </div>
                 </div>
+                <div className="bg-white p-4">
+                  <div className="flex flex-col">
+                    <div className="text-base font-semibold text-[#1D8489]">
+                      <span className="flex items-center gap-1">
+                        {project.meta?.timeline}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div> */}
+            ) : (
+              <div className="col-span-2 overflow-hidden rounded-xl border border-[#63B7B7]/20 shadow-sm">
+                <div className="border-b border-[#63B7B7]/20 bg-[#E0F2F2] px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-[#1D8489]" />
+                    <h3 className="text-sm font-medium text-[#1D8489]">
+                      Milestones
+                    </h3>
+                  </div>
+                </div>
+                <div className="bg-white p-4">
+                  <div className="flex flex-col">
+                    <div className="text-base font-semibold text-[#1D8489]">
+                      {
+                        project.professional.proposals[0].milestones.filter(
+                          (milestone) => milestone.status === 'Completed',
+                        ).length
+                      }{' '}
+                      / {project.professional.proposals[0].milestones.length}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      Milestones completed
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

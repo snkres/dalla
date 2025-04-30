@@ -87,6 +87,16 @@ export type GetAllCompanyProjectsRes = {
           description: string
           price: number
           timeline: string
+          status: 'Completed' | 'In Progress' | 'Pending'
+          submission: {
+            id: string
+            description: string
+            media: Array<string>
+            status: 'approved' | 'rejected' | 'changes_requested' | 'pending'
+            comment: string
+            createdAt: string
+            updatedAt: string
+          } | null
         }>
       }>
     }>,
@@ -174,6 +184,21 @@ export type GetProjectRes = {
           meta: ProProfile['data']['meta']
         }
       }
+      milestones: Array<{
+        id: string
+        title: string
+        description: string
+        price: number
+        timeline: string
+        order: number
+        status: 'Completed' | 'In Progress' | 'Pending'
+        submission: {
+          id: string
+          description: string
+          media: Array<string>
+          comment: string
+        } | null
+      }>
     }>
     professional: {
       id: string
@@ -187,8 +212,46 @@ export type GetProjectRes = {
         headline: string
         meta: ProProfile['data']['meta']
       }
+      proposals: Array<{
+        id: string
+        projectId: string
+        professionalId: string
+        description: string
+        price: number
+        timeline: string
+        media: Array<string>
+        status: 'Rejected' | 'Accepted' | 'Pending'
+        createdAt: string
+        updatedAt: string
+        deletedAt: any
+        milestones: Array<{
+          order: number
+          title: string
+          description: string
+          price: number
+          timeline: string
+          status: 'Pending' | 'Completed' | 'In Progress'
+          submission: {
+            id: string
+            description: string
+            media: Array<string>
+            comment: string
+            createdAt: string
+            updatedAt: string
+            status: 'approved' | 'rejected' | 'changes_requested' | 'pending'
+          } | null
+        }>
+      }>
     }
     applied: boolean
+    milestones: Array<{
+      order: number
+      title: string
+      description: string
+      price: number
+      timeline: string
+      status: 'Pending' | 'Completed' | 'In Progress'
+    }>
   }
   error: any
   path: string
