@@ -1,6 +1,6 @@
 'use client'
 
-import type { GetProjectRes } from '@lib/api/company/projects'
+import { reviewMilestone, type GetProjectRes } from '@lib/api/company/projects'
 import { useState } from 'react'
 import ProposalDetailModal from '../proposal-detail-modal'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
@@ -9,6 +9,7 @@ import { CompanyProjectAssigned } from './assigned'
 import { CompanyProjectProposals } from './proposals'
 import { CompanyProjectBudgetOverview } from './budget-overview'
 import { CompanyProjectFiles } from './files'
+import { ReviewSubmission } from '@lib/types/project'
 
 // Mock data for milestone submissions
 const mockMilestoneSubmissions = {
@@ -194,44 +195,6 @@ export function CompanyProjectView({
     setSelectedProposal(null)
   }
 
-  const handleSubmitComment = (milestoneOrder: number) => {
-    if (!commentText.trim()) return
-
-    toast({
-      title: 'Comment submitted',
-      description: 'Your comment has been added to the milestone submission.',
-    })
-
-    // In a real app, this would be an API call
-    // For now, we'll just mock the behavior
-    setCommentText('')
-  }
-
-  const handleMilestoneAction = (
-    milestoneOrder: number,
-    action: 'approve' | 'reject' | 'request_changes',
-  ) => {
-    // In a real app, this would be an API call
-    // For now, we'll just show a toast
-
-    const actionMessages = {
-      approve: 'Milestone approved! The professional has been notified.',
-      reject: 'Milestone rejected. The professional has been notified.',
-      request_changes:
-        'Change request sent. The professional has been notified.',
-    }
-
-    toast({
-      title:
-        action === 'approve'
-          ? 'Milestone Approved'
-          : action === 'reject'
-            ? 'Milestone Rejected'
-            : 'Changes Requested',
-      description: actionMessages[action],
-    })
-  }
-
   return (
     <div className="container mx-auto py-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -242,10 +205,7 @@ export function CompanyProjectView({
               milestones={project.professional.proposals[0].milestones}
               activeMilestone={activeMilestone || 0}
               setActiveMilestone={setActiveMilestone}
-              handleMilestoneAction={handleMilestoneAction}
-              handleSubmitComment={handleSubmitComment}
-              commentText={commentText}
-              setCommentText={setCommentText}
+              projectId={project.id}
             />
           )}
 

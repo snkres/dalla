@@ -16,7 +16,7 @@ export interface Milestone {
     comment: string
     createdAt: string
     updatedAt: string
-    status: 'approved' | 'rejected' | 'changes_requested' | 'pending'
+    status: 'Approved' | 'Rejected' | 'ChangesRequested' | 'Pending'
   } | null
 }
 
@@ -69,4 +69,9 @@ export interface BudgetRange {
 export interface FilterOption {
   value: string
   label: string
+}
+
+export interface ReviewSubmission {
+  status: 'Approved' | 'ChangesRequested' | 'Rejected'
+  comments?: string
 }

@@ -1,6 +1,6 @@
 import { ProProfile } from '@lib/atoms/pro/meta'
 import { axiosInstance } from '../instance'
-import { Milestone } from '@lib/types/project'
+import { Milestone, ReviewSubmission } from '@lib/types/project'
 
 export type ProjectStatus = 'Open' | 'Closed' | 'InProgress' | 'Completed'
 
@@ -317,5 +317,41 @@ export const updateProject = async (
     .put<CreateProjectRes>(`/company/projects/${projectId}`, data)
     .then((res) => res.data.data)
 
+  return res
+}
+
+export interface ReviewMilestoneRes {
+  data: {
+    comments: string
+    createdAt: string
+    description: string
+    id: string
+    media: string[]
+    milestoneId: string
+    status: string
+    updatedAt: string
+    [property: string]: any
+  }
+  error: null
+  message: string
+  path: string
+  statusCode: number
+  success: boolean
+  timestamp: string
+  [property: string]: any
+}
+
+export const reviewMilestone = async (
+  projectId: string,
+  milestoneId: string,
+  submissionId: string,
+  review: ReviewSubmission,
+) => {
+  const res = await axiosInstance
+    .patch<ReviewMilestoneRes>(
+      `/company/projects/${projectId}/milestones/${milestoneId}/submissions/${submissionId}/review`,
+      review,
+    )
+    .then((res) => res.data.data)
   return res
 }
