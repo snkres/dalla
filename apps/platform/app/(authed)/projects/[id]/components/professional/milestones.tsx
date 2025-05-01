@@ -8,6 +8,7 @@ import {
   Clock,
   Send,
   PartyPopper,
+  MessageCircle,
 } from 'lucide-react'
 import { Button, Progress } from '@dalla/design-system'
 import { formatCurrency } from '@lib/utils/format-currency'
@@ -93,15 +94,6 @@ export function ProfessionalMilestones({
             <span className="text-sm text-gray-600">
               {completedMilestones} of {totalMilestones} completed
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/10"
-              onClick={() => router.push(`/messages/project/${project.id}`)}
-            >
-              View Workspace
-              <ChevronRight className="ml-0.5 h-3.5 w-3.5" />
-            </Button>
           </div>
         </div>
 
