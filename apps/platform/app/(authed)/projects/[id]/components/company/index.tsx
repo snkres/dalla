@@ -1,32 +1,8 @@
 'use client'
 
-import {
-  Button,
-  Progress,
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-  Riyal,
-  Badge,
-} from '@dalla/design-system'
-import {
-  Users,
-  FileText,
-  Star,
-  MessageSquare,
-  Eye,
-  Download,
-  CheckSquare,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react'
 import type { GetProjectRes } from '@lib/api/company/projects'
-import { formatCurrency } from '@lib/utils/format-currency'
 import { useState } from 'react'
 import ProposalDetailModal from '../proposal-detail-modal'
-import type { ProposalStatus } from '@lib/api/pro/proposals'
-import Image from 'next/image'
-import { motion } from 'motion/react'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { CompanyProjectMilestones } from './milestones'
 import { CompanyProjectAssigned } from './assigned'
@@ -193,15 +169,16 @@ export function CompanyProjectView({
   ]
 
   // Add milestones to project if not present
-  if (!project.milestones) {
-    project.milestones = mockMilestones as any
+  if (!project.professional?.proposals[0].milestones) {
+    project.professional.proposals[0].milestones = mockMilestones as any
   }
 
   // Calculate milestone progress
-  const completedMilestones = project.milestones.filter(
-    (m) => m.status === 'Completed',
-  ).length
-  const totalMilestones = project.milestones.length
+  const completedMilestones =
+    project.professional.proposals[0].milestones.filter(
+      (m) => m.status === 'Completed',
+    ).length
+  const totalMilestones = project.professional.proposals[0].milestones.length
   const milestoneProgress =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0
 

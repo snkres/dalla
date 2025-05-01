@@ -442,7 +442,7 @@ const MultiImageUpload = ({
         aria-label={locale === 'ar' ? 'تحميل الملفات' : 'Upload files'}
       />
 
-      <div className="flex items-start gap-2">
+      {/* <div className="flex items-start gap-2">
         <AlertCircle className="mt-0.5 h-4 w-4 text-gray-400" />
         <p className="text-xs text-gray-500">
           {(
@@ -462,7 +462,7 @@ const MultiImageUpload = ({
             .replace('{maxFiles}', maxImages.toString())
             .replace('{maxSize}', maxFileSize.toString())}
         </p>
-      </div>
+      </div> */}
 
       <Dialog
         open={!!previewFile}

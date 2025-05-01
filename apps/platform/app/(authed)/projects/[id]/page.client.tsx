@@ -6,9 +6,8 @@ import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
 import { CompanyProjectView } from './components/company'
-import { ProfessionalProjectView } from './components/professional-view'
+import { ProfessionalProjectView } from './components/professional'
 import { getProject } from '@lib/api/company/projects'
-import { Tabs, TabsList, TabsTrigger, Button } from '@dalla/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 import { useTransitionRouter } from 'next-view-transitions'
@@ -126,44 +125,7 @@ export function ProjectPageClient({ id }: { id: string }) {
             </Tabs>
           </div> */}
         </div>
-        {isCompany && (
-          <CompanyProjectView
-            project={{
-              ...data,
-              milestones: [
-                {
-                  order: 1,
-                  title: 'Initial Design Phase',
-                  description:
-                    'Create wireframes and design mockups for the application',
-                  price: data.meta?.budget ? data.meta.budget * 0.3 : 3000,
-                  timeline: '2 weeks',
-                  status: 'Completed',
-                  // submission: mockMilestoneSubmissions['milestone-1'],
-                },
-                {
-                  order: 2,
-                  title: 'Core Development',
-                  description:
-                    'Implement the core functionality of the application',
-                  price: data.meta?.budget ? data.meta.budget * 0.5 : 5000,
-                  timeline: '3 weeks',
-                  status: 'Completed',
-                  // submission: mockMilestoneSubmissions['milestone-2'],
-                },
-                {
-                  order: 3,
-                  title: 'Testing & Deployment',
-                  description: 'Final testing, bug fixes, and deployment',
-                  price: data.meta?.budget ? data.meta.budget * 0.2 : 2000,
-                  timeline: '1 week',
-                  status: 'In Progress',
-                  // submission: mockMilestoneSubmissions['milestone-3'],
-                },
-              ],
-            }}
-          />
-        )}
+        {isCompany && <CompanyProjectView project={data} />}
         {isProfessional && (
           <ProfessionalProjectView
             project={data}

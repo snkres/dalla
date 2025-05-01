@@ -1,5 +1,6 @@
 import { ProProfile } from '@lib/atoms/pro/meta'
 import { axiosInstance } from '../instance'
+import { Milestone } from '@lib/types/project'
 
 export type ProjectStatus = 'Open' | 'Closed' | 'InProgress' | 'Completed'
 
@@ -81,23 +82,7 @@ export type GetAllCompanyProjectsRes = {
             meta: ProProfile['data']['meta']
           }
         }
-        milestones: Array<{
-          order: number
-          title: string
-          description: string
-          price: number
-          timeline: string
-          status: 'Completed' | 'In Progress' | 'Pending'
-          submission: {
-            id: string
-            description: string
-            media: Array<string>
-            status: 'approved' | 'rejected' | 'changes_requested' | 'pending'
-            comment: string
-            createdAt: string
-            updatedAt: string
-          } | null
-        }>
+        milestones: Milestone[]
       }>
     }>,
     {
@@ -224,34 +209,10 @@ export type GetProjectRes = {
         createdAt: string
         updatedAt: string
         deletedAt: any
-        milestones: Array<{
-          order: number
-          title: string
-          description: string
-          price: number
-          timeline: string
-          status: 'Pending' | 'Completed' | 'In Progress'
-          submission: {
-            id: string
-            description: string
-            media: Array<string>
-            comment: string
-            createdAt: string
-            updatedAt: string
-            status: 'approved' | 'rejected' | 'changes_requested' | 'pending'
-          } | null
-        }>
+        milestones: Milestone[]
       }>
     }
     applied: boolean
-    milestones: Array<{
-      order: number
-      title: string
-      description: string
-      price: number
-      timeline: string
-      status: 'Pending' | 'Completed' | 'In Progress'
-    }>
   }
   error: any
   path: string

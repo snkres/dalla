@@ -150,7 +150,7 @@ export function CompanyProjectMilestones({
                             className={
                               milestone.status === 'Completed'
                                 ? '!border-green-200 !bg-green-50 !text-green-700'
-                                : milestone.status === 'In Progress'
+                                : milestone.status === 'Pending'
                                   ? '!border-blue-200 !bg-blue-50 !text-blue-700'
                                   : '!border-amber-200 !bg-amber-50 !text-amber-700'
                             }
