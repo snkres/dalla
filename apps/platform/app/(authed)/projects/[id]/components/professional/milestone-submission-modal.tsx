@@ -7,6 +7,7 @@ import { Milestone } from '@lib/types/project'
 import { Send } from 'lucide-react'
 import MultiImageUpload from '@components/shared/multiImage-upload'
 import { submitMilestone } from '@lib/api/pro/projects'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface MilestoneSubmissionModalProps {
   isOpen: boolean
@@ -21,6 +22,7 @@ export function MilestoneSubmissionModal({
   projectId,
   milestone,
 }: MilestoneSubmissionModalProps) {
+  const queryClient = useQueryClient()
   const { toast } = useToast()
   const [description, setDescription] = useState('')
   const [media, setMedia] = useState<string[]>([])
@@ -48,6 +50,10 @@ export function MilestoneSubmissionModal({
         projectId,
         milestoneId: milestone.id || '',
         payload: submissionData,
+      })
+
+      await queryClient.refetchQueries({
+        queryKey: ['project', projectId],
       })
 
       toast({

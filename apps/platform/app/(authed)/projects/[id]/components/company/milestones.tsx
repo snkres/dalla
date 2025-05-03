@@ -55,8 +55,8 @@ export function CompanyProjectMilestones({
     try {
       await reviewMilestone(projectId, milestoneId, submissionId, review)
 
-      queryClient.invalidateQueries({
-        queryKey: ['projects', projectId],
+      await queryClient.refetchQueries({
+        queryKey: ['project', projectId],
       })
 
       const actionMessages: Record<ReviewSubmission['status'], string> = {
@@ -95,6 +95,17 @@ export function CompanyProjectMilestones({
       })
     }
   }
+
+  const currentMilestone = milestones.find((m) => m.order === activeMilestone)
+
+  const lastSubmission = currentMilestone?.submissions?.find(
+    (s) =>
+      s.updatedAt ===
+      currentMilestone?.submissions?.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )[0].updatedAt,
+  )
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -199,7 +210,7 @@ export function CompanyProjectMilestones({
               .map((milestone) => {
                 const isPendingReview =
                   milestone.status === 'Pending' &&
-                  milestone.submission?.status === 'Pending'
+                  lastSubmission?.status === 'Pending'
 
                 const canSubmitReview = (
                   status: 'Approved' | 'ChangesRequested' | 'Rejected',
@@ -212,7 +223,7 @@ export function CompanyProjectMilestones({
                 const submitReview = (
                   status: 'Approved' | 'ChangesRequested' | 'Rejected',
                 ) => {
-                  if (!milestone.id || !milestone.submission?.id) {
+                  if (!milestone.id || !lastSubmission?.id) {
                     console.error('Missing IDs for review action')
                     toast({
                       title: 'Error',
@@ -224,7 +235,7 @@ export function CompanyProjectMilestones({
                   }
                   if (!canSubmitReview(status)) return
 
-                  handleMilestoneAction(milestone.id, milestone.submission.id, {
+                  handleMilestoneAction(milestone.id, lastSubmission.id, {
                     status,
                     comments: reviewComment.trim(),
                   })
@@ -255,7 +266,7 @@ export function CompanyProjectMilestones({
                                   : 'outline'
                             }
                           >
-                            {milestone.status} Here
+                            {milestone.status}
                           </Badge>
                           <div className="whitespace-nowrap rounded-full bg-[#63B7B7]/10 px-2.5 py-0.5">
                             <span className="text-xs font-medium text-[#63B7B7]">
@@ -305,7 +316,7 @@ export function CompanyProjectMilestones({
                         </div>
                       </div>
 
-                      {milestone.submission ? (
+                      {lastSubmission ? (
                         <div className="mt-6 space-y-4">
                           <div className="flex items-center justify-between">
                             <h4 className="text-sm font-semibold text-gray-700">
@@ -313,24 +324,24 @@ export function CompanyProjectMilestones({
                             </h4>
                             <Badge
                               variant={
-                                milestone.submission.status === 'Approved'
+                                lastSubmission.status === 'Approved'
                                   ? 'default'
-                                  : milestone.submission.status === 'Rejected'
+                                  : lastSubmission.status === 'Rejected'
                                     ? 'destructive'
-                                    : milestone.submission.status ===
+                                    : lastSubmission.status ===
                                         'ChangesRequested'
                                       ? 'secondary'
                                       : 'outline'
                               }
                             >
-                              {milestone.submission.status}
+                              {lastSubmission.status}
                             </Badge>
                           </div>
 
                           <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
                             <div className="mb-4">
                               <p className="prose prose-sm max-w-none text-sm text-gray-600">
-                                {milestone.submission.description || (
+                                {lastSubmission.description || (
                                   <span className="italic text-gray-400">
                                     No submission notes provided.
                                   </span>
@@ -338,14 +349,14 @@ export function CompanyProjectMilestones({
                               </p>
                             </div>
 
-                            {milestone.submission.media &&
-                              milestone.submission.media.length > 0 && (
+                            {lastSubmission.media &&
+                              lastSubmission.media.length > 0 && (
                                 <div className="mb-4">
                                   <h5 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     Attachments
                                   </h5>
                                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                    {milestone.submission.media.map(
+                                    {lastSubmission.media.map(
                                       (mediaUrl, idx) => (
                                         <div
                                           key={idx}
@@ -390,11 +401,11 @@ export function CompanyProjectMilestones({
                               Submitted on:{' '}
                               <time
                                 dateTime={new Date(
-                                  milestone.submission.createdAt,
+                                  lastSubmission.createdAt,
                                 ).toISOString()}
                               >
                                 {new Date(
-                                  milestone.submission.createdAt,
+                                  lastSubmission.createdAt,
                                 ).toLocaleString(undefined, {
                                   dateStyle: 'medium',
                                   timeStyle: 'short',
@@ -460,20 +471,19 @@ export function CompanyProjectMilestones({
                               </div>
                             )}
 
-                            {milestone.submission.comment &&
-                              !isPendingReview && (
-                                <div className="mt-6 border-t border-gray-100 pt-4">
-                                  <h5 className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-600">
-                                    <MessageSquare className="h-4 w-4 text-[#63B7B7]" />
-                                    Feedback Provided
-                                  </h5>
-                                  <div className="rounded-lg bg-gray-50/80 p-3">
-                                    <p className="prose prose-sm max-w-none text-sm text-gray-700">
-                                      {milestone.submission.comment}
-                                    </p>
-                                  </div>
+                            {lastSubmission.comment && !isPendingReview && (
+                              <div className="mt-6 border-t border-gray-100 pt-4">
+                                <h5 className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-600">
+                                  <MessageSquare className="h-4 w-4 text-[#63B7B7]" />
+                                  Feedback Provided
+                                </h5>
+                                <div className="rounded-lg bg-gray-50/80 p-3">
+                                  <p className="prose prose-sm max-w-none text-sm text-gray-700">
+                                    {lastSubmission.comment}
+                                  </p>
                                 </div>
-                              )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       ) : (
