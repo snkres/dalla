@@ -44,15 +44,18 @@ export function ProfessionalMilestones({
     return null
   }
 
-  const lastSubmission = currentMilestone?.submissions?.find(
-    (s) =>
-      s.updatedAt ===
-      currentMilestone?.submissions?.sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-      )[0].updatedAt,
-  )
+  const getLatestSubmission = (submissions: { updatedAt: string }[]) => {
+    if (!submissions || submissions.length === 0) return null;
+    return submissions.reduce((latest, current) =>
+      new Date(current.updatedAt).getTime() > new Date(latest.updatedAt).getTime()
+        ? current
+        : latest,
+    );
+  };
 
+  const lastSubmission = currentMilestone?.submissions
+    ? getLatestSubmission(currentMilestone.submissions)
+    : null;
   return (
     <>
       <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
