@@ -202,6 +202,7 @@ export function CompanyProjectView({
               activeMilestone={activeMilestone || 0}
               setActiveMilestone={setActiveMilestone}
               projectId={project.id}
+              isProjectCompleted={project.status === 'Completed'}
             />
           )}
 

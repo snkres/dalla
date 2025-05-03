@@ -10,7 +10,7 @@ import {
   PartyPopper,
   MessageCircle,
 } from 'lucide-react'
-import { Button, Progress } from '@dalla/design-system'
+import { Button, Progress, Badge } from '@dalla/design-system'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { useTransitionRouter } from 'next-view-transitions'
@@ -66,9 +66,14 @@ export function ProfessionalMilestones({
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              {completedMilestones} of {totalMilestones} completed
-            </span>
+            <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 !text-[#63B7B7]">
+              {
+                milestones.filter(
+                  (milestone) => milestone.status === 'Completed',
+                ).length
+              }{' '}
+              of {milestones.length} Completed
+            </Badge>
           </div>
         </div>
 

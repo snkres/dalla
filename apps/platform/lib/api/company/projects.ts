@@ -341,3 +341,10 @@ export const reviewMilestone = async (
     .then((res) => res.data.data)
   return res
 }
+
+export const endProject = async (projectId: string) => {
+  const res = await axiosInstance.patch(`/company/projects/${projectId}`, {
+    status: 'Completed',
+  })
+  return res
+}
