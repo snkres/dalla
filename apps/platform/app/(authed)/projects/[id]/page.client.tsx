@@ -126,13 +126,7 @@ export function ProjectPageClient({ id }: { id: string }) {
           </div> */}
         </div>
         {isCompany && <CompanyProjectView project={data} />}
-        {isProfessional && (
-          <ProfessionalProjectView
-            project={data}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        )}
+        {isProfessional && <ProfessionalProjectView project={data} />}
       </div>
 
       {showEditModal && (

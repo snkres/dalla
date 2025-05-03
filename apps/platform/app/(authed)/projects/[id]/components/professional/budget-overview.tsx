@@ -13,7 +13,7 @@ export function ProfessionalBudgetOverview({
   isAssigned: boolean
   hasApplied: boolean
   professionalProposal:
-    | GetProjectRes['data']['professional']['proposals'][0]
+    | GetProjectRes['data']['professional']['proposals'][number]
     | null
   milestoneProgress: number
 }) {

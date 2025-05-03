@@ -13,25 +13,54 @@ import { ProfessionalActionArea } from './action-area'
 import { ProfessionalBudgetOverview } from './budget-overview'
 import { ProfessionalCompanyInfo } from './company-info'
 import { ProfessionalProjectFiles } from './files'
+import type { Milestone } from '@lib/types/project'
+import { ProfessionalAllInOneActions } from './all-in-one-actions'
+
+interface AssignedProposal {
+  id: string
+  projectId: string
+  professionalId: string
+  type: 'MilestoneBased' | 'AllInOne'
+  description: string
+  price: number
+  timeline: string
+  media: string[]
+  status: 'Pending' | 'Rejected' | 'Accepted'
+  createdAt: string
+  updatedAt: string
+  deletedAt: any
+  milestones: Milestone[]
+  submissions?: any[]
+}
 
 export function ProfessionalProjectView({
   project,
 }: {
   project: GetProjectRes['data']
 }) {
-  const router = useTransitionRouter()
-  const { toast } = useToast()
   const [meta] = useAtom(proMetaAtom)
   const [isApplying, setIsApplying] = useState(false)
 
   const hasApplied = project.applied
   const isAssigned = project.professional?.id === meta?.data.id
-  const professionalProposal = project.proposals?.find(
-    (proposal) => proposal.professionalId === meta?.data.id,
-  )
-  const milestones = isAssigned
-    ? project.professional.proposals[0].milestones
-    : null
+
+  const assignedProposal = (
+    isAssigned ? project.professional.proposals[0] : null
+  ) as AssignedProposal | null
+
+  const isMilestoneProject = assignedProposal?.type === 'MilestoneBased'
+
+  const milestones = isMilestoneProject ? assignedProposal?.milestones : null
+  const submissions = isMilestoneProject
+    ? assignedProposal?.submissions
+    : project.submissions
+  const latestSubmission = !isMilestoneProject
+    ? submissions?.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )[0]
+    : undefined
+
   const totalMilestones = milestones?.length || 0
   const completedMilestones =
     isAssigned && milestones
@@ -50,29 +79,35 @@ export function ProfessionalProjectView({
     <div className="container mx-auto py-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-8">
-          {isAssigned && milestones && (
-            <ProfessionalMilestones
+          {isAssigned && assignedProposal ? (
+            isMilestoneProject ? (
+              <ProfessionalMilestones
+                isAssigned={isAssigned}
+                milestones={milestones || []}
+                project={project}
+              />
+            ) : (
+              <ProfessionalAllInOneActions
+                projectId={project.id}
+                submission={latestSubmission}
+                projectStatus={project.status}
+              />
+            )
+          ) : null}
+
+          {!isAssigned && (
+            <ProfessionalActionArea
               isAssigned={isAssigned}
-              milestones={milestones || []}
-              project={project}
+              hasApplied={hasApplied}
             />
           )}
 
-          <ProfessionalActionArea
-            isAssigned={isAssigned}
-            hasApplied={hasApplied}
-          />
-
-          {(isAssigned || hasApplied) && professionalProposal && (
+          {isAssigned && assignedProposal && (
             <ProfessionalBudgetOverview
               project={project}
               isAssigned={isAssigned}
               hasApplied={hasApplied}
-              professionalProposal={
-                professionalProposal as
-                  | GetProjectRes['data']['professional']['proposals'][0]
-                  | null
-              }
+              professionalProposal={assignedProposal}
               milestoneProgress={milestoneProgress}
             />
           )}

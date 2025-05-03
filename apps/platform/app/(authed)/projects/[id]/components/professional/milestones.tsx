@@ -10,7 +10,7 @@ import {
   PartyPopper,
   MessageCircle,
 } from 'lucide-react'
-import { Button, Progress } from '@dalla/design-system'
+import { Button, Progress, Badge } from '@dalla/design-system'
 import { formatCurrency } from '@lib/utils/format-currency'
 import { GetProjectRes } from '@lib/api/company/projects'
 import { useTransitionRouter } from 'next-view-transitions'
@@ -28,12 +28,6 @@ export function ProfessionalMilestones({
   milestones: Milestone[]
   project: GetProjectRes['data']
 }) {
-  const router = useTransitionRouter()
-  const [commentText, setCommentText] = useState('')
-  const [submissionText, setSubmissionText] = useState('')
-  const [submissionFiles, setSubmissionFiles] = useState<string[]>([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
   const [isSubmissionModalOpen, setIsSubmissionModalOpen] = useState(false)
 
   const currentMilestone = milestones.find((m) => m.status !== 'Completed')
@@ -46,38 +40,22 @@ export function ProfessionalMilestones({
   const milestoneProgress =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0
 
-  const handleInternalSubmitComment = (milestoneId: string) => {
-    if (!commentText.trim()) return
-    console.log('Submitting comment for milestone:', milestoneId, commentText)
-    setCommentText('')
-  }
-
-  const handleInternalSubmitMilestone = (milestoneOrder: number) => {
-    console.log(
-      'Submitting milestone:',
-      milestoneOrder,
-      submissionText,
-      submissionFiles,
-    )
-  }
-
-  const handleAddFile = () => {
-    setSubmissionFiles([
-      ...submissionFiles,
-      '/placeholder.svg?height=300&width=500',
-    ])
-  }
-
-  const handleRemoveFile = (index: number) => {
-    const newFiles = [...submissionFiles]
-    newFiles.splice(index, 1)
-    setSubmissionFiles(newFiles)
-  }
-
   if (!isAssigned) {
     return null
   }
 
+  const getLatestSubmission = (submissions: { updatedAt: string }[]) => {
+    if (!submissions || submissions.length === 0) return null;
+    return submissions.reduce((latest, current) =>
+      new Date(current.updatedAt).getTime() > new Date(latest.updatedAt).getTime()
+        ? current
+        : latest,
+    );
+  };
+
+  const lastSubmission = currentMilestone?.submissions
+    ? getLatestSubmission(currentMilestone.submissions)
+    : null;
   return (
     <>
       <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
@@ -91,9 +69,14 @@ export function ProfessionalMilestones({
             </h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">
-              {completedMilestones} of {totalMilestones} completed
-            </span>
+            <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 !text-[#63B7B7]">
+              {
+                milestones.filter(
+                  (milestone) => milestone.status === 'Completed',
+                ).length
+              }{' '}
+              of {milestones.length} Completed
+            </Badge>
           </div>
         </div>
 
@@ -110,7 +93,7 @@ export function ProfessionalMilestones({
             <Progress
               value={milestoneProgress}
               className="h-2.5 bg-[#63B7B7]/10"
-              indicatorClassName="bg-[#63B7B7]"
+              indicatorClassName="!bg-[#63B7B7]"
             />
           </div>
 
@@ -135,10 +118,10 @@ export function ProfessionalMilestones({
                         currentMilestone.status === 'Completed'
                           ? 'bg-green-100 text-green-700'
                           : currentMilestone.status === 'Pending' &&
-                              !currentMilestone.submission
+                              !currentMilestone.submissions
                             ? 'bg-amber-100 text-amber-700'
                             : currentMilestone.status === 'Pending' &&
-                                currentMilestone.submission
+                                currentMilestone.submissions
                               ? 'bg-blue-100 text-blue-700'
                               : currentMilestone.status === 'Changes'
                                 ? 'bg-yellow-100 text-yellow-700'
@@ -149,7 +132,7 @@ export function ProfessionalMilestones({
                     >
                       <span className="text-xs font-medium">
                         {currentMilestone.status === 'Pending' &&
-                        currentMilestone.submission
+                        lastSubmission?.status === 'Pending'
                           ? 'In Review'
                           : currentMilestone.status}
                       </span>
@@ -187,7 +170,7 @@ export function ProfessionalMilestones({
                     </div>
                   </div>
 
-                  {currentMilestone.submission && (
+                  {lastSubmission && (
                     <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50 p-3">
                       <div className="mb-2 flex items-center gap-2">
                         <CheckSquare className="h-4 w-4 text-[#63B7B7]" />
@@ -196,33 +179,31 @@ export function ProfessionalMilestones({
                         </span>
                       </div>
                       <p className="text-sm text-gray-600">
-                        {currentMilestone.submission.description}
+                        {lastSubmission.description}
                       </p>
 
                       <div className="mt-3 grid grid-cols-2 gap-3">
-                        {currentMilestone.submission.media?.map(
-                          (media, index) => (
-                            <div key={index} className="relative">
-                              <Image
-                                src={media || '/placeholder.svg'}
-                                alt={`Submission ${index + 1}`}
-                                width={200}
-                                height={150}
-                                className="aspect-video rounded-md object-cover"
-                              />
-                            </div>
-                          ),
-                        )}
+                        {lastSubmission.media?.map((media, index) => (
+                          <div key={index} className="relative">
+                            <Image
+                              src={media || '/placeholder.svg'}
+                              alt={`Submission ${index + 1}`}
+                              width={200}
+                              height={150}
+                              className="aspect-video rounded-md object-cover"
+                            />
+                          </div>
+                        ))}
                       </div>
 
-                      {currentMilestone.submission.comment && (
+                      {lastSubmission.comment && (
                         <div className="mt-4 space-y-3">
                           <div
-                            key={currentMilestone.submission.id}
+                            key={lastSubmission.id}
                             className="rounded-md border border-gray-200 bg-gray-50 p-3"
                           >
                             <p className="text-sm text-gray-700">
-                              {currentMilestone.submission.comment}
+                              {lastSubmission.comment}
                             </p>
                           </div>
                         </div>
@@ -230,18 +211,17 @@ export function ProfessionalMilestones({
                     </div>
                   )}
 
-                  {currentMilestone.status === 'Pending' &&
-                    !currentMilestone.submission && (
-                      <div className="mt-4 flex justify-end">
-                        <Button
-                          size="sm"
-                          className="h-8 !bg-[#63B7B7] text-xs text-white hover:!bg-[#63B7B7]/90"
-                          onClick={() => setIsSubmissionModalOpen(true)}
-                        >
-                          Submit Work
-                        </Button>
-                      </div>
-                    )}
+                  {currentMilestone.status === 'Pending' && !lastSubmission && (
+                    <div className="mt-4 flex justify-end">
+                      <Button
+                        size="sm"
+                        className="h-8 !bg-[#63B7B7] text-xs text-white hover:!bg-[#63B7B7]/90"
+                        onClick={() => setIsSubmissionModalOpen(true)}
+                      >
+                        Submit Work
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

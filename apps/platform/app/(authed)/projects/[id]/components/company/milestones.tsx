@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import {
   Award,
@@ -5,12 +7,14 @@ import {
   Eye,
   XCircle,
   MessageSquare,
-  Send,
   CheckCircle,
   Clock,
   Calendar,
-  ArrowRight,
   Pin,
+  ChevronRight,
+  AlertCircle,
+  Flag,
+  AlertTriangle,
 } from 'lucide-react'
 import Image from 'next/image'
 import {
@@ -21,12 +25,21 @@ import {
   Tooltip,
   TooltipContent,
   Badge,
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from '@dalla/design-system'
 import { formatCurrency } from '@lib/utils/format-currency'
-import { Milestone, ReviewSubmission } from '@lib/types/project'
+import type { Milestone, ReviewSubmission } from '@lib/types/project'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
-import { reviewMilestone } from '@lib/api/company/projects'
+import { endProject, reviewMilestone } from '@lib/api/company/projects'
 import { useQueryClient } from '@tanstack/react-query'
+import { CompanyDetailsMilestone } from './active-milestone'
+import { motion, AnimatePresence } from 'motion/react'
 
 interface CompanyProjectMilestonesProps {
   projectId: string
@@ -34,6 +47,7 @@ interface CompanyProjectMilestonesProps {
   activeMilestone: number
   setActiveMilestone: (milestone: number) => void
   onReviewSuccess?: () => void
+  isProjectCompleted: boolean
 }
 
 export function CompanyProjectMilestones({
@@ -42,8 +56,13 @@ export function CompanyProjectMilestones({
   activeMilestone,
   setActiveMilestone,
   onReviewSuccess,
+  isProjectCompleted,
 }: CompanyProjectMilestonesProps) {
   const [reviewComment, setReviewComment] = useState('')
+
+  const [detailsMilestone, setDetailsMilestone] = useState<number | null>(null)
+  const [isEndProjectDialogOpen, setIsEndProjectDialogOpen] = useState(false)
+  const [isEndingProject, setIsEndingProject] = useState(false)
   const { toast } = useToast()
   const queryClient = useQueryClient()
 
@@ -55,8 +74,8 @@ export function CompanyProjectMilestones({
     try {
       await reviewMilestone(projectId, milestoneId, submissionId, review)
 
-      queryClient.invalidateQueries({
-        queryKey: ['projects', projectId],
+      await queryClient.refetchQueries({
+        queryKey: ['project', projectId],
       })
 
       const actionMessages: Record<ReviewSubmission['status'], string> = {
@@ -96,400 +115,372 @@ export function CompanyProjectMilestones({
     }
   }
 
+  const handleEndProject = async () => {
+    try {
+      setIsEndingProject(true)
+      await endProject(projectId).then(() => {
+        setIsEndProjectDialogOpen(false)
+        toast({
+          title: 'Project ended successfully',
+          description: 'The project has been marked as completed.',
+        })
+        queryClient.refetchQueries({
+          queryKey: ['project', projectId],
+        })
+      })
+    } catch (err: any) {
+      toast({
+        title: 'Error ending project',
+        description:
+          err instanceof Error ? err.message : 'An unknown error occurred.',
+        variant: 'destructive',
+      })
+    } finally {
+      setIsEndingProject(false)
+    }
+  }
+
+  const currentMilestone = milestones.find((m) => m.order === activeMilestone)
+
+  const lastSubmission = currentMilestone?.submissions?.find(
+    (s) =>
+      s.updatedAt ===
+      currentMilestone?.submissions?.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )[0]?.updatedAt,
+  )
+
+  // Calculate total project value
+  const totalProjectValue = milestones.reduce((sum, m) => sum + m.price, 0)
+
+  // Calculate completed value
+  const completedValue = milestones
+    .filter((m) => m.status === 'Completed')
+    .reduce((sum, m) => sum + m.price, 0)
+
+  // Calculate completion percentage
+  const completionPercentage =
+    totalProjectValue > 0
+      ? Math.round((completedValue / totalProjectValue) * 100)
+      : 0
+
+  // Check if all milestones are completed
+  const allMilestonesCompleted = milestones.every(
+    (m) => m.status === 'Completed',
+  )
+
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 p-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
-            <Award className="h-4 w-4 text-[#1D8489]" />
+    <>
+      <motion.div
+        className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="flex items-center justify-between border-b border-gray-200 p-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#E0F2F2] shadow-sm">
+              <Award className="h-4 w-4 text-[#1D8489]" />
+            </div>
+            <h2 className="font-medium text-gray-900">Project Milestones</h2>
           </div>
-          <h2 className="font-medium text-gray-900">Milestones</h2>
-        </div>
-        <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 !text-[#63B7B7]">
-          {
-            milestones.filter((milestone) => milestone.status === 'Completed')
-              .length
-          }{' '}
-          of {milestones.length} Completed
-        </Badge>
-      </div>
-
-      <div className="p-5">
-        <div className="mb-1">
-          <div className="flex h-8 w-full overflow-hidden rounded-full">
-            <TooltipProvider>
-              {milestones.map((milestone, index) => {
-                const totalAmount = milestones.reduce(
-                  (sum, m) => sum + m.price,
-                  0,
-                )
-                const percentage = (milestone.price / totalAmount) * 100
-
-                return (
-                  <Tooltip key={milestone.order}>
-                    <TooltipTrigger asChild>
-                      <div
-                        className={`group relative flex cursor-pointer items-center justify-center transition-all duration-300 hover:brightness-90 ${
-                          activeMilestone === milestone.order
-                            ? 'z-10 ring-2 ring-[#63B7B7] ring-offset-1 ring-offset-white'
-                            : ''
-                        }`}
-                        style={{
-                          width: `${percentage}%`,
-                          backgroundColor: `hsl(180, 35%, ${60 - index * 5}%)`,
-                          ...(milestone.status === 'Completed' && {
-                            filter: 'saturate(1.2) brightness(1.05)',
-                          }),
-                          ...(milestone.status === 'Pending' && {
-                            opacity: 0.9,
-                          }),
-                          ...(milestone.status !== 'Completed' &&
-                            milestone.status !== 'Pending' && {
-                              filter: 'grayscale(50%) opacity(0.7)',
-                            }),
-                        }}
-                        onClick={() => setActiveMilestone(milestone.order)}
-                      >
-                        <span className="truncate px-1 text-xs font-medium text-white">
-                          {milestone.status === 'Completed' && (
-                            <CheckCircle className="absolute -right-1 -top-1 z-20 h-3.5 w-3.5 rounded-full bg-white text-green-600 shadow-md" />
-                          )}
-                          {index + 1}
-                        </span>
-                      </div>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="bottom"
-                      className="z-50 border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 shadow-lg"
-                    >
-                      <p className="font-semibold text-gray-800">
-                        {milestone.title}
-                      </p>
-                      <p className="text-gray-600">
-                        {formatCurrency(milestone.price)} (
-                        {Math.round(percentage)}%) -{' '}
-                        <span
-                          className={`font-medium ${
-                            milestone.status === 'Completed'
-                              ? 'text-green-600'
-                              : milestone.status === 'Pending'
-                                ? 'text-blue-600'
-                                : 'text-gray-500'
-                          }`}
-                        >
-                          {milestone.status}
-                        </span>
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                )
-              })}
-            </TooltipProvider>
-          </div>
-          <div className="mt-2 flex justify-between text-xs text-gray-500">
-            <span>Project Start</span>
-            <span>Project Completion</span>
+          <div className="flex items-center gap-3">
+            <Badge className="!border-[#63B7B7]/20 !bg-[#63B7B7]/10 !text-[#63B7B7]">
+              {
+                milestones.filter(
+                  (milestone) => milestone.status === 'Completed',
+                ).length
+              }{' '}
+              of {milestones.length} Completed
+            </Badge>
           </div>
         </div>
 
-        {activeMilestone && (
-          <div className="mt-5">
-            {milestones
-              .filter((milestone) => milestone.order === activeMilestone)
-              .map((milestone) => {
-                const isPendingReview =
-                  milestone.status === 'Pending' &&
-                  milestone.submission?.status === 'Pending'
+        <div className="p-5">
+          {/* Project Progress Bar */}
+          <div className="mb-6">
+            <div className="mb-2 flex justify-between text-xs text-gray-500">
+              <span>Project Progress</span>
+              <div className="font-medium text-gray-900">
+                {completionPercentage}%
+              </div>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+              <motion.div
+                className="h-full rounded-full bg-gradient-to-r from-[#63B7B7] to-[#1D8489]"
+                initial={{ width: 0 }}
+                animate={{ width: `${completionPercentage}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+              />
+            </div>
+          </div>
 
-                const canSubmitReview = (
-                  status: 'Approved' | 'ChangesRequested' | 'Rejected',
-                ) => {
-                  if (!isPendingReview) return false
-                  if (status === 'Approved') return true
-                  return !!reviewComment.trim()
-                }
+          {/* End Project Button */}
 
-                const submitReview = (
-                  status: 'Approved' | 'ChangesRequested' | 'Rejected',
-                ) => {
-                  if (!milestone.id || !milestone.submission?.id) {
-                    console.error('Missing IDs for review action')
-                    toast({
-                      title: 'Error',
-                      description:
-                        'Cannot perform action, required data is missing.',
-                      variant: 'destructive',
-                    })
-                    return
-                  }
-                  if (!canSubmitReview(status)) return
+          {/* Milestone Timeline */}
+          <div className="relative mb-8">
+            <div className="absolute bottom-0 left-4 top-0 w-0.5 bg-gray-200" />
 
-                  handleMilestoneAction(milestone.id, milestone.submission.id, {
-                    status,
-                    comments: reviewComment.trim(),
-                  })
-                }
+            {milestones.map((milestone, index) => {
+              const isActive = activeMilestone === milestone.order
+              const isCompleted = milestone.status === 'Completed'
+              const isPending = milestone.status === 'Pending'
+              const isUpcoming = !isCompleted && !isPending
 
-                return (
-                  <div
-                    key={milestone.order}
-                    className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+              // Calculate percentage of total project value
+              const valuePercentage = Math.round(
+                (milestone.price / totalProjectValue) * 100,
+              )
+
+              return (
+                <motion.div
+                  key={milestone.order}
+                  className={`relative mb-4 pl-12 ${isActive ? 'z-10' : ''}`}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
+                >
+                  {/* Status Indicator */}
+                  <motion.div
+                    className={`absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 ${
+                      isActive
+                        ? 'border-[#63B7B7] ring-2 ring-[#63B7B7]/30'
+                        : 'border-gray-200'
+                    } ${
+                      isCompleted
+                        ? 'bg-[#63B7B7] text-white'
+                        : isPending
+                          ? 'border-blue-300 bg-blue-50'
+                          : 'bg-gray-50'
+                    }`}
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.2, delay: index * 0.1 + 0.2 }}
                   >
-                    <div className="border-b border-gray-100 bg-gradient-to-r from-white to-blue-50/30 p-4">
+                    {isCompleted ? (
+                      <CheckCircle className="h-4 w-4" />
+                    ) : isPending ? (
+                      <Clock className="h-4 w-4 text-blue-600" />
+                    ) : (
+                      <span className="text-xs font-medium text-gray-500">
+                        {index + 1}
+                      </span>
+                    )}
+                  </motion.div>
+
+                  {/* Milestone Card */}
+                  <motion.div
+                    className={`group cursor-pointer rounded-lg border ${
+                      isActive
+                        ? 'border-[#63B7B7] bg-[#F7FCFC] shadow-md'
+                        : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50/50'
+                    } transition-all duration-200`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setDetailsMilestone(milestone.order)
+                    }}
+                    whileHover={{
+                      y: -2,
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
+                    }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex min-w-0 items-center gap-2">
-                          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#63B7B7]/10">
-                            <Pin className="h-4 w-4 text-[#63B7B7]" />
-                          </div>
-                          <h3 className="truncate text-base font-semibold text-gray-800">
+                          <h3
+                            className={`truncate text-base font-semibold ${isActive ? 'text-[#1D8489]' : 'text-gray-800'}`}
+                          >
                             {milestone.title}
                           </h3>
                         </div>
                         <div className="ml-2 flex flex-shrink-0 items-center gap-2">
                           <Badge
                             variant={
-                              milestone.status === 'Completed'
+                              isCompleted
                                 ? 'default'
-                                : milestone.status === 'Pending'
+                                : isPending
                                   ? 'secondary'
                                   : 'outline'
                             }
+                            className={
+                              isCompleted
+                                ? 'bg-[#63B7B7] hover:bg-[#1D8489]'
+                                : ''
+                            }
                           >
-                            {milestone.status} Here
+                            {milestone.status}
                           </Badge>
-                          <div className="whitespace-nowrap rounded-full bg-[#63B7B7]/10 px-2.5 py-0.5">
-                            <span className="text-xs font-medium text-[#63B7B7]">
-                              {formatCurrency(milestone.price)}
+                        </div>
+                      </div>
+
+                      <div className="mt-2 grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <div className="text-xs text-gray-500">Value</div>
+                          <div className="font-medium text-gray-900">
+                            {formatCurrency(milestone.price)}{' '}
+                            <span className="text-xs text-gray-500">
+                              ({valuePercentage}%)
                             </span>
                           </div>
                         </div>
-                      </div>
-                    </div>
-
-                    <div className="p-4">
-                      <div className="mb-4">
-                        <h4 className="mb-1 text-sm font-medium text-gray-700">
-                          Description:
-                        </h4>
-                        <p className="prose prose-sm max-w-none text-sm text-gray-600">
-                          {milestone.description || (
-                            <span className="italic text-gray-400">
-                              No description provided.
-                            </span>
-                          )}
-                        </p>
-                      </div>
-
-                      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div className="flex items-start gap-2 rounded-lg border border-gray-100 bg-gray-50/80 p-3">
-                          <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#63B7B7]" />
-                          <div>
-                            <span className="block text-xs text-gray-500">
-                              Est. Duration
-                            </span>
-                            <span className="text-sm font-medium text-gray-800">
-                              {milestone.timeline || '--'}
-                            </span>
+                        <div>
+                          <div className="text-xs text-gray-500">Timeline</div>
+                          <div className="font-medium text-gray-900">
+                            {milestone.timeline || '—'}
                           </div>
                         </div>
-                        <div className="flex items-start gap-2 rounded-lg border border-gray-100 bg-gray-50/80 p-3">
-                          <Calendar className="mt-0.5 h-4 w-4 flex-shrink-0 text-[#63B7B7]" />
-                          <div>
-                            <span className="block text-xs text-gray-500">
-                              Order
-                            </span>
-                            <span className="text-sm font-medium text-gray-800">
-                              {milestone.order} of {milestones.length}
-                            </span>
+                        <div>
+                          <div className="text-xs text-gray-500">Order</div>
+                          <div className="font-medium text-gray-900">
+                            {milestone.order} of {milestones.length}
                           </div>
                         </div>
                       </div>
 
-                      {milestone.submission ? (
-                        <div className="mt-6 space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h4 className="text-sm font-semibold text-gray-700">
-                              Submission Details
-                            </h4>
-                            <Badge
-                              variant={
-                                milestone.submission.status === 'Approved'
-                                  ? 'default'
-                                  : milestone.submission.status === 'Rejected'
-                                    ? 'destructive'
-                                    : milestone.submission.status ===
-                                        'ChangesRequested'
-                                      ? 'secondary'
-                                      : 'outline'
-                              }
-                            >
-                              {milestone.submission.status}
-                            </Badge>
-                          </div>
-
-                          <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                            <div className="mb-4">
-                              <p className="prose prose-sm max-w-none text-sm text-gray-600">
-                                {milestone.submission.description || (
-                                  <span className="italic text-gray-400">
-                                    No submission notes provided.
-                                  </span>
-                                )}
-                              </p>
-                            </div>
-
-                            {milestone.submission.media &&
-                              milestone.submission.media.length > 0 && (
-                                <div className="mb-4">
-                                  <h5 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    Attachments
-                                  </h5>
-                                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                                    {milestone.submission.media.map(
-                                      (mediaUrl, idx) => (
-                                        <div
-                                          key={idx}
-                                          className="group relative aspect-video overflow-hidden rounded-md border border-gray-200 transition-shadow duration-200 hover:shadow-md"
-                                        >
-                                          <Image
-                                            src={mediaUrl || '/placeholder.svg'}
-                                            alt={`Submission attachment ${idx + 1}`}
-                                            fill
-                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                            onError={(e) =>
-                                              (e.currentTarget.src =
-                                                '/placeholder.svg')
-                                            }
-                                          />
-                                          <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/30">
-                                            <Button
-                                              variant="outline"
-                                              size="icon"
-                                              className="absolute bottom-2 right-2 h-8 w-8 rounded-full border-gray-300 bg-white/80 p-0 text-gray-600 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-gray-800 group-hover:opacity-100"
-                                              onClick={() =>
-                                                window.open(
-                                                  mediaUrl,
-                                                  '_blank',
-                                                  'noopener noreferrer',
-                                                )
-                                              }
-                                              aria-label={`View attachment ${idx + 1}`}
-                                            >
-                                              <Eye className="h-4 w-4" />
-                                            </Button>
-                                          </div>
-                                        </div>
-                                      ),
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-
-                            <div className="mb-4 border-t border-gray-100 pt-3 text-right text-xs text-gray-500">
-                              Submitted on:{' '}
-                              <time
-                                dateTime={new Date(
-                                  milestone.submission.createdAt,
-                                ).toISOString()}
-                              >
-                                {new Date(
-                                  milestone.submission.createdAt,
-                                ).toLocaleString(undefined, {
-                                  dateStyle: 'medium',
-                                  timeStyle: 'short',
-                                })}
-                              </time>
-                            </div>
-
-                            {isPendingReview && (
-                              <div className="mt-6 rounded-lg border border-dashed border-blue-300 bg-blue-50/50 p-4">
-                                <h5 className="mb-3 flex items-center gap-2 text-sm font-medium text-blue-800">
-                                  <MessageSquare className="h-4 w-4 text-blue-600" />
-                                  Review Submission & Provide Feedback
-                                </h5>
-                                <Textarea
-                                  placeholder="Add an optional comment for approval, or a required comment for changes/rejection..."
-                                  className="mb-3 min-h-[80px] resize-none border-gray-300 bg-white shadow-inner focus:border-blue-500 focus:ring-blue-500"
-                                  value={reviewComment}
-                                  onChange={(e) =>
-                                    setReviewComment(e.target.value)
-                                  }
-                                  aria-label="Review comment"
-                                />
-                                <div className="flex flex-wrap items-center justify-end gap-2">
-                                  {!reviewComment.trim() &&
-                                    !canSubmitReview('Approved') && (
-                                      <p className="mr-auto text-xs text-red-600">
-                                        Comment required for requesting changes
-                                        or rejecting.
-                                      </p>
-                                    )}
-                                  <Button
-                                    className="!bg-green-600 text-white shadow-sm hover:!bg-green-700 disabled:opacity-50"
-                                    size="sm"
-                                    onClick={() => submitReview('Approved')}
-                                    disabled={!canSubmitReview('Approved')}
-                                  >
-                                    <CheckCircle className="mr-1.5 h-4 w-4" />
-                                    Approve
-                                  </Button>
-                                  <Button
-                                    className="!bg-amber-500 text-white shadow-sm hover:!bg-amber-600 disabled:opacity-50"
-                                    size="sm"
-                                    onClick={() =>
-                                      submitReview('ChangesRequested')
-                                    }
-                                    disabled={
-                                      !canSubmitReview('ChangesRequested')
-                                    }
-                                  >
-                                    <RefreshCw className="mr-1.5 h-4 w-4" />
-                                    Request Changes
-                                  </Button>
-                                  <Button
-                                    className="!bg-red-600 text-white shadow-sm hover:!bg-red-700 disabled:opacity-50"
-                                    size="sm"
-                                    onClick={() => submitReview('Rejected')}
-                                    disabled={!canSubmitReview('Rejected')}
-                                  >
-                                    <XCircle className="mr-1.5 h-4 w-4" />
-                                    Reject
-                                  </Button>
-                                </div>
+                      {/* Submission Status Indicator */}
+                      {milestone.submissions &&
+                        milestone.submissions.length > 0 && (
+                          <div className="mt-3 flex items-center gap-2 text-xs">
+                            {milestone.status === 'Completed' ? (
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCircle className="h-3 w-3" />
+                                <span>Approved</span>
                               </div>
-                            )}
+                            ) : milestone.status === 'Pending' &&
+                              milestone.submissions.some(
+                                (s) => s.status === 'Pending',
+                              ) ? (
+                              <div className="flex items-center gap-1 text-blue-600">
+                                <AlertCircle className="h-3 w-3" />
+                                <span>Awaiting Review</span>
+                              </div>
+                            ) : milestone.submissions.some(
+                                (s) => s.status === 'ChangesRequested',
+                              ) ? (
+                              <div className="flex items-center gap-1 text-amber-600">
+                                <RefreshCw className="h-3 w-3" />
+                                <span>Changes Requested</span>
+                              </div>
+                            ) : milestone.submissions.some(
+                                (s) => s.status === 'Rejected',
+                              ) ? (
+                              <div className="flex items-center gap-1 text-red-600">
+                                <XCircle className="h-3 w-3" />
+                                <span>Rejected</span>
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )
+            })}
+          </div>
+          {milestones.some((m) => m.status !== 'Pending') &&
+            !isProjectCompleted && (
+              <div className="mb-6 flex justify-end">
+                <Dialog
+                  open={isEndProjectDialogOpen}
+                  onOpenChange={setIsEndProjectDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={allMilestonesCompleted ? 'default' : 'outline'}
+                      className={
+                        allMilestonesCompleted
+                          ? '!bg-[#1D8489] hover:!bg-[#176669]'
+                          : 'border-amber-300 text-amber-600 hover:bg-amber-50'
+                      }
+                      size="sm"
+                    >
+                      <Flag className="mr-1.5 h-4 w-4" />
+                      {allMilestonesCompleted
+                        ? 'Complete Project'
+                        : 'End Project Early'}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        {allMilestonesCompleted
+                          ? 'Complete Project'
+                          : 'End Project Early'}
+                      </DialogTitle>
+                      <DialogDescription>
+                        {allMilestonesCompleted
+                          ? 'All milestones have been completed. Are you sure you want to mark this project as complete?'
+                          : "You're about to end this project before all milestones are completed. This action cannot be undone."}
+                      </DialogDescription>
+                    </DialogHeader>
 
-                            {milestone.submission.comment &&
-                              !isPendingReview && (
-                                <div className="mt-6 border-t border-gray-100 pt-4">
-                                  <h5 className="mb-2 flex items-center gap-2 text-sm font-semibold text-gray-600">
-                                    <MessageSquare className="h-4 w-4 text-[#63B7B7]" />
-                                    Feedback Provided
-                                  </h5>
-                                  <div className="rounded-lg bg-gray-50/80 p-3">
-                                    <p className="prose prose-sm max-w-none text-sm text-gray-700">
-                                      {milestone.submission.comment}
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
+                    {!allMilestonesCompleted && (
+                      <div className="my-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                        <div className="flex items-start gap-2">
+                          <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500" />
+                          <div>
+                            <p className="mb-1 font-medium">
+                              Warning: Incomplete Milestones
+                            </p>
+                            <p>
+                              {
+                                milestones.filter(
+                                  (m) => m.status !== 'Completed',
+                                ).length
+                              }{' '}
+                              of {milestones.length} milestones are not
+                              completed. Ending the project now may have
+                              contractual implications.
+                            </p>
                           </div>
                         </div>
-                      ) : (
-                        <div className="mt-6 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-6 text-center">
-                          <p className="text-sm text-gray-500">
-                            No submission has been made for this milestone yet.
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
-        )}
-      </div>
-    </div>
+                      </div>
+                    )}
+
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => setIsEndProjectDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleEndProject}
+                        disabled={isEndingProject}
+                        className={
+                          allMilestonesCompleted
+                            ? '!bg-[#1D8489] hover:!bg-[#176669]'
+                            : 'bg-amber-600 hover:bg-amber-700'
+                        }
+                      >
+                        {isEndingProject
+                          ? 'Processing...'
+                          : allMilestonesCompleted
+                            ? 'Complete Project'
+                            : 'End Project'}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+        </div>
+      </motion.div>
+
+      {detailsMilestone && (
+        <CompanyDetailsMilestone
+          milestone={
+            milestones.find((m) => m.order === detailsMilestone) as Milestone
+          }
+          isOpen={detailsMilestone !== null}
+          setIsOpen={() => setDetailsMilestone(null)}
+          handleMilestoneAction={handleMilestoneAction}
+          projectTotalValue={totalProjectValue}
+          milestoneCount={milestones.length}
+        />
+      )}
+    </>
   )
 }
