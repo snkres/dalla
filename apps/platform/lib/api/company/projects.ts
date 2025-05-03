@@ -1,6 +1,6 @@
 import { ProProfile } from '@lib/atoms/pro/meta'
 import { axiosInstance } from '../instance'
-import { Milestone, ReviewSubmission } from '@lib/types/project'
+import { Milestone, ReviewSubmission, Submission } from '@lib/types/project'
 
 export type ProjectStatus = 'Open' | 'Closed' | 'InProgress' | 'Completed'
 
@@ -23,6 +23,7 @@ export type GetAllCompanyProjectsRes = {
         timeline: string
         duration: string
       }
+      submissions: Submission[]
       approved: boolean
       status: ProjectStatus
       companyId: string
@@ -124,6 +125,7 @@ export type GetProjectRes = {
       timeline: string
       duration: string
     }
+    submissions: Submission[]
     createdAt: string
     deliverables: string
     jobTitle: string
@@ -187,6 +189,7 @@ export type GetProjectRes = {
         id: string
         projectId: string
         professionalId: string
+        type: 'MilestoneBased' | 'AllInOne'
         description: string
         price: number
         timeline: string
@@ -346,5 +349,17 @@ export const endProject = async (projectId: string) => {
   const res = await axiosInstance.patch(`/company/projects/${projectId}`, {
     status: 'Completed',
   })
+  return res
+}
+
+export const reviewAllInOne = async (
+  projectId: string,
+  submissionId: string,
+  review: ReviewSubmission,
+) => {
+  const res = await axiosInstance.patch(
+    `/company/projects/${projectId}/submissions/${submissionId}/review`,
+    review,
+  )
   return res
 }

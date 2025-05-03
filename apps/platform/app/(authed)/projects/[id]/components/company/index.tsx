@@ -9,87 +9,34 @@ import { CompanyProjectAssigned } from './assigned'
 import { CompanyProjectProposals } from './proposals'
 import { CompanyProjectBudgetOverview } from './budget-overview'
 import { CompanyProjectFiles } from './files'
-import { ReviewSubmission } from '@lib/types/project'
+import type { ReviewSubmission, Milestone } from '@lib/types/project'
+import { CompanyAllInOneSubmission } from './all-in-one-submission'
 
-// Mock data for milestone submissions
-const mockMilestoneSubmissions = {
-  'milestone-1': {
-    id: 'submission-1',
-    milestoneId: 'milestone-1',
-    description:
-      "I've completed the initial design phase with wireframes and mockups as requested. The design follows the brand guidelines and incorporates all the feedback from our previous discussions.",
-    submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-    status: 'pending', // pending, approved, rejected, changes_requested
-    media: [
-      '/placeholder.svg?height=300&width=500',
-      '/placeholder.svg?height=300&width=500',
-    ],
-    comments: [
-      {
-        id: 'comment-1',
-        author: 'professional',
-        authorName: 'John Designer',
-        text: "I've focused on making the UI intuitive and modern. Let me know if you'd like any adjustments to the color scheme.",
-        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
-  'milestone-2': {
-    id: 'submission-2',
-    milestoneId: 'milestone-2',
-    description:
-      "The core functionality has been implemented according to the specifications. All features are working as expected and I've included comprehensive documentation for each component.",
-    submittedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-    status: 'approved',
-    media: ['/placeholder.svg?height=300&width=500'],
-    comments: [
-      {
-        id: 'comment-2',
-        author: 'professional',
-        authorName: 'John Developer',
-        text: 'All core features are now implemented and tested. The documentation is in the attached PDF.',
-        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'comment-3',
-        author: 'company',
-        authorName: 'Sarah Client',
-        text: 'This looks great! The functionality works perfectly. Approved!',
-        createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
-  'milestone-3': {
-    id: 'submission-3',
-    milestoneId: 'milestone-3',
-    description:
-      "I've completed the final testing phase and fixed all the reported bugs. The application is now ready for deployment with improved performance and stability.",
-    submittedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
-    status: 'changes_requested',
-    media: [
-      '/placeholder.svg?height=300&width=500',
-      '/placeholder.svg?height=300&width=500',
-      '/placeholder.svg?height=300&width=500',
-    ],
-    comments: [
-      {
-        id: 'comment-4',
-        author: 'professional',
-        authorName: 'John Developer',
-        text: 'All testing is complete and bugs have been fixed. The application is now ready for deployment.',
-        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 'comment-5',
-        author: 'company',
-        authorName: 'Sarah Client',
-        text: 'Almost there! Could you please fix the loading animation on the dashboard page? It seems a bit slow.',
-        createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
-  },
+// Base type for proposals listed directly under the project (e.g., for selection)
+type BaseProposal = GetProjectRes['data']['proposals'][number]
+
+// Define the type for the specific proposal associated with the assigned professional
+// Based on the linter error, its structure seems to be:
+interface ProfessionalProposal {
+  id: string
+  projectId: string
+  professionalId: string
+  type: 'MilestoneBased' | 'AllInOne' // Use types from error message
+  description: string
+  price: number
+  timeline: string
+  media: string[]
+  status: 'Pending' | 'Rejected' | 'Accepted'
+  createdAt: string
+  updatedAt: string
+  deletedAt: any // Consider using 'null | string' or a more specific type if possible
+  milestones: Milestone[] // This seems to be present based on the error
+  submissions?: any[] // Replace 'any' with the actual Submission type from all-in-one-submission.tsx if possible
 }
+// Note: This no longer extends BaseProposal as their structures differ.
 
+// We don't need EnhancedMilestone here anymore if using the correct Milestone type
+/*
 export interface EnhancedMilestone {
   id: string
   title: string
@@ -114,74 +61,69 @@ export interface EnhancedMilestone {
     }[]
   }
 }
+*/
 
 export function CompanyProjectView({
   project,
 }: {
   project: GetProjectRes['data']
 }) {
-  const [selectedProposal, setSelectedProposal] = useState<
-    GetProjectRes['data']['proposals'][number] | null
-  >(null)
+  // selectedProposal should remain BaseProposal as it refers to the list
+  const [selectedProposal, setSelectedProposal] = useState<BaseProposal | null>(
+    null,
+  )
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [activeMilestone, setActiveMilestone] = useState<number | null>(
-    project?.professional?.proposals?.[0]?.milestones?.find(
-      (m) => m.status === 'Pending',
-    )?.order || null,
-  )
-  const [commentText, setCommentText] = useState('')
-  const [expandedSubmission, setExpandedSubmission] = useState<string | null>(
-    'submission-1',
-  )
-  const { toast } = useToast()
 
-  // Mock milestone data
-  const mockMilestones: EnhancedMilestone[] = [
-    {
-      id: 'milestone-1',
-      title: 'Initial Design Phase',
-      description: 'Create wireframes and design mockups for the application',
-      price: project.meta?.budget ? project.meta.budget * 0.3 : 3000,
-      timeline: '2 weeks',
-      order: 1,
-      status: 'Completed',
-      submission: mockMilestoneSubmissions['milestone-1'],
-    },
-    {
-      id: 'milestone-2',
-      title: 'Core Development',
-      description: 'Implement the core functionality of the application',
-      price: project.meta?.budget ? project.meta.budget * 0.5 : 5000,
-      timeline: '3 weeks',
-      order: 2,
-      status: 'Completed',
-      submission: mockMilestoneSubmissions['milestone-2'],
-    },
-    {
-      id: 'milestone-3',
-      title: 'Testing & Deployment',
-      description: 'Final testing, bug fixes, and deployment',
-      price: project.meta?.budget ? project.meta.budget * 0.2 : 2000,
-      timeline: '1 week',
-      order: 3,
-      status: 'In Progress',
-      submission: mockMilestoneSubmissions['milestone-3'],
-    },
-  ]
+  // Use the specific ProfessionalProposal type for the assigned proposal
+  const professionalProposal = project.professional?.proposals?.[0] as
+    | ProfessionalProposal
+    | undefined
 
-  // Calculate milestone progress
-  const completedMilestones =
-    project.professional?.proposals?.[0]?.milestones?.filter(
-      (m) => m.status === 'Completed',
-    )?.length || 0
-  const totalMilestones =
-    project.professional?.proposals?.[0]?.milestones?.length || 0
+  // Ensure milestones are accessed safely from the professional's proposal
+  const milestonesFromProfessional: Milestone[] | undefined =
+    professionalProposal?.milestones
+
+  const [activeMilestone, setActiveMilestone] = useState<number | null>(() => {
+    // Use 'MilestoneBased' for the check
+    if (
+      professionalProposal?.type === 'MilestoneBased' &&
+      milestonesFromProfessional
+    ) {
+      return (
+        milestonesFromProfessional.find((m) => m.status === 'Pending')?.order ??
+        null
+      )
+    }
+    return null
+  })
+
+  // Determine project type using 'MilestoneBased'
+  const isMilestoneProject =
+    professionalProposal?.type === 'MilestoneBased' &&
+    !!milestonesFromProfessional
+  const milestones: Milestone[] = milestonesFromProfessional || []
+
+  // Get the latest submission for AllInOne projects
+  // Submissions should be part of the professionalProposal for AllInOne type
+  const latestSubmission = !isMilestoneProject
+    ? project.submissions?.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )[0]
+    : professionalProposal?.submissions?.sort(
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      )[0]
+
+  // Calculate milestone progress only if it's a milestones project
+  const completedMilestones = isMilestoneProject
+    ? milestones.filter((m) => m.status === 'Completed')?.length || 0
+    : 0
+  const totalMilestones = isMilestoneProject ? milestones.length : 0 // length is 0 if not milestone project or no milestones
   const milestoneProgress =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0
 
-  const handleProposalClick = (
-    proposal: GetProjectRes['data']['proposals'][number],
-  ) => {
+  const handleProposalClick = (proposal: BaseProposal) => {
     setSelectedProposal(proposal)
     setIsModalOpen(true)
   }
@@ -196,28 +138,43 @@ export function CompanyProjectView({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Main Content - Left Column (8 cols on large screens) */}
         <div className="space-y-6 lg:col-span-8">
-          {project.professional?.proposals?.[0]?.milestones && (
-            <CompanyProjectMilestones
-              milestones={project.professional?.proposals?.[0].milestones}
-              activeMilestone={activeMilestone || 0}
-              setActiveMilestone={setActiveMilestone}
-              projectId={project.id}
-              isProjectCompleted={project.status === 'Completed'}
-            />
-          )}
+          {/* Conditional Rendering: Milestones or Fixed Price */}
+          {project.professional && professionalProposal ? (
+            isMilestoneProject ? (
+              <CompanyProjectMilestones
+                milestones={milestones} // Pass the correctly typed milestones
+                activeMilestone={activeMilestone ?? milestones[0]?.order ?? 0} // Ensure a valid default
+                setActiveMilestone={setActiveMilestone}
+                projectId={project.id}
+                isProjectCompleted={project.status === 'Completed'}
+              />
+            ) : (
+              <CompanyAllInOneSubmission
+                projectId={project.id}
+                submission={latestSubmission} // Pass the latest submission
+                professionalName={
+                  project.professional?.name || 'the professional'
+                }
+                isProjectCompleted={project.status === 'Completed'}
+              />
+            )
+          ) : null}
 
-          {!project.professional && (
+          {/* Show proposals list only if no professional is assigned yet */}
+          {!project.professional && project.proposals.length > 0 && (
             <CompanyProjectProposals
               proposals={project.proposals}
               handleProposalClick={handleProposalClick}
             />
           )}
 
-          {/* Budget Overview Card */}
-          <CompanyProjectBudgetOverview
-            project={project}
-            milestoneProgress={milestoneProgress}
-          />
+          {/* Budget Overview Card - Show regardless of type if professional assigned */}
+          {project.professional && (
+            <CompanyProjectBudgetOverview
+              project={project}
+              milestoneProgress={milestoneProgress} // Pass progress even if 0 for fixed
+            />
+          )}
         </div>
 
         {/* Sidebar - Right Column (4 cols on large screens) */}

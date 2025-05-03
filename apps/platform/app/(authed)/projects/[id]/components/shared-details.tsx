@@ -30,6 +30,8 @@ export function ProjectSharedDetails({
   setShowEditModal: (show: boolean) => void
   isAssignedProfessional: boolean
 }) {
+  const isMilestoneProject =
+    project.professional?.proposals?.[0]?.type === 'MilestoneBased'
   const getStatusBadge = () => {
     switch (project.status) {
       case 'Completed':
@@ -260,7 +262,7 @@ export function ProjectSharedDetails({
                   </div>
                 </div>
               </div>
-            ) : (
+            ) : isMilestoneProject ? (
               <div className="col-span-2 overflow-hidden rounded-xl border border-[#63B7B7]/20 shadow-sm">
                 <div className="border-b border-[#63B7B7]/20 bg-[#E0F2F2] px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -286,7 +288,7 @@ export function ProjectSharedDetails({
                   </div>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

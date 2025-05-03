@@ -132,3 +132,21 @@ export async function submitMilestone({
 
   return res
 }
+
+export async function submitAllInOne({
+  payload,
+  projectId,
+}: {
+  payload: {
+    description: string
+    media: string[]
+  }
+  projectId: string
+}) {
+  const res = await axiosInstance
+    .post<GetProjectRes>(
+      `/professionals/projects/${projectId}/submissions`,
+      payload,
+    )
+    .then((res) => res.data.data)
+}

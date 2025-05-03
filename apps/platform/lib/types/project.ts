@@ -9,19 +9,18 @@ export interface Milestone {
   price: number
   timeline: string
   status: 'Pending' | 'Completed' | 'Changes' | 'Rejected'
-  submissions:
-    | {
-        id: string
-        description: string
-        media: Array<string>
-        comment: string
-        createdAt: string
-        updatedAt: string
-        status: 'Approved' | 'Rejected' | 'ChangesRequested' | 'Pending'
-      }[]
-    | null
+  submissions: Submission[] | null
 }
 
+export interface Submission {
+  id: string
+  description: string
+  media: Array<string>
+  comment: string
+  createdAt: string
+  updatedAt: string
+  status: 'Approved' | 'Rejected' | 'ChangesRequested' | 'Pending'
+}
 export interface Activity {
   id: number
   type: 'milestone' | 'comment' | 'file'
