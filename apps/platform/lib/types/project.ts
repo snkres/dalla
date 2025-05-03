@@ -2,11 +2,22 @@ import { LucideIcon } from 'lucide-react'
 import { ReactNode } from 'react'
 
 export interface Milestone {
-  id: number
+  id?: string
+  order: number
   title: string
-  completed: boolean
-  date: string
-  progress?: number
+  description: string
+  price: number
+  timeline: string
+  status: 'Pending' | 'Completed' | 'Changes' | 'Rejected'
+  submission: {
+    id: string
+    description: string
+    media: Array<string>
+    comment: string
+    createdAt: string
+    updatedAt: string
+    status: 'Approved' | 'Rejected' | 'ChangesRequested' | 'Pending'
+  } | null
 }
 
 export interface Activity {
@@ -58,4 +69,9 @@ export interface BudgetRange {
 export interface FilterOption {
   value: string
   label: string
+}
+
+export interface ReviewSubmission {
+  status: 'Approved' | 'ChangesRequested' | 'Rejected'
+  comments?: string
 }

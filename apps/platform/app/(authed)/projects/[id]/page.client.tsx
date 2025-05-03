@@ -5,10 +5,9 @@ import { globalAtom } from '@lib/atoms/global'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { ProjectSharedDetails } from './components/shared-details'
-import { CompanyProjectView } from './components/company-view'
-import { ProfessionalProjectView } from './components/professional-view'
+import { CompanyProjectView } from './components/company'
+import { ProfessionalProjectView } from './components/professional'
 import { getProject } from '@lib/api/company/projects'
-import { Tabs, TabsList, TabsTrigger, Button } from '@dalla/design-system'
 import { useState } from 'react'
 import { EditProject } from './components/edit-project'
 import { useTransitionRouter } from 'next-view-transitions'
@@ -86,7 +85,7 @@ export function ProjectPageClient({ id }: { id: string }) {
         >
           ← Back
         </button>
-        <div className="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <ProjectSharedDetails
             project={data}
             isCompany={isCompany}
@@ -94,7 +93,7 @@ export function ProjectPageClient({ id }: { id: string }) {
             isAssignedProfessional={data.professional?.id === global?.id}
           />
 
-          <div className="w-full border-t border-gray-200">
+          {/* <div className="w-full border-t border-gray-200">
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
@@ -124,15 +123,9 @@ export function ProjectPageClient({ id }: { id: string }) {
                     ))}
               </TabsList>
             </Tabs>
-          </div>
+          </div> */}
         </div>
-        {isCompany && (
-          <CompanyProjectView
-            project={data}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-        )}
+        {isCompany && <CompanyProjectView project={data} />}
         {isProfessional && (
           <ProfessionalProjectView
             project={data}

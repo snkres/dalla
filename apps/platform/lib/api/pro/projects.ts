@@ -110,3 +110,25 @@ export const getProjectProfessionalView = async (id: string) => {
 
   return res
 }
+
+export async function submitMilestone({
+  payload,
+  projectId,
+  milestoneId,
+}: {
+  payload: {
+    description: string
+    media: string[]
+  }
+  projectId: string
+  milestoneId: string
+}) {
+  const res = await axiosInstance
+    .post<GetProjectRes>(
+      `/professionals/projects/${projectId}/milestones/${milestoneId}/submissions`,
+      payload,
+    )
+    .then((res) => res.data.data)
+
+  return res
+}
