@@ -169,21 +169,7 @@ export type GetProjectRes = {
           meta: ProProfile['data']['meta']
         }
       }
-      milestones: Array<{
-        id: string
-        title: string
-        description: string
-        price: number
-        timeline: string
-        order: number
-        status: 'Completed' | 'In Progress' | 'Pending'
-        submission: {
-          id: string
-          description: string
-          media: Array<string>
-          comment: string
-        } | null
-      }>
+      milestones: Milestone[]
     }>
     professional: {
       id: string

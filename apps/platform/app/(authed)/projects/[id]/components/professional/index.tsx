@@ -19,8 +19,6 @@ export function ProfessionalProjectView({
 }: {
   project: GetProjectRes['data']
 }) {
-  const router = useTransitionRouter()
-  const { toast } = useToast()
   const [meta] = useAtom(proMetaAtom)
   const [isApplying, setIsApplying] = useState(false)
 
@@ -63,16 +61,12 @@ export function ProfessionalProjectView({
             hasApplied={hasApplied}
           />
 
-          {(isAssigned || hasApplied) && professionalProposal && (
+          {isAssigned && (
             <ProfessionalBudgetOverview
               project={project}
               isAssigned={isAssigned}
               hasApplied={hasApplied}
-              professionalProposal={
-                professionalProposal as
-                  | GetProjectRes['data']['professional']['proposals'][0]
-                  | null
-              }
+              professionalProposal={project.professional.proposals[0]}
               milestoneProgress={milestoneProgress}
             />
           )}
