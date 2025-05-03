@@ -125,7 +125,7 @@ export function CompanyProjectView({
   >(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeMilestone, setActiveMilestone] = useState<number | null>(
-    project?.professional?.proposals[0].milestones.find(
+    project?.professional?.proposals?.[0]?.milestones?.find(
       (m) => m.status === 'Pending',
     )?.order || null,
   )
@@ -169,17 +169,13 @@ export function CompanyProjectView({
     },
   ]
 
-  // Add milestones to project if not present
-  if (!project.professional?.proposals[0].milestones) {
-    project.professional.proposals[0].milestones = mockMilestones as any
-  }
-
   // Calculate milestone progress
   const completedMilestones =
-    project.professional.proposals[0].milestones.filter(
+    project.professional?.proposals?.[0]?.milestones?.filter(
       (m) => m.status === 'Completed',
-    ).length
-  const totalMilestones = project.professional.proposals[0].milestones.length
+    )?.length || 0
+  const totalMilestones =
+    project.professional?.proposals?.[0]?.milestones?.length || 0
   const milestoneProgress =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0
 
@@ -200,9 +196,9 @@ export function CompanyProjectView({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Main Content - Left Column (8 cols on large screens) */}
         <div className="space-y-6 lg:col-span-8">
-          {project.professional?.proposals[0].milestones && (
+          {project.professional?.proposals?.[0]?.milestones && (
             <CompanyProjectMilestones
-              milestones={project.professional.proposals[0].milestones}
+              milestones={project.professional?.proposals?.[0].milestones}
               activeMilestone={activeMilestone || 0}
               setActiveMilestone={setActiveMilestone}
               projectId={project.id}
