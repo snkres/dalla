@@ -19,6 +19,16 @@ import Image from 'next/image'
 import { Textarea } from '@dalla/design-system'
 import { MilestoneSubmissionModal } from './milestone-submission-modal'
 
+// Define submission interface
+interface MilestoneSubmission {
+  id: string
+  description: string
+  updatedAt: string
+  status: string
+  media?: string[]
+  comment?: string
+}
+
 export function ProfessionalMilestones({
   isAssigned,
   milestones,
@@ -45,13 +55,13 @@ export function ProfessionalMilestones({
   }
 
   const lastSubmission = currentMilestone?.submissions?.find(
-    (s) =>
+    (s: MilestoneSubmission) =>
       s.updatedAt ===
       currentMilestone?.submissions?.sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       )[0].updatedAt,
-  )
+  ) as MilestoneSubmission | undefined
 
   return (
     <>
