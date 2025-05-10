@@ -1,27 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useAtom } from 'jotai'
-import {
-  notificationsAtom,
-  markAllNotificationsAsReadAtom,
-  dismissNotificationAtom,
-  markNotificationAsReadAtom,
-} from '@lib/atoms/shared/notifications'
+import { useQueryClient } from '@tanstack/react-query'
 import { getRelativeTime } from '@dalla/utils'
 import { Notification } from '@lib/types/navbar'
 import { Button } from '@dalla/design-system'
-import {
-  Bell,
-  Check,
-  X,
-  MessageSquare,
-  Briefcase,
-  Info,
-  CheckCircle,
-  Filter,
-  Trash2,
-} from 'lucide-react'
+import { Bell, Check, X, CheckCircle, Filter, Trash2 } from 'lucide-react'
 import { cn } from '@dalla/utils'
 import Image from 'next/image'
 import {
@@ -33,12 +17,17 @@ import {
 } from '@dalla/design-system'
 import { motion, AnimatePresence } from 'motion/react'
 import { AnimatedTabs } from '@dalla/design-system'
+import { useNotifications } from '@hooks/use-notifications'
 
 export default function NotificationsPage() {
-  const [notifications] = useAtom(notificationsAtom)
-  const [, markAllAsRead] = useAtom(markAllNotificationsAsReadAtom)
-  const [, dismissNotification] = useAtom(dismissNotificationAtom)
-  const [, markAsRead] = useAtom(markNotificationAsReadAtom)
+  const {
+    notifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    getNotificationIcon,
+  } = useNotifications()
+
+  const queryClient = useQueryClient()
 
   const [, setForceUpdate] = useState({})
   useEffect(() => {
@@ -66,18 +55,6 @@ export default function NotificationsPage() {
     system: notifications.filter((n) => n.type === 'system').length,
   }
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'message':
-        return <MessageSquare className="h-5 w-5" />
-      case 'project':
-        return <Briefcase className="h-5 w-5" />
-      case 'system':
-      default:
-        return <Info className="h-5 w-5" />
-    }
-  }
-
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'project':
@@ -102,6 +79,15 @@ export default function NotificationsPage() {
     }
   }
 
+  // Function to dismiss a notification (remove it from the list)
+  const dismissNotification = (id: string) => {
+    const updatedNotifications = notifications.filter((n) => n.id !== id)
+    queryClient.setQueryData(['notifications'], {
+      notifications: updatedNotifications,
+      totalCount: updatedNotifications.length,
+    })
+  }
+
   return (
     <div className="container mx-auto max-w-5xl py-8">
       <div className="mb-6 flex items-center justify-between">
@@ -111,7 +97,7 @@ export default function NotificationsPage() {
           {counts.unread > 0 && (
             <Button
               variant="outline"
-              onClick={markAllAsRead}
+              onClick={handleMarkAllAsRead}
               className="flex items-center gap-2 border-gray-200 text-sm text-gray-600 hover:bg-gray-50"
             >
               <CheckCircle className="h-4 w-4" />
@@ -168,7 +154,7 @@ export default function NotificationsPage() {
           <NotificationList
             notifications={filteredNotifications}
             dismissNotification={dismissNotification}
-            markAsRead={markAsRead}
+            markAsRead={handleMarkAsRead}
             getNotificationIcon={getNotificationIcon}
             getTypeColor={getTypeColor}
           />
@@ -178,7 +164,7 @@ export default function NotificationsPage() {
           <NotificationList
             notifications={filteredNotifications}
             dismissNotification={dismissNotification}
-            markAsRead={markAsRead}
+            markAsRead={handleMarkAsRead}
             getNotificationIcon={getNotificationIcon}
             getTypeColor={getTypeColor}
           />

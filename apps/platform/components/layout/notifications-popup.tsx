@@ -3,51 +3,35 @@
 import React, { forwardRef, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Button } from '@dalla/design-system'
-import { Check, Bell, X, MessageSquare, Briefcase, Info } from 'lucide-react'
+import { Check, Bell, X } from 'lucide-react'
 import { cn } from '@dalla/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAtom } from 'jotai'
-import {
-  notificationsAtom,
-  markAllNotificationsAsReadAtom,
-  dismissNotificationAtom,
-  unreadNotificationCountAtom,
-  markNotificationAsReadAtom,
-} from '@lib/atoms/shared/notifications'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { notificationsAtom } from '@lib/atoms/shared/notifications'
+
 import { getRelativeTime } from '@dalla/utils'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
+import { useNotifications } from '@hooks/use-notifications'
 
 const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
   const t = useTranslation()
   const { locale } = useLocale()
-  const [notifications] = useAtom(notificationsAtom)
-  const [unreadCount] = useAtom(unreadNotificationCountAtom)
-  const [, markAllAsRead] = useAtom(markAllNotificationsAsReadAtom)
-  const [, dismissNotification] = useAtom(dismissNotificationAtom)
-  const [, markAsRead] = useAtom(markNotificationAsReadAtom)
+  const queryClient = useQueryClient()
 
-  const [, setForceUpdate] = useState({})
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setForceUpdate({})
-    }, 60000)
+  const {
+    notifications,
+    isNotificationsFetched,
+    isNotificationsError,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    getNotificationIcon,
+    unreadCount,
+  } = useNotifications()
 
-    return () => clearInterval(interval)
-  }, [])
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'message':
-        return <MessageSquare className="h-4 w-4" />
-      case 'project':
-        return <Briefcase className="h-4 w-4" />
-      case 'system':
-      default:
-        return <Info className="h-4 w-4" />
-    }
-  }
+  const isLoading = !isNotificationsFetched
 
   return (
     <motion.div
@@ -74,7 +58,7 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={markAllAsRead}
+            onClick={handleMarkAllAsRead}
             className="h-7 text-xs text-[#63B7B7] hover:bg-[#63B7B7]/5"
           >
             <Check className="mr-1.5 h-3.5 w-3.5" />
@@ -85,7 +69,17 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
 
       <div className="max-h-[320px] overflow-y-auto">
         <AnimatePresence>
-          {notifications.length > 0 ? (
+          {isLoading ? (
+            <div className="flex h-40 items-center justify-center">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#63B7B7] border-t-transparent" />
+            </div>
+          ) : isNotificationsError ? (
+            <div className="px-4 py-8 text-center">
+              <p className="text-sm text-gray-500">
+                Failed to load notifications
+              </p>
+            </div>
+          ) : notifications.length > 0 ? (
             <div>
               {notifications.map((notification, index) => (
                 <React.Fragment key={notification.id}>
@@ -99,7 +93,7 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
                       notification.read ? 'bg-white' : 'bg-[#F8FCFF]',
                     )}
                     onClick={() =>
-                      !notification.read && markAsRead(notification.id)
+                      !notification.read && handleMarkAsRead(notification.id)
                     }
                   >
                     {!notification.read && (
@@ -155,7 +149,13 @@ const NotificationsPopup = forwardRef<HTMLDivElement>((_, ref) => {
                           className="-mr-1 h-5 w-5 rounded-full text-gray-400 opacity-0 transition-opacity hover:bg-gray-100 hover:text-red-500 group-hover:opacity-100"
                           onClick={(e) => {
                             e.stopPropagation()
-                            dismissNotification(notification.id)
+                            const updatedNotifications = notifications.filter(
+                              (n) => n.id !== notification.id,
+                            )
+                            queryClient.setQueryData(['notifications'], {
+                              notifications: updatedNotifications,
+                              totalCount: updatedNotifications.length,
+                            })
                           }}
                         >
                           <X className="h-3 w-3" />

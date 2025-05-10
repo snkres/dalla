@@ -6,12 +6,15 @@ import { CompanyMeta, companyMetaAtom } from '@lib/atoms/company/meta'
 import { ProMeta, proMetaAtom } from '@lib/atoms/pro/meta'
 import { useAtom } from 'jotai'
 import { useTransitionRouter } from 'next-view-transitions'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { cn } from '@dalla/utils'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
 import { DallaLoading } from '@components/shared/dalla-loading'
+import { useNotifications } from '@hooks/use-notifications'
+import { useSocketNotifications } from '@hooks/use-socket-notifications'
+import { reconnectSocket } from '@lib/services/socket'
 
 export default function AuthedLayoutClient({
   children,
@@ -25,6 +28,37 @@ export default function AuthedLayoutClient({
   const [isLoading, setIsLoading] = useState(true)
   const [isDbReady, setIsDbReady] = useState(false)
 
+  // Initialize notifications and socket notifications
+  useNotifications()
+  const { disconnectSocket } = useSocketNotifications() // Add real-time notification listening via Socket.IO
+
+  // Add socket reconnection for visibility changes and online status
+  useEffect(() => {
+    // Handle visibility change (user returns to tab)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('Tab became visible, reconnecting socket if needed')
+        reconnectSocket()
+      }
+    }
+
+    // Handle when the computer wakes from sleep or user returns online
+    const handleOnline = () => {
+      console.log('Browser is online, reconnecting socket')
+      reconnectSocket()
+    }
+
+    // Add event listeners
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('online', handleOnline)
+
+    // Clean up
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('online', handleOnline)
+    }
+  }, [])
+
   useEffect(() => {
     let isMounted = true
 
@@ -34,12 +68,6 @@ export default function AuthedLayoutClient({
 
         if (isMounted) {
           setIsDbReady(true)
-
-          console.log('Auth state after DB ready:', {
-            mode: global.mode,
-            id: global.id,
-            email: global.email,
-          })
         }
       } catch (err) {
         console.error('Error initializing app:', err)

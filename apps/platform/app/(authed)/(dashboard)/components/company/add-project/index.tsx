@@ -3,10 +3,6 @@
 import React, { useState, useMemo, useCallback } from 'react'
 import { Modal } from '@dalla/design-system'
 import { useAtom } from 'jotai'
-import {
-  addNotificationAtom,
-  createProjectNotification,
-} from '@lib/atoms/shared/notifications'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { useTranslation } from '@hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
@@ -32,7 +28,6 @@ export function AddProject({
   const [activeStep, setActiveStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const [, addNotification] = useAtom(addNotificationAtom)
   const [formData, setFormData] = useState({
     title: '',
     jobTitle: '',
@@ -177,8 +172,6 @@ export function AddProject({
 
       const response = await createProject(projectData)
 
-      addNotification(createProjectNotification(formData.title))
-
       setIsSubmitted(true)
 
       toast({
@@ -203,7 +196,7 @@ export function AddProject({
     } finally {
       setIsSubmitting(false)
     }
-  }, [canSubmit, formData, toast, t, addNotification, onProjectCreated])
+  }, [canSubmit, formData, toast, t, onProjectCreated])
 
   return (
     <Modal isOpen onClose={onClose} title="" width="xl" className="max-w-7xl">

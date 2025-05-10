@@ -20,6 +20,7 @@ import { useLocale } from '@hooks/use-locale'
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@dalla/design-system'
 import { motion } from 'motion/react'
+import { useNotifications } from '@hooks/use-notifications'
 
 export function Navbar() {
   const router = useTransitionRouter()
@@ -28,7 +29,7 @@ export function Navbar() {
   const [global] = useAtom(globalAtom)
   const [proMeta] = useAtom(proMetaAtom)
   const [companyMeta] = useAtom(companyMetaAtom)
-  const [unreadNotificationCount] = useAtom(unreadNotificationCountAtom)
+  const { unreadCount } = useNotifications()
 
   const {
     navItems,
@@ -50,11 +51,10 @@ export function Navbar() {
     searchInputRef,
     notificationsRef,
     profileMenuRef,
-    unreadCount,
     isNotificationsOpen,
   } = useNavbar()
 
-  const hasUnreadNotifications = unreadNotificationCount > 0 || unreadCount > 0
+  const hasUnreadNotifications = unreadCount > 0
 
   const onSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -148,9 +148,9 @@ export function Navbar() {
               <>
                 <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
 
-                {(unreadNotificationCount > 0 || unreadCount > 0) && (
+                {unreadCount > 0 && (
                   <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
-                    {unreadNotificationCount || unreadCount}
+                    {unreadCount}
                   </span>
                 )}
               </>

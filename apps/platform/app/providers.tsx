@@ -92,6 +92,11 @@ export default function Providers({
     defaultOptions: {
       queries: {
         enabled: isReady && Boolean(global.mode),
+        staleTime: 1000 * 60 * 15, // 15 minutes
+        gcTime: 1000 * 60 * 60, // 1 hour
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        refetchOnMount: false,
       },
     },
   })

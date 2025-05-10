@@ -239,7 +239,6 @@ export const useNavbar = () => {
     isSearchActive,
     searchQuery,
     notifications,
-    unreadCount: 0,
     getNotificationIcon,
     toggleProfileMenu,
     toggleMobileMenu,
