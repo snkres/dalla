@@ -16,7 +16,7 @@ import { resendOTP } from '@lib/api/auth/otp-verify'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
-import { redirect, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
@@ -94,10 +94,6 @@ export default function LoginPage() {
       })
     }
   }, [searchParams, toast, t])
-
-  if (global.id) {
-    return redirect('/')
-  }
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
