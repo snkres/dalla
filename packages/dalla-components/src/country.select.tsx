@@ -227,7 +227,7 @@ const CountryDropdownComponent = (
                 .filter((x) => x.name !== 'Israel')
                 .map((option, key: number) => (
                   <CommandItem
-                    className="mx-0.5 my-0.5 flex w-full items-center gap-2 rounded-md transition-colors duration-150 hover:!bg-[#3997A0] hover:!text-white"
+                    className="mx-0.5 my-0.5 flex w-full items-center gap-2 rounded-md transition-colors duration-150 hover:!bg-[#3997A0] hover:!text-black"
                     key={key}
                     onSelect={() => handleSelect(option)}
                   >
