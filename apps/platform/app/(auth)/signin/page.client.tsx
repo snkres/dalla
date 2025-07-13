@@ -48,7 +48,7 @@ export function SigninPageClient({
   }
 
   return (
-    <>
+    <motion.div layout className="space-y-8">
       <div className="flex flex-col items-center justify-center gap-2 space-y-2 text-center">
         <motion.div
           variants={fadeInUpVariants}
@@ -77,19 +77,24 @@ export function SigninPageClient({
         </p>
       </div>
 
-      <AccountTypeToggle
-        value={mode as AccountType}
-        onChange={(type) => {
-          setMode(type)
-          setGlobal({
-            ...global,
-            mode: type === 'company' ? 'company' : 'user',
-          })
-        }}
-      />
+      <motion.div layout>
+        <AccountTypeToggle
+          value={mode as AccountType}
+          onChange={(type) => {
+            setMode(type)
+            setGlobal({
+              ...global,
+              mode: type === 'company' ? 'company' : 'user',
+            })
+          }}
+        />
+      </motion.div>
 
-      <SigninForm translations={activeTranslations} locale={activeLocale} />
-      <div className="mt-6 text-center">
+      <motion.div layout>
+        <SigninForm translations={activeTranslations} locale={activeLocale} />
+      </motion.div>
+
+      <motion.div layout className="mt-6 text-center">
         <p className="text-sm text-slate-600">
           {activeTranslations.signin.noAccount}{' '}
           <Link
@@ -99,9 +104,9 @@ export function SigninPageClient({
             {activeTranslations.signin.signUpLink}
           </Link>
         </p>
-      </div>
+      </motion.div>
 
-      <p className="text-center text-xs text-gray-500">
+      <motion.p layout className="text-center text-xs text-gray-500">
         {activeTranslations.signin.termsAgreement}{' '}
         <Link
           href="https://dev.dalla.app/en/terms-of-service"
@@ -116,7 +121,7 @@ export function SigninPageClient({
         >
           {activeTranslations.signin.privacyLink}
         </Link>
-      </p>
-    </>
+      </motion.p>
+    </motion.div>
   )
 }

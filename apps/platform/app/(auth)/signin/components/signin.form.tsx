@@ -31,13 +31,14 @@ export function SigninForm({ translations, locale }: SigninFormProps) {
   } = useSignin({ translations })
 
   return (
-    <form
+    <motion.form
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
         form.handleSubmit()
       }}
       className="space-y-6"
+      layout
     >
       <div className="space-y-4">
         <form.Field
@@ -208,61 +209,94 @@ export function SigninForm({ translations, locale }: SigninFormProps) {
         )}
       />
 
-      {mode === 'professional' && (
-        <>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-200" />
+      <AnimatePresence mode="wait">
+        {mode === 'professional' && (
+          <motion.div
+            key="social-auth"
+            initial={{ opacity: 0, height: 0, y: -10 }}
+            animate={{
+              opacity: 1,
+              height: 'auto',
+              y: 0,
+              transition: {
+                duration: 0.3,
+                ease: 'easeInOut',
+                height: {
+                  duration: 0.3,
+                  ease: 'easeInOut',
+                },
+              },
+            }}
+            exit={{
+              opacity: 0,
+              height: 0,
+              y: -10,
+              transition: {
+                duration: 0.2,
+                ease: 'easeInOut',
+                height: {
+                  duration: 0.2,
+                  ease: 'easeInOut',
+                },
+              },
+            }}
+            className="space-y-4 overflow-hidden"
+            layout
+          >
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs lowercase">
+                <span className="bg-white px-2 text-gray-400">
+                  {t.signin.continueWith}
+                </span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs lowercase">
-              <span className="bg-white px-2 text-gray-400">
-                {t.signin.continueWith}
-              </span>
-            </div>
-          </div>
-          <div className="flex w-full items-center justify-center gap-3">
-            <Button
-              key="LinkedIn"
-              type="button"
-              variant="outline"
-              className="flex !h-11 w-full items-center justify-center gap-2"
-              onClick={handleLinkedInSignInClick}
-              disabled={isLinkedInLoading || isProcessingLinkedIn}
-            >
-              {isLinkedInLoading || isProcessingLinkedIn ? (
-                <>
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                </>
-              ) : (
-                <>
-                  <LinkedInIcon className="h-6 w-6" />
-                </>
-              )}
-            </Button>
-
-            <div className="w-full">
+            <div className="flex w-full items-center justify-center gap-3">
               <Button
-                key="Google"
+                key="LinkedIn"
                 type="button"
                 variant="outline"
                 className="flex !h-11 w-full items-center justify-center gap-2"
-                onClick={handleGoogleSignInClick}
-                disabled={isGoogleLoading}
+                onClick={handleLinkedInSignInClick}
+                disabled={isLinkedInLoading || isProcessingLinkedIn}
               >
-                {isGoogleLoading ? (
+                {isLinkedInLoading || isProcessingLinkedIn ? (
                   <>
                     <Loader2 className="h-6 w-6 animate-spin" />
                   </>
                 ) : (
                   <>
-                    <GoogleIcon className="h-6 w-6" />
+                    <LinkedInIcon className="h-6 w-6" />
                   </>
                 )}
               </Button>
+
+              <div className="w-full">
+                <Button
+                  key="Google"
+                  type="button"
+                  variant="outline"
+                  className="flex !h-11 w-full items-center justify-center gap-2"
+                  onClick={handleGoogleSignInClick}
+                  disabled={isGoogleLoading}
+                >
+                  {isGoogleLoading ? (
+                    <>
+                      <Loader2 className="h-6 w-6 animate-spin" />
+                    </>
+                  ) : (
+                    <>
+                      <GoogleIcon className="h-6 w-6" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.form>
   )
 }
