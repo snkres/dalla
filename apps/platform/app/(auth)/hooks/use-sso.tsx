@@ -6,6 +6,7 @@ import { loginWithGoogle, loginWithLinkedIn } from '@lib/api/auth/login'
 import { LinkedInProfile } from '@lib/api/auth/linkedin'
 import { useSearchParams } from 'next/navigation'
 import { useTransitionRouter } from 'next-view-transitions'
+import { useTranslation } from '@hooks/use-translation'
 
 const GOOGLE_CLIENT_ID =
   '633251838183-s9eaujn7vg0iv32ovdbg4fql9a5i2o50.apps.googleusercontent.com'
@@ -113,6 +114,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   const [isGoogleInitialized, setIsGoogleInitialized] = useState(false)
   const searchParams = useSearchParams()
   const router = useTransitionRouter()
+  const t = useTranslation()
   const processGoogleResponse = useCallback(
     (response: any) => {
       console.log('Processing Google response:', response)
@@ -471,6 +473,34 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
 
     processLinkedInRedirect()
   }, [searchParams, toast, mode])
+
+  useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      let errorMessage = t.login.errorInternal
+
+      switch (error) {
+        case 'google_auth_failed':
+          errorMessage = t.login.errorGoogleAuthFailed
+          break
+        case 'missing_code':
+          errorMessage = t.login.errorMissingCode
+          break
+        case 'token_exchange_failed':
+          errorMessage = t.login.errorTokenExchangeFailed
+          break
+        case 'internal_error':
+          errorMessage = t.login.errorInternal
+          break
+      }
+
+      toast({
+        title: t.login.errorTitle,
+        description: errorMessage,
+        variant: 'destructive',
+      })
+    }
+  }, [searchParams, toast, t])
 
   useEffect(() => {
     window.googleSignInCallback = (response: any) =>

@@ -21,3 +21,5 @@ export function useTranslation() {
 
   return currentTranslations as TranslationKeys
 }
+
+export type { TranslationKeys }

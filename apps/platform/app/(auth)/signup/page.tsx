@@ -20,7 +20,7 @@ import { useState, useMemo } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { LinkedInIcon } from '@lib/constants/social-media-icons'
 import { GoogleIcon } from '@lib/constants/social-media-icons'
-import { useSSO } from '@lib/hooks/use-sso'
+import { useSSO } from 'app/(auth)/hooks/use-sso'
 import { useTranslation } from '../../../hooks/use-translation'
 import { useLocale } from '@hooks/use-locale'
 
