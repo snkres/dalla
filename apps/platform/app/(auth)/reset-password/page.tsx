@@ -90,7 +90,7 @@ export default function ResetPasswordPage() {
       })
 
       setTimeout(() => {
-        router.push('/login')
+        router.push('/signin')
       }, 3000)
     } catch (error) {
       console.error(error)
@@ -170,9 +170,9 @@ export default function ResetPasswordPage() {
 
             <Button
               className="bg-slate-blue-100 hover:bg-slate-blue-100/90 w-full text-white"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/signin')}
             >
-              {t.resetPassword.buttonGoToLogin}
+              {t.resetPassword.buttonGoTosignin}
             </Button>
           </div>
         ) : (

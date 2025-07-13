@@ -8,15 +8,15 @@ import { Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'next-view-transitions'
 import { GoogleIcon, LinkedInIcon } from '@lib/constants/social-media-icons'
-import { useLogin } from '../hooks/use-login'
+import { useSignin } from '../hooks/use-signin'
 import { AnimatePresence, motion } from 'motion/react'
 
-type LoginFormProps = {
+type SigninFormProps = {
   translations?: TranslationKeys
   locale?: string
 }
 
-export function LoginForm({ translations, locale }: LoginFormProps) {
+export function SigninForm({ translations, locale }: SigninFormProps) {
   const [showPassword, setShowPassword] = useState(false)
   const t = translations || useTranslation()
   const currentLocale = locale || useLocale().locale
@@ -28,7 +28,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
     isGoogleLoading,
     isLinkedInLoading,
     isProcessingLinkedIn,
-  } = useLogin({ translations })
+  } = useSignin({ translations })
 
   return (
     <form
@@ -53,7 +53,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
                 htmlFor={field.name}
                 className="text-sm font-medium text-gray-700"
               >
-                {t.login.emailLabel}
+                {t.signin.emailLabel}
               </label>
               <Input
                 id={field.name}
@@ -62,7 +62,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
-                placeholder={t.login.emailPlaceholder}
+                placeholder={t.signin.emailPlaceholder}
                 className={cn(
                   'h-11',
                   currentLocale === 'ar' ? 'text-right' : '',
@@ -101,7 +101,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
                 htmlFor={field.name}
                 className="text-sm font-medium text-gray-700"
               >
-                {t.login.passwordLabel}
+                {t.signin.passwordLabel}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
@@ -112,7 +112,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
-                  placeholder={t.login.passwordPlaceholder}
+                  placeholder={t.signin.passwordPlaceholder}
                   className={cn(
                     'h-11 pl-10 pr-10',
                     currentLocale === 'ar' ? 'text-right' : '',
@@ -173,7 +173,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
                   className="rounded border-gray-300"
                 />
                 <span className="text-sm text-gray-700">
-                  {t.login.rememberMe}
+                  {t.signin.rememberMe}
                 </span>
               </label>
 
@@ -181,7 +181,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
                 href="/forgot-password"
                 className="text-sm font-medium text-[#234d64] hover:text-[#1a3b4d]"
               >
-                {t.login.forgotPassword}
+                {t.signin.forgotPassword}
               </Link>
             </div>
           )}
@@ -199,10 +199,10 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t.login.signingInButton}
+                {t.signin.signingInButton}
               </>
             ) : (
-              t.login.signInButton
+              t.signin.signInButton
             )}
           </Button>
         )}
@@ -216,7 +216,7 @@ export function LoginForm({ translations, locale }: LoginFormProps) {
             </div>
             <div className="relative flex justify-center text-xs lowercase">
               <span className="bg-white px-2 text-gray-400">
-                {t.login.continueWith}
+                {t.signin.continueWith}
               </span>
             </div>
           </div>

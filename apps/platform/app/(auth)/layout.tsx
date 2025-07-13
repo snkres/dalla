@@ -13,7 +13,7 @@ export default function AuthLayout({
 }) {
   const pathname = usePathname()
 
-  const welcomeMessage = pathname.includes('login')
+  const welcomeMessage = pathname.includes('signin')
     ? 'Welcome back! Please sign in to continue'
     : 'Start your journey with us today'
 

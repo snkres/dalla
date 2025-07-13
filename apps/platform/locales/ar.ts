@@ -1,5 +1,5 @@
 export default {
-  login: {
+  signin: {
     title: 'تسجيل الدخول',
     welcome: 'مرحبًا بعودتك',
     description: 'قم بتسجيل الدخول إلى حسابك في دالة',
@@ -79,7 +79,7 @@ export default {
     buttonSend: 'إرسال رابط إعادة التعيين',
     buttonSending: 'جارٍ الإرسال...',
     buttonTryDifferentEmail: 'جرب بريدًا إلكترونيًا مختلفًا',
-    backToLogin: 'العودة إلى تسجيل الدخول',
+    backTosignin: 'العودة إلى تسجيل الدخول',
     successMessage: 'تم إرسال رابط إعادة تعيين كلمة المرور إلى',
     errorEmailRequiredTitle: 'البريد الإلكتروني مطلوب',
     errorEmailRequiredDescription: 'يرجى إدخال عنوان بريدك الإلكتروني',
@@ -103,7 +103,7 @@ export default {
     successTitle: 'اكتمل إعادة تعيين كلمة المرور',
     successDescription:
       'تم إعادة تعيين كلمة المرور بنجاح. سيتم توجيهك إلى صفحة تسجيل الدخول في لحظة.',
-    buttonGoToLogin: 'اذهب إلى تسجيل الدخول',
+    buttonGoTosignin: 'اذهب إلى تسجيل الدخول',
     errorInvalidLinkTitle: 'رابط إعادة التعيين غير صالح',
     errorInvalidLinkDescription:
       'رابط إعادة التعيين غير صالح. يرجى طلب إعادة تعيين كلمة مرور جديدة.',

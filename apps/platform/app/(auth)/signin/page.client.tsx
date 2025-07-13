@@ -1,8 +1,8 @@
 'use client'
 
 import { Link } from 'next-view-transitions'
-import { LoginForm } from './components/login.form'
-import { useLogin } from './hooks/use-login'
+import { SigninForm } from './components/signin.form'
+import { useSignin } from './hooks/use-signin'
 import { AccountTypeToggle } from '@components/auth/AccountTypeToggle'
 import type { AccountType } from '@lib/types/auth'
 import { globalAtom } from '@lib/atoms/global'
@@ -15,15 +15,15 @@ import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { fadeInUpVariants } from '@dalla/utils'
 
-type LoginPageClientProps = {
+type SigninPageClientProps = {
   translations: TranslationKeys
   locale: string
 }
 
-export function LoginPageClient({
+export function SigninPageClient({
   translations,
   locale,
-}: LoginPageClientProps) {
+}: SigninPageClientProps) {
   const [global, setGlobal] = useAtom(globalAtom)
   const clientTranslations = useTranslation()
   const { locale: currentLocale } = useLocale()
@@ -34,14 +34,14 @@ export function LoginPageClient({
     if (
       currentLocale !== activeLocale &&
       clientTranslations &&
-      clientTranslations.login
+      clientTranslations.signin
     ) {
       setActiveTranslations(clientTranslations)
       setActiveLocale(currentLocale)
     }
   }, [currentLocale, activeLocale, clientTranslations])
 
-  const { mode, setMode } = useLogin({ translations: activeTranslations })
+  const { mode, setMode } = useSignin({ translations: activeTranslations })
 
   if (global.id) {
     return redirect('/')
@@ -70,10 +70,10 @@ export function LoginPageClient({
           </svg>
         </motion.div>
         <h1 className="text-2xl font-semibold text-gray-900">
-          {activeTranslations.login.welcome}
+          {activeTranslations.signin.welcome}
         </h1>
         <p className="text-sm font-light text-gray-500">
-          {activeTranslations.login.description}
+          {activeTranslations.signin.description}
         </p>
       </div>
 
@@ -88,33 +88,33 @@ export function LoginPageClient({
         }}
       />
 
-      <LoginForm translations={activeTranslations} locale={activeLocale} />
+      <SigninForm translations={activeTranslations} locale={activeLocale} />
       <div className="mt-6 text-center">
         <p className="text-sm text-slate-600">
-          {activeTranslations.login.noAccount}{' '}
+          {activeTranslations.signin.noAccount}{' '}
           <Link
             href={`/signup?mode=${mode}`}
             className="text-slate-blue-90 font-medium hover:underline"
           >
-            {activeTranslations.login.signUpLink}
+            {activeTranslations.signin.signUpLink}
           </Link>
         </p>
       </div>
 
       <p className="text-center text-xs text-gray-500">
-        {activeTranslations.login.termsAgreement}{' '}
+        {activeTranslations.signin.termsAgreement}{' '}
         <Link
           href="https://dev.dalla.app/en/terms-of-service"
           className="text-[#234d64] hover:text-[#1a3b4d]"
         >
-          {activeTranslations.login.termsLink}
+          {activeTranslations.signin.termsLink}
         </Link>{' '}
         {activeLocale === 'ar' ? 'و' : 'and'}{' '}
         <Link
           href="https://dev.dalla.app/en/privacy-policy"
           className="text-[#234d64] hover:text-[#1a3b4d]"
         >
-          {activeTranslations.login.privacyLink}
+          {activeTranslations.signin.privacyLink}
         </Link>
       </p>
     </>

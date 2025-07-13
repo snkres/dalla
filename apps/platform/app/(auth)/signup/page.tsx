@@ -366,7 +366,7 @@ export default function SignupPage() {
         <p className="text-center text-sm text-gray-500">
           {t.signup.alreadyHaveAccount}{' '}
           <Link
-            href={`/login?mode=${mode}`}
+            href={`/signin?mode=${mode}`}
             className="font-medium text-[#234d64] hover:text-[#1a3b4d] hover:underline"
           >
             {t.signup.signInLink}

@@ -8,7 +8,7 @@ export default async function Layout({
 }) {
   const cookieStore = await cookies()
   if (!cookieStore.has('access_token')) {
-    redirect('/login')
+    redirect('/signin')
   }
 
   return <>{children}</>

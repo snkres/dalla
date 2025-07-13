@@ -1,34 +1,34 @@
 version: 1
 files:
   locales/en.ts:
-    login.title: 99dea78007133396a7b8ed70578ac6ae
-    login.welcome: ebdf0f490b617d7efa3025d3625cec85
-    login.description: 6da4081950c859033d070ab2801da7f3
-    login.emailLabel: b357b524e740bc85b9790a0712d84a30
-    login.emailPlaceholder: 95d3fa6b9e69c588a333f4e78139a7cd
-    login.passwordLabel: dc647eb65e6711e155375218212b3964
-    login.passwordPlaceholder: e8d28194f9b3498d21fbda21321d0226
-    login.rememberMe: 878530871f0db73f004f5bd6591eeb76
-    login.forgotPassword: 8458bad978f4fd6d6c7f8ec2ec0824b4
-    login.signInButton: b6d4223e60986fa4c9af77ee5f7149c5
-    login.signingInButton: 4381b667ecfd06041db1ee258f98ec83
-    login.continueWith: 4038e4c17bd41abe684a20af4c2cb0be
-    login.noAccount: a5f61298da21626d0f490ebd06ecd811
-    login.signUpLink: d9776f0775997b2e698c6975420b5c5d
-    login.termsAgreement: df98125e7f6e51ac02e2f7b88bc5126e
-    login.termsLink: 3b6c2b4caaf4f14f8d7feeddc4ac3f4d
-    login.privacyLink: fa2ead697d9998cbc65c81384e6533d5
-    login.errorTitle: a98b186600273b1482fd52ab91671f12
-    login.errorGoogleAuthFailed: 8c755f5036a364e5d02d31ff78fcc362
-    login.errorMissingCode: 204695673d69c95e1a3cd4ac2eacc6a4
-    login.errorTokenExchangeFailed: 571023a28a4f6cb5bc5cf7830adf9e8d
-    login.errorInternal: 2ec83c2de693c008d7320331fd599706
-    login.errorInvalidModeTitle: 12477418db51dc813000335f72b9fcf2
-    login.errorInvalidModeDescription: a9856d8ef7ae94811a2b85f9188fd657
-    login.errorInvalidCredentialsTitle: e6839791f53e4ed1e3414df947a2f1a5
-    login.errorInvalidCredentialsDescription: e9bc11b02a793e4e05ea7f6051087825
-    login.validationEmailInvalid: 59e4904d4366fab35a8282f418e699de
-    login.validationPasswordMinLength: db062c37c4979b52840c9f9a74003c52
+    signin.title: 99dea78007133396a7b8ed70578ac6ae
+    signin.welcome: ebdf0f490b617d7efa3025d3625cec85
+    signin.description: 6da4081950c859033d070ab2801da7f3
+    signin.emailLabel: b357b524e740bc85b9790a0712d84a30
+    signin.emailPlaceholder: 95d3fa6b9e69c588a333f4e78139a7cd
+    signin.passwordLabel: dc647eb65e6711e155375218212b3964
+    signin.passwordPlaceholder: e8d28194f9b3498d21fbda21321d0226
+    signin.rememberMe: 878530871f0db73f004f5bd6591eeb76
+    signin.forgotPassword: 8458bad978f4fd6d6c7f8ec2ec0824b4
+    signin.signInButton: b6d4223e60986fa4c9af77ee5f7149c5
+    signin.signingInButton: 4381b667ecfd06041db1ee258f98ec83
+    signin.continueWith: 4038e4c17bd41abe684a20af4c2cb0be
+    signin.noAccount: a5f61298da21626d0f490ebd06ecd811
+    signin.signUpLink: d9776f0775997b2e698c6975420b5c5d
+    signin.termsAgreement: df98125e7f6e51ac02e2f7b88bc5126e
+    signin.termsLink: 3b6c2b4caaf4f14f8d7feeddc4ac3f4d
+    signin.privacyLink: fa2ead697d9998cbc65c81384e6533d5
+    signin.errorTitle: a98b186600273b1482fd52ab91671f12
+    signin.errorGoogleAuthFailed: 8c755f5036a364e5d02d31ff78fcc362
+    signin.errorMissingCode: 204695673d69c95e1a3cd4ac2eacc6a4
+    signin.errorTokenExchangeFailed: 571023a28a4f6cb5bc5cf7830adf9e8d
+    signin.errorInternal: 2ec83c2de693c008d7320331fd599706
+    signin.errorInvalidModeTitle: 12477418db51dc813000335f72b9fcf2
+    signin.errorInvalidModeDescription: a9856d8ef7ae94811a2b85f9188fd657
+    signin.errorInvalidCredentialsTitle: e6839791f53e4ed1e3414df947a2f1a5
+    signin.errorInvalidCredentialsDescription: e9bc11b02a793e4e05ea7f6051087825
+    signin.validationEmailInvalid: 59e4904d4366fab35a8282f418e699de
+    signin.validationPasswordMinLength: db062c37c4979b52840c9f9a74003c52
     signup.title: 5bef23eb7efff2736c5583bda59e5eb7
     signup.description: de429a0b7e18c858b35101eeba022161
     signup.emailLabel: b357b524e740bc85b9790a0712d84a30
@@ -70,7 +70,7 @@ files:
     forgotPassword.buttonSend: 733ae3eecadd5777cea5ce9a32379d7a
     forgotPassword.buttonSending: 7b0fee4d957f4ffc0ed5abdd184062b7
     forgotPassword.buttonTryDifferentEmail: 9950c670b23827ec28839add6dcfb8b3
-    forgotPassword.backToLogin: 463e58c1d35fb5a4a8d717c99a60d257
+    forgotPassword.backTosignin: 463e58c1d35fb5a4a8d717c99a60d257
     forgotPassword.successMessage: f31404610909982087fd94d17983c731
     forgotPassword.errorEmailRequiredTitle: 487b280a59f3483fff5f1fafb3caf667
     forgotPassword.errorEmailRequiredDescription: 559d05953b1e359e5244164a04511b54
@@ -89,7 +89,7 @@ files:
     resetPassword.buttonResetting: b943aa67ebfe4913ca1e115b2224bf1a
     resetPassword.successTitle: c2585c6a96793a4bc26acd87134ffdf6
     resetPassword.successDescription: 3abee84765d8b9e28bc96f89017ecdf9
-    resetPassword.buttonGoToLogin: d44b89fe373b9dd420f6ddb2ad4a6d8e
+    resetPassword.buttonGoTosignin: d44b89fe373b9dd420f6ddb2ad4a6d8e
     resetPassword.errorInvalidLinkTitle: 43eae1127144a5c02d90b289995a257d
     resetPassword.errorInvalidLinkDescription: d0613186f04fdaee0ef827adfc1a6dcf
     resetPassword.buttonRequestNewLink: 222b8dad4fae8f8b3a80ea37088fcdfe

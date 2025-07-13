@@ -1,6 +1,6 @@
 export const en = {
-  login: {
-    title: 'Login',
+  signin: {
+    title: 'signin',
     welcome: 'Welcome back',
     description: 'Sign in to your Dalla Solutions account',
     emailLabel: 'Email address',
@@ -81,7 +81,7 @@ export const en = {
     buttonSend: 'Send reset link',
     buttonSending: 'Sending...',
     buttonTryDifferentEmail: 'Try different email',
-    backToLogin: 'Back to login',
+    backTosignin: 'Back to signin',
     successMessage: 'Password reset link has been sent to', // Email will be appended dynamically
     // Error messages
     errorEmailRequiredTitle: 'Email required',
@@ -107,8 +107,8 @@ export const en = {
     // Success state
     successTitle: 'Password Reset Complete',
     successDescription:
-      "Your password has been reset successfully. You'll be redirected to the login page in a moment.",
-    buttonGoToLogin: 'Go to login',
+      "Your password has been reset successfully. You'll be redirected to the signin page in a moment.",
+    buttonGoTosignin: 'Go to signin',
     // Error state (Invalid link)
     errorInvalidLinkTitle: 'Invalid Reset Link',
     errorInvalidLinkDescription:

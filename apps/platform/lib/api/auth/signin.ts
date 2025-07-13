@@ -6,7 +6,7 @@ interface Payload {
   userType: 'company' | 'user'
 }
 
-export async function login(payload: Payload) {
+export async function signin(payload: Payload) {
   let res = await axiosInstance
     .post<{
       success: boolean
@@ -16,7 +16,7 @@ export async function login(payload: Payload) {
         access_token: string
         refresh_token: string
       }
-    }>('/auth/login', payload)
+    }>('/auth/signin', payload)
     .then((res) => {
       return {
         ...res.data,
@@ -31,7 +31,7 @@ export async function login(payload: Payload) {
   return res
 }
 
-export async function loginWithGoogle(payload: {
+export async function signinWithGoogle(payload: {
   idToken: string
   userType: 'company' | 'user'
 }) {
@@ -59,7 +59,7 @@ export async function loginWithGoogle(payload: {
   return res
 }
 
-export async function loginWithLinkedIn(payload: {
+export async function signinWithLinkedIn(payload: {
   code: string
   redirectUrl: string
   userType: 'company' | 'user'

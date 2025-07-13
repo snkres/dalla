@@ -1,7 +1,7 @@
 import { toast } from '@dalla/design-system/ui/toast/use-toast'
 import { useTranslation } from '@hooks/use-translation'
 import type { TranslationKeys } from '@lib/utils/get-translations'
-import { login } from '@lib/api/auth/login'
+import { signin } from '@lib/api/auth/signin'
 import { resendOTP } from '@lib/api/auth/otp-verify'
 import { globalAtom } from '@lib/atoms/global'
 import { useSSO } from 'app/(auth)/hooks/use-sso'
@@ -10,15 +10,15 @@ import { useQueryState } from 'nuqs'
 import { useMemo, useState } from 'react'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
-import { createLoginSchema } from '../components/login.schema'
+import { createsigninSchema } from '../components/signin.schema'
 
-type FormData = z.infer<ReturnType<typeof createLoginSchema>>
+type FormData = z.infer<ReturnType<typeof createsigninSchema>>
 
-type UseLoginProps = {
+type UseSigninProps = {
   translations?: TranslationKeys
 }
 
-export function useLogin({ translations }: UseLoginProps = {}) {
+export function useSignin({ translations }: UseSigninProps = {}) {
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'professional',
   })
@@ -27,9 +27,9 @@ export function useLogin({ translations }: UseLoginProps = {}) {
 
   const fallbackTranslations = useTranslation()
   const t =
-    translations && translations.login ? translations : fallbackTranslations
+    translations && translations.signin ? translations : fallbackTranslations
 
-  const loginSchema = useMemo(() => createLoginSchema(t), [t])
+  const signinSchema = useMemo(() => createsigninSchema(t), [t])
 
   const form = useForm({
     defaultValues: {
@@ -38,7 +38,7 @@ export function useLogin({ translations }: UseLoginProps = {}) {
       rememberMe: false,
     } as FormData,
     validators: {
-      onSubmit: loginSchema,
+      onSubmit: signinSchema,
     },
     onSubmit: async ({ value }: { value: FormData }) => {
       try {
@@ -49,7 +49,7 @@ export function useLogin({ translations }: UseLoginProps = {}) {
           email: value.email,
         })
 
-        const res = await login({
+        const res = await signin({
           email: value.email,
           password: value.password,
           userType: mode === 'company' ? 'company' : 'user',
@@ -68,14 +68,14 @@ export function useLogin({ translations }: UseLoginProps = {}) {
             window.location.href = '/verify'
           } else if (e.status === 422) {
             toast({
-              title: t.login.errorInvalidModeTitle,
-              description: t.login.errorInvalidModeDescription,
+              title: t.signin.errorInvalidModeTitle,
+              description: t.signin.errorInvalidModeDescription,
               variant: 'destructive',
             })
           } else {
             toast({
-              title: t.login.errorInvalidCredentialsTitle,
-              description: t.login.errorInvalidCredentialsDescription,
+              title: t.signin.errorInvalidCredentialsTitle,
+              description: t.signin.errorInvalidCredentialsDescription,
               variant: 'destructive',
             })
           }
