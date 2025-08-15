@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
-import { loginWithGoogle, loginWithLinkedIn } from '@lib/api/auth/login'
+import { signinWithGoogle, signinWithLinkedIn } from '@lib/api/auth/signin'
 import { LinkedInProfile } from '@lib/api/auth/linkedin'
 import { useSearchParams } from 'next/navigation'
 import { useTransitionRouter } from 'next-view-transitions'
+import { useTranslation } from '@hooks/use-translation'
 
 const GOOGLE_CLIENT_ID =
   '633251838183-s9eaujn7vg0iv32ovdbg4fql9a5i2o50.apps.googleusercontent.com'
@@ -30,8 +31,8 @@ declare global {
 const LINKEDIN_CLIENT_ID = process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID || ''
 const LINKEDIN_REDIRECT_URI =
   process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000/login'
-    : 'https://platform.dev.dalla.app/login'
+    ? 'http://localhost:3000/signin'
+    : 'https://platform.dev.dalla.app/signin'
 
 const LINKEDIN_SCOPE = 'openid profile email'
 
@@ -113,6 +114,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   const [isGoogleInitialized, setIsGoogleInitialized] = useState(false)
   const searchParams = useSearchParams()
   const router = useTransitionRouter()
+  const t = useTranslation()
   const processGoogleResponse = useCallback(
     (response: any) => {
       console.log('Processing Google response:', response)
@@ -121,12 +123,12 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
         try {
           const userType = mode
 
-          loginWithGoogle({
+          signinWithGoogle({
             idToken: response.credential,
             userType,
           })
             .then((result) => {
-              console.log('Google login result:', result)
+              console.log('Google signin result:', result)
               if (result.success) {
                 router.push('/')
               } else {
@@ -214,7 +216,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
     (userType: 'company' | 'user' = 'user') => {
       console.log('Falling back to direct Google authentication')
 
-      const redirectUri = encodeURIComponent(window.location.origin + '/login')
+      const redirectUri = encodeURIComponent(window.location.origin + '/signin')
       const scope = encodeURIComponent('email profile openid')
       const nonce = Date.now().toString()
 
@@ -267,7 +269,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
           toast({
             title: 'Sign-In Error',
             description:
-              'Could not start Google Sign-In. Please try password login instead.',
+              'Could not start Google Sign-In. Please try password signin instead.',
             variant: 'destructive',
           })
           setIsGoogleLoading(false)
@@ -315,12 +317,12 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
           window.history.replaceState({}, document.title, cleanUrl.toString())
 
           if (idToken) {
-            const result = await loginWithGoogle({
+            const result = await signinWithGoogle({
               idToken: idToken,
               userType: mode,
             })
 
-            console.log('Google login result:', result)
+            console.log('Google signin result:', result)
 
             if (result.success) {
               window.location.href = '/'
@@ -338,12 +340,12 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
               description: 'Finishing Google authentication...',
             })
 
-            const result = await loginWithGoogle({
+            const result = await signinWithGoogle({
               idToken: code,
               userType: mode,
             })
 
-            console.log('Google login result:', result)
+            console.log('Google signin result:', result)
 
             if (result.success) {
               window.location.href = '/'
@@ -432,7 +434,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
             description: 'Finishing LinkedIn authentication...',
           })
 
-          const result = await loginWithLinkedIn({
+          const result = await signinWithLinkedIn({
             code,
             userType,
             redirectUrl: LINKEDIN_REDIRECT_URI,
@@ -473,6 +475,34 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
   }, [searchParams, toast, mode])
 
   useEffect(() => {
+    const error = searchParams.get('error')
+    if (error) {
+      let errorMessage = t.signin.errorInternal
+
+      switch (error) {
+        case 'google_auth_failed':
+          errorMessage = t.signin.errorGoogleAuthFailed
+          break
+        case 'missing_code':
+          errorMessage = t.signin.errorMissingCode
+          break
+        case 'token_exchange_failed':
+          errorMessage = t.signin.errorTokenExchangeFailed
+          break
+        case 'internal_error':
+          errorMessage = t.signin.errorInternal
+          break
+      }
+
+      toast({
+        title: t.signin.errorTitle,
+        description: errorMessage,
+        variant: 'destructive',
+      })
+    }
+  }, [searchParams, toast, t])
+
+  useEffect(() => {
     window.googleSignInCallback = (response: any) =>
       processGoogleResponse(response)
 
@@ -496,7 +526,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
           toast({
             title: 'Error',
             description:
-              'Could not load Google Sign-In. Please use password login instead.',
+              'Could not load Google Sign-In. Please use password signin instead.',
             variant: 'destructive',
           })
         }

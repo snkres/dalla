@@ -17,6 +17,7 @@
     "@dalla/design-system": "workspace:*",
     "@dalla/utils": "workspace:*",
     "@radix-ui/react-toast": "^1.2.6",
+    "@tanstack/react-form": "^1.14.1",
     "class-variance-authority": "^0.7.1",
     "cookies-next": "^5.1.0",
     "date-fns-tz": "^3.2.0",

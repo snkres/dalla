@@ -5,19 +5,21 @@ import { getCookie, setCookie } from 'cookies-next'
 const LOCALE_CHANGE_EVENT = 'dalla:locale-internal-change'
 
 export function useLocale() {
-  const locale = getCookie('lang') as string
-  const initialLocale = locale ?? 'en'
-  const [currentLocale, setCurrentLocale] = useState(initialLocale)
+  const [currentLocale, setCurrentLocale] = useState(() => {
+    if (typeof window === 'undefined') return 'en'
+    return (getCookie('lang') as string) ?? 'en'
+  })
   const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    if (locale && locale !== currentLocale) {
-      setCurrentLocale(locale)
+    const cookieLocale = getCookie('lang') as string
+    const initialLocale = cookieLocale ?? 'en'
+
+    if (initialLocale !== currentLocale) {
+      setCurrentLocale(initialLocale)
     }
-    if (locale) {
-      setIsReady(true)
-    }
-  }, [locale, currentLocale])
+    setIsReady(true)
+  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -26,17 +28,15 @@ export function useLocale() {
       const newLocale = event.detail?.locale
       if (newLocale && (newLocale === 'en' || newLocale === 'ar')) {
         setCurrentLocale(newLocale)
-        if (locale !== newLocale) {
-          setCookie('lang', newLocale, {
-            domain:
-              process.env.NODE_ENV === 'production'
-                ? '.dev.dalla.app'
-                : undefined,
-            path: '/',
-            maxAge: 60 * 60 * 24 * 30,
-            secure: process.env.NODE_ENV === 'production',
-          })
-        }
+        setCookie('lang', newLocale, {
+          domain:
+            process.env.NODE_ENV === 'production'
+              ? '.dev.dalla.app'
+              : undefined,
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30,
+          secure: process.env.NODE_ENV === 'production',
+        })
       }
     }
 
@@ -44,7 +44,7 @@ export function useLocale() {
     return () => {
       window.removeEventListener(LOCALE_CHANGE_EVENT, handleLocaleChange as any)
     }
-  }, [locale])
+  }, [])
 
   const setLocale = (locale: string) => {
     setCurrentLocale(locale)

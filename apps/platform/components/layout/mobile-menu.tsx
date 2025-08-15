@@ -30,7 +30,7 @@ const MobileMenu = ({
     try {
       await logout(queryClient).then(() => {
         toggleMobileMenu()
-        router.push('/login')
+        router.push('/signin')
       })
     } catch (error) {
       console.error('Error during sign out:', error)

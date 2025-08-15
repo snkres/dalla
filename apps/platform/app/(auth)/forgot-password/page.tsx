@@ -113,10 +113,10 @@ export default function ForgotPasswordPage() {
               </Button>
               <div className="text-center">
                 <Link
-                  href="/login"
+                  href="/signin"
                   className="text-slate-blue-90 text-sm hover:underline"
                 >
-                  {t.forgotPassword.backToLogin}
+                  {t.forgotPassword.backTosignin}
                 </Link>
               </div>
             </div>
@@ -169,10 +169,10 @@ export default function ForgotPasswordPage() {
 
               <div className="text-center">
                 <Link
-                  href="/login"
+                  href="/signin"
                   className="text-slate-blue-90 text-sm hover:underline"
                 >
-                  {t.forgotPassword.backToLogin}
+                  {t.forgotPassword.backTosignin}
                 </Link>
               </div>
             </form>

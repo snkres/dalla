@@ -59,7 +59,7 @@ const ProfilePopup = forwardRef<HTMLDivElement, ProfilePopupProps>(
     const handleSignOut = async () => {
       try {
         await logout(queryClient)
-        window.location.href = '/login'
+        window.location.href = '/signin'
       } catch (error) {
         console.error('Error during sign out:', error)
       }

@@ -24,7 +24,7 @@ export default function VerifyPage() {
   //   const email = global.email
   //   const mode = global.mode
   //   if (!email || !mode) {
-  //     router.push('/login')
+  //     router.push('/signin')
   //     return
   //   }
   // }, [router, global])
