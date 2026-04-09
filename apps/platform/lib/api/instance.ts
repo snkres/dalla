@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const axiosInstance = axios.create({
-  baseURL: 'https://apidalla.kroking.dev',
+  baseURL: 'https://apidalla.snkres.com',
   withCredentials: true,
 })
 
