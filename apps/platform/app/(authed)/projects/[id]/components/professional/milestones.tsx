@@ -44,18 +44,20 @@ export function ProfessionalMilestones({
     return null
   }
 
-  const getLatestSubmission = (submissions: { updatedAt: string }[]) => {
-    if (!submissions || submissions.length === 0) return null;
+  const getLatestSubmission = (
+    submissions: NonNullable<Milestone['submissions']>,
+  ) => {
+    if (!submissions || submissions.length === 0) return null
     return submissions.reduce((latest, current) =>
       new Date(current.updatedAt).getTime() > new Date(latest.updatedAt).getTime()
         ? current
         : latest,
-    );
-  };
+    )
+  }
 
   const lastSubmission = currentMilestone?.submissions
     ? getLatestSubmission(currentMilestone.submissions)
-    : null;
+    : null
   return (
     <>
       <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
