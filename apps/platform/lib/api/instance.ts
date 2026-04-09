@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const axiosInstance = axios.create({
-  baseURL: 'https://devapi.dalla.app',
+  baseURL: 'https://apidalla.kroking.dev',
   withCredentials: true,
 })
 
