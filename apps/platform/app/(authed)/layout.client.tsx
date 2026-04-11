@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { globalAtom } from '@lib/atoms/global'
 import { getDbReadyPromise } from '@lib/atoms/atom-with-localforge'
 import { DallaLoading } from '@components/shared/dalla-loading'
+import { clearStoredAuthTokens } from '@lib/auth/token-storage'
 
 export default function AuthedLayoutClient({
   children,
@@ -97,6 +98,16 @@ export default function AuthedLayoutClient({
 
     if (isError) {
       console.error('Profile fetch error:', error)
+      const statusCode =
+        typeof error === 'object' && error && 'status' in error
+          ? Number(error.status)
+          : undefined
+
+      if (statusCode === 401 || statusCode === 403) {
+        clearStoredAuthTokens()
+        router.push('/login')
+      }
+
       setIsLoading(false)
       return
     }

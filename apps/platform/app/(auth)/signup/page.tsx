@@ -15,7 +15,6 @@ import { useQueryState } from 'nuqs'
 import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { useAtom } from 'jotai'
 import { globalAtom } from '@lib/atoms/global'
-import { redirect } from 'next/navigation'
 import { useState, useMemo } from 'react'
 import { Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { LinkedInIcon } from '@lib/constants/social-media-icons'
@@ -46,10 +45,6 @@ export default function SignupPage() {
   const { locale } = useLocale()
   const [global, setGlobal] = useAtom(globalAtom)
   const [showPassword, setShowPassword] = useState(false)
-
-  if (global.id) {
-    return redirect('/')
-  }
   const [mode, setMode] = useQueryState('mode', {
     defaultValue: 'company',
   })

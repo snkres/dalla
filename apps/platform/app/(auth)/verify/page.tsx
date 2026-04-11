@@ -11,6 +11,7 @@ import { useToast } from '@dalla/design-system/ui/toast/use-toast'
 import { globalAtom } from '@lib/atoms/global'
 import { useAtom } from 'jotai'
 import { useTranslation } from '@hooks/use-translation'
+import { setStoredAuthTokens } from '@lib/auth/token-storage'
 
 export default function VerifyPage() {
   const t = useTranslation()
@@ -51,6 +52,7 @@ export default function VerifyPage() {
       })
 
       if (res.success) {
+        setStoredAuthTokens(res.data)
         router.push('/onboard')
       } else {
         toast({
