@@ -3,6 +3,14 @@ import { clearStoredAuthTokens } from '@lib/auth/token-storage'
 
 export async function logout(queryClient?: any) {
   try {
+    try {
+      await fetch('/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+    } catch (logoutRequestError) {
+      console.error('Backend logout failed:', logoutRequestError)
+    }
     clearStoredAuthTokens()
 
     await localForage.clear()
