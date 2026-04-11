@@ -1,4 +1,5 @@
 import { axiosInstance } from '../instance'
+import { normalizeAuthResponse } from './normalize-auth-response'
 
 interface Payload {
   email: string
@@ -19,10 +20,7 @@ export async function login(payload: Payload) {
       data: AuthPayload
     }>('/auth/login', payload)
     .then((res) => {
-      return {
-        ...res.data,
-        status: res.status,
-      }
+      return normalizeAuthResponse(res)
     })
     .catch((err) => {
       console.log(err)
@@ -43,10 +41,7 @@ export async function loginWithGoogle(payload: {
       data: AuthPayload
     }>('/auth/google', payload)
     .then((res) => {
-      return {
-        ...res.data,
-        status: res.status,
-      }
+      return normalizeAuthResponse(res)
     })
     .catch((err) => {
       console.log(err)
@@ -68,10 +63,7 @@ export async function loginWithLinkedIn(payload: {
       data: AuthPayload
     }>('/auth/linkedin', payload)
     .then((res) => {
-      return {
-        ...res.data,
-        status: res.status,
-      }
+      return normalizeAuthResponse(res)
     })
     .catch((err) => {
       console.log(err)

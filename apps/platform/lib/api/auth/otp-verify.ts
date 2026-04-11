@@ -1,4 +1,5 @@
 import { axiosInstance } from '../instance'
+import { normalizeAuthResponse } from './normalize-auth-response'
 
 interface Payload {
   email: string
@@ -16,9 +17,7 @@ export async function verify(payload: Payload) {
         refresh_token: string
       }
     }>('/auth/verify', payload)
-    .then((res) => {
-      return res.data
-    })
+    .then((res) => normalizeAuthResponse(res))
   return res
 }
 
