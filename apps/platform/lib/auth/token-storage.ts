@@ -7,6 +7,7 @@ export interface AuthTokens {
 
 const AUTH_STORAGE_KEY = 'dalla:auth'
 export const AUTH_TOKENS_CHANGED_EVENT = 'dalla:auth-tokens-changed'
+const AUTH_SESSION_COOKIE = 'dalla_session'
 
 function isBrowser() {
   return typeof window !== 'undefined'
@@ -66,6 +67,9 @@ export function setStoredAuthTokens(tokens: {
     JSON.stringify({ accessToken, refreshToken }),
   )
 
+  const secure = window.location.protocol === 'https:' ? '; Secure' : ''
+  document.cookie = `${AUTH_SESSION_COOKIE}=1; path=/; SameSite=Lax${secure}`
+
   dispatchAuthTokensChanged()
 }
 
@@ -73,5 +77,7 @@ export function clearStoredAuthTokens() {
   if (!isBrowser()) return
 
   window.localStorage.removeItem(AUTH_STORAGE_KEY)
+  const secure = window.location.protocol === 'https:' ? '; Secure' : ''
+  document.cookie = `${AUTH_SESSION_COOKIE}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${secure}`
   dispatchAuthTokensChanged()
 }
