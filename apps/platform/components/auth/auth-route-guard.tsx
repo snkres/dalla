@@ -36,16 +36,24 @@ export default function AuthRouteGuard({
       }
     }
 
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.storageArea !== localStorage) {
+        return
+      }
+
+      syncAuthState()
+    }
+
     syncAuthState()
 
-    window.addEventListener('storage', syncAuthState)
+    window.addEventListener('storage', handleStorageChange)
     window.addEventListener(
       AUTH_TOKENS_CHANGED_EVENT,
       syncAuthState as EventListener,
     )
 
     return () => {
-      window.removeEventListener('storage', syncAuthState)
+      window.removeEventListener('storage', handleStorageChange)
       window.removeEventListener(
         AUTH_TOKENS_CHANGED_EVENT,
         syncAuthState as EventListener,
