@@ -27,17 +27,20 @@ import { DallaLoading } from '@components/shared/dalla-loading'
 
 export function ProProfileClient({ username }: { username: string }) {
   const [global] = useAtom(globalAtom)
-  const isOwner = global.username === username
+  const [proMeta] = useAtom(proMetaAtom)
+  const currentUsername = global.username || proMeta?.data?.username
+  const isOwner = currentUsername === username
+  const canResolveOwnership = Boolean(currentUsername)
   const queryClient = useQueryClient()
   const { data: proProfile, isLoading } = useQuery({
     queryKey: ['pro-profile', username],
     queryFn: () => getProProfile(username),
-    enabled: !isOwner,
+    enabled: canResolveOwnership && !isOwner,
   })
   const { data: ownProfile, isLoading: ownProfileLoading } = useQuery({
     queryKey: ['own-pro-profile', username],
     queryFn: () => getOwnProProfile(),
-    enabled: isOwner,
+    enabled: canResolveOwnership && isOwner,
   })
   const { toast } = useToast()
   const [isPublicView, setIsPublicView] = useQueryState('publicView', {
@@ -95,7 +98,7 @@ export function ProProfileClient({ username }: { username: string }) {
     },
   })
 
-  if (isLoading || ownProfileLoading)
+  if (!canResolveOwnership || isLoading || ownProfileLoading)
     return (
       <DallaLoading
         title="Loading profile..."
