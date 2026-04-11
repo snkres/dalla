@@ -32,10 +32,8 @@ export function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-// Match all routes except Next.js internals and static files
-const MIDDLEWARE_MATCHER =
-  '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'
-
 export const config = {
-  matcher: [MIDDLEWARE_MATCHER],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }
