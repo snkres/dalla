@@ -1,9 +1,9 @@
-import { axiosInstance } from '../instance'
 import localForage from 'localforage'
+import { clearStoredAuthTokens } from '@lib/auth/token-storage'
 
 export async function logout(queryClient?: any) {
   try {
-    const res = await axiosInstance.post('/auth/logout')
+    clearStoredAuthTokens()
 
     await localForage.clear()
 
@@ -12,11 +12,12 @@ export async function logout(queryClient?: any) {
       queryClient.clear()
     }
 
-    return res
+    return { success: true }
   } catch (err) {
     console.error('Logout error:', err)
 
     try {
+      clearStoredAuthTokens()
       await localForage.clear()
       if (queryClient) {
         queryClient.clear()

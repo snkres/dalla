@@ -6,16 +6,17 @@ interface Payload {
   userType: 'company' | 'user'
 }
 
+interface AuthPayload {
+  access_token: string
+  refresh_token: string
+}
+
 export async function login(payload: Payload) {
   let res = await axiosInstance
     .post<{
       success: boolean
       message: string
-      data: {
-        id: string
-        access_token: string
-        refresh_token: string
-      }
+      data: AuthPayload
     }>('/auth/login', payload)
     .then((res) => {
       return {
@@ -39,11 +40,7 @@ export async function loginWithGoogle(payload: {
     .post<{
       success: boolean
       message: string
-      data: {
-        id: string
-        access_token: string
-        refresh_token: string
-      }
+      data: AuthPayload
     }>('/auth/google', payload)
     .then((res) => {
       return {
@@ -68,11 +65,7 @@ export async function loginWithLinkedIn(payload: {
     .post<{
       success: boolean
       message: string
-      data: {
-        id: string
-        access_token: string
-        refresh_token: string
-      }
+      data: AuthPayload
     }>('/auth/linkedin', payload)
     .then((res) => {
       return {

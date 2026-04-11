@@ -6,6 +6,7 @@ import { loginWithGoogle, loginWithLinkedIn } from '@lib/api/auth/login'
 import { LinkedInProfile } from '@lib/api/auth/linkedin'
 import { useSearchParams } from 'next/navigation'
 import { useTransitionRouter } from 'next-view-transitions'
+import { setStoredAuthTokens } from '@lib/auth/token-storage'
 
 const GOOGLE_CLIENT_ID =
   '633251838183-s9eaujn7vg0iv32ovdbg4fql9a5i2o50.apps.googleusercontent.com'
@@ -128,6 +129,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
             .then((result) => {
               console.log('Google login result:', result)
               if (result.success) {
+                setStoredAuthTokens(result.data)
                 router.push('/')
               } else {
                 toast({
@@ -323,6 +325,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
             console.log('Google login result:', result)
 
             if (result.success) {
+              setStoredAuthTokens(result.data)
               window.location.href = '/'
             } else {
               toast({
@@ -346,6 +349,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
             console.log('Google login result:', result)
 
             if (result.success) {
+              setStoredAuthTokens(result.data)
               window.location.href = '/'
             } else {
               toast({
@@ -439,6 +443,7 @@ export function useSSO({ mode }: { mode: 'company' | 'user' }) {
           })
 
           if (result.success) {
+            setStoredAuthTokens(result.data)
             // Clean up session storage
             sessionStorage.removeItem('linkedin_auth_state')
             sessionStorage.removeItem('linkedin_user_type')

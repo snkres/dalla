@@ -1,18 +1,14 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import AuthedLayoutClient from './layout.client'
+import AuthRouteGuard from '@components/auth/auth-route-guard'
 
-export const dynamic = 'force-dynamic'
-
-export default async function Layout({
+export default function Layout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const cookieStore = await cookies()
-  if (!cookieStore.has('access_token')) {
-    redirect('/login')
-  }
-
-  return <AuthedLayoutClient>{children}</AuthedLayoutClient>
+  return (
+    <AuthRouteGuard requireAuth redirectTo="/login">
+      <AuthedLayoutClient>{children}</AuthedLayoutClient>
+    </AuthRouteGuard>
+  )
 }
